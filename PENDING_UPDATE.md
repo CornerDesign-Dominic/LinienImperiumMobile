@@ -41,7 +41,7 @@ Vorschlag, noch nicht beschlossen: zunächst fünf Regionalangebote, davon drei 
 ### Firmenseite und Transportausbau
 
 - Gemeinsame Karte für Regional-/Fernverkehr oben, Abteilungen darunter. Doppelter Münz-/Itembestand auf der Übersicht entfernt.
-- Eigene Seite „Transport verbessern“ mit Itembestand und Verlinkung auf „Herstellen“. Dort sind die bestehenden Bezugswege der Firmenausbau-Items erklärt; ein neues Herstellrezept wurde nicht erfunden.
+- Eigene Seite „Transport verbessern“ mit Itembestand und Verlinkung auf „Herstellen“. Die Bezugswege der Firmenausbau-Items stehen im Vorräte-Detail; ein neues Herstellrezept wurde nicht eingeführt.
 - Mehrere Stufen in beiden Segmenten per +/− vormerken, Effekt und Gesamtkosten sehen, mit einem Speichern übernehmen. Auswahl bleibt beim Besuch von „Herstellen“ erhalten.
 - Ein serverseitiger Batch validiert Stufen, Grenzen und gemeinsame Gesamtkosten, bevor Ressourcen abgezogen werden. Veraltete Auswahl, doppelte Einträge und fehlende Ressourcen brechen vollständig ab. Bestehende Einzelupgrade-Aktion bleibt für die installierte App verfügbar.
 - Keine Veröffentlichung; nur Sammelbranch.
@@ -53,3 +53,11 @@ Vorschlag, noch nicht beschlossen: zunächst fünf Regionalangebote, davon drei 
 - Herstellungslink bei Zutaten bzw. kombinierbaren Shards. Keine neuen Rezepte oder Items eingeführt. Kartenbilder bleiben Platzhalter.
 - Nach Verbrauch des letzten Refills zeigt das geöffnete Detail 0, sperrt erneutes Benutzen und entfernt die Karte aus dem Raster. Gefundene Aufträge bleiben auf ihren eigenen Seiten.
 - Weiterhin nur vorbereitet, keine Veröffentlichung.
+
+### Herstellungsseite
+
+- Vier vorhandene Rezepte als einzelne Prozesszeilen: Zutat mit Platzhalter und benötigter Menge → Ergebnis mit Platzhalter und Ausgabemenge. Jeweils darunter „Herstellung“.
+- Rezepte: 100 Abholhinweise → 1 Privatabholung; 10 Firmen-Items → 1 Kundenauftrag; 10 Common-Shards → 1 Uncommon-Shard; 10 Uncommon-Shards → 1 Rare-Shard.
+- Bestand klein direkt an der Zutat; bei fehlendem freigeschaltetem Stammkunden kurzer Sperrhinweis. Fehlende Zutaten und laufende Aktionen sperren den Button.
+- Kein allgemeiner Erklärblock vor den Rezepten. Herkunft bleibt im Vorräte-Detail. Bestehende Herstellungskosten und Aktionen unverändert.
+- Nur vorbereitet, keine Veröffentlichung.

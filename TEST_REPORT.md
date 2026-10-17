@@ -53,3 +53,9 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Typprüfung sowie Web- und Android-Export bestanden; Spielmechanik und Backend unverändert.
 - Browserprüfung mit lokaler Engine / simulierter Firebase-Anbindung bei 393 und 320 px: alle 13 vorhandenen Itemarten, Drei-Spalten-Raster, Herkunft/Rezept im Detail, Link zur Herstellung und zur Garage geprüft. Letztes Refill gibt exakt +100 Tokens, Bestand fällt auf 0, Benutzen wird gesperrt und die Karte verschwindet nach Schließen aus dem Raster. Garagennavigation verbraucht kein Modul. Keine JavaScript-Seitenfehler.
 - Kein Deployment, kein OTA-Update oder APK-Build gestartet.
+
+### Vorbereitete Herstellungsseite
+
+- Typprüfung, Web-Export und Android-Export bestanden. Keine Änderung der Spielmechanik oder des Backends.
+- Browserprüfung bei 393 und 320 px mit lokaler Engine / simulierter Firebase-Anbindung: vier Prozesszeilen mit kräftigem Pfeil, Mengen und je einem Herstellungsbutton; Kundenrezept ohne freigeschalteten Stammkunden gesperrt. Privatabholung kostet genau 100 Hinweise und erzeugt einen Auftrag. Beide Shard-Rezepte verbrauchen je 10 und geben genau 1 höhere Seltenheit. Nach Verbrauch wird die Verfügbarkeit aktualisiert; fehlende Ressourcen sperren die Herstellung. Keine JavaScript-Seitenfehler.
+- Kein Firebase-Deployment, OTA-Update oder APK-Build gestartet.
