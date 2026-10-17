@@ -8,6 +8,10 @@ Nach `scripts/setup-firebase-access.sh` muss der Projektinhaber zusätzlich `scr
 
 ## Android testen — ohne laufenden PC
 
+**Testversion 0.1.0:** [APK direkt herunterladen](https://expo.dev/artifacts/eas/giLzWrQVv-S37lNWNLg15Sz9HosyPsfEqGtl_-geOfQ.apk) · [Erfolgreicher Build](https://expo.dev/accounts/cornerdesign/projects/linien-imperium-online/builds/d43d1b43-e06a-42b3-9204-a815bff724af)
+
+Firebase-Deployment und Live-Tests sind erfolgreich abgeschlossen. Diese APK basiert auf Commit `8f8c5768a8891d6cd53a00b07155798d396c61c6`. Ein Start auf einem physischen Android-Gerät steht noch aus.
+
 Der Workflow **Mobile preview** prüft den Code, veröffentlicht das Firebase-Backend und erstellt eine installierbare APK über EAS. Der Downloadlink erscheint in der Zusammenfassung des erfolgreichen GitHub-Actions-Laufs. Auf Android die APK herunterladen, die Installation aus dem Browser erlauben und die installierte App öffnen. Expo Go und ein lokaler Entwicklungsserver sind dafür nicht erforderlich.
 
 EAS-Projekt: https://expo.dev/accounts/cornerdesign/projects/linien-imperium-online
