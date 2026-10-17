@@ -107,3 +107,48 @@ test('Automatic offer reset handles deadline, pinned offers, running transport a
  assert.ok(later.state.orders.some(o=>o.id===pinnedId&&o.pinned));
  assert.equal(later.state.orders.filter(o=>o.status==='available').length,later.view.offers);
 });
+
+test('Expedition map has five customer regions, seven places each and preserves the unlock rules',()=>{
+ const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ assert.equal(start.view.expeditionMap.length,5);
+ assert.deepEqual(start.view.expeditionMap.map(r=>r.open),[true,false,false,false,false]);
+ assert.deepEqual(start.view.expeditionMap.map(r=>r.customer.id),['nordbau','frischgut','stahlwerk','alpenhandel','eurolog']);
+ assert.ok(start.view.expeditionMap.every(r=>r.places.length===7&&r.progress===0));
+ const funded=execute(start.state,'testGrant',{kind:'expedition',amount:100},now,fixed);
+ let state=funded.state;
+ for(let i=0;i<7;i++)state=execute(state,'discover',{region:0},now,fixed).state;
+ const explored=execute(state,'sync',{},now,fixed);
+ assert.equal(explored.view.expeditionMap[0].discovered,7);
+ assert.equal(explored.view.expeditionMap[0].deliveries,0);
+ assert.equal(explored.view.expeditionMap[0].finalClaimed,false);
+ assert.ok(explored.view.expeditionMap[0].progress>0&&explored.view.expeditionMap[0].progress<100);
+ assert.equal(explored.view.expeditionMap[1].open,true);
+ assert.equal(explored.view.expeditionMap[2].open,false);
+ const mission=execute(explored.state,'mission',{region:0,kind:'delivery',place:0,truck:state.trucks[0].id},now,fixed);
+ const end=mission.state.expedition.missions[0].endsAt;
+ const done=execute(mission.state,'sync',{},end,fixed);
+ const claimed=execute(done.state,'claimMission',{id:done.state.expedition.missions[0].id},end,fixed);
+ assert.equal(claimed.view.expeditionMap[0].deliveries,1);
+ assert.ok(claimed.view.expeditionMap[0].progress>explored.view.expeditionMap[0].progress);
+});
+
+test('Test grants persist points above capacity and XP produces normal level rewards',()=>{
+ const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ const expedition=execute(start.state,'testGrant',{kind:'expedition',amount:100},now,fixed);
+ assert.equal(expedition.state.expedition.points,150);
+ const overtime=execute(expedition.state,'testGrant',{kind:'overtime',amount:100},now,fixed);
+ assert.equal(overtime.state.overtimePoints,200);
+ const xp=execute(overtime.state,'testGrant',{kind:'xp',amount:100},now,fixed);
+ assert.equal(xp.state.xp,100);assert.equal(xp.view.level.level,2);
+ assert.equal(xp.state.expedition.points,200);assert.equal(xp.state.inventory.overtimeRefills,1);
+ assert.deepEqual(xp.state.pendingLevelUps,[2]);
+ const large=execute(xp.state,'testGrant',{kind:'xp',amount:1000},now,fixed);
+ assert.equal(large.state.xp,1100);
+ assert.equal(large.state.inventory.overtimeRefills,large.view.level.level-1);
+ const restored=execute(JSON.parse(JSON.stringify(large.state)),'sync',{},now+60000,fixed);
+ assert.equal(restored.state.expedition.points,large.state.expedition.points);
+ assert.equal(restored.state.overtimePoints,200);
+ for(const amount of [-1,0,101,1e12,NaN,'100'])
+  assert.throws(()=>execute(start.state,'testGrant',{kind:'expedition',amount},now,fixed));
+ assert.throws(()=>execute(start.state,'testGrant',{kind:'__proto__',amount:100},now,fixed));
+});

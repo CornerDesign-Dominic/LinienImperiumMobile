@@ -1,7 +1,7 @@
 # Gesammeltes Mobile-Update
 
-Branch: `batch/mobile-adjustments`. Noch nicht auf Handy oder Backend veröffentlicht.
-Der Nutzer sammelt Änderungen nacheinander. Erst bei ausdrücklichem Abschluss veröffentlichen.
+Branch: `batch/mobile-adjustments`. Das Gesamtpaket wurde zur gemeinsamen Veröffentlichung freigegeben; Status siehe `TEST_REPORT.md`.
+Änderungen werden gesammelt und erst nach ausdrücklicher Freigabe gemeinsam veröffentlicht.
 
 ## Umgesetzt und lokal geprüft
 
@@ -9,6 +9,10 @@ Der Nutzer sammelt Änderungen nacheinander. Erst bei ausdrücklichem Abschluss 
 - Angebotskarten mit hellerem Hintergrund, stärkerem Rahmen/Farbrand, abgetrennten Metadaten und eigenem Mengen-/Streckenbereich.
 - Bei fehlender Auswahl unterscheidet die Anzeige zwischen fehlendem passendem Fahrzeug und einem bereits eingesetzten passenden Fahrzeug.
 - Regressionstest für automatischen Angebotswechsel inklusive Fristgrenze, angeheftetem Angebot, laufendem Transport und Offline-Nachholung.
+
+- Expeditionsübersicht mit fünf Regionskarten, Kunden und Fortschritt, gesperrte Karten ohne Zugriff.
+- Pro Region sieben Ortskarten und unten die Endloskarte, jeweils mit Fortschritt und kontextabhängiger Aktion.
+- Testwerkzeuge: +100 Expeditionspunkte, +100 Überstundenpunkte, +100 / +1.000 XP inklusive regulärer Levelbelohnungen.
 
 ## Diagnose und Verifikation
 

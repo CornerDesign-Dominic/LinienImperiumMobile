@@ -14,10 +14,16 @@ async function main(){
   const id=crypto.randomUUID();const once=await call('testCoins',{},id),twice=await call('testCoins',{},id);
   assert.equal(once.state.coins,51000);assert.equal(twice.state.coins,51000);
   const protectedState=await call('sync',{coins:1e15});assert.equal(protectedState.state.coins,51000);
+  assert.equal(protectedState.expeditionMap.length,5);
+  assert.equal(protectedState.expeditionMap[0].customer.id,'nordbau');
+  const expedition=await call('testGrant',{kind:'expedition',amount:100});assert.equal(expedition.state.expedition.points,150);
+  const overtime=await call('testGrant',{kind:'overtime',amount:100});assert.equal(overtime.state.overtimePoints,200);
+  const xpId=crypto.randomUUID();await call('testGrant',{kind:'xp',amount:100},xpId);
+  const xp=await call('testGrant',{kind:'xp',amount:100},xpId);assert.equal(xp.state.xp,100);assert.equal(xp.state.inventory.overtimeRefills,1);
   const unauth=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{action:'sync'}})});
   assert.equal(unauth.status,401);
   await call('reset');
-  console.log('Live backend smoke test passed: guest auth, persistence, command deduplication and authentication checks.');
+  console.log('Live backend smoke test passed: guest auth, persistence, command deduplication, expedition map, test grants, level rewards and authentication checks.');
  }finally{await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:auth.idToken})});}
 }
 main().catch(e=>{console.error(e.message);process.exitCode=1;});

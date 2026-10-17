@@ -64,3 +64,7 @@ Die Tests umfassen 23 übernommene Web-Regressionsdateien und zusätzliche Tests
 Firmen- und Stadtname sind reine Anzeigenamen. Neue Firmen verwenden ein einheitliches Streckenprofil; die Namenswahl beeinflusst weder Entfernungen noch Vergütung. Bestehende Spielstände erhalten das Namensformular ohne Zurücksetzen. Bereits laufende Transporte behalten ihre Werte.
 
 Die Kartensammlung zeigt Kartenstufe, Geschwindigkeitsrang und aktuelle Kapazität, mit quadratischer Fläche für spätere Bilder. Detailansichten enthalten Werte, Boni und Shard-Aufwertung, aber keine Einsatz- oder Auftragszustände. Fahrzeuge werden unter **Garage → Fahrzeug hinzufügen** eingesetzt.
+
+## Gesammeltes Update: Expeditionen und Testwerkzeuge
+
+Fünf Regionskarten führen zu je sieben Ortskarten und einer Endloskarte. Kunde, Fortschritt und Sperren stehen direkt auf den Karten. Unter **Einstellungen → Testwerkzeuge** lassen sich zusätzlich Expeditionspunkte, Überstundenpunkte und XP hinzufügen. Test-XP verwendet die normalen Levelbelohnungen. Dieses Paket enthält auch die vorbereitete Wiederholung von Verbindungsfehlern und die kontrastreicheren Angebotskarten. Die Vorschläge für neue Startangebote bleiben unverändert offen. Details zur Prüfung stehen in [TEST_REPORT.md](TEST_REPORT.md).

@@ -34,6 +34,15 @@ const bridge = `
     allocateLevel(expedition) { levelAllocation = { expedition, overtime: 5 - expedition }; return confirmLevelUpAllocation(); },
     sell(id) { if (!openSaleDialog(id)) return false; return confirmSale(); },
     grantTestCoins() { game.coins += TEST_COINS_GRANT; game.stats.testCoinsGranted += TEST_COINS_GRANT; addEvent('Testmünzen: +50.000 M'); },
+    grantTestResource(kind, amount) {
+      if (kind === 'xp') awardTransportXp(amount);
+      else if (kind === 'expedition') { game.expedition.points += amount; game.expedition.lastRegenAt = Date.now(); }
+      else { game.overtimePoints += amount; game.overtimeLastRegenAt = Date.now(); }
+      const label = kind === 'xp' ? 'XP' : kind === 'expedition' ? 'Expeditionspunkte' : 'Überstundenpunkte';
+      addEvent('Test: +' + amount + ' ' + label + '.');
+      mobileToast = '+' + amount + ' ' + label;
+      return true;
+    },
     reset() { game = newGame(); },
     foundCompany(profile) {
       if (game.profile) return false;
@@ -95,6 +104,14 @@ const bridge = `
         templates:[0,1,2].map(i=>fleetTemplate(i)),
         cardBonuses:Object.fromEntries(EXPEDITION_CHARACTERS.map(c=>[c.id,cardBonusValue(c)])),
         openRegions:EXPEDITION_REGIONS.map((_,i)=>expeditionRegionOpen(i)),
+        expeditionMap:game.expedition.regions.map((region,index)=>({
+          index, name:EXPEDITION_REGIONS[index], customer:customerById(EXPEDITION_CUSTOMER_IDS[index]),
+          open:expeditionRegionOpen(index), discovered:region.discovered,
+          deliveries:region.deliveries.filter(Boolean).length, finalClaimed:region.finalClaimed,
+          progress:(region.discovered + region.deliveries.filter(Boolean).length + Number(region.finalClaimed))/15*100,
+          places:Array.from({length:7},(_,place)=>({index:place,discoveryCost:expeditionDiscoveryCost(index,place),durationMs:expeditionDuration(index,'delivery',place)})),
+          finalDurationMs:expeditionDuration(index,'final')
+        })),
         discoveryCosts:game.expedition.regions.map((r,i)=>expeditionDiscoveryCost(i,r.discovered)),
         customers:CUSTOMERS.filter(c=>customerUnlocked(c.id)).map(c=>({...c,level:customerLevel(game.customerTrust[c.id]||0),next:customerNext(game.customerTrust[c.id]||0),points:availableCustomerSkillPoints(c.id),skills:customerSkillLevels(c.id)})),
         refreshCost:manualRefreshCost(), offers:offerLimit(), pinLimit:pinLimit(), hubLimit:hubCapacity(),
@@ -159,7 +176,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     transport:()=>a.upgradeTransport(choice(p.category,['national','international']),choice(p.kind,['premium','volume','range'])),
     customerSkill:()=>a.allocateCustomerSkill(id(p.id),choice(p.kind,['pay','special','referral'])),
     pin:()=>a.toggleOrderPin(id(p.id)),refresh:()=>a.manualRefreshOrders(),level:()=>a.allocateLevel(num(p.expedition,5)),
-    testCoins:()=>a.grantTestCoins(),reset:()=>a.reset()
+    testCoins:()=>a.grantTestCoins(),testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>a.reset()
   };
   if(!Object.hasOwn(calls,action))throw Error('Unbekannte Aktion');
   if(!a.state.startCity&&!['sync','start','foundCompany','reset'].includes(action))throw Error('Bitte zuerst deine Firma gründen.');
