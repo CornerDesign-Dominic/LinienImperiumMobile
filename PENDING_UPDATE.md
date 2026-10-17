@@ -68,3 +68,7 @@ Vorschlag, noch nicht beschlossen: zunächst fünf Regionalangebote, davon drei 
 - Antippen öffnet die eigene Kundendetailseite. Dort Beziehung, Fähigkeiten/Bonis und verfügbare Punkte sowie Ware, Verkehr und Expeditionsregion.
 - Bestehende Fähigkeitspunkte werden ausschließlich auf der Detailseite verteilt. Keine Änderungen an Freischaltung, Kosten oder Limits.
 - Zurück führt zur Übersicht; Kundenwechsel übernimmt jeweils die passenden Daten. Weiterhin nur vorbereitet.
+
+### Händlerzugang
+
+- Händler aus dem Hauptmenü entfernt; bestehende Zugänge (insbesondere Stadthub) unverändert. Umbenennung wartet auf die gewünschte Bezeichnung und eindeutige Zuordnung (Händler/Stadthub). Nur vorbereitet.
