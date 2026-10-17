@@ -72,3 +72,9 @@ Vorschlag, noch nicht beschlossen: zunächst fünf Regionalangebote, davon drei 
 ### Händlerzugang
 
 - Händler aus dem Hauptmenü entfernt; bestehende Zugänge (insbesondere Stadthub) unverändert. Umbenennung wartet auf die gewünschte Bezeichnung und eindeutige Zuordnung (Händler/Stadthub). Nur vorbereitet.
+
+### Statistik
+
+- Kompakte gemeinsame Liste: kurze Bezeichnung links, Zahlen samt Einheiten rechtsbündig. Dezimalstellen nach Bedarf, feste Ziffernbreiten.
+- Bisherige Kennzahlen und CO₂-Schätzung bleiben erhalten; Ereignisprotokoll aus der Statistik entfernt. Die letzten Ereignisse sind auch von der Startseite entfernt. Gespeicherte Ereignisse bleiben erhalten.
+- Nur vorbereitet, keine Veröffentlichung.

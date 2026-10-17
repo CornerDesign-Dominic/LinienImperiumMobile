@@ -65,3 +65,9 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Typprüfung, Web-Export und Android-Export bestanden. Bestehende Freischaltung und Fähigkeitspunkte-Mechanik unverändert.
 - Browserprüfung bei 393 und 320 px mit lokaler Engine / simulierter Firebase-Anbindung: fünf freigeschaltete Kundenkarten ohne Aufwertungsbuttons, eigene Kundendetailseite mit Beziehung/Branche/Ware und Fähigkeiten, zwei verschiedene Fähigkeitspunkte korrekt ausgegeben, danach alle Verbesserungen gesperrt. Zurück zur Übersicht und Wechsel zu anderem Kunden mit eigenem Punktestand geprüft. Keine JavaScript-Seitenfehler.
 - Kein Deployment, OTA-Update oder APK-Build gestartet.
+
+### Vorbereitete Statistik und Startseite
+
+- Statistik als kompakte gemeinsame Liste: Werte und Einheiten rechtsbündig, Bezeichnungen links. Ereignisprotokoll aus Statistik und letzte Ereignisse von der Startseite entfernt; gespeicherte Ereignisse bleiben erhalten.
+- Typprüfung bestanden. Web-Export und Browserprüfung der Statistik bei 393 und 320 px mit lokaler Engine / simulierter Firebase-Anbindung bestanden: Zahlenformat, Einheiten, identische rechte Zahlenkante, kein Ereignisprotokoll und keine JavaScript-Seitenfehler.
+- Anschließende Entfernung des Startseitenblocks im Quelltext und durch erneute Typprüfung geprüft. Keine Mechanikänderung oder Veröffentlichung.
