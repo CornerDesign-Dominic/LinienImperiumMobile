@@ -19,7 +19,7 @@ exports.game = onCall({region:'europe-west3', serviceAccount:'mobile-game-runtim
       const previous=receipt?await tx.get(receipt):null;
       const record=saved.exists?saved.data():{};
       const state=record.snapshot?JSON.parse(gunzipSync(record.snapshot).toString('utf8')):null;
-      if(previous?.exists)return execute(state,'sync').view;
+      if(previous?.exists){const view=execute(state,'sync').view;const find=previous.data().expeditionFind;if(find)view.expeditionFind=find;return view;}
       const now=Date.now();
       const requests=(record.requests||[]).filter(t=>now-t<60000);
       if(requests.length>=100)throw new HttpsError('resource-exhausted','Bitte einen Moment warten.');
@@ -28,7 +28,7 @@ exports.game = onCall({region:'europe-west3', serviceAccount:'mobile-game-runtim
       const snapshot=gzipSync(JSON.stringify(result.state));
       if(snapshot.length>900000)throw new HttpsError('resource-exhausted','Spielstand zu groß. Bitte Support kontaktieren.');
       tx.set(gameRef,{snapshot,revision:(record.revision||0)+1,requests:[...requests,now],updatedAt:Timestamp.fromMillis(now)});
-      if(receipt)tx.set(receipt,{action,createdAt:Timestamp.fromMillis(now),expireAt:Timestamp.fromMillis(now+7*86400000)});
+      if(receipt)tx.set(receipt,{action,...(result.view.expeditionFind?{expeditionFind:result.view.expeditionFind}:{}),createdAt:Timestamp.fromMillis(now),expireAt:Timestamp.fromMillis(now+7*86400000)});
       return result.view;
     });
   } catch(error){if(error instanceof HttpsError)throw error;console.error('Game transaction failed',error);throw new HttpsError('internal','Spielstand konnte nicht geladen werden. Bitte erneut versuchen.');}

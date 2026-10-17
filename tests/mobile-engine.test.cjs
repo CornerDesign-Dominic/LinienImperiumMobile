@@ -152,3 +152,72 @@ test('Test grants persist points above capacity and XP produces normal level rew
   assert.throws(()=>execute(start.state,'testGrant',{kind:'expedition',amount},now,fixed));
  assert.throws(()=>execute(start.state,'testGrant',{kind:'__proto__',amount:100},now,fixed));
 });
+
+test('Endless draws return exact popup targets and test missions complete in fifteen seconds',()=>{
+ const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ start.state.expedition.regions[0].discovered=7;start.state.expedition.regions[0].endlessUnlocked=true;
+ for(const roll of [.02,.08,.095,.2,.5,.97,.999]){
+  const found=execute(start.state,'draw',{region:0},now,()=>roll);
+  const find=found.view.expeditionFind;
+  assert.ok(find?.title);assert.equal(found.state.expedition.points,start.state.expedition.points-5);
+  if(find.type==='order'){
+   const order=found.view.state.orders.find(o=>o.id===find.id);
+   assert.equal(order.isProject,true);assert.equal(order.status,'queued');
+  }else if(find.type==='job'){
+   assert.ok(found.state.expedition.jobs.some(j=>j.id===find.id));
+   const active=execute(found.state,'mission',{region:0,kind:'endless',place:find.id,truck:start.state.trucks[0].id},now,fixed);
+   const mission=active.state.expedition.missions.at(-1);
+   assert.equal(mission.endsAt-now,15000);
+   assert.equal(mission.transport.tours.at(-1).endsAt,mission.endsAt);
+   const halfway=execute(active.state,'sync',{},now+7500,fixed);
+   assert.equal(halfway.state.expedition.missions.at(-1).endsAt,mission.endsAt);
+   assert.equal(halfway.state.expedition.missions.at(-1).status,'active');
+   const done=execute(halfway.state,'sync',{},now+15000,fixed);
+   assert.equal(done.state.expedition.missions.at(-1).status,'completed');
+   assert.equal(done.state.expedition.missions.at(-1).transport.delivered,mission.transport.volume);
+   assert.ok(done.view.state.trucks[0].free);
+  }else assert.equal(find.type,'reward');
+ }
+ for(const kind of ['delivery','final']){
+  const mission=execute(start.state,'mission',{region:0,kind,place:0,truck:start.state.trucks[0].id},now,fixed);
+  assert.equal(mission.state.expedition.missions[0].endsAt-now,15000);
+ }
+ const duplicate=execute(start.state,'draw',{region:0},now,()=>.02);
+ assert.match(duplicate.view.expeditionFind.detail,/Shard/);
+ const blocked=execute(start.state,'draw',{region:4},now,fixed);
+ assert.equal(blocked.view.expeditionFind,undefined);
+});
+
+test('Existing expedition timers shorten once without resetting or deleting progress',()=>{
+ const start=execute(null,'start',{id:'hamburg'},now,fixed);
+ start.state.expedition.regions[0].discovered=1;
+ start.state.expedition.missions.push({id:1,region:0,kind:'delivery',place:0,truckId:start.state.trucks[0].id,startedAt:now-1000,endsAt:now+3600000,status:'active'});
+ const short=execute(start.state,'sync',{},now,fixed);
+ assert.equal(short.state.expedition.missions[0].endsAt,now+15000);
+ const second=execute(short.state,'sync',{},now+10000,fixed);
+ assert.equal(second.state.expedition.missions[0].endsAt,now+15000);
+ const done=execute(second.state,'sync',{},now+15000,fixed);
+ assert.equal(done.state.expedition.missions[0].status,'completed');
+ assert.equal(done.state.expedition.regions[0].discovered,1);
+});
+
+test('Each pending level grants exactly three permanent capacity points and cannot be claimed twice',()=>{
+ const base=execute(null,'start',{id:'hamburg'},now,fixed);
+ const earned=execute(base.state,'testGrant',{kind:'xp',amount:100},now,fixed);
+ for(const expedition of [0,1,2,3]){
+  const overtime=3-expedition;
+  const result=execute(earned.state,'level',{expedition,overtime},now,fixed);
+  assert.equal(result.view.expeditionCapacity,earned.view.expeditionCapacity+expedition);
+  assert.equal(result.state.overtimeCapacity,earned.state.overtimeCapacity+overtime);
+  assert.equal(result.state.expedition.points,earned.state.expedition.points+expedition);
+  assert.equal(result.state.overtimePoints,earned.state.overtimePoints+overtime);
+  assert.deepEqual(result.state.pendingLevelUps,[]);
+  assert.equal(result.state.inventory.overtimeRefills,1);
+  const twice=execute(result.state,'level',{expedition,overtime},now,fixed);
+  assert.equal(twice.state.overtimeCapacity,result.state.overtimeCapacity);
+ }
+ const invalid=execute(earned.state,'level',{expedition:2,overtime:2},now,fixed);
+ assert.deepEqual(invalid.state.pendingLevelUps,[2]);
+ assert.equal(invalid.state.overtimeCapacity,earned.state.overtimeCapacity);
+ assert.throws(()=>execute(earned.state,'level',{expedition:5},now,fixed),/Ungültige/);
+});

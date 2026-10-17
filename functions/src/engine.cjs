@@ -5,7 +5,28 @@ const vm = require('node:vm');
 const source = fs.readFileSync(path.join(__dirname, '../vendor/web-game.js'), 'utf8');
 const boundary = source.indexOf("  document.addEventListener('click'");
 if (boundary < 0) throw Error('Web engine boundary missing');
+// Temporary test switch. Set to null to restore the original expedition timings.
+const EXPEDITION_TEST_DURATION_MS = 15000;
 const bridge = `
+  const expeditionTestDuration = ${JSON.stringify(EXPEDITION_TEST_DURATION_MS)};
+  const originalExpeditionDuration = expeditionDuration;
+  expeditionDuration = (...args) => expeditionTestDuration ?? originalExpeditionDuration(...args);
+  function shortenTestMissions() {
+    if (!expeditionTestDuration) return;
+    const now = Date.now();
+    for (const mission of game.expedition.missions) {
+      if (mission.status !== 'active' || mission.testDurationMs === expeditionTestDuration || mission.endsAt <= now) continue;
+      mission.testDurationMs = expeditionTestDuration;
+      const start = Math.max(mission.startedAt, now);
+      const duration = Math.min(expeditionTestDuration, mission.endsAt - start);
+      if (mission.transport) {
+        const tours = mission.transport.tours.slice(mission.transport.completedTours);
+        const oldStart = tours[0].startsAt, span = tours.at(-1).endsAt - oldStart;
+        tours.forEach(t => { t.startsAt = start + (t.startsAt - oldStart) / span * duration; t.endsAt = start + (t.endsAt - oldStart) / span * duration; });
+      }
+      mission.startedAt = start; mission.endsAt = start + duration;
+    }
+  }
   render = () => {};
   renderLevelUpDialog = () => {};
   maybeShowLevelUpDialog = () => {};
@@ -20,7 +41,7 @@ const bridge = `
   showToast = text => { mobileToast = text; };
   globalThis.mobile = {
     get state() { return game; }, set state(value) { game = value; },
-    newGame, save, loadGame, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
+    newGame, save, loadGame, shortenTestMissions, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
     autoRefreshOrders, regenerateExpedition, regenerateOvertime,
     chooseStartCity, addCardToGarage, removeCardFromGarage, assignCharacterSeat,
     giveCharacterShard, combineExpeditionShards, buyTruck, upgradeTruckRarity,
@@ -31,7 +52,16 @@ const bridge = `
     unlockDepartment, upgradeWorkshop, upgradeSales, upgradeOfferLimit, upgradeTransport,
     allocateCustomerSkill, toggleOrderPin, manualRefreshOrders, applyOrderReward,
     removeSeat(template, seat) { const slots = fleetTemplate(template); if (slots) slots[seat] = null; },
-    allocateLevel(expedition) { levelAllocation = { expedition, overtime: 5 - expedition }; return confirmLevelUpAllocation(); },
+    allocateLevel(expedition, overtime) {
+      if (!game.pendingLevelUps?.length || expedition + overtime !== 3) return false;
+      game.expedition.levelCapacityBonus = (game.expedition.levelCapacityBonus || 0) + expedition;
+      game.expedition.points += expedition;
+      game.overtimeCapacity = (game.overtimeCapacity ?? 100) + overtime;
+      game.overtimePoints = (game.overtimePoints ?? 100) + overtime;
+      const level = game.pendingLevelUps.shift();
+      addEvent('Level ' + level + ': ' + expedition + ' Expeditionspunkte und ' + overtime + ' Überstundenpunkte dauerhaft zugewiesen.');
+      return true;
+    },
     sell(id) { if (!openSaleDialog(id)) return false; return confirmSale(); },
     grantTestCoins() { game.coins += TEST_COINS_GRANT; game.stats.testCoinsGranted += TEST_COINS_GRANT; addEvent('Testmünzen: +50.000 M'); },
     grantTestResource(kind, amount) {
@@ -137,7 +167,7 @@ function session(state, now=Date.now(), random=Math.random) {
   compiled.runInContext(context,{timeout:2000});
   const api=context.mobile;
   if(state) api.state=JSON.parse(JSON.stringify(state));
-  api.settleTrips(now);api.settleFleetProjects(now);api.settleExpeditions(now);api.settleHub(now);
+  api.shortenTestMissions();api.settleTrips(now);api.settleFleetProjects(now);api.settleExpeditions(now);api.settleHub(now);
   api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);
   return api;
 }
@@ -175,13 +205,24 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     companyOffers:()=>a.upgradeOfferLimit(),companyWorkshop:()=>a.upgradeWorkshop(),companySales:()=>a.upgradeSales(),
     transport:()=>a.upgradeTransport(choice(p.category,['national','international']),choice(p.kind,['premium','volume','range'])),
     customerSkill:()=>a.allocateCustomerSkill(id(p.id),choice(p.kind,['pay','special','referral'])),
-    pin:()=>a.toggleOrderPin(id(p.id)),refresh:()=>a.manualRefreshOrders(),level:()=>a.allocateLevel(num(p.expedition,5)),
+    pin:()=>a.toggleOrderPin(id(p.id)),refresh:()=>a.manualRefreshOrders(),level:()=>a.allocateLevel(num(p.expedition,3),p.overtime===undefined?3-num(p.expedition,3):num(p.overtime,3)),
     testCoins:()=>a.grantTestCoins(),testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>a.reset()
   };
   if(!Object.hasOwn(calls,action))throw Error('Unbekannte Aktion');
   if(!a.state.startCity&&!['sync','start','foundCompany','reset'].includes(action))throw Error('Bitte zuerst deine Firma gründen.');
+  const oldOrders = new Set(a.state.orders.map(o=>o.id));
+  const oldJobs = new Set(a.state.expedition.jobs.map(j=>j.id));
   const ok=calls[action]();
+  if(action==='mission')a.shortenTestMissions();
   const view=a.view();
+  if(action==='draw'&&ok!==false){
+    const order=view.state.orders.find(o=>!oldOrders.has(o.id));
+    const job=view.state.expedition.jobs.find(j=>!oldJobs.has(j.id));
+    const card=typeof ok==='string'&&ok.startsWith('card:')?view.catalog.cards.find(c=>c.id===ok.slice(5)):null;
+    view.expeditionFind=order?{type:'order',id:order.id,title:order.projectName||order.cargo,detail:order.volume+' t · '+order.distance+' km'}
+      :job?{type:'job',id:job.id,region:job.region,title:job.kind==='character'?'Fahrzeugkartenauftrag':'Materialauftrag',detail:'Stufe '+job.tier}
+      :{type:'reward',title:card?.name||view.message||'Fund erhalten',detail:card?(state?.expedition.characters[card.id]?'1 '+card.rarity+'-Shard':'Fahrzeugkarte'):''};
+  }
   if(action!=='sync'&&(ok===false||JSON.stringify(a.state)===before))view.message ||= 'Aktion nicht möglich: Voraussetzungen oder Vorräte prüfen.';
   return {state:JSON.parse(JSON.stringify(a.state)),view:JSON.parse(JSON.stringify(view))};
 }

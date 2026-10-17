@@ -1,5 +1,5 @@
 import React from 'react';
-import {View,Pressable,StyleSheet} from 'react-native';
+import {Pressable,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,n,remaining} from './ui';
 
 const clamp=(value:number)=>Math.max(0,Math.min(100,value));
@@ -27,9 +27,6 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
  const map=maps[region],r=g.expedition.regions[region];
  const missions=g.expedition.missions.filter((m:any)=>m.region===region);
  const final=missions.find((m:any)=>m.kind==='final');
- const jobs=g.expedition.jobs.filter((j:any)=>j.region===region);
- const running=missions.filter((m:any)=>m.kind==='endless'&&m.status==='active');
- const rewards=missions.filter((m:any)=>m.kind==='endless'&&m.status==='completed').slice(-3).reverse();
  const noTruck=!g.trucks.some((t:any)=>t.free&&t.tier>=2);
  const endlessOpen=r.discovered===7;
  const finalProgress=r.finalClaimed?100:missionProgress(final,clock);
@@ -44,7 +41,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
     <Bar value={progress}/>
     {!locked&&!done&&<Txt muted style={styles.small}>+1 Expeditionskapazität</Txt>}
     {!discovered&&next&&button(`Entdecken · ${place.discoveryCost} Punkte`,'discover',{region},g.expedition.points<place.discoveryCost)}
-    {discovered&&!mission&&!done&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'delivery',i)}>Beliefern · {n(place.durationMs/3600000)} Std.</Btn>}
+    {discovered&&!mission&&!done&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'delivery',i)}>Beliefern · {place.durationMs<60000?`${place.durationMs/1000} Sek.`:`${n(place.durationMs/3600000)} Std.`}</Btn>}
     {mission?.status==='completed'&&!mission.claimedAt&&button('Abholen','claimMission',{id:mission.id})}
    </Card>;
   })}
@@ -53,15 +50,10 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
    <Txt muted>{map.customer.name}</Txt>
    <Bar value={endlessOpen?50+finalProgress/2:r.discovered/7*50}/>
    {endlessOpen&&<>
-    {!final&&!r.finalClaimed&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'final',0)}>Kunde freischalten · {n(map.finalDurationMs/3600000)} Std.</Btn>}
+    {!final&&!r.finalClaimed&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'final',0)}>Kunde freischalten · {map.finalDurationMs<60000?`${map.finalDurationMs/1000} Sek.`:`${n(map.finalDurationMs/3600000)} Std.`}</Btn>}
     {final?.status==='completed'&&!final.claimedAt&&button('Kunde freischalten','claimMission',{id:final.id})}
     {button('Expedition · 5 Punkte','draw',{region},g.expedition.points<5)}
-    {jobs.map((job:any)=><View key={job.id} style={styles.job}>
-     <Row><Txt style={{fontWeight:'700'}}>{job.kind==='character'?'Karten':'Material'} · {job.tier}</Txt><Txt muted style={styles.small}>{job.tier*20} t · 30 km</Txt></Row>
-     <Bar value={0}/><Btn secondary disabled={busy||noTruck} onPress={()=>onMission(region,'endless',job.id)}>Beliefern</Btn>
-    </View>)}
-    {running.map((m:any)=><View key={m.id} style={styles.job}><Row><Txt>{m.lootKind==='character'?'Karten':'Material'} · {m.tier}</Txt><Txt gold>{remaining(m.endsAt,clock)}</Txt></Row><Bar value={missionProgress(m,clock)}/></View>)}
-    {rewards.map((m:any)=><View key={m.id} style={styles.reward}><Txt muted style={styles.small}>✓ {m.reward}</Txt></View>)}
+
    </>}
   </Card>
  </>;

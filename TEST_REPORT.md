@@ -31,3 +31,11 @@ Erfolgreich veröffentlicht am 17.10.2026.
 ## Weiter offen
 
 Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht beschlossen und wurden nicht geändert. `internal [0]` bedeutet eine fehlende HTTP-Antwort; die Wiederholung fängt vorübergehende Ausfälle ab, garantiert jedoch keine dauerhafte Verbindung.
+
+## Vorbereitetes Folgepaket (noch nicht auf Handy/Firebase veröffentlicht)
+
+- Typprüfung und 11 Mobile-Engine-Tests sowie alle 23 ursprünglichen Web-Regressionsdateien bestanden.
+- Neue Tests decken Fundtypen und exakte Ziel-IDs, gesperrte Auslosung, Duplikat-Shards, 15-Sekunden-Transporte inklusive Touren, einmalige Verkürzung laufender Missionen und alle vier gültigen 3-Punkte-Verteilungen ab. Unvollständige/zu große Verteilungen und doppelte Vergabe werden abgewehrt.
+- Ursprüngliche Web-Engine bleibt unverändert. Keine Spielstände zurückgesetzt.
+- Kein Firebase-Deployment, kein EAS-Update und kein neuer APK-Build für dieses Folgepaket gestartet.
+- Android-Export und Web-Export erfolgreich; 3-Punkte-Auswahl bei 393 px im Browser mit lokaler Engine geprüft (Maximalwerte 50 → 52 und 100 → 101, vierter Punkt gesperrt). Kein physischer Gerätetest für dieses vorbereitete Paket.
