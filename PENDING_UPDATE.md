@@ -113,3 +113,7 @@ Vorschlag, noch nicht beschlossen: zunächst fünf Regionalangebote, davon drei 
 - Einzel-/Großauftragskacheln bleiben fest 116 px hoch. Reservierte Hinweiszeile zeigt nur bei offenen Abschlussprämien „X Belohnung(en)“. Bei 0 bleibt die Zeile leer.
 - Separaten Sammelblock auf Start entfernt. Einzelaufträge führen zum Einzelauftragsbereich; Großaufträge mit offenen Prämien direkt zur laufenden/abgeschlossenen Liste. Abholung erfolgt im jeweiligen Auftragsbereich.
 - Loot-Popup der gebündelten Einzelprämien nennt Quelle und Zahl der Abschlüsse. Keine Veröffentlichung.
+
+### Zurückbutton
+
+- Aus dem Werteheader in die Seitenzeile verschoben: Zurück links, Seitenname daneben, Hilfe rechts. Bestehende Zurückfunktion unverändert; Touchfläche mindestens 44 × 44 px. Nur vorbereitet.

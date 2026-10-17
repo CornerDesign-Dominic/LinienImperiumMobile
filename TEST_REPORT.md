@@ -94,3 +94,7 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Typprüfung und Web-Export bestanden. Browserprüfung mit lokaler Engine und simulierter Firebase-Anbindung bei 393 und 320 px bestanden.
 - Garage-/Flottenkacheln fehlen auf Start; untere Navigation bleibt bestehen. Beide Auftragskacheln sind mit/ohne Hinweis 116 px hoch. Belohnung erscheint, führt zum Einzelauftragsbereich und verschwindet nach Abholung, ohne die Kachelmaße zu verändern.
 - Popup zeigt „Einzelaufträge“, Abschlusszahl und tatsächlichen Loot. Keine JavaScript-Seitenfehler. Kein Deployment oder OTA-Update.
+
+### Zurückbutton in Seitenzeile
+
+- Typprüfung und Web-Export bestanden. Browserprüfung bei 393 und 320 px: Zurückbutton, Seitenname und Hilfe liegen gemeinsam in der Seitenzeile, Touchfläche mindestens 44 × 44 px. Hilfe öffnen und per Zurück zum Start geprüft; keine JavaScript-Seitenfehler. Kein Deployment.
