@@ -47,3 +47,9 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Batchtest: drei regionale Prämienstufen plus zwei Fernverkehr-Reichweitenstufen kosten zusammen 640 M und 10 Items. Server berechnet jede Folgestufe, verarbeitet beide Segmente gemeinsam und lehnt zu wenig Items/Münzen, veraltete Stufen, doppelte Einträge, Nullauswahl und Überschreiten der Maximalstufe ab. Eingabespielstand bleibt unverändert.
 - Kein Deployment oder App-Update für diese Änderungen gestartet.
 - Android-Export erfolgreich. Browserprüfung bei 393 und 320 px mit lokal simulierter Firebase-Anbindung bestanden: Reihenfolge, gemeinsame Karte, unveränderte Ressourcen vor Speichern, Gesamtkosten 150 M / 6 Items für zwei Prämienstufen plus eine Reichweitenstufe, Link zu Herstellen, erhaltene Auswahl nach Zurück und geleerte Auswahl nach erfolgreichem Speichern. Keine JavaScript-Seitenfehler.
+
+### Vorbereitetes Vorräte-Raster
+
+- Typprüfung sowie Web- und Android-Export bestanden; Spielmechanik und Backend unverändert.
+- Browserprüfung mit lokaler Engine / simulierter Firebase-Anbindung bei 393 und 320 px: alle 13 vorhandenen Itemarten, Drei-Spalten-Raster, Herkunft/Rezept im Detail, Link zur Herstellung und zur Garage geprüft. Letztes Refill gibt exakt +100 Tokens, Bestand fällt auf 0, Benutzen wird gesperrt und die Karte verschwindet nach Schließen aus dem Raster. Garagennavigation verbraucht kein Modul. Keine JavaScript-Seitenfehler.
+- Kein Deployment, kein OTA-Update oder APK-Build gestartet.

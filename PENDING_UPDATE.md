@@ -45,3 +45,11 @@ Vorschlag, noch nicht beschlossen: zunächst fünf Regionalangebote, davon drei 
 - Mehrere Stufen in beiden Segmenten per +/− vormerken, Effekt und Gesamtkosten sehen, mit einem Speichern übernehmen. Auswahl bleibt beim Besuch von „Herstellen“ erhalten.
 - Ein serverseitiger Batch validiert Stufen, Grenzen und gemeinsame Gesamtkosten, bevor Ressourcen abgezogen werden. Veraltete Auswahl, doppelte Einträge und fehlende Ressourcen brechen vollständig ab. Bestehende Einzelupgrade-Aktion bleibt für die installierte App verfügbar.
 - Keine Veröffentlichung; nur Sammelbranch.
+
+### Vorräte als Inventar
+
+- Drei Karten je Zeile, quadratischer Bildplatzhalter, kurzer Itemname und Anzahl. Nur positive Bestände; leeres Inventar erhält einen kurzen Leerzustand.
+- Antippen öffnet Details mit aktuellem Bestand, Nutzen, Herkunft und bestehenden Rezepten. Refill direkt benutzen; andere verwendbare Materialien führen zur passenden Garage/Kartensammlung/Firma/Stadthub-Auswahl. Kein Material wird allein beim Navigieren verbraucht.
+- Herstellungslink bei Zutaten bzw. kombinierbaren Shards. Keine neuen Rezepte oder Items eingeführt. Kartenbilder bleiben Platzhalter.
+- Nach Verbrauch des letzten Refills zeigt das geöffnete Detail 0, sperrt erneutes Benutzen und entfernt die Karte aus dem Raster. Gefundene Aufträge bleiben auf ihren eigenen Seiten.
+- Weiterhin nur vorbereitet, keine Veröffentlichung.
