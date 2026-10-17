@@ -21,12 +21,13 @@ export function ensureAuth(){
   }).catch(error=>{ready=null;throw error;});
   return ready;
 }
+export function isNetworkFailure(error:any){return error?.code==='functions/internal'&&/\[0\]\s*$/.test(error.message||'');}
 export async function command(action='sync',payload:Record<string,unknown>={},requestId=Crypto.randomUUID()){
   await ensureAuth();
   // Keep the same ID on automatic retries: server receipts prevent double spending.
   for(let attempt=0;;attempt++){
     try {const response=await callable({action,payload,requestId});return response.data as any;}
-    catch(error:any){if(attempt===0&&['functions/unavailable','functions/deadline-exceeded'].includes(error.code))continue;throw error;}
+    catch(error:any){if(attempt===0&&(isNetworkFailure(error)||['functions/unavailable','functions/deadline-exceeded'].includes(error.code))){await new Promise(resolve=>setTimeout(resolve,400));continue;}throw error;}
   }
 }
 export async function saveAccount(email:string,password:string){

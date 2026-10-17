@@ -12,7 +12,7 @@ Nach `scripts/setup-firebase-access.sh` muss der Projektinhaber zusätzlich `scr
 
 Firebase-Deployment und Live-Tests sind erfolgreich abgeschlossen. Diese APK basiert auf Commit `8f8c5768a8891d6cd53a00b07155798d396c61c6`. Ein Start auf einem physischen Android-Gerät steht noch aus.
 
-Der Workflow **Mobile preview** prüft den Code, veröffentlicht das Firebase-Backend und liefert kompatible Änderungen automatisch per EAS Update an installierte Android-Testversionen. Für eine neue APK den Workflow manuell mit **build_apk** starten. Der Downloadlink erscheint in der Zusammenfassung des erfolgreichen GitHub-Actions-Laufs. Auf Android die APK herunterladen, die Installation aus dem Browser erlauben und die installierte App öffnen. Expo Go und ein lokaler Entwicklungsserver sind dafür nicht erforderlich.
+Der Workflow **Mobile preview** prüft den Code, veröffentlicht das Firebase-Backend und liefert kompatible Änderungen nach ausdrücklicher Veröffentlichung per EAS Update an installierte Android-Testversionen. Pushes allein veröffentlichen nichts; dafür ist ein manueller Workflow-Start oder ein Commit mit `[publish-preview]` erforderlich. Für eine neue APK den Workflow manuell mit **build_apk** starten. Der Downloadlink erscheint in der Zusammenfassung des erfolgreichen GitHub-Actions-Laufs. Auf Android die APK herunterladen, die Installation aus dem Browser erlauben und die installierte App öffnen. Expo Go und ein lokaler Entwicklungsserver sind dafür nicht erforderlich.
 
 EAS-Projekt: https://expo.dev/accounts/cornerdesign/projects/linien-imperium-online
 GitHub-Builds: https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions
@@ -55,7 +55,7 @@ Die Tests umfassen 23 übernommene Web-Regressionsdateien und zusätzliche Tests
 
 ## Updates und iOS
 
-**Mobile preview** veröffentlicht nach Push auf `main` eine kompatible Android-Aktualisierung über EAS Update; **Update installed preview** kann dies zusätzlich manuell auslösen. Die vorhandene APK lädt diese Updates beim Start und verwendet sie beim nächsten Neustart. Bei Änderungen an nativen Abhängigkeiten oder der Runtime-Version ist eine neue APK erforderlich. Für iOS sind Bundle-ID und gemeinsamer Quellcode vorbereitet; ein iPhone-Build braucht noch Apple-Entwicklerzugang und Signierung.
+**Mobile preview** veröffentlicht nach explizitem Start eine kompatible Android-Aktualisierung über EAS Update; **Update installed preview** kann dies zusätzlich manuell auslösen. Die vorhandene APK lädt diese Updates beim Start und verwendet sie beim nächsten Neustart. Bei Änderungen an nativen Abhängigkeiten oder der Runtime-Version ist eine neue APK erforderlich. Für iOS sind Bundle-ID und gemeinsamer Quellcode vorbereitet; ein iPhone-Build braucht noch Apple-Entwicklerzugang und Signierung.
 
 `SPIELREGELN.md` dokumentiert die übernommenen Werte. Die aktuelle mobile Testversion bleibt getrennt vom ursprünglichen Webrepository.
 

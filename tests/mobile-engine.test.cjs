@@ -81,3 +81,29 @@ test('Collection facts retain upgrades outside the garage and do not expose job 
  for(const field of ['free','busyUntil','order','orderId','truckId','hubAssigned','progress'])
   assert.equal(Object.hasOwn(metrics,field),false);
 });
+
+test('Automatic offer reset handles deadline, pinned offers, running transport and offline catch-up',()=>{
+ const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ const pinned=execute(start.state,'pin',{id:start.state.orders[0].id},now,fixed);
+ const pinnedId=start.state.orders[0].id;
+ const offer=pinned.view.state.orders.find(o=>o.id!==pinnedId&&o.choices.length);
+ const setup=pinned.state.orders.find(o=>o.id===offer.id);setup.volume=40;setup.distance=100;
+ const driving=execute(pinned.state,'assign',{order:offer.id,truck:offer.choices[0].id},now,fixed);
+ driving.state.manualRefreshCount=3;
+ const deadline=driving.state.nextAutoRefreshAt;
+ const before=execute(driving.state,'sync',{},deadline-1,fixed);
+ assert.equal(before.state.nextAutoRefreshAt,deadline);
+ const refreshed=execute(before.state,'sync',{},deadline,fixed);
+ assert.ok(refreshed.state.nextAutoRefreshAt>deadline);
+ assert.equal(refreshed.state.manualRefreshCount,0);
+ assert.equal(refreshed.state.stats.manualRefreshSpent,0);
+ assert.equal(refreshed.state.orders.filter(o=>o.status==='available').length,refreshed.view.offers);
+ assert.ok(refreshed.state.orders.some(o=>o.id===pinnedId&&o.pinned));
+ assert.equal(refreshed.state.orders.find(o=>o.id===offer.id).status,'active');
+ const ids=refreshed.state.orders.map(o=>o.id);
+ assert.deepEqual(execute(refreshed.state,'sync',{},deadline,fixed).state.orders.map(o=>o.id),ids);
+ const later=execute(refreshed.state,'sync',{},deadline+3*15*60000,fixed);
+ assert.ok(later.state.nextAutoRefreshAt>deadline+3*15*60000);
+ assert.ok(later.state.orders.some(o=>o.id===pinnedId&&o.pinned));
+ assert.equal(later.state.orders.filter(o=>o.status==='available').length,later.view.offers);
+});
