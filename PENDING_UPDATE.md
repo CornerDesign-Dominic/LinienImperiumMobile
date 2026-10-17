@@ -1,3 +1,7 @@
+> Das hier dokumentierte Sammelpaket wurde am 17.10.2026 veröffentlicht.
+> Release: da32f0701ef91f4aed77297f15e67ceda816263a · Actions 39066168191.
+> Frühere Hinweise „nur vorbereitet“ beschreiben den Stand vor dieser Veröffentlichung.
+
 # Gesammeltes Mobile-Update
 
 Branch: `batch/mobile-adjustments`. Das Gesamtpaket wurde am 17.10.2026 gemeinsam veröffentlicht; Status siehe `TEST_REPORT.md`.

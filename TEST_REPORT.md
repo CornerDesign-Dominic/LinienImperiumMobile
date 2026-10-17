@@ -98,3 +98,11 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 ### Zurückbutton in Seitenzeile
 
 - Typprüfung und Web-Export bestanden. Browserprüfung bei 393 und 320 px: Zurückbutton, Seitenname und Hilfe liegen gemeinsam in der Seitenzeile, Touchfläche mindestens 44 × 44 px. Hilfe öffnen und per Zurück zum Start geprüft; keine JavaScript-Seitenfehler. Kein Deployment.
+
+## Veröffentlichung des Sammelpakets am 17.10.2026
+
+- Release-Commit: `da32f0701ef91f4aed77297f15e67ceda816263a`.
+- [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39066168191): Validierung, Firebase-Deployment mit Live-Smoke-Test und Android-EAS-Update erfolgreich.
+- Typprüfung, alle 15 Adaptertests und 23 ursprünglichen Web-Regressionsdateien sowie Android-Export bestanden. Live-Gastanmeldung, Speicherung, Deduplizierung, Testpunkte und XP-Levelbelohnungen erfolgreich geprüft.
+- Update im Kanal `preview` für installierte Runtime 0.1.0. Keine neue APK und keine Spielstände zurückgesetzt. Die temporären Expeditionslieferzeiten von 15 Sekunden bleiben für diese Testrunde aktiv.
+- Bisherige Abschnitte „vorbereitet“ dokumentieren die Prüfung vor Veröffentlichung. Physischer Android-Gerätetest durch den Nutzer steht aus.
