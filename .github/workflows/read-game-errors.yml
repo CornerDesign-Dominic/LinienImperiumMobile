@@ -1,0 +1,21 @@
+name: Read game error diagnostics
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/read-game-errors.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  diagnostics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: linienimperium
+          workload_identity_provider: projects/350521926986/locations/global/workloadIdentityPools/linienimperium-github/providers/mobile-main
+          service_account: github-mobile-deploy@linienimperium.iam.gserviceaccount.com
+      - uses: google-github-actions/setup-gcloud@v3
+      - name: Read recent game errors without changing game data
+        run: gcloud logging read 'resource.type="cloud_run_revision" AND resource.labels.service_name="game" AND (severity>=ERROR OR textPayload:"Game transaction failed")' --project=linienimperium --freshness=8h --limit=25 --format=json
