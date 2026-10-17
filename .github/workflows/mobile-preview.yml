@@ -39,7 +39,7 @@ jobs:
           service_account: github-mobile-deploy@linienimperium.iam.gserviceaccount.com
       - uses: google-github-actions/setup-gcloud@v3
       - name: Deploy game server and database rules
-        run: npx --yes firebase-tools@latest deploy --only functions:mobile,firestore --project linienimperium --non-interactive
+        run: npx --yes firebase-tools@latest deploy --only functions:mobile,firestore --project linienimperium --non-interactive --force
       - name: Test deployed game API
         run: node scripts/smoke-backend.cjs
   android:
