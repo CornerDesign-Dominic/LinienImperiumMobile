@@ -19,7 +19,7 @@ exports.game = onCall({region:'europe-west3', serviceAccount:'mobile-game-runtim
       const previous=receipt?await tx.get(receipt):null;
       const record=saved.exists?saved.data():{};
       const state=record.snapshot?JSON.parse(gunzipSync(record.snapshot).toString('utf8')):null;
-      if(previous?.exists){const view=execute(state,'sync').view;const find=previous.data().expeditionFind;if(find)view.expeditionFind=find;return view;}
+      if(previous?.exists){const view=execute(state,'sync').view;if(previous.data().action==='transportBatch')view.transportBatchApplied=true;const find=previous.data().expeditionFind;if(find)view.expeditionFind=find;return view;}
       const now=Date.now();
       const requests=(record.requests||[]).filter(t=>now-t<60000);
       if(requests.length>=100)throw new HttpsError('resource-exhausted','Bitte einen Moment warten.');

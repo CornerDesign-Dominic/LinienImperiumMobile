@@ -51,6 +51,25 @@ const bridge = `
     buyHub, toggleHubTruck, collectHub, startHubUpgrade, combinePickupHints, craftCustomerOrder,
     unlockDepartment, upgradeWorkshop, upgradeSales, upgradeOfferLimit, upgradeTransport,
     allocateCustomerSkill, toggleOrderPin, manualRefreshOrders, applyOrderReward,
+    upgradeTransportBatch(upgrades) {
+      let coins=0,items=0;
+      for(const upgrade of upgrades){
+        const {category,kind,count,level}=upgrade;
+        const current=companyFor().transportUpgrades[category][kind+'Level'];
+        if(current!==level)throw Error('Ausbau wurde geändert. Bitte Auswahl prüfen.');
+        if(current+count>TRANSPORT_UPGRADE_LIMITS[category][kind])throw Error('Maximale Stufe erreicht.');
+        for(let next=current+1;next<=current+count;next++){
+          coins+=COMPANY_BALANCE.transportUpgradeCoins(kind,next);
+          items+=COMPANY_BALANCE.transportUpgradeItems(next);
+        }
+      }
+      if(game.coins<coins||game.inventory.companyItems<items)throw Error('Münzen oder Firmenausbau-Items fehlen.');
+      game.coins=round2(game.coins-coins);game.inventory.companyItems-=items;
+      game.stats.transportUpgradeSpent=(game.stats.transportUpgradeSpent||0)+coins;
+      for(const {category,kind,count} of upgrades)companyFor().transportUpgrades[category][kind+'Level']+=count;
+      addEvent('Transport verbessert: '+upgrades.reduce((sum,u)=>sum+u.count,0)+' Stufen.');
+      return true;
+    },
     removeSeat(template, seat) { const slots = fleetTemplate(template); if (slots) slots[seat] = null; },
     allocateLevel(expedition, overtime) {
       if (!game.pendingLevelUps?.length || expedition + overtime !== 3) return false;
@@ -142,6 +161,10 @@ const bridge = `
           places:Array.from({length:7},(_,place)=>({index:place,discoveryCost:expeditionDiscoveryCost(index,place),durationMs:expeditionDuration(index,'delivery',place)})),
           finalDurationMs:expeditionDuration(index,'final')
         })),
+        transportUpgradeOptions:['national','international'].flatMap(category=>['premium','volume','range'].map(kind=>{
+          const level=companyFor().transportUpgrades[category][kind+'Level'],limit=TRANSPORT_UPGRADE_LIMITS[category][kind];
+          return {category,kind,level,limit,base:TRANSPORT_BASE[category],costs:Array.from({length:limit-level},(_,i)=>({coins:COMPANY_BALANCE.transportUpgradeCoins(kind,level+i+1),items:COMPANY_BALANCE.transportUpgradeItems(level+i+1)}))};
+        })),
         discoveryCosts:game.expedition.regions.map((r,i)=>expeditionDiscoveryCost(i,r.discovered)),
         customers:CUSTOMERS.filter(c=>customerUnlocked(c.id)).map(c=>({...c,level:customerLevel(game.customerTrust[c.id]||0),next:customerNext(game.customerTrust[c.id]||0),points:availableCustomerSkillPoints(c.id),skills:customerSkillLevels(c.id)})),
         refreshCost:manualRefreshCost(), offers:offerLimit(), pinLimit:pinLimit(), hubLimit:hubCapacity(),
@@ -203,6 +226,18 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     pickupCraft:()=>a.combinePickupHints(),customerCraft:()=>a.craftCustomerOrder(),
     department:()=>a.unlockDepartment(choice(p.id,['dispatch','workshop','sales'])),
     companyOffers:()=>a.upgradeOfferLimit(),companyWorkshop:()=>a.upgradeWorkshop(),companySales:()=>a.upgradeSales(),
+    transportBatch:()=>{
+      if(!Array.isArray(p.upgrades)||!p.upgrades.length||p.upgrades.length>6)throw Error('Ungültige Ausbauauswahl.');
+      const seen=new Set();
+      const upgrades=p.upgrades.map(u=>{
+        if(!u||typeof u!=='object')throw Error('Ungültige Ausbauauswahl.');
+        const category=choice(u.category,['national','international']),kind=choice(u.kind,['premium','volume','range']);
+        const key=category+':'+kind;if(seen.has(key))throw Error('Doppelte Ausbauauswahl.');seen.add(key);
+        const count=num(u.count,150);if(!count)throw Error('Ungültige Ausbauauswahl.');
+        return {category,kind,count,level:num(u.level,150)};
+      });
+      return a.upgradeTransportBatch(upgrades);
+    },
     transport:()=>a.upgradeTransport(choice(p.category,['national','international']),choice(p.kind,['premium','volume','range'])),
     customerSkill:()=>a.allocateCustomerSkill(id(p.id),choice(p.kind,['pay','special','referral'])),
     pin:()=>a.toggleOrderPin(id(p.id)),refresh:()=>a.manualRefreshOrders(),level:()=>a.allocateLevel(num(p.expedition,3),p.overtime===undefined?3-num(p.expedition,3):num(p.overtime,3)),
@@ -215,6 +250,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const ok=calls[action]();
   if(action==='mission')a.shortenTestMissions();
   const view=a.view();
+  if(action==='transportBatch')view.transportBatchApplied=ok===true;
   if(action==='draw'&&ok!==false){
     const order=view.state.orders.find(o=>!oldOrders.has(o.id));
     const job=view.state.expedition.jobs.find(j=>!oldJobs.has(j.id));

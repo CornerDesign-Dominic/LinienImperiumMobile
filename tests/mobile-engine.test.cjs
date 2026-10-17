@@ -221,3 +221,34 @@ test('Each pending level grants exactly three permanent capacity points and cann
  assert.equal(invalid.state.overtimeCapacity,earned.state.overtimeCapacity);
  assert.throws(()=>execute(earned.state,'level',{expedition:5},now,fixed),/Ungültige/);
 });
+
+test('Transport upgrades save multiple segments atomically at cumulative server prices',()=>{
+ const start=execute(null,'start',{id:'hamburg'},now,fixed);
+ start.state.coins=100000;start.state.inventory.companyItems=100;
+ const original=JSON.stringify(start.state);
+ const upgrades=[{category:'national',kind:'premium',count:3,level:0},{category:'international',kind:'range',count:2,level:0}];
+ const result=execute(start.state,'transportBatch',{upgrades},now,fixed);
+ assert.equal(JSON.stringify(start.state),original);
+ assert.equal(result.view.transportBatchApplied,true);
+ assert.equal(result.state.company.transportUpgrades.national.premiumLevel,3);
+ assert.equal(result.state.company.transportUpgrades.international.rangeLevel,2);
+ assert.equal(result.state.coins,100000-(10+40+90+100+400));
+ assert.equal(result.state.inventory.companyItems,90);
+ assert.equal(result.state.stats.transportUpgradeSpent,640);
+ assert.equal(result.view.transportUpgradeOptions.length,6);
+ const next=result.view.transportUpgradeOptions.find(o=>o.category==='national'&&o.kind==='premium');
+ assert.equal(next.level,3);assert.equal(next.costs[0].coins,160);
+ assert.throws(()=>execute(result.state,'transportBatch',{upgrades},now,fixed),/geändert/);
+ const poor=structuredClone(start.state);poor.inventory.companyItems=9;
+ const before=JSON.stringify(poor);
+ assert.throws(()=>execute(poor,'transportBatch',{upgrades},now,fixed),/fehlen/);
+ assert.equal(JSON.stringify(poor),before);
+ const lowCoins=structuredClone(start.state);lowCoins.coins=639;
+ assert.throws(()=>execute(lowCoins,'transportBatch',{upgrades},now,fixed),/fehlen/);
+ for(const invalid of [[],[upgrades[0],upgrades[0]],[{...upgrades[0],count:0}],[{...upgrades[0],kind:'__proto__'}],[{...upgrades[0],count:101}],[{...upgrades[0],level:1}]])
+  assert.throws(()=>execute(start.state,'transportBatch',{upgrades:invalid},now,fixed));
+ const boundary=structuredClone(start.state);boundary.company.transportUpgrades.national.premiumLevel=99;
+ const capped=execute(boundary,'transportBatch',{upgrades:[{category:'national',kind:'premium',count:1,level:99}]},now,fixed);
+ assert.equal(capped.state.company.transportUpgrades.national.premiumLevel,100);
+ assert.deepEqual(capped.view.transportUpgradeOptions.find(o=>o.category==='national'&&o.kind==='premium').costs,[]);
+});

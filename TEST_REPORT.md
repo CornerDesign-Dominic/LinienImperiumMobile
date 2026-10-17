@@ -40,3 +40,10 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Kein Firebase-Deployment, kein EAS-Update und kein neuer APK-Build für dieses Folgepaket gestartet.
 - Android-Export und Web-Export erfolgreich; 3-Punkte-Auswahl bei 393 px im Browser mit lokaler Engine geprüft (Maximalwerte 50 → 52 und 100 → 101, vierter Punkt gesperrt). Kein physischer Gerätetest für dieses vorbereitete Paket.
 - Browserprüfung des Fundablaufs bestanden: Materialauftrag → freies Garagenfahrzeug → zurück zur Expedition; Sonderauftrag → Flottenauswahl → laufender Großauftrag; Karten-/Shardfund ohne Zuweisungsbutton. Expeditionsseite ohne Fundlisten, Zurück-Navigation intakt, keine JavaScript-Seitenfehler. Firebase im Browser simuliert; keine Veröffentlichung.
+
+### Vorbereiteter Firmenausbau
+
+- Typprüfung, Web-Export und alle 12 Mobile-Engine-Tests plus 23 ursprüngliche Web-Regressionsdateien bestanden.
+- Batchtest: drei regionale Prämienstufen plus zwei Fernverkehr-Reichweitenstufen kosten zusammen 640 M und 10 Items. Server berechnet jede Folgestufe, verarbeitet beide Segmente gemeinsam und lehnt zu wenig Items/Münzen, veraltete Stufen, doppelte Einträge, Nullauswahl und Überschreiten der Maximalstufe ab. Eingabespielstand bleibt unverändert.
+- Kein Deployment oder App-Update für diese Änderungen gestartet.
+- Android-Export erfolgreich. Browserprüfung bei 393 und 320 px mit lokal simulierter Firebase-Anbindung bestanden: Reihenfolge, gemeinsame Karte, unveränderte Ressourcen vor Speichern, Gesamtkosten 150 M / 6 Items für zwei Prämienstufen plus eine Reichweitenstufe, Link zu Herstellen, erhaltene Auswahl nach Zurück und geleerte Auswahl nach erfolgreichem Speichern. Keine JavaScript-Seitenfehler.
