@@ -1,6 +1,6 @@
 # Gesammeltes Mobile-Update
 
-Branch: `batch/mobile-adjustments`. Das Gesamtpaket wurde zur gemeinsamen Veröffentlichung freigegeben; Status siehe `TEST_REPORT.md`.
+Branch: `batch/mobile-adjustments`. Das Gesamtpaket wurde am 17.10.2026 gemeinsam veröffentlicht; Status siehe `TEST_REPORT.md`.
 Änderungen werden gesammelt und erst nach ausdrücklicher Freigabe gemeinsam veröffentlicht.
 
 ## Umgesetzt und lokal geprüft

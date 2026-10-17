@@ -18,7 +18,15 @@ Die UI-Prüfung verwendet den echten Firebase-Client mit simulierten Netzwerkant
 
 ## Veröffentlichung und Live-Prüfung
 
-Wird nach dem erfolgreichen Workflow ergänzt. Der Workflow prüft Android-Export, Firebase-Deployment und echte Gastanmeldung mit Speicherung, Anfrage-Deduplizierung, Regionsdaten, Testpunkten, XP-Levelbelohnung sowie Zugriffssperre ohne Anmeldung. Danach folgt EAS Update für die vorhandene Android-Runtime 0.1.0.
+Erfolgreich veröffentlicht am 17.10.2026.
+
+- [GitHub Actions: gesamter Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39048114385)
+- Spielcode: `064d24a34cb4b28e2cea854764711f28427ec814`
+- Android-Export: bestanden.
+- Firebase-Deployment: erfolgreich.
+- Live-Prüfung: echte Gastanmeldung, Speicherung, Anfrage-Deduplizierung, Regionsdaten, Testpunkte, XP-Levelbelohnung und Zugriffssperre ohne Anmeldung bestanden.
+- EAS Update: erfolgreich für die bestehende Android-Runtime 0.1.0 veröffentlicht.
+- Keine neue APK erstellt; die installierte Testversion erhält das Update beim Neustart.
 
 ## Weiter offen
 
