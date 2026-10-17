@@ -4,6 +4,11 @@ on:
     branches: [main]
     paths-ignore: ['README.md', 'scripts/setup-firebase-access.sh']
   workflow_dispatch:
+    inputs:
+      build_apk:
+        description: 'Neue APK erstellen (bei nativen Änderungen)'
+        type: boolean
+        default: false
 permissions:
   contents: read
   id-token: write
@@ -42,7 +47,27 @@ jobs:
         run: npx --yes firebase-tools@latest deploy --only functions:mobile,firestore --project linienimperium --non-interactive --force
       - name: Test deployed game API
         run: node scripts/smoke-backend.cjs
+  update:
+    needs: deploy
+    if: ${{ !inputs.build_apk }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Update installed Android preview
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: npx --yes eas-cli@latest update --channel preview --environment preview --platform android --message "Mobile UI $GITHUB_SHA" --non-interactive --json > update-result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-update-result
+          path: update-result.json
   android:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.build_apk }}
     needs: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 120

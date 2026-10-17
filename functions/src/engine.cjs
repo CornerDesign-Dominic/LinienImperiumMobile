@@ -11,6 +11,12 @@ const bridge = `
   maybeShowLevelUpDialog = () => {};
   setView = () => {};
   let mobileToast = '';
+  // The home name is cosmetic; every mobile company uses the same route profile.
+  const legacyStartCityById = startCityById;
+  let foundingProfile = null;
+  startCityById = id => id === 'headquarters'
+    ? { ...legacyStartCityById('hamburg'), id, city:(foundingProfile || game?.profile)?.cityName || 'Hauptsitz' }
+    : legacyStartCityById(id);
   showToast = text => { mobileToast = text; };
   globalThis.mobile = {
     get state() { return game; }, set state(value) { game = value; },
@@ -29,6 +35,25 @@ const bridge = `
     sell(id) { if (!openSaleDialog(id)) return false; return confirmSale(); },
     grantTestCoins() { game.coins += TEST_COINS_GRANT; game.stats.testCoinsGranted += TEST_COINS_GRANT; addEvent('Testmünzen: +50.000 M'); },
     reset() { game = newGame(); },
+    foundCompany(profile) {
+      if (game.profile) return false;
+      if (!game.startCity) {
+        foundingProfile = profile;
+        try { game = newGame('headquarters'); } finally { foundingProfile = null; }
+      } else {
+        const previousHome = legacyStartCityById(game.startCity)?.city;
+        game.startCity = 'headquarters';
+        for (const order of game.orders) {
+          if (previousHome && (order.from === previousHome || order.from?.startsWith(previousHome + ' ')))
+            order.from = profile.cityName + order.from.slice(previousHome.length);
+          order.homeCity = 'headquarters';
+        }
+      }
+      game.profile = profile;
+      addEvent(profile.companyName + ' in ' + profile.cityName + ' gegründet.');
+      mobileToast = 'Firma gegründet.';
+      return true;
+    },
     view() {
       const now = Date.now();
       const free = new Set(freeTrucks().map(t => t.id));
@@ -57,7 +82,15 @@ const bridge = `
           }) : []
         };
       });
-      return {state: {...game,trucks,orders}, serverTime:now, catalog,
+      const cardVehicles = Object.fromEntries(EXPEDITION_CHARACTERS.map(card => {
+        const owned = game.expedition.characters[card.id];
+        const truck = game.trucks.find(t => t.cardId === card.id) || owned?.parkedTruck || createCardTruck(card);
+        // Collection data intentionally excludes assignment, hub and trip state.
+        return [card.id, {capacity:truck.capacity, rank:truckRarity(truck), speed:truckSpeed(truck),
+          loadedSpeed:truckSpeed(truck,truck.capacity), costPerKm:operatingCostPerKm(truck),
+          capacityLevel:truck.moduleCapacityLevel || 0, maxCapacityLevel:TRUCKS[card.vehicleTier].maxCapacityLevel}];
+      }));
+      return {state: {...game,trucks,orders}, serverTime:now, catalog, cardVehicles,
         level:levelForXp(game.xp,game), expeditionCapacity:expeditionCapacity(),
         templates:[0,1,2].map(i=>fleetTemplate(i)),
         cardBonuses:Object.fromEntries(EXPEDITION_CHARACTERS.map(c=>[c.id,cardBonusValue(c)])),
@@ -94,10 +127,20 @@ function session(state, now=Date.now(), random=Math.random) {
 const id = value => {if(typeof value!=='string'||value.length>100)throw Error('Ungültige Kennung');return value;};
 const num = (value,max=100000) => {if(!Number.isSafeInteger(value)||value<0||value>max)throw Error('Ungültige Zahl');return value;};
 const choice = (value,values) => {if(!values.includes(value))throw Error('Ungültige Auswahl');return value;};
+const companyProfile = p => {
+  const name = (value, label, max) => {
+    if (typeof value !== 'string' || /[<>\p{Cc}\p{Cf}]/u.test(value)) throw Error(label + ' ist ungültig.');
+    const cleaned = value.normalize('NFC').trim().replace(/\s+/gu,' ');
+    if (cleaned.length < 2 || cleaned.length > max || !/[\p{L}\p{N}]/u.test(cleaned))
+      throw Error(label + ' muss 2 bis ' + max + ' Zeichen enthalten.');
+    return cleaned;
+  };
+  return {companyName:name(p.companyName,'Firmenname',40),cityName:name(p.cityName,'Stadtname',30)};
+};
 function execute(state, action='sync', p={}, now=Date.now(), random=Math.random) {
   const a=session(state,now,random), before=JSON.stringify(a.state);
   const calls={
-    sync:()=>{},start:()=>a.chooseStartCity(id(p.id)),
+    sync:()=>{},start:()=>a.chooseStartCity(id(p.id)),foundCompany:()=>a.foundCompany(companyProfile(p)),
     garageAdd:()=>a.addCardToGarage(id(p.id)),garageRemove:()=>a.removeCardFromGarage(id(p.id)),
     seat:()=>a.assignCharacterSeat(id(p.id),num(p.seat,4),num(p.template,2)),
     unseat:()=>a.removeSeat(num(p.template,2),num(p.seat,4)),
@@ -119,7 +162,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     testCoins:()=>a.grantTestCoins(),reset:()=>a.reset()
   };
   if(!Object.hasOwn(calls,action))throw Error('Unbekannte Aktion');
-  if(!a.state.startCity&&!['sync','start','reset'].includes(action))throw Error('Bitte zuerst einen Startort wählen.');
+  if(!a.state.startCity&&!['sync','start','foundCompany','reset'].includes(action))throw Error('Bitte zuerst deine Firma gründen.');
   const ok=calls[action]();
   const view=a.view();
   if(action!=='sync'&&(ok===false||JSON.stringify(a.state)===before))view.message ||= 'Aktion nicht möglich: Voraussetzungen oder Vorräte prüfen.';

@@ -17,4 +17,4 @@ jobs:
       - name: Publish compatible update
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: npx --yes eas-cli@latest update --channel preview --platform android --message "Mobile preview update" --non-interactive
+        run: npx --yes eas-cli@latest update --channel preview --environment preview --platform android --message "Mobile preview update" --non-interactive

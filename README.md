@@ -12,26 +12,26 @@ Nach `scripts/setup-firebase-access.sh` muss der Projektinhaber zusätzlich `scr
 
 Firebase-Deployment und Live-Tests sind erfolgreich abgeschlossen. Diese APK basiert auf Commit `8f8c5768a8891d6cd53a00b07155798d396c61c6`. Ein Start auf einem physischen Android-Gerät steht noch aus.
 
-Der Workflow **Mobile preview** prüft den Code, veröffentlicht das Firebase-Backend und erstellt eine installierbare APK über EAS. Der Downloadlink erscheint in der Zusammenfassung des erfolgreichen GitHub-Actions-Laufs. Auf Android die APK herunterladen, die Installation aus dem Browser erlauben und die installierte App öffnen. Expo Go und ein lokaler Entwicklungsserver sind dafür nicht erforderlich.
+Der Workflow **Mobile preview** prüft den Code, veröffentlicht das Firebase-Backend und liefert kompatible Änderungen automatisch per EAS Update an installierte Android-Testversionen. Für eine neue APK den Workflow manuell mit **build_apk** starten. Der Downloadlink erscheint in der Zusammenfassung des erfolgreichen GitHub-Actions-Laufs. Auf Android die APK herunterladen, die Installation aus dem Browser erlauben und die installierte App öffnen. Expo Go und ein lokaler Entwicklungsserver sind dafür nicht erforderlich.
 
 EAS-Projekt: https://expo.dev/accounts/cornerdesign/projects/linien-imperium-online
 GitHub-Builds: https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions
 
-Der erste Start erstellt ein dauerhaft auf dem Gerät gespeichertes anonymes Firebase-Konto. Unter **Home → Spielkonto** lässt sich der Spielstand mit E-Mail und Passwort sichern oder ein bestehendes Konto laden. Eine Neuinstallation kann ein ungesichertes Gastkonto verlieren. Internet ist für Spielaktionen nötig. Serverzeit berechnet Fortschritt nach geschlossener App; lokale Uhrzeit oder vom Client gesendete Münzen werden nicht übernommen.
+Der erste Start erstellt ein dauerhaft auf dem Gerät gespeichertes anonymes Firebase-Konto. Unter **Home → Einstellungen** lässt sich der Spielstand mit E-Mail und Passwort sichern oder ein bestehendes Konto laden. Eine Neuinstallation kann ein ungesichertes Gastkonto verlieren. Internet ist für Spielaktionen nötig. Serverzeit berechnet Fortschritt nach geschlossener App; lokale Uhrzeit oder vom Client gesendete Münzen werden nicht übernommen.
 
 ## Umfang und Quelle
 
 Übernommen ist der Webstand `CornerDesign-Dominic/LinienImperium` bei Commit `3ffe8a3ba7956119359b8c16a4df0e4423acc6e7`. Kundenprofile, neue Events und andere nur besprochene Erweiterungen sind nicht enthalten. Vorhandene noch nicht aktive Webabteilungen bleiben als solche gekennzeichnet.
 
-- Feste Kopfzeile mit Level/XP, Münzen, Expeditions- und Überstundenpunkten.
+- Kompakte Kopfzeile mit Level/XP, Münzen, Expeditions- und Überstundenpunkten; nur ein dezenter Seitenname je Ansicht.
 - Fünf feste Navigationstasten: Home, Flotte, Garage, Einzelaufträge, Großaufträge.
-- Startortwahl; drei Flottenvorlagen, Kartensammlung, Garage mit zehn Kartenplätzen und Fahrzeugausbau.
+- Firmengründung mit frei gewähltem Firmen- und Fantasiestadtnamen; drei Flottenvorlagen, Kartensammlung im Raster mit drei Spalten und Detailansicht, Garage mit zehn Kartenplätzen und Fahrzeugausbau.
 - Frachtbörse, Single/Dual Way, Kunden- und hergestellte Aufträge, Halten/Aktualisieren, Prämien.
 - Großprojekte, gespeicherte Flottenwerte, passive Transporte, 1.000 tkm je Token und Vergütung für Tokenlieferungen.
 - Expeditionen mit fünf Regionen und sieben Orten, Missionen, Endlosorte, Kartenfunde und Shards.
 - Firma und Transportausbauten, Stadthub und Händler, Vorräte, Herstellung, Kundenfähigkeiten und Statistik.
 - 100-Token-Refill pro Level, fünf frei verteilbare Kapazitätspunkte.
-- Bestehende Testwerkzeuge (+50.000 Münzen / Zurücksetzen) unter Spielkonto. Diese Test-App ist keine Veröffentlichung für echte Spieler.
+- Bestehende Testwerkzeuge (+50.000 Münzen / Zurücksetzen) unter Einstellungen. Diese Test-App ist keine Veröffentlichung für echte Spieler.
 
 ## Architektur
 
@@ -55,6 +55,12 @@ Die Tests umfassen 23 übernommene Web-Regressionsdateien und zusätzliche Tests
 
 ## Updates und iOS
 
-**Update installed preview** veröffentlicht manuell eine kompatible Android-Aktualisierung über EAS Update. Bei Änderungen an nativen Abhängigkeiten oder der Runtime-Version ist eine neue APK erforderlich. Für iOS sind Bundle-ID und gemeinsamer Quellcode vorbereitet; ein iPhone-Build braucht noch Apple-Entwicklerzugang und Signierung.
+**Mobile preview** veröffentlicht nach Push auf `main` eine kompatible Android-Aktualisierung über EAS Update; **Update installed preview** kann dies zusätzlich manuell auslösen. Die vorhandene APK lädt diese Updates beim Start und verwendet sie beim nächsten Neustart. Bei Änderungen an nativen Abhängigkeiten oder der Runtime-Version ist eine neue APK erforderlich. Für iOS sind Bundle-ID und gemeinsamer Quellcode vorbereitet; ein iPhone-Build braucht noch Apple-Entwicklerzugang und Signierung.
 
 `SPIELREGELN.md` dokumentiert die übernommenen Werte. Die aktuelle mobile Testversion bleibt getrennt vom ursprünglichen Webrepository.
+
+## Mobile-Anpassungen nach dem ersten Build
+
+Firmen- und Stadtname sind reine Anzeigenamen. Neue Firmen verwenden ein einheitliches Streckenprofil; die Namenswahl beeinflusst weder Entfernungen noch Vergütung. Bestehende Spielstände erhalten das Namensformular ohne Zurücksetzen. Bereits laufende Transporte behalten ihre Werte.
+
+Die Kartensammlung zeigt Kartenstufe, Geschwindigkeitsrang und aktuelle Kapazität, mit quadratischer Fläche für spätere Bilder. Detailansichten enthalten Werte, Boni und Shard-Aufwertung, aber keine Einsatz- oder Auftragszustände. Fahrzeuge werden unter **Garage → Fahrzeug hinzufügen** eingesetzt.

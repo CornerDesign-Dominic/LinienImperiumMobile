@@ -10,7 +10,7 @@ async function main(){
  }
  try {
   const guest=await call('sync');assert.equal(guest.state.startCity,null);
-  const start=await call('start',{id:'hamburg'});assert.equal(start.state.coins,1000);
+  const start=await call('foundCompany',{companyName:'Live Testfirma',cityName:'Testhafen'});assert.equal(start.state.coins,1000);assert.equal(start.state.profile.cityName,'Testhafen');assert.equal(start.state.startCity,'headquarters');
   const id=crypto.randomUUID();const once=await call('testCoins',{},id),twice=await call('testCoins',{},id);
   assert.equal(once.state.coins,51000);assert.equal(twice.state.coins,51000);
   const protectedState=await call('sync',{coins:1e15});assert.equal(protectedState.state.coins,51000);
