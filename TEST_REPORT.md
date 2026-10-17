@@ -79,3 +79,12 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Browserprüfung mit lokaler Engine / simulierter Firebase-Anbindung bei 393 und 320 px bestanden: kompakte Karten, kein Börsenplätze-/Haltbar-Hinweis, Countdown und Wechselbutton in einer Zeile, Hinweis bei fehlendem/belegtem LKW, Fahrzeugwahl/Start aus Details, automatische Navigation zur laufenden Liste, Zählkarte und Fortschritt/Restzeit/LKW. Detailansicht mit Prognose und möglicher Beute, Abschluss und echte Prämienabholung geprüft.
 - Vorratsaufträge: eigene Zählkarte und Liste; Privatabholung dort geöffnet und gestartet. Danach nur in gemeinsamer laufender Liste, Vorratsseite leer und Zählung auf 0. Keine JavaScript-Seitenfehler.
 - Keine Änderung der Transportlaufzeiten oder Belohnungsmechanik, kein Deployment/OTA-Update/APK-Build gestartet.
+
+### Vorbereitete Großaufträge, Einzelprämien und Großhändler
+
+- Typprüfung, Web- und Android-Export bestanden. 15 Mobile-Engine-Tests plus alle 23 ursprünglichen Web-Regressionsdateien bestanden.
+- Katalogtest: zehn Varianten bereits ohne Fund vorhanden; reale Auslosungen stimmen mit Namen/Volumen/Distanz des Katalogs überein. Fund-, Material- und Zahnradchancen sowie Fristen aus dem vorhandenen Balancing. Laufende ETA und Fahrzeugwerte bleiben nach späterem Umbau unverändert.
+- Bulk-Claim-Test: zwei Einzelprämien mit 17,34 M sowie gemeinsamen Zahnrädern/Items werden exakt einmal gutgeschrieben. Eine gleichzeitig fertige Großauftragsprämie bleibt offen. Eingabespielstand wird nicht in-place verändert; zweite Abholung zahlt nichts aus.
+- Browserprüfung bei 393 und 320 px mit lokaler Engine / simulierter Firebase-Anbindung bestanden: dauerhaft sichtbarer Katalog, gesperrter Fundort, echte Auftragsauswahl und Flottenstart, Navigation zur laufenden Liste und zurück, Frist links/Flotten-ETA rechts, Bild → Überstundenbutton → Flotte. Abschluss per Überstunden und echte Prämienansicht geprüft. Dabei gefundener Zugriff auf eine noch nicht vorhandene Frist beim ungeöffneten Überstunden-Popup behoben und der Ablauf vollständig erneut geprüft.
+- Einzelprämienbutton öffnet Popup mit tatsächlicher gemeinsamer Lootliste, entfernt abgeholte Prämien und lässt Großauftragsprämie offen. Großhändler zeigt beide Preisideen (2,99 € bis 10×; 3,99 € bis 4×), ohne Kaufaktion. Keine JavaScript-Seitenfehler im abschließenden Browserlauf.
+- Keine Kaufabwicklung, kein Firebase-Deployment/OTA-Update/APK-Build gestartet. Änderungen bleiben im Sammelbranch.

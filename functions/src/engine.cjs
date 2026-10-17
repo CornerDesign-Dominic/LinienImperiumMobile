@@ -39,6 +39,27 @@ const bridge = `
     ? { ...legacyStartCityById('hamburg'), id, city:(foundingProfile || game?.profile)?.cityName || 'Hauptsitz' }
     : legacyStartCityById(id);
   showToast = text => { mobileToast = text; };
+  const mobileProjectNames = {
+    special:['Großauftrag Stadtversorgung','Großauftrag Baustellenlogistik','Großauftrag Materialbergung','Großauftrag Ferntransport','Großauftrag Handelsroute'],
+    referral:['Großprojekt Hafenverbund','Großprojekt Versorgungskette','Großprojekt Industrieanlage','Großprojekt Fernkorridor','Großprojekt Kontinentalnetz']
+  };
+  function mobileProjectInfo(kind,region,existing=null){
+    const customer=customerById(EXPEDITION_CUSTOMER_IDS[region]),balance=PROJECT_BALANCE[kind];
+    const volume=existing?.volume ?? balance.volume+region*balance.volumePerRegion;
+    const distance=existing?.distance ?? balance.distance+region*balance.distancePerRegion;
+    const order={kind,category:customer.category,customer:customer.id,volume,distance,routeType:'single',...existing};
+    const loot=GEAR_LOOT[kind],rules=SPECIAL_CHANCES[order.category];
+    return {key:kind+':'+region,kind,region,regionName:EXPEDITION_REGIONS[region],name:existing?.projectName||mobileProjectNames[kind][region],customer,
+      volume,distance,deadlineMs:existing?.deadlineMs||PROJECT_DEADLINES[kind],
+      premium:completionPremium(order),freight:freightRevenue(order),baseXp:volume,relationship:TRUST_REWARDS[kind],
+      expeditionChance:round2((1-EXPEDITION_CARD_CHANCES.reduce((sum,c)=>sum+c.chance,0))*EXPEDITION_JOB_WEIGHTS.find(w=>w.kind===kind).chance*100),
+      customerChance:round2(customerTripChance(order,kind==='special'?'award':'referral')*100),
+      customerSource:kind==='special'?'Kundenauftrag':'Sonderauftrag',customerOpen:customerUnlocked(customer.id),
+      expeditionOpen:expeditionRegionOpen(region)&&game.expedition.regions[region].endlessUnlocked,
+      moduleChance:round2((kind==='special'?(rules?.module||0):(rules?.referralModule||0))*100),
+      epicChance:round2(loot.epic[0]*100),epicMin:loot.epic[1],epicMax:loot.epic[2],
+      legendary:kind==='referral'?{min:loot.legendary[0],extraChance:round2(loot.legendary[2]*100)}:null};
+  }
   globalThis.mobile = {
     get state() { return game; }, set state(value) { game = value; },
     newGame, save, loadGame, shortenTestMissions, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
@@ -82,6 +103,20 @@ const bridge = `
       return true;
     },
     sell(id) { if (!openSaleDialog(id)) return false; return confirmSale(); },
+    claimSingleRewards() {
+      const orders=game.orders.filter(o=>!PROJECT_DEADLINES[o.kind]&&o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt);
+      if(!orders.length)return false;
+      const summary={count:orders.length,coins:0,gears:{},capacityModules:0,companyItems:0,supplierContacts:0};
+      for(const order of orders){
+        const reward=order.completionReward;
+        summary.coins=round2(summary.coins+reward.coins);
+        for(const [rarity,amount] of Object.entries(reward.gears||{}))summary.gears[rarity]=(summary.gears[rarity]||0)+amount;
+        summary.capacityModules+=Number(Boolean(reward.capacityModule));summary.companyItems+=reward.companyItems||0;summary.supplierContacts+=reward.supplierContacts||0;
+        applyOrderReward(order);
+      }
+      mobileToast=summary.count+' Prämien abgeholt.';
+      return summary;
+    },
     grantTestCoins() { game.coins += TEST_COINS_GRANT; game.stats.testCoinsGranted += TEST_COINS_GRANT; addEvent('Testmünzen: +50.000 M'); },
     grantTestResource(kind, amount) {
       if (kind === 'xp') awardTransportXp(amount);
@@ -140,6 +175,7 @@ const bridge = `
           customerName: o.customer ? customerById(o.customer)?.name : 'Freie Frachtbörse',
           choices, vehicleStatus: choices.length?'ready':suitable.length?'busy':'missing',
           forecast: forecastTruck && o.status!=='completed' ? estimate(forecastTruck) : null,
+          projectInfo:project?mobileProjectInfo(o.kind,o.projectRegion??Math.max(0,EXPEDITION_CUSTOMER_IDS.indexOf(o.customer)),o):null,
           baseXp:round2(o.volume*paidLegs(o)), premium:completionPremium(o),
           possibleRewards, relationshipReward:o.customer?(TRUST_REWARDS[o.kind]||0):0,
           tripEndsAt:assigned?o.tripStartAt+tourSeconds(o,assigned,o.tripCargo??Math.min(assigned.capacity,o.volume-o.delivered))*1000:null,
@@ -172,6 +208,7 @@ const bridge = `
           places:Array.from({length:7},(_,place)=>({index:place,discoveryCost:expeditionDiscoveryCost(index,place),durationMs:expeditionDuration(index,'delivery',place)})),
           finalDurationMs:expeditionDuration(index,'final')
         })),
+        projectCatalog:EXPEDITION_REGIONS.flatMap((_,region)=>['special','referral'].map(kind=>mobileProjectInfo(kind,region))),
         transportUpgradeOptions:['national','international'].flatMap(category=>['premium','volume','range'].map(kind=>{
           const level=companyFor().transportUpgrades[category][kind+'Level'],limit=TRANSPORT_UPGRADE_LIMITS[category][kind];
           return {category,kind,level,limit,base:TRANSPORT_BASE[category],costs:Array.from({length:limit-level},(_,i)=>({coins:COMPANY_BALANCE.transportUpgradeCoins(kind,level+i+1),items:COMPANY_BALANCE.transportUpgradeItems(level+i+1)}))};
@@ -229,6 +266,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     buyTruck:()=>a.buyTruck(num(p.model,1)),rank:()=>a.upgradeTruckRarity(id(p.id)),capacity:()=>a.upgradeTruckCapacity(id(p.id)),sell:()=>a.sell(id(p.id)),
     assign:()=>a.assignOrder(id(p.order),id(p.truck)),assignPrivate:()=>a.assignPrivatePickup(id(p.order),id(p.truck)),assignCrafted:()=>a.assignCraftedOrder(id(p.order),id(p.truck)),
     projectStart:()=>a.startFleetProject(id(p.id),num(p.template,2)),overtime:()=>a.spendOvertime(id(p.id),choice(p.amount,[1,5,10])),refill:()=>a.useOvertimeRefill(),
+    claimSingles:()=>a.claimSingleRewards(),
     claim:()=>a.claimOrderReward(id(p.id)),claimAll:()=>{for(const order of a.state.orders)a.applyOrderReward(order);},
     discover:()=>a.discoverExpeditionPlace(num(p.region,4)),draw:()=>a.drawExpeditionJob(num(p.region,4)),
     mission:()=>a.startExpeditionMission(num(p.region,4),choice(p.kind,['delivery','final','endless']),id(p.truck),num(p.place)),
@@ -262,6 +300,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   if(action==='mission')a.shortenTestMissions();
   const view=a.view();
   if(['assign','assignPrivate','assignCrafted'].includes(action)&&view.state.orders.find(o=>o.id===p.order)?.status==='active')view.message='Auftrag gestartet.';
+  if(action==='claimSingles'&&ok!==false)view.claimSummary=ok;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;
   if(action==='draw'&&ok!==false){
     const order=view.state.orders.find(o=>!oldOrders.has(o.id));

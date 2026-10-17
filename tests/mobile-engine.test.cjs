@@ -289,3 +289,47 @@ test('Single-order views expose forecasts, truck availability and live trip timi
  const cash=done.state.coins+done.state.orders.find(o=>o.id===raw.id).completionReward.coins-start.state.coins;
  assert.equal(Math.round(cash*100),Math.round(choice.totalProfit*100));
 });
+
+test('Project catalog always lists ten real variants with source chances, rewards and saved-fleet timing',()=>{
+ const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ assert.equal(start.view.projectCatalog.length,10);
+ assert.equal(start.state.orders.filter(o=>['special','referral'].includes(o.kind)).length,0);
+ const special=start.view.projectCatalog.find(p=>p.key==='special:0'),referral=start.view.projectCatalog.find(p=>p.key==='referral:4');
+ assert.equal(special.expeditionChance,4.05);assert.equal(special.customerChance,20);
+ assert.equal(special.volume,400);assert.equal(special.deadlineMs,3600000);
+ assert.equal(special.moduleChance,8);assert.equal(special.epicChance,20);
+ assert.equal(referral.customerChance,6);assert.equal(referral.moduleChance,30);assert.equal(referral.legendary.extraChance,25);
+ assert.equal(referral.volume,2000);assert.equal(referral.distance,400);
+ start.state.expedition.regions.forEach(r=>{r.discovered=7;r.endlessUnlocked=true;});
+ start.state.expedition.points=100;
+ start.state.expedition.seats[0]='navigator';
+ for(const region of [0,4])for(const roll of [.97,.999]){
+  const drawn=execute(start.state,'draw',{region},now,()=>roll);
+  const order=drawn.view.state.orders.find(o=>o.isProject),catalog=drawn.view.projectCatalog.find(p=>p.key===order.projectInfo.key);
+  assert.equal(order.projectName,catalog.name);assert.equal(order.volume,catalog.volume);assert.equal(order.distance,catalog.distance);
+  const active=execute(drawn.state,'projectStart',{id:order.id,template:0},now,fixed);
+  const running=active.view.state.orders.find(o=>o.id===order.id);
+  assert.equal(running.project.deadlineAt,now+order.deadlineMs);assert.ok(running.eta>now);
+  const saved=running.project.vehicles[0].capacity;
+  active.state.expedition.seats[0]=null;active.state.trucks[0].capacity+=10;
+  const sync=execute(active.state,'sync',{},now,fixed).view.state.orders.find(o=>o.id===order.id);
+  assert.equal(sync.project.vehicles[0].capacity,saved);assert.equal(sync.eta,running.eta);
+ }
+});
+
+test('Bulk single-order claim reports actual combined loot, excludes projects and never credits twice',()=>{
+ const start=execute(null,'start',{id:'hamburg'},now,fixed);
+ const rewards=[{coins:12.34,gears:{common:2},companyItems:1},{coins:5,gears:{common:3,rare:1},capacityModule:true,supplierContacts:2}];
+ for(let i=0;i<2;i++)Object.assign(start.state.orders[i],{status:'completed',completionReward:rewards[i]});
+ start.state.orders.push({...structuredClone(start.state.orders[0]),id:'project-test',kind:'special',completionReward:{coins:999,gears:{legendary:2}}});
+ const original=JSON.stringify(start.state);
+ const claim=execute(start.state,'claimSingles',{},now,fixed);
+ assert.deepEqual(claim.view.claimSummary,{count:2,coins:17.34,gears:{common:5,rare:1},capacityModules:1,companyItems:1,supplierContacts:2});
+ assert.equal(claim.state.coins,1017.34);assert.equal(claim.state.inventory.gears.common,5);assert.equal(claim.state.inventory.gears.legendary,0);
+ assert.equal(claim.state.inventory.capacityModules,1);assert.equal(claim.state.inventory.companyItems,1);assert.equal(claim.state.inventory.supplierContacts,2);
+ assert.ok(claim.state.orders[0].completionReward.claimedAt);
+ assert.equal(claim.state.orders.find(o=>o.id==='project-test').completionReward.claimedAt,undefined);
+ assert.equal(JSON.stringify(start.state),original);
+ const twice=execute(claim.state,'claimSingles',{},now,fixed);
+ assert.equal(twice.state.coins,claim.state.coins);assert.equal(twice.view.claimSummary,undefined);
+});

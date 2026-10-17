@@ -86,3 +86,23 @@ Vorschlag, noch nicht beschlossen: zunächst fünf Regionalangebote, davon drei 
 - Börsenplätze-/Haltbar-Hinweis entfernt. Countdown und Angebotswechsel nebeneinander. Angebote kompakt und antippbar; Fahrzeugwahl und Start nur in der Detailseite. Fehlende/belegte geeignete LKW als Text statt deaktiviertem Startbutton.
 - Details: aktuelle Fahrzeugwerte, Münz-/XP-Prognose, Abschlussprämie, mögliche Beute/Beziehung; abgeschlossene Aufträge zeigen echte ausgewürfelte Prämien zum Abholen. Server berechnet Prognosen ohne Zufallsbeute vorab zu rollen.
 - Auto-Sync am erwarteten Ende eines Einzelauftrags ergänzt. Laufzeiten und Auftragsbelohnungen selbst unverändert. Nur vorbereitet, keine Veröffentlichung.
+
+### Großaufträge
+
+- Hauptseite zeigt oben die hervorgehobene Navigation zu laufenden Großaufträgen, darunter dauerhaft alle zehn vorhandenen Varianten (Sonder-/Empfehlungsauftrag je Region). Katalog zeigt bereits gefundene startbereite Aufträge pro Variante; Anzeigen erzeugt keine Aufträge.
+- Eigene Typseite mit Umfang, Frist ab Start, Belohnungen/Beutechancen, Fundchancen aus Endlosexpedition bzw. Kunden-/Sonderauftrag und Mindestvoraussetzung der Flotte. Verfügbare echte Aufträge sind dort einzeln auswählbar. Abgeschlossene/gescheiterte Aufträge bleiben über den Typ erreichbar.
+- Laufende Großaufträge in eigener Liste. Detail: oben Fortschritt, Frist links und Restdauer der gespeicherten Flotte rechts; darunter Bildplatzhalter, Überstundenbutton und eingesetzte Flotte. Weitere Infos aufklappbar. Überstundenoptionen im Popup; bestehende 1.000-tkm-Regel unverändert.
+- Navigation zum gesperrten Expeditions-Fundort führt zur Regionsübersicht. Frist/ETA lösen rechtzeitig Sync aus. Keine Änderung von Auftragserzeugung, Belohnungen, Laufzeiten oder Flottensnapshots.
+
+### Gebündelte Einzelauftragsprämien
+
+- Oberer Button sammelt alle fertigen Einzelaufträge und listet den tatsächlich erhaltenen Loot im Popup. Auch in der laufenden Einzelauftragsliste verfügbar.
+- Neue serverseitige Aktion `claimSingles` schließt Großaufträge ausdrücklich aus. Münzen, Zahnräder und weitere Prämien werden aus echten Abschlussbelohnungen zusammengezählt. Command-Beleg speichert die Loot-Zusammenfassung für wiederholte Anfragen ohne zweite Gutschrift.
+- Weiterhin nur Sammelbranch, keine Veröffentlichung.
+
+### Großhändler – Monetarisierungsmerkliste
+
+- Neue Seite „Großhändler“ im Hauptmenü mit schmalen Infokarten und dem Hinweis „Preisideen“.
+- +1 Standardauftrag in der maximalen Auftragsliste: bis zu 10 Käufe, Gedankepreis 2,99 € je Kauf.
+- +1 Auftrag festhalten: bis zu 4 Käufe, Gedankepreis 3,99 € je Kauf.
+- Noch keine Kaufabwicklung, keine Shop-SDKs oder bezahlten Spielvorteile aktiviert. Pakete, Mengen, endgültige Preise und Zusammenspiel mit bestehenden Firmenupgrades sind später festzulegen.

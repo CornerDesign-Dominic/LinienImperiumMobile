@@ -18,26 +18,26 @@ function OrderTile({order:o,data,clock,onOpen}:any){
   </Card>
  </Pressable>;
 }
-export function Orders({data,clock,busy,onOpen,onRunning,onSaved,onRefresh}:any){
+export function Orders({data,clock,busy,onOpen,onRunning,onSaved,onRefresh,onClaim}:any){
  const orders=data.state.orders.filter((o:any)=>!o.isProject),active=orders.filter((o:any)=>o.status==='active');
  const available=orders.filter((o:any)=>o.status==='available'),queued=orders.filter((o:any)=>o.status==='queued'),rewards=orders.filter((o:any)=>o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt);
  const tile=(o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>;
  return <>
   {!!active.length&&<Pressable accessibilityRole="button" accessibilityLabel={`${active.length} ${active.length===1?'Auftrag':'Aufträge'} laufend`} onPress={onRunning}><Card style={styles.running}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700'}}>{active.length} {active.length===1?'Auftrag':'Aufträge'} laufend</Txt><Txt style={{color:C.accent}}>›</Txt></Row></Card></Pressable>}
+  {!!rewards.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {rewards.length}</Btn>}
   <Pressable accessibilityRole="button" accessibilityLabel={`Aufträge aus Vorräten, ${queued.length} verfügbar`} onPress={onSaved}><Card style={styles.saved}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700',flex:1}}>Aufträge aus Vorräten</Txt><Pill>{queued.length}</Pill><Txt muted>›</Txt></Row></Card></Pressable>
   <View style={styles.refresh}><Txt muted style={styles.small}>Neu {remaining(data.state.nextAutoRefreshAt,clock)}</Txt><Btn secondary style={{marginTop:0,flex:1}} disabled={busy||data.state.coins<data.refreshCost} onPress={onRefresh}>Wechseln · {n(data.refreshCost)} M</Btn></View>
   {section('Angebote')}{available.map(tile)}{!available.length&&<Empty>Keine Angebote.</Empty>}
-  {!!rewards.length&&<>{section('Prämien')}{rewards.map(tile)}</>}
  </>;
 }
 export function SavedOrders({data,clock,onOpen}:any){
  const queued=data.state.orders.filter((o:any)=>!o.isProject&&o.status==='queued');
  return <>{queued.map((o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>)}{!queued.length&&<Empty>Keine Aufträge verfügbar.</Empty>}</>;
 }
-export function RunningOrders({data,clock,onOpen}:any){
+export function RunningOrders({data,clock,busy,onOpen,onClaim}:any){
  const orders=data.state.orders.filter((o:any)=>!o.isProject),active=orders.filter((o:any)=>o.status==='active'),ready=orders.filter((o:any)=>o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt);
  const tile=(o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>;
- return <>{active.map(tile)}{!active.length&&<Empty>Keine Aufträge unterwegs.</Empty>}{!!ready.length&&<>{section('Prämien')}{ready.map(tile)}</>}</>;
+ return <>{!!ready.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {ready.length}</Btn>}{active.map(tile)}{!active.length&&<Empty>Keine Aufträge unterwegs.</Empty>}{!!ready.length&&<>{section('Prämien')}{ready.map(tile)}</>}</>;
 }
 export function OrderDetail({data,id,busy,clock,onCommand,onBack}:any){
  const o=data.state.orders.find((o:any)=>o.id===id&&!o.isProject);
