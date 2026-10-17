@@ -1,6 +1,6 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const {execute}=require('../functions/src/engine.cjs');
+const {execute,session}=require('../functions/src/engine.cjs');
 const now=1800000000000;
 const fixed=()=>.5;
 test('Guest starts without a city, then all five mobile sections receive server view models',()=>{
@@ -251,4 +251,41 @@ test('Transport upgrades save multiple segments atomically at cumulative server 
  const capped=execute(boundary,'transportBatch',{upgrades:[{category:'national',kind:'premium',count:1,level:99}]},now,fixed);
  assert.equal(capped.state.company.transportUpgrades.national.premiumLevel,100);
  assert.deepEqual(capped.view.transportUpgradeOptions.find(o=>o.category==='national'&&o.kind==='premium').costs,[]);
+});
+
+test('Single-order views expose forecasts, truck availability and live trip timing without rolling rewards',()=>{
+ const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ const raw=start.state.orders.find(o=>o.category==='national');
+ raw.volume=8;raw.distance=30;raw.routeType='dual';
+ const preview=execute(start.state,'sync',{},now,fixed);
+ const offer=preview.view.state.orders.find(o=>o.id===raw.id),choice=offer.choices[0];
+ assert.equal(offer.vehicleStatus,'ready');
+ assert.equal(choice.xp,16);assert.equal(offer.baseXp,16);
+ assert.equal(offer.forecast.totalProfit,choice.totalProfit);
+ assert.ok(offer.possibleRewards.includes('Common-Zahnräder'));
+ assert.ok(!offer.completionReward);
+ const active=execute(preview.state,'assign',{order:offer.id,truck:choice.id},now,fixed);
+ const driving=active.view.state.orders.find(o=>o.id===offer.id);
+ assert.equal(active.view.message,'Auftrag gestartet.');
+ assert.ok(driving.tripEndsAt>now);assert.ok(driving.runningEndsAt>=driving.tripEndsAt);
+ assert.equal(driving.forecast.id,choice.id);assert.equal(driving.forecast.xp,16);
+ assert.equal(driving.choices.length,0);
+ const unavailable=active.view.state.orders.find(o=>o.status==='available'&&o.category==='national');
+ assert.equal(unavailable.vehicleStatus,'busy');
+ const missing=active.view.state.orders.find(o=>o.status==='available'&&o.category==='international');
+ if(missing)assert.equal(missing.vehicleStatus,'missing');
+ const parked=execute(start.state,'garageRemove',{id:'navigator'},now,fixed);
+ assert.equal(parked.view.state.orders.find(o=>o.id===raw.id).vehicleStatus,'missing');
+ let rolls=0;const api=session(active.state,now,()=>{rolls++;return .5;});
+ const rollsBefore=rolls;api.view();api.view();assert.equal(rolls,rollsBefore);
+ const before=JSON.stringify(active.state);
+ const synced=execute(active.state,'sync',{},now,fixed);
+ assert.equal(synced.state.coins,active.state.coins);assert.equal(synced.state.xp,active.state.xp);
+ assert.equal(JSON.stringify(active.state),before);
+ assert.equal(synced.state.orders.find(o=>o.id===raw.id).completionReward,null);
+ const done=execute(active.state,'sync',{},driving.runningEndsAt+1,fixed);
+ assert.equal(done.state.xp,16);
+ assert.equal(done.state.orders.find(o=>o.id===raw.id).status,'completed');
+ const cash=done.state.coins+done.state.orders.find(o=>o.id===raw.id).completionReward.coins-start.state.coins;
+ assert.equal(Math.round(cash*100),Math.round(choice.totalProfit*100));
 });

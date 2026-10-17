@@ -78,3 +78,11 @@ Vorschlag, noch nicht beschlossen: zunächst fünf Regionalangebote, davon drei 
 - Kompakte gemeinsame Liste: kurze Bezeichnung links, Zahlen samt Einheiten rechtsbündig. Dezimalstellen nach Bedarf, feste Ziffernbreiten.
 - Bisherige Kennzahlen und CO₂-Schätzung bleiben erhalten; Ereignisprotokoll aus der Statistik entfernt. Die letzten Ereignisse sind auch von der Startseite entfernt. Gespeicherte Ereignisse bleiben erhalten.
 - Nur vorbereitet, keine Veröffentlichung.
+
+### Einzelaufträge und gespeicherte Aufträge
+
+- Schmale hervorgehobene Zählkarte für laufende Einzelaufträge, dahinter eigene Liste mit kompakten Karten, LKW, Restzeit und animierungsfrei berechnetem Zeit-/Lieferfortschritt. Antippen öffnet Auftragsdetails.
+- Darunter Karte „Aufträge aus Vorräten“ mit Anzahl, noch vor Countdown/Angebotswechsel. Eigene Seite zeigt nur verfügbare gespeicherte Einzelaufträge (Privatabholungen/Kundenaufträge), keine laufenden Aufträge. Nach Start Wechsel zur gemeinsamen laufenden Liste.
+- Börsenplätze-/Haltbar-Hinweis entfernt. Countdown und Angebotswechsel nebeneinander. Angebote kompakt und antippbar; Fahrzeugwahl und Start nur in der Detailseite. Fehlende/belegte geeignete LKW als Text statt deaktiviertem Startbutton.
+- Details: aktuelle Fahrzeugwerte, Münz-/XP-Prognose, Abschlussprämie, mögliche Beute/Beziehung; abgeschlossene Aufträge zeigen echte ausgewürfelte Prämien zum Abholen. Server berechnet Prognosen ohne Zufallsbeute vorab zu rollen.
+- Auto-Sync am erwarteten Ende eines Einzelauftrags ergänzt. Laufzeiten und Auftragsbelohnungen selbst unverändert. Nur vorbereitet, keine Veröffentlichung.

@@ -71,3 +71,11 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Statistik als kompakte gemeinsame Liste: Werte und Einheiten rechtsbündig, Bezeichnungen links. Ereignisprotokoll aus Statistik und letzte Ereignisse von der Startseite entfernt; gespeicherte Ereignisse bleiben erhalten.
 - Typprüfung bestanden. Web-Export und Browserprüfung der Statistik bei 393 und 320 px mit lokaler Engine / simulierter Firebase-Anbindung bestanden: Zahlenformat, Einheiten, identische rechte Zahlenkante, kein Ereignisprotokoll und keine JavaScript-Seitenfehler.
 - Anschließende Entfernung des Startseitenblocks im Quelltext und durch erneute Typprüfung geprüft. Keine Mechanikänderung oder Veröffentlichung.
+
+### Vorbereitete Einzelaufträge und Vorratsaufträge
+
+- Typprüfung, Web- und Android-Export bestanden. 13 Mobile-Engine-Tests und alle 23 ursprünglichen Web-Regressionsdateien bestanden.
+- Neuer Adaptertest: Dual-Way-Transport liefert prognostizierte 16 XP und den berechneten Münzgewinn inklusive Abschlussprämie. Verfügbarkeit unterscheidet freien/belegten/fehlenden LKW. Aktuelle Tour und vollständige Restzeit stimmen. Wiederholte Prognoseansichten ziehen keine Zufallszahlen und würfeln keine Beute. Kurzer Starttoast separat nachgeprüft.
+- Browserprüfung mit lokaler Engine / simulierter Firebase-Anbindung bei 393 und 320 px bestanden: kompakte Karten, kein Börsenplätze-/Haltbar-Hinweis, Countdown und Wechselbutton in einer Zeile, Hinweis bei fehlendem/belegtem LKW, Fahrzeugwahl/Start aus Details, automatische Navigation zur laufenden Liste, Zählkarte und Fortschritt/Restzeit/LKW. Detailansicht mit Prognose und möglicher Beute, Abschluss und echte Prämienabholung geprüft.
+- Vorratsaufträge: eigene Zählkarte und Liste; Privatabholung dort geöffnet und gestartet. Danach nur in gemeinsamer laufender Liste, Vorratsseite leer und Zählung auf 0. Keine JavaScript-Seitenfehler.
+- Keine Änderung der Transportlaufzeiten oder Belohnungsmechanik, kein Deployment/OTA-Update/APK-Build gestartet.

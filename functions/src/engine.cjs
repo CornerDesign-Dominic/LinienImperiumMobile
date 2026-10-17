@@ -130,9 +130,20 @@ const bridge = `
       }));
       const orders = game.orders.map(o => {
         const project = Boolean(PROJECT_DEADLINES[o.kind]);
+        const suitable = !project ? game.trucks.filter(t=>canTruckTakeOrder(t,o)) : [];
+        const estimate = t => ({id:t.id,model:t.model,capacity:t.capacity,seconds:orderDuration({...o,delivered:0},t),xp:round2(o.volume*paidLegs(o)*(1+activeCardBonus(t,'xp','single')/100)),...orderEconomics(o,t)});
+        const choices = !project && ['available','queued'].includes(o.status) ? eligibleFreeTrucks(o).map(estimate) : [];
+        const assigned = !project && o.status==='active' ? truckById(o.truckId) : null;
+        const forecastTruck = assigned || suitable[0];
+        const possibleRewards = project ? [] : o.kind==='private' ? ['1–2 Lieferantenkontakte'] : ['Common-Zahnräder','Uncommon-Zahnräder',...(o.customer?['Rare-Zahnräder']:[]),...(o.kind==='normal'&&TRANSPORT_BASE[o.category]?['Fortschritt für Firmen-Items']:[]),...(o.customer&&o.kind==='normal'?[round2(customerTripChance(o,'award')*100)+' % Chance auf Sonderauftrag']:[])];
         return { ...o, isProject: project,
           customerName: o.customer ? customerById(o.customer)?.name : 'Freie Frachtbörse',
-          choices: !project && ['available','queued'].includes(o.status) ? eligibleFreeTrucks(o).map(t=>({id:t.id, model:t.model, capacity:t.capacity, seconds:orderDuration(o,t), ...orderEconomics(o,t)})) : [],
+          choices, vehicleStatus: choices.length?'ready':suitable.length?'busy':'missing',
+          forecast: forecastTruck && o.status!=='completed' ? estimate(forecastTruck) : null,
+          baseXp:round2(o.volume*paidLegs(o)), premium:completionPremium(o),
+          possibleRewards, relationshipReward:o.customer?(TRUST_REWARDS[o.kind]||0):0,
+          tripEndsAt:assigned?o.tripStartAt+tourSeconds(o,assigned,o.tripCargo??Math.min(assigned.capacity,o.volume-o.delivered))*1000:null,
+          runningEndsAt:assigned?now+remainingOrderSeconds(o,assigned,now)*1000:null,
           eta: o.project && o.status==='active' ? projectEstimatedEnd(o,now) : null,
           templates: project && o.status==='queued' ? [0,1,2].map(index=>{
             const vehicles=projectFleetVehicles(index);
@@ -250,6 +261,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const ok=calls[action]();
   if(action==='mission')a.shortenTestMissions();
   const view=a.view();
+  if(['assign','assignPrivate','assignCrafted'].includes(action)&&view.state.orders.find(o=>o.id===p.order)?.status==='active')view.message='Auftrag gestartet.';
   if(action==='transportBatch')view.transportBatchApplied=ok===true;
   if(action==='draw'&&ok!==false){
     const order=view.state.orders.find(o=>!oldOrders.has(o.id));
