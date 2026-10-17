@@ -59,3 +59,9 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Typprüfung, Web-Export und Android-Export bestanden. Keine Änderung der Spielmechanik oder des Backends.
 - Browserprüfung bei 393 und 320 px mit lokaler Engine / simulierter Firebase-Anbindung: vier Prozesszeilen mit kräftigem Pfeil, Mengen und je einem Herstellungsbutton; Kundenrezept ohne freigeschalteten Stammkunden gesperrt. Privatabholung kostet genau 100 Hinweise und erzeugt einen Auftrag. Beide Shard-Rezepte verbrauchen je 10 und geben genau 1 höhere Seltenheit. Nach Verbrauch wird die Verfügbarkeit aktualisiert; fehlende Ressourcen sperren die Herstellung. Keine JavaScript-Seitenfehler.
 - Kein Firebase-Deployment, OTA-Update oder APK-Build gestartet.
+
+### Vorbereitete Stammkunden-Seiten
+
+- Typprüfung, Web-Export und Android-Export bestanden. Bestehende Freischaltung und Fähigkeitspunkte-Mechanik unverändert.
+- Browserprüfung bei 393 und 320 px mit lokaler Engine / simulierter Firebase-Anbindung: fünf freigeschaltete Kundenkarten ohne Aufwertungsbuttons, eigene Kundendetailseite mit Beziehung/Branche/Ware und Fähigkeiten, zwei verschiedene Fähigkeitspunkte korrekt ausgegeben, danach alle Verbesserungen gesperrt. Zurück zur Übersicht und Wechsel zu anderem Kunden mit eigenem Punktestand geprüft. Keine JavaScript-Seitenfehler.
+- Kein Deployment, OTA-Update oder APK-Build gestartet.
