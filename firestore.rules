@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // All game state is accessed through the authenticated game callable.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

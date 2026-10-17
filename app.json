@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "Linien Imperium Online", "slug": "linien-imperium-online", "owner": "cornerdesign", "version": "0.1.0",
+    "orientation": "portrait", "userInterfaceStyle": "dark", "scheme": "linienimperium",
+    "android": { "package": "de.cornerdesign.linienimperium", "versionCode": 1 },
+    "ios": { "bundleIdentifier": "de.cornerdesign.linienimperium", "supportsTablet": false },
+    "extra": { "eas": { "projectId": "e7b64112-a16d-4eb0-b3b8-34a887741587" } },
+    "updates": { "url": "https://u.expo.dev/e7b64112-a16d-4eb0-b3b8-34a887741587" },
+    "runtimeVersion": { "policy": "appVersion" },
+    "plugins": ["expo-updates"], "web": { "bundler": "metro" }
+  }
+}

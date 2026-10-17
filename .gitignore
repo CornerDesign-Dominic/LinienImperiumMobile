@@ -1,0 +1,13 @@
+node_modules/
+.expo/
+dist/
+android/
+ios/
+*.jks
+*.keystore
+gha-creds-*.json
+.env.local
+firebase-debug.log
+functions/node_modules/
+credentials.json
+.credentials/

@@ -1,0 +1,88 @@
+name: Mobile preview
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['README.md', 'scripts/setup-firebase-access.sh']
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: mobile-preview
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npx expo export --platform android
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --prefix functions
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: linienimperium
+          workload_identity_provider: projects/350521926986/locations/global/workloadIdentityPools/linienimperium-github/providers/mobile-main
+          service_account: github-mobile-deploy@linienimperium.iam.gserviceaccount.com
+      - uses: google-github-actions/setup-gcloud@v3
+      - name: Deploy game server and database rules
+        run: npx --yes firebase-tools@latest deploy --only functions:mobile,firestore --project linienimperium --non-interactive
+      - name: Test deployed game API
+        run: node scripts/smoke-backend.cjs
+  android:
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: npm ci
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: linienimperium
+          workload_identity_provider: projects/350521926986/locations/global/workloadIdentityPools/linienimperium-github/providers/mobile-main
+          service_account: github-mobile-deploy@linienimperium.iam.gserviceaccount.com
+      - uses: google-github-actions/setup-gcloud@v3
+      - name: Prepare persistent Android preview signing key
+        run: node scripts/prepare-android-signing.cjs
+      - name: Build installable Android APK on EAS
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: npx --yes eas-cli@latest build --platform android --profile preview --non-interactive --wait --json > build-result.json
+      - name: Publish install link in job summary
+        run: |
+          node - <<'JS'
+          const fs=require('node:fs');
+          const result=JSON.parse(fs.readFileSync('build-result.json','utf8'));
+          const build=Array.isArray(result)?result[0]:result;
+          const url=build.artifacts?.buildUrl || build.artifacts?.applicationArchiveUrl;
+          if(!url)throw Error('Build has no APK download URL');
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,`## Android-Testversion\n\n[APK herunterladen](${url})\n\n[EAS-Build ansehen](https://expo.dev/accounts/cornerdesign/projects/linien-imperium-online/builds/${build.id})\n`);
+          JS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-build-result
+          path: build-result.json
+      - name: Remove local signing files
+        if: always()
+        run: rm -rf .credentials credentials.json

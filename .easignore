@@ -1,0 +1,12 @@
+node_modules/
+.git/
+.expo/
+dist/
+functions/
+tests/
+scripts/
+.github/
+
+.credentials/
+credentials.json
+gha-creds-*.json
