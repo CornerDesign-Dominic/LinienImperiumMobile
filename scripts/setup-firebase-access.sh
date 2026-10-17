@@ -21,6 +21,8 @@ gcloud services enable iam.googleapis.com iamcredentials.googleapis.com \
   sts.googleapis.com firebase.googleapis.com firebaserules.googleapis.com \
   firestore.googleapis.com cloudfunctions.googleapis.com cloudbuild.googleapis.com \
   artifactregistry.googleapis.com run.googleapis.com eventarc.googleapis.com \
+  cloudbilling.googleapis.com firebaseextensions.googleapis.com \
+  secretmanager.googleapis.com pubsub.googleapis.com storage.googleapis.com \
   --project="$LI_PROJECT"
 
 if ! gcloud iam service-accounts describe "$LI_ACCOUNT" --project="$LI_PROJECT" >/dev/null 2>&1; then

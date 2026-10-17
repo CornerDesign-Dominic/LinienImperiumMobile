@@ -9,7 +9,7 @@ permissions:
   id-token: write
 concurrency:
   group: mobile-preview
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   validate:
     runs-on: ubuntu-latest

@@ -2,6 +2,10 @@
 
 Native React-Native-/Expo-App für Android, mit vorbereitetem iOS-Projekt. Dunkles Hochformat-Layout ohne Spielgrafiken oder Animationen.
 
+## Einmalige Cloud-Einrichtung
+
+Nach `scripts/setup-firebase-access.sh` muss der Projektinhaber zusätzlich `scripts/finish-firebase-access.sh` in Google Cloud Shell ausführen. Das aktiviert die beim ersten Deployment benötigten Zusatz-APIs, legt ein Serverkonto mit Firestore-Zugriff an und gibt dem Deployment-Konto nur Lese- und Hinzufügerechte auf das einzelne Android-Signatur-Secret. Anschließend **Actions → Mobile preview → Run workflow** starten. Diese administrativen Rechte hat der GitHub-Dienst selbst nicht.
+
 ## Android testen — ohne laufenden PC
 
 Der Workflow **Mobile preview** prüft den Code, veröffentlicht das Firebase-Backend und erstellt eine installierbare APK über EAS. Der Downloadlink erscheint in der Zusammenfassung des erfolgreichen GitHub-Actions-Laufs. Auf Android die APK herunterladen, die Installation aus dem Browser erlauben und die installierte App öffnen. Expo Go und ein lokaler Entwicklungsserver sind dafür nicht erforderlich.

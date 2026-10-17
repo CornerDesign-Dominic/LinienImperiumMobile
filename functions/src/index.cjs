@@ -6,7 +6,7 @@ const { gzipSync, gunzipSync } = require('node:zlib');
 const { execute } = require('./engine.cjs');
 initializeApp();
 const db=getFirestore();
-exports.game = onCall({region:'europe-west3', memory:'512MiB', timeoutSeconds:60, maxInstances:3, cors:true}, async request=>{
+exports.game = onCall({region:'europe-west3', serviceAccount:'mobile-game-runtime@linienimperium.iam.gserviceaccount.com', memory:'512MiB', timeoutSeconds:60, maxInstances:3, cors:true}, async request=>{
   if(!request.auth)throw new HttpsError('unauthenticated','Bitte erneut anmelden.');
   const {action='sync',payload={},requestId}=request.data||{};
   if(typeof action!=='string'||action.length>40||typeof payload!=='object'||payload===null||Array.isArray(payload)||JSON.stringify(payload).length>2048)throw new HttpsError('invalid-argument','Ungültige Aktion.');
