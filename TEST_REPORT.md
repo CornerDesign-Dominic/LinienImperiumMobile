@@ -39,3 +39,4 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Ursprüngliche Web-Engine bleibt unverändert. Keine Spielstände zurückgesetzt.
 - Kein Firebase-Deployment, kein EAS-Update und kein neuer APK-Build für dieses Folgepaket gestartet.
 - Android-Export und Web-Export erfolgreich; 3-Punkte-Auswahl bei 393 px im Browser mit lokaler Engine geprüft (Maximalwerte 50 → 52 und 100 → 101, vierter Punkt gesperrt). Kein physischer Gerätetest für dieses vorbereitete Paket.
+- Browserprüfung des Fundablaufs bestanden: Materialauftrag → freies Garagenfahrzeug → zurück zur Expedition; Sonderauftrag → Flottenauswahl → laufender Großauftrag; Karten-/Shardfund ohne Zuweisungsbutton. Expeditionsseite ohne Fundlisten, Zurück-Navigation intakt, keine JavaScript-Seitenfehler. Firebase im Browser simuliert; keine Veröffentlichung.
