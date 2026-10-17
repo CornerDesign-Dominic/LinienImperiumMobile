@@ -88,3 +88,9 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Browserprüfung bei 393 und 320 px mit lokaler Engine / simulierter Firebase-Anbindung bestanden: dauerhaft sichtbarer Katalog, gesperrter Fundort, echte Auftragsauswahl und Flottenstart, Navigation zur laufenden Liste und zurück, Frist links/Flotten-ETA rechts, Bild → Überstundenbutton → Flotte. Abschluss per Überstunden und echte Prämienansicht geprüft. Dabei gefundener Zugriff auf eine noch nicht vorhandene Frist beim ungeöffneten Überstunden-Popup behoben und der Ablauf vollständig erneut geprüft.
 - Einzelprämienbutton öffnet Popup mit tatsächlicher gemeinsamer Lootliste, entfernt abgeholte Prämien und lässt Großauftragsprämie offen. Großhändler zeigt beide Preisideen (2,99 € bis 10×; 3,99 € bis 4×), ohne Kaufaktion. Keine JavaScript-Seitenfehler im abschließenden Browserlauf.
 - Keine Kaufabwicklung, kein Firebase-Deployment/OTA-Update/APK-Build gestartet. Änderungen bleiben im Sammelbranch.
+
+### Kompakter Start und Belohnungshinweise
+
+- Typprüfung und Web-Export bestanden. Browserprüfung mit lokaler Engine und simulierter Firebase-Anbindung bei 393 und 320 px bestanden.
+- Garage-/Flottenkacheln fehlen auf Start; untere Navigation bleibt bestehen. Beide Auftragskacheln sind mit/ohne Hinweis 116 px hoch. Belohnung erscheint, führt zum Einzelauftragsbereich und verschwindet nach Abholung, ohne die Kachelmaße zu verändern.
+- Popup zeigt „Einzelaufträge“, Abschlusszahl und tatsächlichen Loot. Keine JavaScript-Seitenfehler. Kein Deployment oder OTA-Update.

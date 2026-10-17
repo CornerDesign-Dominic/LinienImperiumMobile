@@ -106,3 +106,10 @@ Vorschlag, noch nicht beschlossen: zunächst fünf Regionalangebote, davon drei 
 - +1 Standardauftrag in der maximalen Auftragsliste: bis zu 10 Käufe, Gedankepreis 2,99 € je Kauf.
 - +1 Auftrag festhalten: bis zu 4 Käufe, Gedankepreis 3,99 € je Kauf.
 - Noch keine Kaufabwicklung, keine Shop-SDKs oder bezahlten Spielvorteile aktiviert. Pakete, Mengen, endgültige Preise und Zusammenspiel mit bestehenden Firmenupgrades sind später festzulegen.
+
+### Kompakter Start und Belohnungshinweise
+
+- Garage-/Flottenkacheln von Start entfernt; Zugriff über die untere Navigation.
+- Einzel-/Großauftragskacheln bleiben fest 116 px hoch. Reservierte Hinweiszeile zeigt nur bei offenen Abschlussprämien „X Belohnung(en)“. Bei 0 bleibt die Zeile leer.
+- Separaten Sammelblock auf Start entfernt. Einzelaufträge führen zum Einzelauftragsbereich; Großaufträge mit offenen Prämien direkt zur laufenden/abgeschlossenen Liste. Abholung erfolgt im jeweiligen Auftragsbereich.
+- Loot-Popup der gebündelten Einzelprämien nennt Quelle und Zahl der Abschlüsse. Keine Veröffentlichung.
