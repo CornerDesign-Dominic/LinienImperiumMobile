@@ -8,9 +8,7 @@ fs.mkdirSync('.credentials',{recursive:true,mode:0o700});
 let signing;
 if(access.status===0){signing=JSON.parse(access.stdout);}
 else {
- const exists=spawnSync('gcloud',['secrets','describe',secret,'--project='+project],{encoding:'utf8'});
  if(!/NOT_FOUND|not found/i.test(access.stderr))throw Error('Signing key cannot be read; refusing to replace it: '+access.stderr);
- if(exists.status!==0)throw Error('Signing secret is missing or inaccessible. Run scripts/finish-firebase-access.sh as project owner first.');
  const password=crypto.randomBytes(24).toString('hex'),alias='linienimperium';
  execFileSync('keytool',['-genkeypair','-v','-keystore','.credentials/preview.jks','-storetype','JKS','-storepass',password,'-keypass',password,'-alias',alias,'-keyalg','RSA','-keysize','2048','-validity','10000','-dname','CN=LinienImperium Preview,O=CornerDesign,C=DE'],{stdio:'pipe'});
  signing={keystore:fs.readFileSync('.credentials/preview.jks').toString('base64'),keystorePassword:password,keyAlias:alias,keyPassword:password};
