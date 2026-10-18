@@ -116,12 +116,14 @@ test('Expedition map has five customer regions, seven places each and preserves 
  assert.ok(start.view.expeditionMap.every(r=>r.places.length===7&&r.progress===0));
  const funded=execute(start.state,'testGrant',{kind:'expedition',amount:100},now,fixed);
  let state=funded.state;
- for(let i=0;i<7;i++)state=execute(state,'discover',{region:0},now,fixed).state;
+ for(let i=0;i<7;i++)for(let point=0;point<funded.view.expeditionMap[0].places[i].discoveryCost;point++)state=execute(state,'discover',{region:0},now,fixed).state;
  const explored=execute(state,'sync',{},now,fixed);
  assert.equal(explored.view.expeditionMap[0].discovered,7);
  assert.equal(explored.view.expeditionMap[0].deliveries,0);
  assert.equal(explored.view.expeditionMap[0].finalClaimed,false);
- assert.ok(explored.view.expeditionMap[0].progress>0&&explored.view.expeditionMap[0].progress<100);
+ assert.equal(explored.state.inventory.capacityModules,1);
+ assert.equal(execute(explored.state,'discover',{region:0},now,fixed).state.inventory.capacityModules,1);
+ assert.equal(explored.view.expeditionMap[0].progress,100);
  assert.equal(explored.view.expeditionMap[1].open,true);
  assert.equal(explored.view.expeditionMap[2].open,false);
  const mission=execute(explored.state,'mission',{region:0,kind:'delivery',place:0,truck:state.trucks[0].id},now,fixed);
@@ -129,7 +131,7 @@ test('Expedition map has five customer regions, seven places each and preserves 
  const done=execute(mission.state,'sync',{},end,fixed);
  const claimed=execute(done.state,'claimMission',{id:done.state.expedition.missions[0].id},end,fixed);
  assert.equal(claimed.view.expeditionMap[0].deliveries,1);
- assert.ok(claimed.view.expeditionMap[0].progress>explored.view.expeditionMap[0].progress);
+ assert.equal(claimed.view.expeditionMap[0].progress,100);
 });
 
 test('Test grants persist points above capacity and XP produces normal level rewards',()=>{
@@ -350,3 +352,20 @@ test('Bulk single-order claim reports actual combined loot, excludes projects an
   const synced=execute(started.state,'sync',{},now,fixed).view.state.orders.find(o=>o.id===legacy.id);
   assert.equal(synced.volume,2000);assert.equal(synced.distance,400);assert.equal(synced.projectName,'Altes Projekt');assert.equal(JSON.stringify(synced.project),saved);assert.equal(synced.projectInfo.key,'referral');
  });
+
+test('Discovery spends one point per tap, persists partial progress and reaches 100 before bonus delivery',()=>{
+ const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ const original=JSON.stringify(start.state);
+ const one=execute(start.state,'discover',{region:0},now,fixed);
+ assert.equal(one.state.expedition.points,49);assert.equal(one.state.expedition.regions[0].discovered,0);assert.equal(one.view.expeditionMap[0].places[0].invested,1);
+ assert.equal(JSON.stringify(start.state),original);
+ const reload=execute(one.state,'sync',{},now,fixed);assert.equal(reload.view.expeditionMap[0].places[0].invested,1);
+ const two=execute(reload.state,'discover',{region:0},now,fixed);assert.equal(two.state.expedition.points,48);assert.equal(two.state.expedition.regions[0].discovered,0);
+ const three=execute(two.state,'discover',{region:0},now,fixed);assert.equal(three.state.expedition.points,47);assert.equal(three.state.expedition.regions[0].discovered,1);assert.equal(three.view.expeditionMap[0].places[0].invested,3);assert.equal(three.view.expeditionMap[0].deliveries,0);
+ const next=execute(three.state,'discover',{region:0},now,fixed);assert.equal(next.view.expeditionMap[0].places[1].invested,1);assert.equal(next.view.expeditionMap[0].places[0].invested,3);
+ next.state.expedition.points=0;
+ const empty=execute(next.state,'discover',{region:0},now,fixed);assert.equal(empty.state.expedition.points,0);assert.equal(empty.view.expeditionMap[0].places[1].invested,1);
+ const locked=execute(three.state,'discover',{region:1},now,fixed);assert.equal(locked.state.expedition.points,47);assert.equal(locked.view.expeditionMap[1].places[0].invested,0);
+ const legacy=structuredClone(start.state);legacy.expedition.regions[0].discovered=2;
+ const migrated=execute(legacy,'sync',{},now,fixed);assert.equal(migrated.view.expeditionMap[0].places[0].invested,3);assert.equal(migrated.view.expeditionMap[0].places[1].invested,3);
+});

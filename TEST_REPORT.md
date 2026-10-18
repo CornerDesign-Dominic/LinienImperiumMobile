@@ -123,3 +123,10 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 
 - Typprüfung und Web-Export bestanden. Browser bei 393 und 320 px mit simulierter Firebase-Anbindung: genau eine Materialkarte „Anzahl 13“ und eine Fahrzeugkartenkarte „Anzahl 1“; leere Arten fehlen. Kein Menüpunkt/Screen „Expeditionsaufträge“ mehr.
 - Materialgruppe öffnen, konkreten Auftrag starten und in laufender Liste verfolgen; danach Materialanzahl 12, gemeinsame Vorratszahl 13. Wechsel zur Fahrzeugkartengruppe und Ausschluss des belegten LKW geprüft. Keine JavaScript-Seitenfehler. Keine Veröffentlichung.
+
+### Einzelne Erkundungspunkte und Bonuslieferungen
+
+- Typprüfung und Web-Export bestanden; 17 Adaptertests und alle 23 ursprünglichen Web-Regressionsdateien bestanden.
+- Je Klick genau 1 Punkt, Teilfortschritt nach Sync, vollständige Entdeckung erst beim letzten benötigten Punkt, kein Fortschritt ohne Vorrat/in gesperrter Region. Bereits entdeckte Altorte bleiben vollständig; Eingabespielstand wird nicht verändert.
+- Region erreicht vor Bonuslieferungen 100 %, nächste Region wird freigegeben. Lieferbonus verändert Erkundungsprozente nicht; Kapazitätsmodul bei Freilegung wird exakt einmal vergeben.
+- Browserprüfung mit lokaler Engine / simulierter Firebase-Anbindung bei 393 und 320 px: Prozent oben rechts, drei Klicks auf Ort 1 zeigen 33/67/100 %, Bonus liefern und separat abholen, danach weiterhin 100 %. Keine JavaScript-Seitenfehler. Kein Deployment/OTA-Update.

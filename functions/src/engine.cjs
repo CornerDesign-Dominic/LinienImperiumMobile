@@ -70,6 +70,23 @@ const bridge = `
       epicChance:round2(loot.epic[0]*100),epicMin:loot.epic[1],epicMax:loot.epic[2],
       legendary:kind==='referral'?{min:loot.legendary[0],extraChance:round2(loot.legendary[2]*100)}:null};
   }
+  // Discovery consumes one point per command; deliveries remain optional bonuses.
+  discoverExpeditionPlace = index => {
+    const region=game.expedition.regions[index];
+    if(!region||!expeditionRegionOpen(index)||region.discovered>=7||!spendExpeditionPoints(1))return false;
+    const place=region.discovered,cost=expeditionDiscoveryCost(index,place);
+    region.discoveryPoints ||= Array(7).fill(0);
+    region.discoveryPoints[place]=(region.discoveryPoints[place]||0)+1;
+    if(region.discoveryPoints[place]>=cost){
+      region.discoveryPoints[place]=cost;region.discovered++;
+      if(region.discovered===7&&!region.moduleAwarded){
+        region.endlessUnlocked=true;region.moduleAwarded=true;game.inventory.capacityModules++;
+        addEvent(EXPEDITION_REGIONS[index]+': Endlosort freigelegt · 1 Kapazitätsmodul erhalten.');
+      }
+      addEvent(EXPEDITION_REGIONS[index]+': Ort '+region.discovered+' entdeckt.');
+    }
+    return true;
+  };
   globalThis.mobile = {
     get state() { return game; }, set state(value) { game = value; },
     newGame, save, loadGame, shortenTestMissions, normalizeQueuedReferrals, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
@@ -214,8 +231,8 @@ const bridge = `
           index, name:EXPEDITION_REGIONS[index], customer:customerById(EXPEDITION_CUSTOMER_IDS[index]),
           open:expeditionRegionOpen(index), discovered:region.discovered,
           deliveries:region.deliveries.filter(Boolean).length, finalClaimed:region.finalClaimed,
-          progress:(region.discovered + region.deliveries.filter(Boolean).length + Number(region.finalClaimed))/15*100,
-          places:Array.from({length:7},(_,place)=>({index:place,discoveryCost:expeditionDiscoveryCost(index,place),durationMs:expeditionDuration(index,'delivery',place)})),
+          progress:Array.from({length:7},(_,place)=>place<region.discovered?expeditionDiscoveryCost(index,place):(region.discoveryPoints?.[place]||0)).reduce((sum,v)=>sum+v,0)/Array.from({length:7},(_,place)=>expeditionDiscoveryCost(index,place)).reduce((sum,v)=>sum+v,0)*100,
+          places:Array.from({length:7},(_,place)=>({index:place,discoveryCost:expeditionDiscoveryCost(index,place),invested:place<region.discovered?expeditionDiscoveryCost(index,place):(region.discoveryPoints?.[place]||0),durationMs:expeditionDuration(index,'delivery',place)})),
           finalDurationMs:expeditionDuration(index,'final')
         })),
         projectCatalog:[...EXPEDITION_REGIONS.map((_,region)=>mobileProjectInfo('special',region)),{...mobileProjectInfo('referral',0),sources:EXPEDITION_REGIONS.map((_,region)=>mobileProjectInfo('referral',region))}],
