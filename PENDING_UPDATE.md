@@ -10,6 +10,7 @@
 - Erkundung setzt je Klick genau 1 Expeditionspunkt ein. Teilfortschritt pro Ort bleibt gespeichert; Gesamtkosten unverändert. Bei voller Punktzahl ist der Ort 100 % erkundet. Regionen/Endlosort zeigen den gewichteten Tokenfortschritt, ohne Lieferungen mitzuzählen.
 - Prozentzahl oben rechts in Regions-, Orts- und Endloskarten. Lieferung separat als „Bonus liefern“/„Bonus abholen“; bestehende +1-Kapazitätsbelohnung und Kundenfreischaltung bleiben erhalten. Entdeckte Altorte zählen vollständig, laufende Bonuslieferungen bleiben bestehen. Einmaliges Kapazitätsmodul bei Freilegung unverändert.
 - Leere Händleransicht behoben: Sprinter (4.000 M) und 3,5-Tonner (20.000 M) wieder als Kaufkarten verfügbar. Name und Links „Stadthub Händler“. Kein Hauptmenüeintrag; Zugang über Stadthub (bestehender Garagenlink bleibt). Bestehende Hub-Eröffnungs-, Münz- und Stellplatzgrenzen; keine neue Preis-/Kauflogik.
+- Mehrfachnutzung ausdrücklich geprüft: pro Karte höchstens ein Garagenplatz und ein gleichzeitiger Garagentransport (Einzelauftrag oder Expeditionslieferung). Währenddessen weder zweiter Garagenplatz noch Entfernen/Neueinsetzen zum Umgehen. Dieselbe Karte darf parallel in mehreren Flottenvorlagen und mehreren laufenden Großaufträgen fahren. Bestehende Engine erfüllt dies bereits; Regressionstest ergänzt, keine Mechanikänderung.
 - Nur Sammelbranch; kein Server-Deployment oder Handy-Update.
 
 ---

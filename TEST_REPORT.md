@@ -136,3 +136,10 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Ursache: Navigation zu `dealer` vorhanden, Renderfall fehlte. Kaufkarten für die zwei bestehenden Stadtfahrzeuge ergänzt und Seitentitel/Zugänge umbenannt. Backend unverändert.
 - Typprüfung und Web-Export bestanden. Browser bei 393 und 320 px mit lokaler Engine / simulierter Firebase-Anbindung: kein Hauptmenüeintrag, Navigation Stadthub → Händler, zwei Fahrzeuge sichtbar, Kauf vor Hub-Eröffnung gesperrt. Hub eröffnet, beide Modelle gekauft: Abzug exakt 4.000 + 20.000 M und Fahrzeuge automatisch im Hub eingesetzt. Kauf am bestehenden Stellplatzlimit gesperrt, Zurück zum Hub funktioniert. Keine JavaScript-Seitenfehler.
 - Kein Deployment/OTA-Update; Korrektur bleibt im Sammelpaket.
+
+### Garage exklusiv, Flotten parallel
+
+- 18 Adaptertests und alle 23 ursprünglichen Web-Regressionsdateien bestanden.
+- Neuer Regressionstest: gleiche Karte kann nicht doppelt in Garage aufgenommen oder während Fahrt entfernt werden; zweiter Einzelauftrag und Expeditionslieferung mit belegtem Garagenfahrzeug werden abgewiesen. Umgekehrt blockiert eine Expeditionslieferung die Einzelzuweisung.
+- Parallel zum laufenden Garagenauftrag dieselbe Karte in zwei Flottenvorlagen sowie drei Großaufträgen (davon zwei mit gleicher Vorlage) erfolgreich eingesetzt. Garage bleibt genau ein Fahrzeug/ein aktiver Garagentransport. Laufende Flottenwerte sind unabhängig.
+- Regel war bereits implementiert. Nur Tests/Dokumentation ergänzt; kein Deployment.

@@ -369,3 +369,33 @@ test('Discovery spends one point per tap, persists partial progress and reaches 
  const legacy=structuredClone(start.state);legacy.expedition.regions[0].discovered=2;
  const migrated=execute(legacy,'sync',{},now,fixed);assert.equal(migrated.view.expeditionMap[0].places[0].invested,3);assert.equal(migrated.view.expeditionMap[0].places[1].invested,3);
 });
+
+test('A card occupies one garage slot and one garage transport, while parallel fleet projects stay independent',()=>{
+ let start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ const card='navigator',truck=start.state.trucks.find(t=>t.cardId===card),order=start.view.state.orders.find(o=>o.choices.some(t=>t.id===truck.id));
+ assert.ok(order);
+ start=execute(start.state,'assign',{order:order.id,truck:truck.id},now,fixed);
+ const copy=structuredClone(start.state.orders.find(o=>o.id===order.id));Object.assign(copy,{id:'second-garage-job',status:'available',truckId:null});start.state.orders.push(copy);
+ let blocked=execute(start.state,'garageAdd',{id:card},now,fixed);
+ assert.equal(blocked.state.trucks.filter(t=>t.cardId===card).length,1);
+ blocked=execute(blocked.state,'garageRemove',{id:card},now,fixed);assert.equal(blocked.state.trucks.filter(t=>t.cardId===card).length,1);
+ blocked=execute(blocked.state,'assign',{order:copy.id,truck:truck.id},now,fixed);assert.equal(blocked.state.orders.find(o=>o.id===copy.id).status,'available');
+ blocked.state.expedition.regions[0].discovered=7;blocked.state.expedition.regions[0].endlessUnlocked=true;blocked.state.expedition.points=50;
+ blocked=execute(blocked.state,'mission',{region:0,kind:'delivery',place:0,truck:truck.id},now,fixed);assert.equal(blocked.state.expedition.missions.length,0);
+ let state=blocked.state;
+ for(const template of [0,1])state=execute(state,'seat',{id:card,template,seat:0},now,fixed).state;
+ for(const template of [0,1,0]){
+  const found=execute(state,'draw',{region:0},now,()=>.97);const project=found.state.orders.filter(o=>o.kind==='special'&&o.status==='queued').at(-1);
+  state=execute(found.state,'projectStart',{id:project.id,template},now,fixed).state;
+  assert.equal(state.orders.find(o=>o.id===project.id).status,'active');
+ }
+ assert.equal(state.trucks.filter(t=>t.cardId===card).length,1);
+ assert.equal(state.orders.find(o=>o.id===order.id).status,'active');
+ const projects=state.orders.filter(o=>o.kind==='special'&&o.status==='active');assert.equal(projects.length,3);assert.ok(projects.every(o=>o.project.vehicles.some(v=>v.cardId===card)));
+ assert.ok(execute(state,'sync',{},now,fixed).view.state.trucks.find(t=>t.id===truck.id).free===false);
+ const fresh=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);fresh.state.expedition.regions[0].discovered=1;
+ const driving=execute(fresh.state,'mission',{region:0,kind:'delivery',place:0,truck:fresh.state.trucks[0].id},now,fixed);
+ const offer=fresh.view.state.orders.find(o=>o.choices.length);
+ const cannotAssign=execute(driving.state,'assign',{order:offer.id,truck:fresh.state.trucks[0].id},now,fixed);
+ assert.equal(cannotAssign.state.orders.find(o=>o.id===offer.id).status,'available');assert.equal(cannotAssign.state.expedition.missions.filter(m=>m.status==='active').length,1);
+});
