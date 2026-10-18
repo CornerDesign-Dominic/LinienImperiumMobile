@@ -143,3 +143,10 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Neuer Regressionstest: gleiche Karte kann nicht doppelt in Garage aufgenommen oder während Fahrt entfernt werden; zweiter Einzelauftrag und Expeditionslieferung mit belegtem Garagenfahrzeug werden abgewiesen. Umgekehrt blockiert eine Expeditionslieferung die Einzelzuweisung.
 - Parallel zum laufenden Garagenauftrag dieselbe Karte in zwei Flottenvorlagen sowie drei Großaufträgen (davon zwei mit gleicher Vorlage) erfolgreich eingesetzt. Garage bleibt genau ein Fahrzeug/ein aktiver Garagentransport. Laufende Flottenwerte sind unabhängig.
 - Regel war bereits implementiert. Nur Tests/Dokumentation ergänzt; kein Deployment.
+
+### Überstundenmenge und direkter Verbrauch
+
+- Typprüfung und Web-Export bestanden; 19 Adaptertests plus 23 ursprüngliche Web-Regressionsdateien bestanden.
+- Neue Mechanikprüfung: 7 Punkte = 7.000 tkm; übergroße Menge verbraucht am Ende nur noch nötige Punkte, Abschluss wird erreicht. Bei 3 verfügbaren/7 angeforderten Punkten werden genau 3 verbraucht, bei 0 bleibt Fortschritt unverändert. Negative, gebrochene, Text- und zu große Mengen abgewiesen, 0 schreibt nichts gut.
+- Browser mit lokaler Engine / simulierter Firebase-Anbindung bei 393 und 320 px: Mengenbutton links ungefähr ein Drittel, direkter Einsatz rechts, zentrierter Editor; ungültige 0-Eingabe gesperrt. Auswahl 10 verändert Vorrat nicht; Einsetzen mit Vorrat 3 verbraucht 3 ohne Popup. Bei 0 nur Refill-Option, direkter +100-Refill verbraucht genau ein Paket und zeigt danach Mengeneditor. Anschließend 7 Punkte direkt eingesetzt, kein Popup. Keine JavaScript-Seitenfehler.
+- Kein Deployment/OTA-Update. Änderungen bleiben im Sammelbranch.

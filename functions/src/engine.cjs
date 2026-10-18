@@ -251,7 +251,11 @@ const bridge = `
     }
   };
 })();`;
-const compiled = new vm.Script(source.slice(0,boundary) + bridge, {filename:'web-engine.cjs'});
+// Mobile selects an arbitrary positive amount; keep the original delivery/accounting body.
+const overtimeGuard = "  function spendOvertime(orderId, amount, now = Date.now()) {\n    if (![1, 5, 10].includes(amount)) return false;";
+const mobileGuard = "  function spendOvertime(orderId, amount, now = Date.now()) {\n    if (!Number.isSafeInteger(amount) || amount < 1 || amount > 100000) return false;\n    amount = Math.min(amount, Math.max(0, game.overtimePoints || 0));\n    if (!amount) return false;";
+if(source.split(overtimeGuard).length!==2)throw Error('Overtime validation boundary changed');
+const compiled = new vm.Script(source.slice(0,boundary).replace(overtimeGuard,mobileGuard) + bridge, {filename:'web-engine.cjs'});
 function session(state, now=Date.now(), random=Math.random) {
   const storage = new Map();
   const elements = new Map();
@@ -292,7 +296,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     cardUpgrade:()=>a.giveCharacterShard(id(p.id),true),shardCombine:()=>a.combineExpeditionShards(choice(p.rarity,['common','uncommon'])),
     buyTruck:()=>a.buyTruck(num(p.model,1)),rank:()=>a.upgradeTruckRarity(id(p.id)),capacity:()=>a.upgradeTruckCapacity(id(p.id)),sell:()=>a.sell(id(p.id)),
     assign:()=>a.assignOrder(id(p.order),id(p.truck)),assignPrivate:()=>a.assignPrivatePickup(id(p.order),id(p.truck)),assignCrafted:()=>a.assignCraftedOrder(id(p.order),id(p.truck)),
-    projectStart:()=>a.startFleetProject(id(p.id),num(p.template,2)),overtime:()=>a.spendOvertime(id(p.id),choice(p.amount,[1,5,10])),refill:()=>a.useOvertimeRefill(),
+    projectStart:()=>a.startFleetProject(id(p.id),num(p.template,2)),overtime:()=>a.spendOvertime(id(p.id),num(p.amount)),refill:()=>a.useOvertimeRefill(),
     claimSingles:()=>a.claimSingleRewards(),
     claim:()=>a.claimOrderReward(id(p.id)),claimAll:()=>{for(const order of a.state.orders)a.applyOrderReward(order);},
     discover:()=>a.discoverExpeditionPlace(num(p.region,4)),draw:()=>a.drawExpeditionJob(num(p.region,4)),

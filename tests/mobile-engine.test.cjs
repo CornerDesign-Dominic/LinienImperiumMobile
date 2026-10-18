@@ -399,3 +399,20 @@ test('A card occupies one garage slot and one garage transport, while parallel f
  const cannotAssign=execute(driving.state,'assign',{order:offer.id,truck:fresh.state.trucks[0].id},now,fixed);
  assert.equal(cannotAssign.state.orders.find(o=>o.id===offer.id).status,'available');assert.equal(cannotAssign.state.expedition.missions.filter(m=>m.status==='active').length,1);
 });
+
+test('Custom overtime amounts preserve tkm accounting, cap completion cost and reject invalid spends and use the remaining balance',()=>{
+ let state=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed).state;
+ state.expedition.regions[0].discovered=7;state.expedition.regions[0].endlessUnlocked=true;state.expedition.seats[0]='navigator';
+ const found=execute(state,'draw',{region:0},now,()=>.97);const project=found.state.orders.find(o=>o.kind==='special');
+ const active=execute(found.state,'projectStart',{id:project.id,template:0},now,fixed);
+ const paid=execute(active.state,'overtime',{id:project.id,amount:7},now,fixed);const order=paid.state.orders.find(o=>o.id===project.id);
+ assert.equal(paid.state.overtimePoints,active.state.overtimePoints-7);assert.ok(Math.abs(order.delivered*order.distance-7000)<1e-6);
+ const needed=Math.ceil((order.volume-order.delivered)*order.distance/1000);
+ const finished=execute(paid.state,'overtime',{id:project.id,amount:100000},now,fixed);
+ assert.equal(finished.state.orders.find(o=>o.id===project.id).status,'completed');assert.equal(finished.state.overtimePoints,paid.state.overtimePoints-needed);
+ const denied=structuredClone(active.state);denied.overtimePoints=3;
+ const unfunded=execute(denied,'overtime',{id:project.id,amount:7},now,fixed);assert.equal(unfunded.state.overtimePoints,0);assert.ok(Math.abs(unfunded.state.orders.find(o=>o.id===project.id).delivered*project.distance-3000)<1e-6);
+ const empty=execute(unfunded.state,'overtime',{id:project.id,amount:7},now,fixed);assert.equal(empty.state.overtimePoints,0);assert.equal(empty.state.orders.find(o=>o.id===project.id).delivered,unfunded.state.orders.find(o=>o.id===project.id).delivered);
+ for(const amount of [-1,1.5,'7',100001])assert.throws(()=>execute(active.state,'overtime',{id:project.id,amount},now,fixed));
+ const zero=execute(active.state,'overtime',{id:project.id,amount:0},now,fixed);assert.equal(zero.state.overtimePoints,active.state.overtimePoints);assert.equal(zero.state.orders.find(o=>o.id===project.id).delivered,0);
+});
