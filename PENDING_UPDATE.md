@@ -7,6 +7,7 @@
 - Max ermittelt serverseitig die kleinste ganze Punktzahl, nach der die gespeicherte Flotte innerhalb der Restfrist fertig wird. Laufende Touren und gemischte Flotten werden berücksichtigt. Ist die Frist bereits machbar, werden keine Punkte verbraucht. Bei zu wenig Vorrat wird nur der Rest eingesetzt; das kann weiterhin unzureichend für die Frist sein. Kein Sofortabschluss, wenn passive Restfahrt möglich ist.
 - Vorrats-Auftragsauswahl bündelt Expeditionsaufträge je Art und Rang über alle Regionen hinweg. Pro vorhandenem Rang eine Karte mit „Anzahl X“ und Umfang, keine Einzelinstanz-/Regionszeilen mehr. Rang 1 Common grau, Rang 2 Uncommon grün, Rang 3 Rare blau. Leere Ränge fehlen.
 - Beim Antippen startet die bisher erste vorhandene Instanz des Stapels über die freie Fahrzeugwahl. Region/Rang stehen in der Zuweisung; konkrete Herkunft, Belohnungen und Instanz-ID bleiben erhalten. Verbrauch reduziert genau diesen Stapel um 1, laufende Aufträge bleiben außerhalb des Vorrats. Übergeordnete Artübersicht bleibt erhalten.
+- Großauftragsnamen enthalten den Typ direkt: „Sonderauftrag …“ bzw. „Empfehlungsauftrag …“. Separate Typzeile in Katalogkarten entfernt; Kunde/Region und „Aufträge X“ stehen gemeinsam darunter. Gleiche Namen in Typansicht, laufenden Karten, Instanzdetails und Fundmeldung. Anzeigeformatierung bewahrt vorhandene Auftragsdaten und Werte.
 - Nur Sammelbranch. Kein Firebase-Deployment, OTA-Update oder APK-Build.
 
 ---

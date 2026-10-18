@@ -174,3 +174,8 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Browser bei 393 und 320 px mit lokaler Engine/simulierter Firebase-Anbindung: Materialrang 1 mit 13 Aufträgen aus zwei Regionen als eine Karte; Rang 2 mit 2 und Rang 3 mit 1 jeweils separat. Drei unterschiedliche passende Rand-/Hintergrundfarben, keine Regions-Einzelzeilen. Fahrzeugkartenrang 2 aus zwei Regionen ebenfalls ein Stapel mit Anzahl 3.
 - Zuweisung eines Rang-1-Stapelauftrags erhält die tatsächliche Herkunft und Rang; genau die gewählte vorhandene Instanz wird entfernt, Stapel sinkt 13 → 12 und Art-/Gesamtzählung entsprechend. Rücknavigation und Wechsel der Auftragsart geprüft. Keine JavaScript-Seitenfehler.
 - Kein Deployment/OTA-Update; Ergänzung im Sammelpaket.
+
+### Typ direkt im Großauftragstitel
+
+- Typprüfung und Web-Export bestanden. Browser bei 393 und 320 px: alle sechs Katalogtitel mit Sonder-/Empfehlungsauftrag, keine separate Typzeile, Vorratszahlen vorhanden. Typdetail und vorhandene Empfehlungsinstanz zeigen denselben Namen. Keine JavaScript-Seitenfehler.
+- Bestehende Namen werden nur für die Anzeige formatiert; keine Änderung von Auftragserzeugung, Fristen oder Vergütung. Fundtitel ebenfalls angepasst und abschließend typgeprüft. Keine Veröffentlichung.

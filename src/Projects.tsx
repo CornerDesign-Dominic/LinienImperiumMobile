@@ -2,13 +2,13 @@ import React,{useEffect,useState} from 'react';
 import {View,Text,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes} from './ui';
-const kindName=(kind:string)=>kind==='referral'?'Empfehlungsauftrag':'Sonderauftrag';
+export const projectTitle=(name:string,kind:string)=>`${kind==='referral'?'Empfehlungsauftrag':'Sonderauftrag'} ${(name||'').replace(/^(?:Großauftrag|Großprojekt|Sonderauftrag|Empfehlungsauftrag)\s+/,'')}`.trim();
 const rarityStyle=(kind:string)=>kind==='referral'?{backgroundColor:'#291F3B',borderColor:'#A579DC'}:{backgroundColor:'#192B40',borderColor:'#619CE8'};
 const section=(text:string)=><Txt style={s.section}>{text}</Txt>;
 const fact=(label:string,value:string)=><Row><Txt muted style={{flex:1}}>{label}</Txt><Txt style={{textAlign:'right'}}>{value}</Txt></Row>;
 function ProjectTile({order:o,clock,onOpen}:any){
- return <Pressable accessibilityRole="button" accessibilityLabel={`${o.projectName}, ${o.id}`} onPress={()=>onOpen(o.id)}><Card style={[s.tile,rarityStyle(o.kind)]}>
-  <Row><Txt style={[s.title,{flex:1}]}>{o.projectName}</Txt><Txt muted style={s.small}>{o.status==='queued'?'Bereit':o.status==='active'?'›':o.status==='failed'?'Abgelaufen':'Abschluss'}</Txt></Row>
+ return <Pressable accessibilityRole="button" accessibilityLabel={`${projectTitle(o.projectName,o.kind)}, ${o.id}`} onPress={()=>onOpen(o.id)}><Card style={[s.tile,rarityStyle(o.kind)]}>
+  <Row><Txt style={[s.title,{flex:1}]}>{projectTitle(o.projectName,o.kind)}</Txt><Txt muted style={s.small}>{o.status==='queued'?'Bereit':o.status==='active'?'›':o.status==='failed'?'Abgelaufen':'Abschluss'}</Txt></Row>
   <Txt muted style={s.small}>{o.customerName} · {n(o.volume)} t · {n(o.distance)} km</Txt>
   {o.status==='active'&&<><Bar value={o.delivered/o.volume*100}/><Row style={{marginBottom:0}}><Txt gold style={s.small}>Frist {remaining(o.project.deadlineAt,clock)}</Txt><Txt muted style={s.small}>Flotte {o.eta?remaining(o.eta,clock):'—'}</Txt></Row></>}
  </Card></Pressable>;
@@ -19,9 +19,9 @@ export function Projects({data,onRunning,onType}:any){
   <Pressable accessibilityRole="button" accessibilityLabel={`Laufende Großaufträge, ${active.length}`} onPress={onRunning}><Card style={s.running}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700',flex:1}}>Laufende Großaufträge</Txt><Pill>{active.length}</Pill><Txt style={{color:C.accent}}>›</Txt></Row></Card></Pressable>
   {data.projectCatalog.map((info:any)=>{
    const ready=orders.filter((o:any)=>o.status==='queued'&&o.projectInfo.key===info.key).length;
-   return <Pressable key={info.key} accessibilityRole="button" accessibilityLabel={`${info.name}, ${info.kind==='referral'?'Alle Regionen':info.regionName}, Aufträge ${ready}`} onPress={()=>onType(info.key)}><Card style={[s.tile,rarityStyle(info.kind)]}>
-    <Row><Txt style={[s.title,{flex:1}]}>{info.name}</Txt><Txt muted>›</Txt></Row><Txt muted style={s.small}>{info.kind==='referral'?'Alle Stammkunden · alle Regionen':`${info.customer.name} · ${info.regionName}`}</Txt>
-    <Row style={{marginTop:8,marginBottom:0}}><Txt muted style={s.small}>{kindName(info.kind)}</Txt><Txt muted style={s.small}>Aufträge {ready}</Txt></Row>
+   return <Pressable key={info.key} accessibilityRole="button" accessibilityLabel={`${projectTitle(info.name,info.kind)}, ${info.kind==='referral'?'Alle Regionen':info.regionName}, Aufträge ${ready}`} onPress={()=>onType(info.key)}><Card style={[s.tile,rarityStyle(info.kind)]}>
+    <Row><Txt style={[s.title,{flex:1}]}>{projectTitle(info.name,info.kind)}</Txt><Txt muted>›</Txt></Row>
+    <Row style={{marginBottom:0,alignItems:'flex-start'}}><Txt muted style={[s.small,{flex:1}]}>{info.kind==='referral'?'Alle Stammkunden · alle Regionen':`${info.customer.name} · ${info.regionName}`}</Txt><Txt muted style={s.small}>Aufträge {ready}</Txt></Row>
    </Card></Pressable>;
   })}
  </>;
@@ -44,7 +44,7 @@ export function ProjectType({data,typeKey,onOpen,onExpedition,onCustomers}:any){
  if(!info)return <Empty>Auftragstyp nicht verfügbar.</Empty>;
  const orders=data.state.orders.filter((o:any)=>o.isProject&&o.projectInfo.key===typeKey),ready=orders.filter((o:any)=>o.status==='queued'),history=orders.filter((o:any)=>['completed','failed'].includes(o.status)).slice().reverse();
  return <>
-  <Row><Txt style={[s.title,{flex:1}]}>{info.name}</Txt><Pill gold={info.kind==='referral'}>{info.kind==='referral'?'Epic':info.regionName}</Pill></Row><Txt muted style={{marginBottom:12}}>{info.kind==='referral'?'Alle Stammkunden':info.customer.name}</Txt>
+  <Row><Txt style={[s.title,{flex:1}]}>{projectTitle(info.name,info.kind)}</Txt><Pill gold={info.kind==='referral'}>{info.kind==='referral'?'Epic':info.regionName}</Pill></Row><Txt muted style={{marginBottom:12}}>{info.kind==='referral'?'Alle Stammkunden':info.customer.name}</Txt>
   {ready.length?<>{section('Bereit')}{ready.map((o:any)=><ProjectTile key={o.id} order={o} onOpen={onOpen}/>)}</>:<Txt muted style={{marginBottom:12}}>Noch kein Auftrag bereit.</Txt>}
   <ProjectInfo info={info} onExpedition={onExpedition} onCustomers={onCustomers}/>
   {!!history.length&&<>{section('Abschlüsse')}{history.map((o:any)=><ProjectTile key={o.id} order={o} onOpen={onOpen}/>)}</>}
@@ -64,13 +64,13 @@ export function ProjectDetail({data,id,busy,clock,onCommand,onExpedition,onCusto
  const needed=Math.max(0,Math.ceil((o.volume-o.delivered)*o.distance/1000)),selected=amount==='max'?(o.overtimeForDeadline||0):Math.min(amount,needed);
  return <>
   {active?<>
-   <Card><Bar value={o.delivered/o.volume*100}/><View style={s.times}><View style={{flex:1}}><Txt muted style={s.small}>Frist</Txt><Txt gold>{remaining(o.project.deadlineAt,clock)}</Txt></View><View style={{flex:1,alignItems:'flex-end'}}><Txt muted style={s.small}>Flotte braucht</Txt><Txt style={o.eta>o.project.deadlineAt?{color:C.red}:null}>{o.eta?remaining(o.eta,clock):'—'}</Txt></View></View><Txt muted style={[s.small,{marginTop:10}]}>{n(o.delivered,1)} / {n(o.volume)} t · {o.projectName}</Txt></Card>
+   <Card><Bar value={o.delivered/o.volume*100}/><View style={s.times}><View style={{flex:1}}><Txt muted style={s.small}>Frist</Txt><Txt gold>{remaining(o.project.deadlineAt,clock)}</Txt></View><View style={{flex:1,alignItems:'flex-end'}}><Txt muted style={s.small}>Flotte braucht</Txt><Txt style={o.eta>o.project.deadlineAt?{color:C.red}:null}>{o.eta?remaining(o.eta,clock):'—'}</Txt></View></View><Txt muted style={[s.small,{marginTop:10}]}>{n(o.delivered,1)} / {n(o.volume)} t · {projectTitle(o.projectName,o.kind)}</Txt></Card>
    <View style={s.image} accessibilityLabel="Auftragsbild"><Text style={{fontSize:32,color:C.muted}}>▧</Text></View>
    <View style={{flexDirection:'row',gap:8,alignItems:'stretch'}}><Btn secondary style={{width:'33%',minWidth:0,minHeight:58}} disabled={busy||clock>=o.project.deadlineAt} onPress={()=>setOvertime(true)}>{amount==='max'?'Max':`${amount} ${amount===1?'Punkt':'Punkte'}`} ▾</Btn><Btn style={{flex:1,minWidth:0,minHeight:58}} disabled={busy||clock>=o.project.deadlineAt||(points>0&&selected===0)} onPress={()=>points>0?onCommand('overtime',{id:o.id,amount}):setOvertime(true)}>Überstunden einsetzen</Btn></View>
    <Card style={{marginTop:12}}><Row><Txt style={s.title}>Eingesetzte Flotte</Txt><Pill>Flotte {o.project.template+1}</Pill></Row>{o.project.vehicles.map((vehicle:any)=><Row key={vehicle.cardId}><Txt style={{flex:1}}>{vehicle.model}</Txt><Txt muted>{n(vehicle.capacity,1)} t</Txt></Row>)}</Card>
    <Btn secondary onPress={()=>setMore(!more)}>{more?'Weniger Infos':'Belohnungen & Infos'}</Btn>{more&&<View style={{marginTop:12}}><ProjectInfo info={info} onExpedition={onExpedition} onCustomers={onCustomers}/></View>}
   </>:<>
-   <Row><Txt style={[s.title,{flex:1}]}>{o.projectName}</Txt><Pill>{kindName(o.kind)}</Pill></Row><Txt muted style={{marginBottom:12}}>{o.customerName}</Txt>
+   <Row><Txt style={[s.title,{flex:1}]}>{projectTitle(o.projectName,o.kind)}</Txt></Row><Txt muted style={{marginBottom:12}}>{o.customerName}</Txt>
    {o.status==='queued'&&<><Card>{fact('Umfang',`${n(o.volume)} t · ${n(o.distance)} km`)}{fact('Frist ab Start',minutes(o.deadlineMs/1000))}</Card>{o.templates.map((template:any)=><Card key={template.index}><Txt style={s.title}>Flotte {template.index+1}</Txt><Txt muted style={[s.small,{marginTop:8}]}>{template.vehicles?.map((v:any)=>v.model).join(' · ')||'Keine Karten eingesetzt'}</Txt>{template.eta&&<Txt muted style={{marginTop:8}}>{minutes((template.eta-data.serverTime)/1000)}{template.eta-data.serverTime>o.deadlineMs?' · Überstunden nötig':''}</Txt>}<Btn disabled={busy||!template.vehicles} onPress={()=>onCommand('projectStart',{id:o.id,template:template.index})}>Flotte {template.index+1} einsetzen</Btn></Card>)}</>}
    {o.status==='completed'&&reward&&<Card><Txt style={[s.title,{marginBottom:12}]}>Abschlussprämie</Txt>{fact('Münzen',`${n(reward.coins,2)} M`)}{Object.entries(reward.gears||{}).filter(([,value])=>Number(value)>0).map(([rarity,amount])=><View key={rarity}>{fact(`${data.catalog.rarities.find((r:any)=>r.id===rarity)?.label||rarity}-Zahnräder`,n(amount))}</View>)}{reward.capacityModule&&fact('Kapazitätsmodul','1')}{!reward.claimedAt?<Btn disabled={busy} onPress={()=>onCommand('claim',{id:o.id})}>Prämie abholen</Btn>:<Txt muted>Abgeholt</Txt>}</Card>}
    {o.status==='failed'&&<Empty>Frist abgelaufen · keine Abschlussprämie</Empty>}

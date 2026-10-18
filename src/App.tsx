@@ -7,7 +7,7 @@ import {LevelUpAllocation,LevelUpNotice} from './LevelUp';
 import {TransportSummary,TransportEditor,UpgradeDraft} from './Company';
 import {Expeditions} from './Expeditions';
 import {Wholesaler} from './Wholesaler';
-import {Projects,ProjectType,RunningProjects,ProjectDetail} from './Projects';
+import {Projects,ProjectType,RunningProjects,ProjectDetail,projectTitle} from './Projects';
 import {Orders,SavedOrders,RunningOrders,OrderDetail} from './Orders';
 import {Statistics} from './Statistics';
 import {CustomerList,CustomerDetail} from './Customers';
@@ -68,7 +68,7 @@ function Game(){
     else chooseTruck(order);
    }
   };
-  setSheet({centered:true,title:find.title,body:find.detail,emptyText:'',items:find.type==='reward'?[]:[{title:'Fahrzeug zuweisen',primary:true,onPress:assign}]});
+  setSheet({centered:true,title:find.type==='order'&&next.state.orders.find((o:any)=>o.id===find.id)?.isProject?projectTitle(find.title,next.state.orders.find((o:any)=>o.id===find.id)?.kind):find.title,body:find.detail,emptyText:'',items:find.type==='reward'?[]:[{title:'Fahrzeug zuweisen',primary:true,onPress:assign}]});
  }
  const rewards=g?.orders.filter((o:any)=>o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt)||[];
  const title=(text:string)=><Text style={s.section}>{text}</Text>;
