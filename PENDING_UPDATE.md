@@ -10,6 +10,8 @@
 - Großauftragsnamen enthalten den Typ direkt: „Sonderauftrag …“ bzw. „Empfehlungsauftrag …“. Separate Typzeile in Katalogkarten entfernt; Kunde/Region und „Aufträge X“ stehen gemeinsam darunter. Gleiche Namen in Typansicht, laufenden Karten, Instanzdetails und Fundmeldung. Anzeigeformatierung bewahrt vorhandene Auftragsdaten und Werte.
 - Header zeigt neben Expeditions- und Überstundenstand jeweils MM:SS bis zum nächsten Token. Fristen stammen aus der Server-Regenerationslogik (20 bzw. 10 Minuten); bei vollem/überfülltem Vorrat „Voll“. Server-Sync am jeweiligen Fristende aktualisiert Tokenzahl und startet den nächsten Countdown.
 - „Gespeichert“ und andere kurze Erfolgshinweise schweben jetzt über dem unteren Menü, mit sicherem Abstand zur Systemleiste. Sie reservieren keinen Platz im Layout, verschieben keine Inhalte und blockieren keine Eingaben. Bestehende automatische Ausblendung bleibt erhalten.
+- Garage: festes Raster mit fünf Zeilen und zwei Spalten für zehn Kartenfahrzeuge. Freie Plätze sind gestrichelte Plus-Karten und öffnen die Auswahl verfügbarer, noch nicht eingesetzter Karten. Belegte Karten zeigen ausschließlich Name, Kapazität, Kartenstufe und Geschwindigkeitsrang. Stadttransporter bleiben separat.
+- Garagen-Modal zeigt weitere Fahrzeugdaten (Tempo, Betriebskosten, Kilometer, Aufträge, Status/Restzeit) und Entfernen, ohne Verbesserungsbuttons. Kapazitätsmodule und Geschwindigkeitsrang werden ausschließlich im Karten-Sammlungsmodal verbessert. Upgrades funktionieren auch außerhalb der Garage, ohne einen Platz zu belegen, und bleiben beim späteren Einsetzen erhalten.
 - Nur Sammelbranch. Kein Firebase-Deployment, OTA-Update oder APK-Build.
 
 ---

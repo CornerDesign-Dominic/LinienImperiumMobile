@@ -7,7 +7,7 @@ const BONUS:Record<string,string>={speed:'Tempo',cost:'Kostenersparnis',pay:'Fra
 const SCOPE:Record<string,string>={self:'Dieses Fahrzeug',single:'Eigene Einzelaufträge',fleet:'Alle Fahrzeuge im Großauftrag',garage:'Alle Fahrzeuge in der Garage'};
 const RARITY:Record<string,string>={common:C.muted,uncommon:C.accent,rare:C.gold};
 
-export function VehicleCards({data,busy,onUpgrade,modalBlocked=false}:any){
+export function VehicleCards({data,busy,onUpgrade,onVehicleUpgrade,modalBlocked=false}:any){
  const [selected,setSelected]=useState<string|null>(null);
  const {state:g,catalog:c}=data;
  const vehicle=(card:any)=>data.cardVehicles?.[card.id]||{capacity:c.models[card.vehicleTier].capacity,rank:{total:0,label:'Common',level:0}};
@@ -36,6 +36,10 @@ export function VehicleCards({data,busy,onUpgrade,modalBlocked=false}:any){
      {metrics.speed!=null&&<><Row><Txt muted>Tempo leer / beladen</Txt><Txt>{n(metrics.speed,2)} / {n(metrics.loadedSpeed,2)} km/s</Txt></Row><Row><Txt muted>Betriebskosten</Txt><Txt>{n(metrics.costPerKm,2)} M/km</Txt></Row></>}
      <View style={styles.bonus}><Txt style={{fontWeight:'700'}}>{BONUS[card.stat]}</Txt><Txt muted>{SCOPE[card.scope]}</Txt><Txt gold>{n(data.cardBonuses[card.id],1)} % Bonus</Txt></View>
      {own?(own.level<10?<><Bar value={own.progress/c.cardLevelCosts[own.level-1]*100}/><Txt muted>{n(own.progress)} / {n(c.cardLevelCosts[own.level-1])} Shards zur nächsten Stufe</Txt><Btn disabled={busy||!g.expedition.shards[card.rarity]} onPress={()=>onUpgrade(card.id)}>Shards einsetzen</Btn></>:<Txt gold>Maximale Kartenstufe erreicht.</Txt>):<Txt muted>Auf Expeditionen in Region {card.region+1} entdecken.</Txt>}
+     {own&&<>
+      <Btn secondary disabled={busy||!g.inventory.capacityModules||metrics.capacityLevel>=metrics.maxCapacityLevel} onPress={()=>onVehicleUpgrade(card.id,'capacity')}>Kapazität +0,5 t · 1 Modul</Btn>
+      <Btn secondary disabled={busy||g.inventory.gears[metrics.rank.id]<metrics.rankCost||metrics.rank.total>=50} onPress={()=>onVehicleUpgrade(card.id,'rank')}>Geschwindigkeitsrang · {n(metrics.rankCost)} {metrics.rank.label}-Zahnräder</Btn>
+     </>}
     </ScrollView>}
    </SafeAreaView></View>
   </Modal>

@@ -187,3 +187,13 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Browser bei 393 und 320 px mit lokaler Engine/simulierter Firebase-Anbindung: beide Countdowns sichtbar ohne Überlauf, automatischer Sync schreibt beide Token gut und startet Timer neu. Bei vollem und überfülltem Vorrat „Voll“.
 - Erfolgshinweis nach Kapazitätsupgrade geprüft: vor/nach identische Position des Spielinhalts, CSS absolut positioniert, keine Pointer-Ereignisse, Menü weiter bedienbar, Hinweis verschwindet automatisch. Keine JavaScript-Seitenfehler.
 - Kein Deployment/OTA-Update; beide Änderungen bleiben im Sammelpaket.
+
+## Garage als 5×2-Raster – 18.10.2026, vorbereitet
+
+- Zehn Kartenplätze in fünf Zeilen/zwei Spalten; freie Plätze gestrichelt mit Plus und Auswahl vorhandener, nicht eingesetzter Karten. Stadttransporter separat, bisheriger Händlerzugang und Hub-/Verkaufsaktionen erhalten.
+- Belegte Rasterkarten enthalten nur Name, Kapazität, Kartenstufe und Geschwindigkeitsrang. Mittiges Detailmodal mit Fahrzeugdaten, Status/Restzeit und Entfernen, ohne Kapazitäts-/Rang-/Shard-Upgrades.
+- Kapazität und Geschwindigkeitsrang im Sammlungsmodal verfügbar, auch bei geparkten Karten außerhalb der Garage. Adapter verwendet bestehende Upgrade-Funktionen und Ressourcen-/Maximalprüfungen; keine Preis- oder Bonusänderungen. Persistierter Garagenbestand wird dabei nicht erhöht.
+- `npm run typecheck`: bestanden. Expo-Webexport: bestanden.
+- `npm test`: 24 Node-Testeinträge bestanden (23 Adaptertests und Wrapper mit 23 ursprünglichen Web-Regressionsdateien). Neuer Test prüft geparkte/eingesetzte Upgrades, Ressourcenverbrauch, fehlenden Vorrat, ungültige/unentdeckte Karten und Wiedereinsetzen.
+- Browser-QA mit echter lokaler Engine und simuliertem Firebase-Transport auf 393/320 px bestanden: 5×2-Geometrie, gestrichelte Plätze, keine Rasterüberläufe, Detailinformationen ohne Upgrade-Aktionen, Entfernen/Auswahl, Kapazitäts-/Rang-Upgrades in der Sammlung und erhaltene Werte beim Wiedereinsetzen. Screenshots von Raster und Detailmodal visuell geprüft. Keine Browserfehler.
+- Nur Sammelbranch; kein Firebase-Deployment, OTA-Update oder APK-Build. Kein physischer Gerätetest.

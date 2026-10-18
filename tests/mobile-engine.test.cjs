@@ -459,3 +459,28 @@ test('Token regeneration countdowns follow server deadlines and stop at or above
  full.state.expedition.points=75;full.state.overtimePoints=200;
  const over=execute(full.state,'sync',{},now+21*60000,fixed);assert.deepEqual(over.view.regeneration,{expeditionNextAt:null,overtimeNextAt:null});assert.equal(over.state.expedition.points,75);assert.equal(over.state.overtimePoints,200);
 });
+
+test('Collection upgrades work for parked cards without creating garage slots and preserve resource limits',()=>{
+ let game=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ game=execute(game.state,'garageRemove',{id:'navigator'},now,fixed);
+ game.state.inventory.capacityModules=2;game.state.inventory.gears.common=1000;
+ const count=game.state.trucks.length;
+ game=execute(game.state,'cardCapacity',{id:'navigator'},now,fixed);
+ assert.equal(game.state.trucks.length,count);assert.equal(game.view.cardVehicles.navigator.capacity,4.5);
+ assert.equal(game.state.inventory.capacityModules,1);
+ game=execute(game.state,'cardRank',{id:'navigator'},now,fixed);
+ assert.equal(game.state.trucks.length,count);assert.equal(game.view.cardVehicles.navigator.rank.total,1);
+ assert.equal(game.state.inventory.gears.common,0);
+ const blocked=execute(game.state,'cardRank',{id:'navigator'},now,fixed);
+ assert.equal(blocked.view.cardVehicles.navigator.rank.total,1);
+ const added=execute(blocked.state,'garageAdd',{id:'navigator'},now,fixed);
+ assert.equal(added.state.trucks.length,count+1);assert.equal(added.state.trucks[0].capacity,4.5);assert.equal(added.state.trucks[0].rarityLevel,1);
+ const upgraded=execute(added.state,'cardCapacity',{id:'navigator'},now,fixed);
+ assert.equal(upgraded.state.trucks.length,count+1);assert.equal(upgraded.state.trucks[0].capacity,5);
+ assert.equal(upgraded.state.inventory.capacityModules,0);
+ assert.equal(execute(upgraded.state,'cardCapacity',{id:'navigator'},now,fixed).state.trucks[0].capacity,5);
+ const unknown=execute(upgraded.state,'cardCapacity',{id:'does-not-exist'},now,fixed);
+ assert.equal(unknown.state.trucks.length,count+1);
+ const unowned=upgraded.view.catalog.cards.find(c=>!upgraded.state.expedition.characters[c.id]);
+ assert.equal(execute(upgraded.state,'cardRank',{id:unowned.id},now,fixed).state.trucks.length,count+1);
+});

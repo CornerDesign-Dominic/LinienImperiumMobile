@@ -114,6 +114,17 @@ const bridge = `
     autoRefreshOrders, regenerateExpedition, regenerateOvertime,
     chooseStartCity, addCardToGarage, removeCardFromGarage, assignCharacterSeat,
     giveCharacterShard, combineExpeditionShards, buyTruck, upgradeTruckRarity,
+    upgradeCardVehicle(cardId,kind) {
+      const card=vehicleCardById(cardId),owned=game.expedition.characters[cardId];
+      if(!card||!owned)return false;
+      const active=game.trucks.find(t=>t.cardId===cardId);
+      if(active)return kind==='capacity'?upgradeTruckCapacity(active.id):upgradeTruckRarity(active.id);
+      const truck=owned.parkedTruck||createCardTruck(card);
+      // Reuse the original resource/cap checks without occupying a real garage slot.
+      game.trucks.push(truck);
+      try {return kind==='capacity'?upgradeTruckCapacity(truck.id):upgradeTruckRarity(truck.id);}
+      finally {game.trucks.splice(game.trucks.indexOf(truck),1);owned.parkedTruck=truck;}
+    },
     upgradeTruckCapacity, assignOrder, assignCraftedOrder, assignPrivatePickup,
     startFleetProject, spendOvertime, useOvertimeRefill, claimOrderReward,
     spendMaxOvertime(orderId){const amount=overtimeToDeadline(game.orders.find(o=>o.id===orderId));return amount>0?spendOvertime(orderId,amount):false;},
@@ -243,7 +254,7 @@ const bridge = `
         // Collection data intentionally excludes assignment, hub and trip state.
         return [card.id, {capacity:truck.capacity, rank:truckRarity(truck), speed:truckSpeed(truck),
           loadedSpeed:truckSpeed(truck,truck.capacity), costPerKm:operatingCostPerKm(truck),
-          capacityLevel:truck.moduleCapacityLevel || 0, maxCapacityLevel:TRUCKS[card.vehicleTier].maxCapacityLevel}];
+          rankCost:rankGearCost(truck), capacityLevel:truck.moduleCapacityLevel || 0, maxCapacityLevel:TRUCKS[card.vehicleTier].maxCapacityLevel}];
       }));
       return {state: {...game,trucks,orders}, serverTime:now, catalog, cardVehicles,
         level:levelForXp(game.xp,game), expeditionCapacity:expeditionCapacity(),
@@ -318,6 +329,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     seat:()=>a.assignCharacterSeat(id(p.id),num(p.seat,4),num(p.template,2)),
     unseat:()=>a.removeSeat(num(p.template,2),num(p.seat,4)),
     cardUpgrade:()=>a.giveCharacterShard(id(p.id),true),shardCombine:()=>a.combineExpeditionShards(choice(p.rarity,['common','uncommon'])),
+    cardCapacity:()=>a.upgradeCardVehicle(id(p.id),'capacity'),cardRank:()=>a.upgradeCardVehicle(id(p.id),'rank'),
     buyTruck:()=>a.buyTruck(num(p.model,1)),rank:()=>a.upgradeTruckRarity(id(p.id)),capacity:()=>a.upgradeTruckCapacity(id(p.id)),sell:()=>a.sell(id(p.id)),
     assign:()=>a.assignOrder(id(p.order),id(p.truck)),assignPrivate:()=>a.assignPrivatePickup(id(p.order),id(p.truck)),assignCrafted:()=>a.assignCraftedOrder(id(p.order),id(p.truck)),
     projectStart:()=>a.startFleetProject(id(p.id),num(p.template,2)),overtime:()=>p.amount==='max'?a.spendMaxOvertime(id(p.id)):a.spendOvertime(id(p.id),num(p.amount)),refill:()=>a.useOvertimeRefill(),
