@@ -7,7 +7,7 @@ const BONUS:Record<string,string>={speed:'Tempo',cost:'Kostenersparnis',pay:'Fra
 const SCOPE:Record<string,string>={self:'Dieses Fahrzeug',single:'Eigene Einzelaufträge',fleet:'Alle Fahrzeuge im Großauftrag',garage:'Alle Fahrzeuge in der Garage'};
 const RARITY:Record<string,string>={common:C.muted,uncommon:C.accent,rare:C.gold};
 
-export function VehicleCards({data,busy,onUpgrade}:any){
+export function VehicleCards({data,busy,onUpgrade,modalBlocked=false}:any){
  const [selected,setSelected]=useState<string|null>(null);
  const {state:g,catalog:c}=data;
  const vehicle=(card:any)=>data.cardVehicles?.[card.id]||{capacity:c.models[card.vehicleTier].capacity,rank:{total:0,label:'Common',level:0}};
@@ -26,7 +26,7 @@ export function VehicleCards({data,busy,onUpgrade}:any){
     <Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt>
    </Pressable>;
   })}{row.length<3&&Array.from({length:3-row.length},(_,j)=><View key={`space-${j}`} style={{flex:1}}/>)}</View>)}
-  <Modal visible={!!card} transparent animationType="none" onRequestClose={()=>setSelected(null)}>
+  <Modal visible={!!card&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setSelected(null)}>
    <View style={styles.overlay}><SafeAreaView edges={['bottom']} style={styles.detail}>
     <Row><Txt style={styles.detailTitle}>{card?.name}</Txt><Btn secondary onPress={()=>setSelected(null)}>Schließen</Btn></Row>
     {card&&<ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:12}}>

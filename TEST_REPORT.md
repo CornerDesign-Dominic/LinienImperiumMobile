@@ -158,3 +158,12 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - 19 mobile Adaptertests plus alle 23 ursprünglichen Web-Regressionsdateien, Typprüfung und Android-Export bestanden. Live-Gastanmeldung, Speicherung/Deduplizierung, Regionsdaten, Testressourcen, XP-Levelbelohnung und Auth-Sperre geprüft.
 - Android-OTA im Kanal `preview`, Runtime 0.1.0. Keine neue APK, kein Spielstand zurückgesetzt. Bestehende wartende Empfehlungen werden beim nächsten Serverkontakt vereinheitlicht; laufende Aufträge behalten gespeicherte Werte. Temporäre 15-Sekunden-Expeditionslieferungen bleiben aktiv.
 - Physischer Gerätetest durch den Nutzer nach Update steht aus. Die Abschnitte „vorbereitet“ beschreiben die vorangegangenen Prüfungen.
+
+## Neues vorbereitetes Sammelpaket: Level Up und feste Überstundenwahl
+
+- Typprüfung, Functions-Syntaxprüfung und Web-Export bestanden. 21 Adaptertests plus 23 ursprüngliche Web-Regressionsdateien bestanden.
+- Neue Level-Prüfung: Meldung pro neuem Aufstieg, mehrere Level in einer Aktion, passive Offline-Nachholung, keine Wiederholung bei gewöhnlichem Sync oder Verteilung bestehender Punkte. Command-Belege speichern die Meldungsdaten.
+- Max-Prüfung mit einfacher und gemischter Flotte, teilweise schon gefahrenen Touren: berechnete Punktzahl macht ETA ≤ Frist, ein Punkt weniger lässt ETA > Frist. Projekt bleibt aktiv und hat passive Restfahrt. Weiterer Max-Einsatz verbraucht nichts; zu wenig Vorrat wird bis 0 verbraucht. Quellspielstand bleibt unverändert. Bestehende Tonnenkilometer-/Vergütungsregeln unverändert.
+- Browser bei 393 und 320 px mit lokaler Engine/simulierter Firebase-Anbindung: Level-Up-Modal aus Einstellungen, tatsächliche Belohnungen, Rückkehr zur gleichen Seite, kein altes Popup nach Reload, nacheinander Level 3/4/5. Verteilung aktuell links/Bedienung Mitte/Ergebnis rechts, vierter Punkt gesperrt, 2+1 gespeichert, kein Refill-Hinweis in Karte.
+- Überstunden-Browserprüfung: genau vier Optionen 1/5/10/Max, keine freie Eingabe/Übernehmen. Auswahl verbraucht nichts. Restvorrat bei Auswahl 10 korrekt verbraucht; bei 0 nur Refill. Max nach Refill lässt Flotten-ETA innerhalb der Frist, wiederholter Max-Einsatz gesperrt. Normale Einsätze ohne Popup; echte Levelaufstiege zeigen das gewünschte neue Level-Modal. Keine JavaScript-Seitenfehler.
+- Keine Veröffentlichung. Physische Android-/iOS-Prüfung steht für dieses neue Paket aus.

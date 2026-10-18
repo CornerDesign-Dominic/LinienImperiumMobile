@@ -4,7 +4,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {C,Txt,Row,Btn,Pill,Empty,n} from './ui';
 
 type StockItem={id:string;name:string;label?:string;amount:number;source:string;description:string;recipe?:string;craft?:boolean;use?:string;refill?:boolean;color?:string};
-export function Inventory({data,busy,onNavigate,onUseRefill}:any){
+export function Inventory({data,busy,onNavigate,onUseRefill,modalBlocked=false}:any){
  const [selected,setSelected]=useState<string|null>(null);
  const {state:g,catalog:c}=data;
  const items:StockItem[]=[
@@ -25,7 +25,7 @@ export function Inventory({data,busy,onNavigate,onUseRefill}:any){
    <View style={styles.artwork} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><Txt muted style={{fontSize:25}}>▧</Txt></View>
    <Text numberOfLines={3} style={styles.name}>{stock.label||stock.name}</Text><Txt style={styles.amount}>{n(stock.amount)}</Txt>
   </Pressable>)}{Array.from({length:3-row.length},(_,i)=><View key={`empty-${i}`} style={{flex:1}}/>)}</View>)}
-  <Modal visible={!!item} transparent animationType="none" onRequestClose={()=>setSelected(null)}>
+  <Modal visible={!!item&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setSelected(null)}>
    <View style={styles.overlay}><SafeAreaView edges={['bottom']} style={styles.detail}>
     <Row><Txt style={styles.title}>{item?.name}</Txt><Btn secondary onPress={()=>setSelected(null)}>Schließen</Btn></Row>
     {item&&<ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:12}}>

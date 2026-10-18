@@ -416,3 +416,34 @@ test('Custom overtime amounts preserve tkm accounting, cap completion cost and r
  for(const amount of [-1,1.5,'7',100001])assert.throws(()=>execute(active.state,'overtime',{id:project.id,amount},now,fixed));
  const zero=execute(active.state,'overtime',{id:project.id,amount:0},now,fixed);assert.equal(zero.state.overtimePoints,active.state.overtimePoints);assert.equal(zero.state.orders.find(o=>o.id===project.id).delivered,0);
 });
+
+test('Level notices report newly earned levels including offline transport, without replaying existing pending allocations',()=>{
+ const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ const first=execute(start.state,'testGrant',{kind:'xp',amount:100},now,fixed);assert.deepEqual(first.view.levelUps,[2]);assert.equal(first.state.inventory.overtimeRefills,1);
+ assert.equal(execute(first.state,'sync',{},now,fixed).view.levelUps,undefined);
+ const more=execute(first.state,'testGrant',{kind:'xp',amount:1000},now,fixed);assert.deepEqual(more.view.levelUps,[3,4,5]);assert.equal(more.state.inventory.overtimeRefills,4);
+ const allocated=execute(more.state,'level',{expedition:1,overtime:2},now,fixed);assert.equal(allocated.view.levelUps,undefined);
+ const offline=structuredClone(start.state);offline.xp=99;
+ const offer=start.view.state.orders.find(o=>o.choices.length);
+ const active=execute(offline,'assign',{order:offer.id,truck:offer.choices[0].id},now,fixed);
+ const end=active.view.state.orders.find(o=>o.id===offer.id).runningEndsAt;
+ const settled=execute(active.state,'sync',{},end+1,fixed);assert.deepEqual(settled.view.levelUps,[2]);assert.equal(execute(settled.state,'sync',{},end+1,fixed).view.levelUps,undefined);
+});
+
+test('Max overtime uses the minimum whole points that make the saved fleet meet its deadline',()=>{
+ for(const mixed of [false,true]){
+  const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+  let state=start.state;state.expedition.regions[0].discovered=7;state.expedition.regions[0].endlessUnlocked=true;state.expedition.seats[0]='navigator';state.overtimePoints=1000;
+  if(mixed){const card=start.view.catalog.cards.find(c=>c.region===0&&c.id!=='navigator');state.expedition.characters[card.id]={level:1,progress:0};state.expedition.seats[1]=card.id;}
+  state=execute(state,'draw',{region:0},now,()=>.97).state;const project=state.orders.find(o=>o.kind==='special');
+  const active=execute(state,'projectStart',{id:project.id,template:0},now,fixed);
+  const current=execute(active.state,'sync',{},now+123456,fixed),order=current.view.state.orders.find(o=>o.id===project.id),needed=order.overtimeForDeadline;
+  assert.ok(needed>0);assert.ok(needed<Math.ceil((order.volume-order.delivered)*order.distance/1000));
+  const json=JSON.stringify(current.state);
+  if(needed>1){const short=execute(current.state,'overtime',{id:project.id,amount:needed-1},now+123456,fixed).view.state.orders.find(o=>o.id===project.id);assert.ok(short.eta>short.project.deadlineAt);}
+  const result=execute(current.state,'overtime',{id:project.id,amount:'max'},now+123456,fixed),after=result.view.state.orders.find(o=>o.id===project.id);
+  assert.equal(result.state.overtimePoints,current.state.overtimePoints-needed);assert.ok(after.eta<=after.project.deadlineAt);assert.equal(after.status,'active');assert.equal(after.overtimeForDeadline,0);assert.equal(JSON.stringify(current.state),json);
+  const again=execute(result.state,'overtime',{id:project.id,amount:'max'},now+123456,fixed);assert.equal(again.state.overtimePoints,result.state.overtimePoints);
+  const poor=structuredClone(current.state);poor.overtimePoints=2;const limited=execute(poor,'overtime',{id:project.id,amount:'max'},now+123456,fixed);assert.equal(limited.state.overtimePoints,0);assert.ok(limited.view.state.orders.find(o=>o.id===project.id).overtimeForDeadline>0);
+ }
+});

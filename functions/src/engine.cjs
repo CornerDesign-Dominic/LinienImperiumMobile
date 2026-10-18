@@ -87,6 +87,27 @@ const bridge = `
     }
     return true;
   };
+  function overtimeToDeadline(order,now=Date.now()){
+    if(!order?.project||order.status!=='active'||now>=order.project.deadlineAt)return 0;
+    if(projectEstimatedEnd(order,now)<=order.project.deadlineAt)return 0;
+    const finish=Math.ceil((order.volume-order.delivered)*order.distance/OVERTIME_TKM_PER_POINT);
+    const eta=points=>{
+      const copy={...order,project:{...order.project,vehicles:order.project.vehicles.map(v=>({...v,bonusStats:{...v.bonusStats}}))}};
+      let remaining=Math.min(copy.volume-copy.delivered,points*OVERTIME_TKM_PER_POINT/copy.distance);
+      while(remaining>1e-9&&copy.delivered<copy.volume){
+        const vehicle=copy.project.vehicles.filter(v=>v.cargo).sort((a,b)=>a.nextAt-b.nextAt)[0];
+        if(!vehicle)break;
+        const cargo=Math.min(remaining,vehicle.cargo,copy.volume-copy.delivered);
+        copy.delivered=Math.min(copy.volume,copy.delivered+cargo);vehicle.cargo-=cargo;remaining-=cargo;
+        if(vehicle.cargo<1e-9){vehicle.cargo=0;vehicle.nextAt=null;}
+        if(copy.delivered<copy.volume)fillProjectTrips(copy,now);
+      }
+      return copy.delivered>=copy.volume-1e-9?now:projectEstimatedEnd(copy,now);
+    };
+    let low=1,high=finish;
+    while(low<high){const mid=Math.floor((low+high)/2);if(eta(mid)<=order.project.deadlineAt)high=mid;else low=mid+1;}
+    return low;
+  }
   globalThis.mobile = {
     get state() { return game; }, set state(value) { game = value; },
     newGame, save, loadGame, shortenTestMissions, normalizeQueuedReferrals, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
@@ -95,6 +116,7 @@ const bridge = `
     giveCharacterShard, combineExpeditionShards, buyTruck, upgradeTruckRarity,
     upgradeTruckCapacity, assignOrder, assignCraftedOrder, assignPrivatePickup,
     startFleetProject, spendOvertime, useOvertimeRefill, claimOrderReward,
+    spendMaxOvertime(orderId){const amount=overtimeToDeadline(game.orders.find(o=>o.id===orderId));return amount>0?spendOvertime(orderId,amount):false;},
     discoverExpeditionPlace, drawExpeditionJob, startExpeditionMission, claimExpeditionMission,
     buyHub, toggleHubTruck, collectHub, startHubUpgrade, combinePickupHints, craftCustomerOrder,
     unlockDepartment, upgradeWorkshop, upgradeSales, upgradeOfferLimit, upgradeTransport,
@@ -207,6 +229,7 @@ const bridge = `
           possibleRewards, relationshipReward:o.customer?(TRUST_REWARDS[o.kind]||0):0,
           tripEndsAt:assigned?o.tripStartAt+tourSeconds(o,assigned,o.tripCargo??Math.min(assigned.capacity,o.volume-o.delivered))*1000:null,
           runningEndsAt:assigned?now+remainingOrderSeconds(o,assigned,now)*1000:null,
+          overtimeForDeadline:project&&o.status==='active'?overtimeToDeadline(o,now):null,
           eta: o.project && o.status==='active' ? projectEstimatedEnd(o,now) : null,
           templates: project && o.status==='queued' ? [0,1,2].map(index=>{
             const vehicles=projectFleetVehicles(index);
@@ -296,7 +319,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     cardUpgrade:()=>a.giveCharacterShard(id(p.id),true),shardCombine:()=>a.combineExpeditionShards(choice(p.rarity,['common','uncommon'])),
     buyTruck:()=>a.buyTruck(num(p.model,1)),rank:()=>a.upgradeTruckRarity(id(p.id)),capacity:()=>a.upgradeTruckCapacity(id(p.id)),sell:()=>a.sell(id(p.id)),
     assign:()=>a.assignOrder(id(p.order),id(p.truck)),assignPrivate:()=>a.assignPrivatePickup(id(p.order),id(p.truck)),assignCrafted:()=>a.assignCraftedOrder(id(p.order),id(p.truck)),
-    projectStart:()=>a.startFleetProject(id(p.id),num(p.template,2)),overtime:()=>a.spendOvertime(id(p.id),num(p.amount)),refill:()=>a.useOvertimeRefill(),
+    projectStart:()=>a.startFleetProject(id(p.id),num(p.template,2)),overtime:()=>p.amount==='max'?a.spendMaxOvertime(id(p.id)):a.spendOvertime(id(p.id),num(p.amount)),refill:()=>a.useOvertimeRefill(),
     claimSingles:()=>a.claimSingleRewards(),
     claim:()=>a.claimOrderReward(id(p.id)),claimAll:()=>{for(const order of a.state.orders)a.applyOrderReward(order);},
     discover:()=>a.discoverExpeditionPlace(num(p.region,4)),draw:()=>a.drawExpeditionJob(num(p.region,4)),
@@ -330,6 +353,9 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const ok=calls[action]();
   if(action==='mission')a.shortenTestMissions();
   const view=a.view();
+  const knownLevels=new Set(state?.pendingLevelUps||[]);
+  const levelUps=view.state.pendingLevelUps.filter(level=>!knownLevels.has(level));
+  if(levelUps.length)view.levelUps=levelUps;
   if(['assign','assignPrivate','assignCrafted'].includes(action)&&view.state.orders.find(o=>o.id===p.order)?.status==='active')view.message='Auftrag gestartet.';
   if(action==='claimSingles'&&ok!==false)view.claimSummary=ok;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;

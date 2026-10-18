@@ -1,3 +1,14 @@
+## Neues Sammelpaket vom 18.10.2026 – noch nicht veröffentlicht
+
+- Punkteverteilung: Titel „Level Up“, freie Punkte rechts oben. Je Bereich aktuelles Kapazitätsmaximum links, −/zugewiesene Punkte/+ mittig, Ergebnis rechts. Weiterhin exakt drei Punkte je Level, kein Refill-Hinweis in der Verteilung.
+- Globales mittiges Level-Up-Modal mit Glückwunsch, erreichtem Level und tatsächlichen Belohnungen: 1 Refill à 100 Überstundenpunkte, 3 verteilbare Punkte und die bereits bestehenden 50 Expeditionspunkte. Keine Änderung dieser Belohnungen. Mehrere Aufstiege werden nacheinander angezeigt, vorhandene offene Verteilungen lösen beim normalen Neuladen keine alten Meldungen aus.
+- Server liefert neu erreichte Level auch beim Nachholen passiver Transporte. Command-Belege speichern Meldungen für sichere Wiederholung. Andere offene App-Dialoge werden vorübergehend ausgeblendet und danach wieder angezeigt. Kontowechsel/Reset bereinigen die Meldungswarteschlange und offene Verteilungsauswahl.
+- Überstunden: feste Auswahl 1, 5, 10, Max statt Zahleneingabe/Stepper. Auswahl ändert nur die Einstellung, rechter Button setzt direkt ein. Refill und Verhalten bei 0/knappem Vorrat bleiben erhalten.
+- Max ermittelt serverseitig die kleinste ganze Punktzahl, nach der die gespeicherte Flotte innerhalb der Restfrist fertig wird. Laufende Touren und gemischte Flotten werden berücksichtigt. Ist die Frist bereits machbar, werden keine Punkte verbraucht. Bei zu wenig Vorrat wird nur der Rest eingesetzt; das kann weiterhin unzureichend für die Frist sein. Kein Sofortabschluss, wenn passive Restfahrt möglich ist.
+- Nur Sammelbranch. Kein Firebase-Deployment, OTA-Update oder APK-Build.
+
+---
+
 ## Folgepaket vom 18.10.2026 – veröffentlicht
 
 Release: `2bdd72e8c26746831512b9635d16671d7cde2290` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39131547974). Server, Live-Prüfung und Android-Update erfolgreich. Frühere Hinweise „nur vorbereitet“ dokumentieren den Stand vor der Veröffentlichung.
