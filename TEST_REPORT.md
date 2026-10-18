@@ -113,3 +113,8 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Einheitliche Empfehlungsfunde aus Regionen 1 und 5 geprüft: gleiche Basiswerte, erhaltene Herkunft, gemeinsamer Katalogschlüssel. Vorhandene wartende Empfehlungen werden vereinheitlicht, laufende Werte und gespeicherte Flotte bleiben erhalten. Eingabespielstand unverändert.
 - Browser mit lokaler Engine / simulierter Firebase-Anbindung bei 393 und 320 px: sechs Typkarten, Rare-/Epic-Farben, Vorrat 2 aus zwei Regionen und nach Start 1. Fund-Modal mittig, mindestens 20 px Rand; lange Überschrift und Schließenbutton ohne Überlauf; Zuweisungsbutton vorhanden. Keine JavaScript-Seitenfehler.
 - Kein Deployment, OTA-Update oder APK-Build für dieses Folgepaket. Physischer Gerätetest nach späterer Veröffentlichung.
+
+### Expeditionsaufträge in Vorräten
+
+- Typprüfung und Web-Export bestanden. Browserprüfung mit lokaler Engine / simulierter Firebase-Anbindung bei 393 und 320 px: Material-/Fahrzeugkartenauftrag sichtbar, gemeinsamer Vorrat 2, Auswahl eines freien Garagenfahrzeugs, Start und automatische Navigation zur laufenden Liste. Vorrat sinkt auf 1, gestarteter Auftrag fehlt im Vorrat; laufende Zählung, Fortschritt, LKW, Restzeit und Detail-Modal vorhanden. Belegtes Fahrzeug wird nicht erneut angeboten. Keine JavaScript-Seitenfehler.
+- Spielengine und Belohnungsmechanik unverändert. Keine Veröffentlichung.

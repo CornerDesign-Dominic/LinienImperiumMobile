@@ -2,6 +2,8 @@ import React,{useState} from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes} from './ui';
 const unavailable=(o:any)=>o.vehicleStatus==='missing'?'Passender LKW fehlt':'Passender LKW im Einsatz';
+const expeditionName=(kind:string)=>kind==='character'?'Fahrzeugkartenauftrag':'Materialauftrag';
+const endlessMissions=(data:any)=>data.state.expedition.missions.filter((m:any)=>m.kind==='endless'&&m.status==='active');
 const section=(name:string)=><Txt style={styles.section}>{name}</Txt>;
 function progress(o:any,clock:number){
  if(o.status==='completed')return 100;
@@ -21,23 +23,27 @@ function OrderTile({order:o,data,clock,onOpen}:any){
 export function Orders({data,clock,busy,onOpen,onRunning,onSaved,onRefresh,onClaim}:any){
  const orders=data.state.orders.filter((o:any)=>!o.isProject),active=orders.filter((o:any)=>o.status==='active');
  const available=orders.filter((o:any)=>o.status==='available'),queued=orders.filter((o:any)=>o.status==='queued'),rewards=orders.filter((o:any)=>o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt);
+ const runningCount=active.length+endlessMissions(data).length;
+ const savedCount=queued.length+data.state.expedition.jobs.length;
  const tile=(o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>;
  return <>
-  {!!active.length&&<Pressable accessibilityRole="button" accessibilityLabel={`${active.length} ${active.length===1?'Auftrag':'Aufträge'} laufend`} onPress={onRunning}><Card style={styles.running}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700'}}>{active.length} {active.length===1?'Auftrag':'Aufträge'} laufend</Txt><Txt style={{color:C.accent}}>›</Txt></Row></Card></Pressable>}
+  {!!runningCount&&<Pressable accessibilityRole="button" accessibilityLabel={`${runningCount} ${runningCount===1?'Auftrag':'Aufträge'} laufend`} onPress={onRunning}><Card style={styles.running}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700'}}>{runningCount} {runningCount===1?'Auftrag':'Aufträge'} laufend</Txt><Txt style={{color:C.accent}}>›</Txt></Row></Card></Pressable>}
   {!!rewards.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {rewards.length}</Btn>}
-  <Pressable accessibilityRole="button" accessibilityLabel={`Aufträge aus Vorräten, ${queued.length} verfügbar`} onPress={onSaved}><Card style={styles.saved}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700',flex:1}}>Aufträge aus Vorräten</Txt><Pill>{queued.length}</Pill><Txt muted>›</Txt></Row></Card></Pressable>
+  <Pressable accessibilityRole="button" accessibilityLabel={`Aufträge aus Vorräten, ${savedCount} verfügbar`} onPress={onSaved}><Card style={styles.saved}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700',flex:1}}>Aufträge aus Vorräten</Txt><Pill>{savedCount}</Pill><Txt muted>›</Txt></Row></Card></Pressable>
   <View style={styles.refresh}><Txt muted style={styles.small}>Neu {remaining(data.state.nextAutoRefreshAt,clock)}</Txt><Btn secondary style={{marginTop:0,flex:1}} disabled={busy||data.state.coins<data.refreshCost} onPress={onRefresh}>Wechseln · {n(data.refreshCost)} M</Btn></View>
   {section('Angebote')}{available.map(tile)}{!available.length&&<Empty>Keine Angebote.</Empty>}
  </>;
 }
-export function SavedOrders({data,clock,onOpen}:any){
+export function SavedOrders({data,clock,busy,onOpen,onJob}:any){
  const queued=data.state.orders.filter((o:any)=>!o.isProject&&o.status==='queued');
- return <>{queued.map((o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>)}{!queued.length&&<Empty>Keine Aufträge verfügbar.</Empty>}</>;
+ const jobs=data.state.expedition.jobs,free=data.state.trucks.some((t:any)=>t.free&&t.tier>=2);
+ return <>{jobs.map((job:any)=><Pressable key={`job-${job.id}`} accessibilityRole="button" accessibilityLabel={`${expeditionName(job.kind)}, ${job.id}`} disabled={busy} onPress={()=>onJob(job)}><Card style={styles.offer}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{expeditionName(job.kind)}</Txt><Pill>Stufe {job.tier}</Pill></Row><Txt muted style={styles.small}>{data.catalog.regionNames[job.region]} · {job.tier*20} t</Txt>{!free&&<Txt muted style={styles.small}>Passender LKW im Einsatz oder nicht vorhanden</Txt>}</Card></Pressable>)}{queued.map((o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>)}{!queued.length&&!jobs.length&&<Empty>Keine Aufträge verfügbar.</Empty>}</>;
 }
-export function RunningOrders({data,clock,busy,onOpen,onClaim}:any){
+export function RunningOrders({data,clock,busy,onOpen,onClaim,onMission}:any){
  const orders=data.state.orders.filter((o:any)=>!o.isProject),active=orders.filter((o:any)=>o.status==='active'),ready=orders.filter((o:any)=>o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt);
  const tile=(o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>;
- return <>{!!ready.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {ready.length}</Btn>}{active.map(tile)}{!active.length&&<Empty>Keine Aufträge unterwegs.</Empty>}{!!ready.length&&<>{section('Prämien')}{ready.map(tile)}</>}</>;
+ const missions=endlessMissions(data);
+ return <>{missions.map((m:any)=><Pressable key={`mission-${m.id}`} accessibilityRole="button" accessibilityLabel={`${expeditionName(m.lootKind)}, unterwegs, ${m.id}`} onPress={()=>onMission(m)}><Card style={[styles.offer,{borderLeftColor:C.accent}]}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{expeditionName(m.lootKind)}</Txt><Txt gold style={styles.small}>{remaining(m.endsAt,clock)}</Txt></Row><Txt muted style={styles.small}>{data.catalog.regionNames[m.region]} · {data.state.trucks.find((t:any)=>t.id===m.truckId)?.model||'Fahrzeug'}</Txt><Bar value={(clock-m.startedAt)/(m.endsAt-m.startedAt)*100}/></Card></Pressable>)}{!!ready.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {ready.length}</Btn>}{active.map(tile)}{!active.length&&!missions.length&&<Empty>Keine Aufträge unterwegs.</Empty>}{!!ready.length&&<>{section('Prämien')}{ready.map(tile)}</>}</>;
 }
 export function OrderDetail({data,id,busy,clock,onCommand,onBack}:any){
  const o=data.state.orders.find((o:any)=>o.id===id&&!o.isProject);

@@ -4,6 +4,8 @@
 - Sonderaufträge blau (Rare), Empfehlungsaufträge violett (Epic), auch in Einzelkarten der Listen.
 - Katalog: fünf kundenspezifische Sonderaufträge und ein gemeinsamer Empfehlungsauftrag „Großprojekt Hafenverbund“. Neue und noch nicht gestartete Empfehlungen: 1.100 t, 240 km, 3 Stunden, Regionalverkehr. Herkunft/Kunde und Fundchancen bleiben erhalten; alle Vorräte laufen unter einem Typ zusammen. Laufende/abgeschlossene Altaufträge behalten ihre bisherigen Werte und Belohnungen.
 - Fund-Popup als mittiges Modal mit Außenabstand, begrenzter Breite und direktem Zuweisungsbutton. Fahrzeug-/Flottenauswahl bleibt erreichbar. Lange Titel teilen sich den Kopfbereich mit dem Schließenbutton ohne Überlauf.
+- „Aufträge aus Vorräten“ enthält jetzt auch wartende Material-/Fahrzeugkartenaufträge aus Expeditionen, einschließlich Zählung. Antippen öffnet freie geeignete Garagenfahrzeuge; nach erfolgreichem Start Wechsel zur laufenden Einzelauftragsliste.
+- Laufende Expeditionsaufträge zählen im Einzelauftragsbereich und auf Start mit, mit kompakter Karte, Zeitfortschritt, Restzeit und LKW. Detail-Modal erreichbar. Bereits gestartete Aufträge erscheinen nicht erneut im Vorrat. Automatische bestehende Lootgutschrift unverändert.
 - Nur Sammelbranch; kein Server-Deployment oder Handy-Update.
 
 ---
