@@ -106,3 +106,10 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Typprüfung, alle 15 Adaptertests und 23 ursprünglichen Web-Regressionsdateien sowie Android-Export bestanden. Live-Gastanmeldung, Speicherung, Deduplizierung, Testpunkte und XP-Levelbelohnungen erfolgreich geprüft.
 - Update im Kanal `preview` für installierte Runtime 0.1.0. Keine neue APK und keine Spielstände zurückgesetzt. Die temporären Expeditionslieferzeiten von 15 Sekunden bleiben für diese Testrunde aktiv.
 - Bisherige Abschnitte „vorbereitet“ dokumentieren die Prüfung vor Veröffentlichung. Physischer Android-Gerätetest durch den Nutzer steht aus.
+
+## Vorbereitetes Folgepaket vom 18.10.2026
+
+- Typprüfung und Web-Export bestanden; 16 Adaptertests sowie alle 23 ursprünglichen Web-Regressionsdateien bestanden.
+- Einheitliche Empfehlungsfunde aus Regionen 1 und 5 geprüft: gleiche Basiswerte, erhaltene Herkunft, gemeinsamer Katalogschlüssel. Vorhandene wartende Empfehlungen werden vereinheitlicht, laufende Werte und gespeicherte Flotte bleiben erhalten. Eingabespielstand unverändert.
+- Browser mit lokaler Engine / simulierter Firebase-Anbindung bei 393 und 320 px: sechs Typkarten, Rare-/Epic-Farben, Vorrat 2 aus zwei Regionen und nach Start 1. Fund-Modal mittig, mindestens 20 px Rand; lange Überschrift und Schließenbutton ohne Überlauf; Zuweisungsbutton vorhanden. Keine JavaScript-Seitenfehler.
+- Kein Deployment, OTA-Update oder APK-Build für dieses Folgepaket. Physischer Gerätetest nach späterer Veröffentlichung.

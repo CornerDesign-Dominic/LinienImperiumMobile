@@ -43,13 +43,23 @@ const bridge = `
     special:['Großauftrag Stadtversorgung','Großauftrag Baustellenlogistik','Großauftrag Materialbergung','Großauftrag Ferntransport','Großauftrag Handelsroute'],
     referral:['Großprojekt Hafenverbund','Großprojekt Versorgungskette','Großprojekt Industrieanlage','Großprojekt Fernkorridor','Großprojekt Kontinentalnetz']
   };
+  function normalizeReferral(order){
+    if(order.kind!=='referral'||order.status!=='queued')return;
+    order.projectName=mobileProjectNames.referral[0];
+    order.volume=order.baseVolume=PROJECT_BALANCE.referral.volume;
+    order.distance=PROJECT_BALANCE.referral.distance;
+    order.category='national';order.routeType='single';order.deadlineMs=PROJECT_DEADLINES.referral;
+  }
+  const originalQueueCustomerTrip=queueCustomerTrip;
+  queueCustomerTrip=(source,kind)=>{const order=originalQueueCustomerTrip(source,kind);normalizeReferral(order);return order;};
+  function normalizeQueuedReferrals(){game.orders.forEach(normalizeReferral);}
   function mobileProjectInfo(kind,region,existing=null){
     const customer=customerById(EXPEDITION_CUSTOMER_IDS[region]),balance=PROJECT_BALANCE[kind];
     const volume=existing?.volume ?? balance.volume+region*balance.volumePerRegion;
     const distance=existing?.distance ?? balance.distance+region*balance.distancePerRegion;
     const order={kind,category:customer.category,customer:customer.id,volume,distance,routeType:'single',...existing};
     const loot=GEAR_LOOT[kind],rules=SPECIAL_CHANCES[order.category];
-    return {key:kind+':'+region,kind,region,regionName:EXPEDITION_REGIONS[region],name:existing?.projectName||mobileProjectNames[kind][region],customer,
+    return {key:kind==='referral'?'referral':kind+':'+region,rarity:kind==='referral'?'epic':'rare',kind,region,regionName:EXPEDITION_REGIONS[region],name:existing?.projectName||mobileProjectNames[kind][region],customer,
       volume,distance,deadlineMs:existing?.deadlineMs||PROJECT_DEADLINES[kind],
       premium:completionPremium(order),freight:freightRevenue(order),baseXp:volume,relationship:TRUST_REWARDS[kind],
       expeditionChance:round2((1-EXPEDITION_CARD_CHANCES.reduce((sum,c)=>sum+c.chance,0))*EXPEDITION_JOB_WEIGHTS.find(w=>w.kind===kind).chance*100),
@@ -62,7 +72,7 @@ const bridge = `
   }
   globalThis.mobile = {
     get state() { return game; }, set state(value) { game = value; },
-    newGame, save, loadGame, shortenTestMissions, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
+    newGame, save, loadGame, shortenTestMissions, normalizeQueuedReferrals, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
     autoRefreshOrders, regenerateExpedition, regenerateOvertime,
     chooseStartCity, addCardToGarage, removeCardFromGarage, assignCharacterSeat,
     giveCharacterShard, combineExpeditionShards, buyTruck, upgradeTruckRarity,
@@ -208,7 +218,7 @@ const bridge = `
           places:Array.from({length:7},(_,place)=>({index:place,discoveryCost:expeditionDiscoveryCost(index,place),durationMs:expeditionDuration(index,'delivery',place)})),
           finalDurationMs:expeditionDuration(index,'final')
         })),
-        projectCatalog:EXPEDITION_REGIONS.flatMap((_,region)=>['special','referral'].map(kind=>mobileProjectInfo(kind,region))),
+        projectCatalog:[...EXPEDITION_REGIONS.map((_,region)=>mobileProjectInfo('special',region)),{...mobileProjectInfo('referral',0),sources:EXPEDITION_REGIONS.map((_,region)=>mobileProjectInfo('referral',region))}],
         transportUpgradeOptions:['national','international'].flatMap(category=>['premium','volume','range'].map(kind=>{
           const level=companyFor().transportUpgrades[category][kind+'Level'],limit=TRANSPORT_UPGRADE_LIMITS[category][kind];
           return {category,kind,level,limit,base:TRANSPORT_BASE[category],costs:Array.from({length:limit-level},(_,i)=>({coins:COMPANY_BALANCE.transportUpgradeCoins(kind,level+i+1),items:COMPANY_BALANCE.transportUpgradeItems(level+i+1)}))};
@@ -238,7 +248,7 @@ function session(state, now=Date.now(), random=Math.random) {
   compiled.runInContext(context,{timeout:2000});
   const api=context.mobile;
   if(state) api.state=JSON.parse(JSON.stringify(state));
-  api.shortenTestMissions();api.settleTrips(now);api.settleFleetProjects(now);api.settleExpeditions(now);api.settleHub(now);
+  api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleTrips(now);api.settleFleetProjects(now);api.settleExpeditions(now);api.settleHub(now);
   api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);
   return api;
 }

@@ -1,3 +1,13 @@
+## Folgepaket vom 18.10.2026 – noch nicht veröffentlicht
+
+- Großauftragskarten zeigen immer „Aufträge X“: nur startbereiter Vorrat, keine laufenden oder abgeschlossenen Instanzen.
+- Sonderaufträge blau (Rare), Empfehlungsaufträge violett (Epic), auch in Einzelkarten der Listen.
+- Katalog: fünf kundenspezifische Sonderaufträge und ein gemeinsamer Empfehlungsauftrag „Großprojekt Hafenverbund“. Neue und noch nicht gestartete Empfehlungen: 1.100 t, 240 km, 3 Stunden, Regionalverkehr. Herkunft/Kunde und Fundchancen bleiben erhalten; alle Vorräte laufen unter einem Typ zusammen. Laufende/abgeschlossene Altaufträge behalten ihre bisherigen Werte und Belohnungen.
+- Fund-Popup als mittiges Modal mit Außenabstand, begrenzter Breite und direktem Zuweisungsbutton. Fahrzeug-/Flottenauswahl bleibt erreichbar. Lange Titel teilen sich den Kopfbereich mit dem Schließenbutton ohne Überlauf.
+- Nur Sammelbranch; kein Server-Deployment oder Handy-Update.
+
+---
+
 > Das hier dokumentierte Sammelpaket wurde am 17.10.2026 veröffentlicht.
 > Release: da32f0701ef91f4aed77297f15e67ceda816263a · Actions 39066168191.
 > Frühere Hinweise „nur vorbereitet“ beschreiben den Stand vor dieser Veröffentlichung.

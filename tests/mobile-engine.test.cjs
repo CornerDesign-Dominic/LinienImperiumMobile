@@ -290,16 +290,16 @@ test('Single-order views expose forecasts, truck availability and live trip timi
  assert.equal(Math.round(cash*100),Math.round(choice.totalProfit*100));
 });
 
-test('Project catalog always lists ten real variants with source chances, rewards and saved-fleet timing',()=>{
+test('Project catalog lists five customer specials and one shared referral with source chances, rewards and saved-fleet timing',()=>{
  const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
- assert.equal(start.view.projectCatalog.length,10);
+ assert.equal(start.view.projectCatalog.length,6);
  assert.equal(start.state.orders.filter(o=>['special','referral'].includes(o.kind)).length,0);
- const special=start.view.projectCatalog.find(p=>p.key==='special:0'),referral=start.view.projectCatalog.find(p=>p.key==='referral:4');
+ const special=start.view.projectCatalog.find(p=>p.key==='special:0'),referral=start.view.projectCatalog.find(p=>p.key==='referral');
  assert.equal(special.expeditionChance,4.05);assert.equal(special.customerChance,20);
  assert.equal(special.volume,400);assert.equal(special.deadlineMs,3600000);
  assert.equal(special.moduleChance,8);assert.equal(special.epicChance,20);
- assert.equal(referral.customerChance,6);assert.equal(referral.moduleChance,30);assert.equal(referral.legendary.extraChance,25);
- assert.equal(referral.volume,2000);assert.equal(referral.distance,400);
+ assert.equal(referral.sources[4].customerChance,6);assert.equal(referral.moduleChance,20);assert.equal(referral.legendary.extraChance,25);
+ assert.equal(referral.volume,1100);assert.equal(referral.distance,240);
  start.state.expedition.regions.forEach(r=>{r.discovered=7;r.endlessUnlocked=true;});
  start.state.expedition.points=100;
  start.state.expedition.seats[0]='navigator';
@@ -333,3 +333,20 @@ test('Bulk single-order claim reports actual combined loot, excludes projects an
  const twice=execute(claim.state,'claimSingles',{},now,fixed);
  assert.equal(twice.state.coins,claim.state.coins);assert.equal(twice.view.claimSummary,undefined);
 });
+
+ test('Shared referrals normalize queued legacy stock and new customer finds while running terms survive',()=>{
+  let state=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed).state;
+  state.expedition.regions.forEach(r=>{r.discovered=7;r.endlessUnlocked=true;});state.expedition.points=100;state.expedition.seats[0]='navigator';
+  for(const region of [0,4])state=execute(state,'draw',{region},now,()=>.999).state;
+  const referrals=state.orders.filter(o=>o.kind==='referral');assert.equal(referrals.length,2);
+  for(const o of referrals){assert.equal(o.volume,1100);assert.equal(o.distance,240);assert.equal(o.category,'national');assert.equal(o.projectName,'Großprojekt Hafenverbund');}
+  assert.notEqual(referrals[0].customer,referrals[1].customer);
+  const legacy=referrals[1];legacy.volume=legacy.baseVolume=2000;legacy.distance=400;legacy.category='international';legacy.projectName='Großprojekt Kontinentalnetz';
+  const normalized=execute(state,'sync',{},now,fixed);assert.equal(normalized.state.orders.find(o=>o.id===legacy.id).volume,1100);
+  assert.equal(legacy.volume,2000); // Caller state stays untouched.
+  const started=execute(state,'projectStart',{id:legacy.id,template:0},now,fixed);
+  const running=started.state.orders.find(o=>o.id===legacy.id);running.volume=running.baseVolume=2000;running.distance=400;running.category='international';running.projectName='Altes Projekt';
+  const saved=JSON.stringify(running.project);
+  const synced=execute(started.state,'sync',{},now,fixed).view.state.orders.find(o=>o.id===legacy.id);
+  assert.equal(synced.volume,2000);assert.equal(synced.distance,400);assert.equal(synced.projectName,'Altes Projekt');assert.equal(JSON.stringify(synced.project),saved);assert.equal(synced.projectInfo.key,'referral');
+ });

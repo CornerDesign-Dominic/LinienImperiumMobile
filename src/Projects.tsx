@@ -2,11 +2,12 @@ import React,{useEffect,useState} from 'react';
 import {View,Text,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes} from './ui';
-const kindName=(kind:string)=>kind==='referral'?'Empfehlungsprojekt':'Sonderauftrag';
+const kindName=(kind:string)=>kind==='referral'?'Empfehlungsauftrag':'Sonderauftrag';
+const rarityStyle=(kind:string)=>kind==='referral'?{backgroundColor:'#291F3B',borderColor:'#A579DC'}:{backgroundColor:'#192B40',borderColor:'#619CE8'};
 const section=(text:string)=><Txt style={s.section}>{text}</Txt>;
 const fact=(label:string,value:string)=><Row><Txt muted style={{flex:1}}>{label}</Txt><Txt style={{textAlign:'right'}}>{value}</Txt></Row>;
 function ProjectTile({order:o,clock,onOpen}:any){
- return <Pressable accessibilityRole="button" accessibilityLabel={`${o.projectName}, ${o.id}`} onPress={()=>onOpen(o.id)}><Card style={s.tile}>
+ return <Pressable accessibilityRole="button" accessibilityLabel={`${o.projectName}, ${o.id}`} onPress={()=>onOpen(o.id)}><Card style={[s.tile,rarityStyle(o.kind)]}>
   <Row><Txt style={[s.title,{flex:1}]}>{o.projectName}</Txt><Txt muted style={s.small}>{o.status==='queued'?'Bereit':o.status==='active'?'›':o.status==='failed'?'Abgelaufen':'Abschluss'}</Txt></Row>
   <Txt muted style={s.small}>{o.customerName} · {n(o.volume)} t · {n(o.distance)} km</Txt>
   {o.status==='active'&&<><Bar value={o.delivered/o.volume*100}/><Row style={{marginBottom:0}}><Txt gold style={s.small}>Frist {remaining(o.project.deadlineAt,clock)}</Txt><Txt muted style={s.small}>Flotte {o.eta?remaining(o.eta,clock):'—'}</Txt></Row></>}
@@ -18,9 +19,9 @@ export function Projects({data,onRunning,onType}:any){
   <Pressable accessibilityRole="button" accessibilityLabel={`Laufende Großaufträge, ${active.length}`} onPress={onRunning}><Card style={s.running}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700',flex:1}}>Laufende Großaufträge</Txt><Pill>{active.length}</Pill><Txt style={{color:C.accent}}>›</Txt></Row></Card></Pressable>
   {data.projectCatalog.map((info:any)=>{
    const ready=orders.filter((o:any)=>o.status==='queued'&&o.projectInfo.key===info.key).length;
-   return <Pressable key={info.key} accessibilityRole="button" accessibilityLabel={`${info.name}, ${info.regionName}`} onPress={()=>onType(info.key)}><Card style={s.tile}>
-    <Row><Txt style={[s.title,{flex:1}]}>{info.name}</Txt><Txt muted>›</Txt></Row><Txt muted style={s.small}>{info.customer.name} · {info.regionName}</Txt>
-    <Row style={{marginTop:8,marginBottom:0}}><Txt muted style={s.small}>{kindName(info.kind)}</Txt>{ready>0&&<Pill>{ready} bereit</Pill>}</Row>
+   return <Pressable key={info.key} accessibilityRole="button" accessibilityLabel={`${info.name}, ${info.kind==='referral'?'Alle Regionen':info.regionName}, Aufträge ${ready}`} onPress={()=>onType(info.key)}><Card style={[s.tile,rarityStyle(info.kind)]}>
+    <Row><Txt style={[s.title,{flex:1}]}>{info.name}</Txt><Txt muted>›</Txt></Row><Txt muted style={s.small}>{info.kind==='referral'?'Alle Stammkunden · alle Regionen':`${info.customer.name} · ${info.regionName}`}</Txt>
+    <Row style={{marginTop:8,marginBottom:0}}><Txt muted style={s.small}>{kindName(info.kind)}</Txt><Txt muted style={s.small}>Aufträge {ready}</Txt></Row>
    </Card></Pressable>;
   })}
  </>;
@@ -35,11 +36,7 @@ function ProjectInfo({info,onExpedition,onCustomers}:any){
    <Txt muted style={s.loot}>Kapazitätsmodul · {n(info.moduleChance,2)} %</Txt>
    <Txt muted style={[s.small,{marginTop:10}]}>Abschlussprämie nur innerhalb der Frist</Txt>
   </Card>
-  <Card><Txt style={[s.title,{marginBottom:12}]}>Herkunft</Txt>{fact('Endlosexpedition',`${n(info.expeditionChance,2)} %`)}<Txt muted style={s.small}>{info.regionName}{info.expeditionOpen?'':' · Endlosort noch gesperrt'}</Txt>
-   <Btn secondary onPress={()=>onExpedition(info.region)}>Zur Expedition ›</Btn>
-   <View style={{marginTop:12}}>{fact(info.customerSource,`${n(info.customerChance,2)} %`)}<Txt muted style={s.small}>{info.customer.name}{info.customerOpen?'':' · noch freischalten'}</Txt></View>
-   <Btn secondary onPress={onCustomers}>Zu Stammkunden ›</Btn>
-  </Card>
+  <Card><Txt style={[s.title,{marginBottom:12}]}>Herkunft</Txt>{(info.sources||[info]).map((source:any)=><View key={source.region} style={{marginBottom:12}}><Txt style={{fontWeight:'700'}}>{source.customer.name} · {source.regionName}</Txt>{fact('Endlosexpedition',`${n(source.expeditionChance,2)} %`)}{fact(source.customerSource,`${n(source.customerChance,2)} %`)}<Btn secondary onPress={()=>onExpedition(source.region)}>Zur Expedition ›</Btn></View>)}<Btn secondary onPress={onCustomers}>Zu Stammkunden ›</Btn></Card>
  </>;
 }
 export function ProjectType({data,typeKey,onOpen,onExpedition,onCustomers}:any){
@@ -47,7 +44,7 @@ export function ProjectType({data,typeKey,onOpen,onExpedition,onCustomers}:any){
  if(!info)return <Empty>Auftragstyp nicht verfügbar.</Empty>;
  const orders=data.state.orders.filter((o:any)=>o.isProject&&o.projectInfo.key===typeKey),ready=orders.filter((o:any)=>o.status==='queued'),history=orders.filter((o:any)=>['completed','failed'].includes(o.status)).slice().reverse();
  return <>
-  <Row><Txt style={[s.title,{flex:1}]}>{info.name}</Txt><Pill gold={info.kind==='referral'}>{info.regionName}</Pill></Row><Txt muted style={{marginBottom:12}}>{info.customer.name}</Txt>
+  <Row><Txt style={[s.title,{flex:1}]}>{info.name}</Txt><Pill gold={info.kind==='referral'}>{info.kind==='referral'?'Epic':info.regionName}</Pill></Row><Txt muted style={{marginBottom:12}}>{info.kind==='referral'?'Alle Stammkunden':info.customer.name}</Txt>
   {ready.length?<>{section('Bereit')}{ready.map((o:any)=><ProjectTile key={o.id} order={o} onOpen={onOpen}/>)}</>:<Txt muted style={{marginBottom:12}}>Noch kein Auftrag bereit.</Txt>}
   <ProjectInfo info={info} onExpedition={onExpedition} onCustomers={onCustomers}/>
   {!!history.length&&<>{section('Abschlüsse')}{history.map((o:any)=><ProjectTile key={o.id} order={o} onOpen={onOpen}/>)}</>}
