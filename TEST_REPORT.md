@@ -130,3 +130,9 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Je Klick genau 1 Punkt, Teilfortschritt nach Sync, vollständige Entdeckung erst beim letzten benötigten Punkt, kein Fortschritt ohne Vorrat/in gesperrter Region. Bereits entdeckte Altorte bleiben vollständig; Eingabespielstand wird nicht verändert.
 - Region erreicht vor Bonuslieferungen 100 %, nächste Region wird freigegeben. Lieferbonus verändert Erkundungsprozente nicht; Kapazitätsmodul bei Freilegung wird exakt einmal vergeben.
 - Browserprüfung mit lokaler Engine / simulierter Firebase-Anbindung bei 393 und 320 px: Prozent oben rechts, drei Klicks auf Ort 1 zeigen 33/67/100 %, Bonus liefern und separat abholen, danach weiterhin 100 %. Keine JavaScript-Seitenfehler. Kein Deployment/OTA-Update.
+
+### Stadthub Händler wiederhergestellt
+
+- Ursache: Navigation zu `dealer` vorhanden, Renderfall fehlte. Kaufkarten für die zwei bestehenden Stadtfahrzeuge ergänzt und Seitentitel/Zugänge umbenannt. Backend unverändert.
+- Typprüfung und Web-Export bestanden. Browser bei 393 und 320 px mit lokaler Engine / simulierter Firebase-Anbindung: kein Hauptmenüeintrag, Navigation Stadthub → Händler, zwei Fahrzeuge sichtbar, Kauf vor Hub-Eröffnung gesperrt. Hub eröffnet, beide Modelle gekauft: Abzug exakt 4.000 + 20.000 M und Fahrzeuge automatisch im Hub eingesetzt. Kauf am bestehenden Stellplatzlimit gesperrt, Zurück zum Hub funktioniert. Keine JavaScript-Seitenfehler.
+- Kein Deployment/OTA-Update; Korrektur bleibt im Sammelpaket.

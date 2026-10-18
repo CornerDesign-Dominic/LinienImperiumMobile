@@ -9,6 +9,7 @@
 - Eigene Seite „Expeditionsaufträge“ inklusive Hauptmenülink entfernt. Vorratsübersicht stapelt nach Art: Materialaufträge, Fahrzeugkartenaufträge, Privatabholungen und Kundenaufträge. Nur Arten mit Bestand erscheinen, pro Karte „Anzahl X“. Antippen öffnet die konkreten Instanzen; Stufe, Region und individuelle Kundenwerte bleiben dort erhalten.
 - Erkundung setzt je Klick genau 1 Expeditionspunkt ein. Teilfortschritt pro Ort bleibt gespeichert; Gesamtkosten unverändert. Bei voller Punktzahl ist der Ort 100 % erkundet. Regionen/Endlosort zeigen den gewichteten Tokenfortschritt, ohne Lieferungen mitzuzählen.
 - Prozentzahl oben rechts in Regions-, Orts- und Endloskarten. Lieferung separat als „Bonus liefern“/„Bonus abholen“; bestehende +1-Kapazitätsbelohnung und Kundenfreischaltung bleiben erhalten. Entdeckte Altorte zählen vollständig, laufende Bonuslieferungen bleiben bestehen. Einmaliges Kapazitätsmodul bei Freilegung unverändert.
+- Leere Händleransicht behoben: Sprinter (4.000 M) und 3,5-Tonner (20.000 M) wieder als Kaufkarten verfügbar. Name und Links „Stadthub Händler“. Kein Hauptmenüeintrag; Zugang über Stadthub (bestehender Garagenlink bleibt). Bestehende Hub-Eröffnungs-, Münz- und Stellplatzgrenzen; keine neue Preis-/Kauflogik.
 - Nur Sammelbranch; kein Server-Deployment oder Handy-Update.
 
 ---
@@ -90,7 +91,7 @@ Vorschlag, noch nicht beschlossen: zunächst fünf Regionalangebote, davon drei 
 
 ### Händlerzugang
 
-- Händler aus dem Hauptmenü entfernt; bestehende Zugänge (insbesondere Stadthub) unverändert. Umbenennung wartet auf die gewünschte Bezeichnung und eindeutige Zuordnung (Händler/Stadthub). Nur vorbereitet.
+- Händler aus dem Hauptmenü entfernt; bestehende Zugänge (insbesondere Stadthub) unverändert. Umbenennung inzwischen für das Folgepaket vom 18.10. festgelegt: „Stadthub Händler“. Nur vorbereitet.
 
 ### Statistik
 
