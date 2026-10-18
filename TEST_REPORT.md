@@ -150,3 +150,11 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Neue Mechanikprüfung: 7 Punkte = 7.000 tkm; übergroße Menge verbraucht am Ende nur noch nötige Punkte, Abschluss wird erreicht. Bei 3 verfügbaren/7 angeforderten Punkten werden genau 3 verbraucht, bei 0 bleibt Fortschritt unverändert. Negative, gebrochene, Text- und zu große Mengen abgewiesen, 0 schreibt nichts gut.
 - Browser mit lokaler Engine / simulierter Firebase-Anbindung bei 393 und 320 px: Mengenbutton links ungefähr ein Drittel, direkter Einsatz rechts, zentrierter Editor; ungültige 0-Eingabe gesperrt. Auswahl 10 verändert Vorrat nicht; Einsetzen mit Vorrat 3 verbraucht 3 ohne Popup. Bei 0 nur Refill-Option, direkter +100-Refill verbraucht genau ein Paket und zeigt danach Mengeneditor. Anschließend 7 Punkte direkt eingesetzt, kein Popup. Keine JavaScript-Seitenfehler.
 - Kein Deployment/OTA-Update. Änderungen bleiben im Sammelbranch.
+
+## Veröffentlichung des Folgepakets am 18.10.2026
+
+- Release: `2bdd72e8c26746831512b9635d16671d7cde2290`.
+- [GitHub Actions](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39131547974): Validierung, Firebase-Deployment, Live-Smoke-Test und EAS-Update erfolgreich.
+- 19 mobile Adaptertests plus alle 23 ursprünglichen Web-Regressionsdateien, Typprüfung und Android-Export bestanden. Live-Gastanmeldung, Speicherung/Deduplizierung, Regionsdaten, Testressourcen, XP-Levelbelohnung und Auth-Sperre geprüft.
+- Android-OTA im Kanal `preview`, Runtime 0.1.0. Keine neue APK, kein Spielstand zurückgesetzt. Bestehende wartende Empfehlungen werden beim nächsten Serverkontakt vereinheitlicht; laufende Aufträge behalten gespeicherte Werte. Temporäre 15-Sekunden-Expeditionslieferungen bleiben aktiv.
+- Physischer Gerätetest durch den Nutzer nach Update steht aus. Die Abschnitte „vorbereitet“ beschreiben die vorangegangenen Prüfungen.

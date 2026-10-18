@@ -1,4 +1,6 @@
-## Folgepaket vom 18.10.2026 – noch nicht veröffentlicht
+## Folgepaket vom 18.10.2026 – veröffentlicht
+
+Release: `2bdd72e8c26746831512b9635d16671d7cde2290` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39131547974). Server, Live-Prüfung und Android-Update erfolgreich. Frühere Hinweise „nur vorbereitet“ dokumentieren den Stand vor der Veröffentlichung.
 
 - Großauftragskarten zeigen immer „Aufträge X“: nur startbereiter Vorrat, keine laufenden oder abgeschlossenen Instanzen.
 - Sonderaufträge blau (Rare), Empfehlungsaufträge violett (Epic), auch in Einzelkarten der Listen.
@@ -14,7 +16,7 @@
 - Großauftragsdetail: links Mengenbutton (33 % Breite), rechts direktes „Überstunden einsetzen“. Linker Button öffnet mittiges Modal mit freier ganzzahliger Menge, +/−, Übernehmen und direktem +100-Refill aus Vorräten. Mengenwahl verbraucht nichts.
 - Überstundenverbrauch öffnet kein Popup und keinen Speicherhinweis; Fortschritt/Restzeit werden aktualisiert. Gewählte Menge über Vorrat verbraucht den verfügbaren Rest bis 0; nahe Abschluss weiterhin nur tatsächlich benötigte Punkte. Bei 0 öffnet Einsetzen das Modal ausschließlich mit Refill-Option (und Schließen). Nach Refill ist die Mengenauswahl wieder verfügbar.
 - Mobile Servervalidierung erlaubt ganze Mengen 1–100.000; bestehende Tonnenkilometer-/Abrechnungsfunktion bleibt erhalten, wird beim Laden ausschließlich an ihrer Mengenprüfung angepasst. Vendor-Datei unverändert; strukturgesicherter Adapter bricht ab, falls die erwartete Funktionsgrenze sich ändert.
-- Nur Sammelbranch; kein Server-Deployment oder Handy-Update.
+- Am 18.10.2026 für Server und installierte Android-Testversion veröffentlicht.
 
 ---
 
