@@ -34,9 +34,18 @@ export function Orders({data,clock,busy,onOpen,onRunning,onSaved,onRefresh,onCla
   {section('Angebote')}{available.map(tile)}{!available.length&&<Empty>Keine Angebote.</Empty>}
  </>;
 }
-export function SavedOrders({data,clock,busy,onOpen,onJob}:any){
- const queued=data.state.orders.filter((o:any)=>!o.isProject&&o.status==='queued');
- const jobs=data.state.expedition.jobs,free=data.state.trucks.some((t:any)=>t.free&&t.tier>=2);
+export function SavedOrders({data,clock,busy,onOpen,onJob,typeKey,onType}:any){
+ const allOrders=data.state.orders.filter((o:any)=>!o.isProject&&o.status==='queued');
+ const allJobs=data.state.expedition.jobs;
+ const groups=[
+  {key:'material',name:'Materialaufträge',count:allJobs.filter((j:any)=>j.kind==='material').length},
+  {key:'character',name:'Fahrzeugkartenaufträge',count:allJobs.filter((j:any)=>j.kind==='character').length},
+  {key:'private',name:'Privatabholungen',count:allOrders.filter((o:any)=>o.kind==='private').length},
+  {key:'customer',name:'Kundenaufträge',count:allOrders.filter((o:any)=>o.kind!=='private').length}
+ ].filter(g=>g.count>0);
+ if(!typeKey)return <>{groups.map(group=><Pressable key={group.key} accessibilityRole="button" accessibilityLabel={`${group.name}, Anzahl ${group.count}`} onPress={()=>onType(group.key)}><Card style={styles.saved}><Row style={{marginBottom:0}}><View style={{flex:1}}><Txt style={styles.title}>{group.name}</Txt><Txt muted style={styles.small}>Anzahl {group.count}</Txt></View><Txt muted>›</Txt></Row></Card></Pressable>)}{!groups.length&&<Empty>Keine Aufträge verfügbar.</Empty>}</>;
+ const queued=allOrders.filter((o:any)=>typeKey==='private'?o.kind==='private':typeKey==='customer'?o.kind!=='private':false);
+ const jobs=allJobs.filter((j:any)=>j.kind===typeKey),free=data.state.trucks.some((t:any)=>t.free&&t.tier>=2);
  return <>{jobs.map((job:any)=><Pressable key={`job-${job.id}`} accessibilityRole="button" accessibilityLabel={`${expeditionName(job.kind)}, ${job.id}`} disabled={busy} onPress={()=>onJob(job)}><Card style={styles.offer}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{expeditionName(job.kind)}</Txt><Pill>Stufe {job.tier}</Pill></Row><Txt muted style={styles.small}>{data.catalog.regionNames[job.region]} · {job.tier*20} t</Txt>{!free&&<Txt muted style={styles.small}>Passender LKW im Einsatz oder nicht vorhanden</Txt>}</Card></Pressable>)}{queued.map((o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>)}{!queued.length&&!jobs.length&&<Empty>Keine Aufträge verfügbar.</Empty>}</>;
 }
 export function RunningOrders({data,clock,busy,onOpen,onClaim,onMission}:any){

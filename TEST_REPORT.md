@@ -118,3 +118,8 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 
 - Typprüfung und Web-Export bestanden. Browserprüfung mit lokaler Engine / simulierter Firebase-Anbindung bei 393 und 320 px: Material-/Fahrzeugkartenauftrag sichtbar, gemeinsamer Vorrat 2, Auswahl eines freien Garagenfahrzeugs, Start und automatische Navigation zur laufenden Liste. Vorrat sinkt auf 1, gestarteter Auftrag fehlt im Vorrat; laufende Zählung, Fortschritt, LKW, Restzeit und Detail-Modal vorhanden. Belegtes Fahrzeug wird nicht erneut angeboten. Keine JavaScript-Seitenfehler.
 - Spielengine und Belohnungsmechanik unverändert. Keine Veröffentlichung.
+
+### Gestapelte Vorratsaufträge
+
+- Typprüfung und Web-Export bestanden. Browser bei 393 und 320 px mit simulierter Firebase-Anbindung: genau eine Materialkarte „Anzahl 13“ und eine Fahrzeugkartenkarte „Anzahl 1“; leere Arten fehlen. Kein Menüpunkt/Screen „Expeditionsaufträge“ mehr.
+- Materialgruppe öffnen, konkreten Auftrag starten und in laufender Liste verfolgen; danach Materialanzahl 12, gemeinsame Vorratszahl 13. Wechsel zur Fahrzeugkartengruppe und Ausschluss des belegten LKW geprüft. Keine JavaScript-Seitenfehler. Keine Veröffentlichung.
