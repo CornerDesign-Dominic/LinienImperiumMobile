@@ -8,6 +8,8 @@
 - Vorrats-Auftragsauswahl bündelt Expeditionsaufträge je Art und Rang über alle Regionen hinweg. Pro vorhandenem Rang eine Karte mit „Anzahl X“ und Umfang, keine Einzelinstanz-/Regionszeilen mehr. Rang 1 Common grau, Rang 2 Uncommon grün, Rang 3 Rare blau. Leere Ränge fehlen.
 - Beim Antippen startet die bisher erste vorhandene Instanz des Stapels über die freie Fahrzeugwahl. Region/Rang stehen in der Zuweisung; konkrete Herkunft, Belohnungen und Instanz-ID bleiben erhalten. Verbrauch reduziert genau diesen Stapel um 1, laufende Aufträge bleiben außerhalb des Vorrats. Übergeordnete Artübersicht bleibt erhalten.
 - Großauftragsnamen enthalten den Typ direkt: „Sonderauftrag …“ bzw. „Empfehlungsauftrag …“. Separate Typzeile in Katalogkarten entfernt; Kunde/Region und „Aufträge X“ stehen gemeinsam darunter. Gleiche Namen in Typansicht, laufenden Karten, Instanzdetails und Fundmeldung. Anzeigeformatierung bewahrt vorhandene Auftragsdaten und Werte.
+- Header zeigt neben Expeditions- und Überstundenstand jeweils MM:SS bis zum nächsten Token. Fristen stammen aus der Server-Regenerationslogik (20 bzw. 10 Minuten); bei vollem/überfülltem Vorrat „Voll“. Server-Sync am jeweiligen Fristende aktualisiert Tokenzahl und startet den nächsten Countdown.
+- „Gespeichert“ und andere kurze Erfolgshinweise schweben jetzt über dem unteren Menü, mit sicherem Abstand zur Systemleiste. Sie reservieren keinen Platz im Layout, verschieben keine Inhalte und blockieren keine Eingaben. Bestehende automatische Ausblendung bleibt erhalten.
 - Nur Sammelbranch. Kein Firebase-Deployment, OTA-Update oder APK-Build.
 
 ---

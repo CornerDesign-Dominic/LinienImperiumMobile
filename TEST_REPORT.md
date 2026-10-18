@@ -179,3 +179,11 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 
 - Typprüfung und Web-Export bestanden. Browser bei 393 und 320 px: alle sechs Katalogtitel mit Sonder-/Empfehlungsauftrag, keine separate Typzeile, Vorratszahlen vorhanden. Typdetail und vorhandene Empfehlungsinstanz zeigen denselben Namen. Keine JavaScript-Seitenfehler.
 - Bestehende Namen werden nur für die Anzeige formatiert; keine Änderung von Auftragserzeugung, Fristen oder Vergütung. Fundtitel ebenfalls angepasst und abschließend typgeprüft. Keine Veröffentlichung.
+
+### Regenerationscountdowns und schwebende Hinweise
+
+- Typprüfung und Web-Export bestanden. 22 Adaptertests plus 23 ursprüngliche Web-Regressionsdateien bestanden.
+- Neuer Regenerationstest: tatsächliche nächste Serverfristen, Gutschrift exakt an der Grenze, nächste 20-/10-Minuten-Frist, Stoppen am Maximum und über Maximum ohne Kürzung von Test-/Belohnungsvorräten.
+- Browser bei 393 und 320 px mit lokaler Engine/simulierter Firebase-Anbindung: beide Countdowns sichtbar ohne Überlauf, automatischer Sync schreibt beide Token gut und startet Timer neu. Bei vollem und überfülltem Vorrat „Voll“.
+- Erfolgshinweis nach Kapazitätsupgrade geprüft: vor/nach identische Position des Spielinhalts, CSS absolut positioniert, keine Pointer-Ereignisse, Menü weiter bedienbar, Hinweis verschwindet automatisch. Keine JavaScript-Seitenfehler.
+- Kein Deployment/OTA-Update; beide Änderungen bleiben im Sammelpaket.

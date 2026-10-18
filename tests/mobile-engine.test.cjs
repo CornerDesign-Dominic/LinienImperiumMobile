@@ -447,3 +447,15 @@ test('Max overtime uses the minimum whole points that make the saved fleet meet 
   const poor=structuredClone(current.state);poor.overtimePoints=2;const limited=execute(poor,'overtime',{id:project.id,amount:'max'},now+123456,fixed);assert.equal(limited.state.overtimePoints,0);assert.ok(limited.view.state.orders.find(o=>o.id===project.id).overtimeForDeadline>0);
  }
 });
+
+test('Token regeneration countdowns follow server deadlines and stop at or above capacity',()=>{
+ const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ assert.deepEqual(start.view.regeneration,{expeditionNextAt:null,overtimeNextAt:null});
+ const state=start.state;state.expedition.points=48;state.overtimePoints=98;state.expedition.lastRegenAt=now-20*60000+1000;state.overtimeLastRegenAt=now-10*60000+3000;
+ const initial=execute(state,'sync',{},now,fixed);assert.equal(initial.view.regeneration.expeditionNextAt,now+1000);assert.equal(initial.view.regeneration.overtimeNextAt,now+3000);
+ const expedition=execute(initial.state,'sync',{},now+1000,fixed);assert.equal(expedition.state.expedition.points,49);assert.equal(expedition.view.regeneration.expeditionNextAt,now+1000+20*60000);
+ const overtime=execute(expedition.state,'sync',{},now+3000,fixed);assert.equal(overtime.state.overtimePoints,99);assert.equal(overtime.view.regeneration.overtimeNextAt,now+3000+10*60000);
+ const full=execute(overtime.state,'sync',{},now+20*60000+1000,fixed);assert.equal(full.state.expedition.points,50);assert.equal(full.state.overtimePoints,100);assert.deepEqual(full.view.regeneration,{expeditionNextAt:null,overtimeNextAt:null});
+ full.state.expedition.points=75;full.state.overtimePoints=200;
+ const over=execute(full.state,'sync',{},now+21*60000,fixed);assert.deepEqual(over.view.regeneration,{expeditionNextAt:null,overtimeNextAt:null});assert.equal(over.state.expedition.points,75);assert.equal(over.state.overtimePoints,200);
+});

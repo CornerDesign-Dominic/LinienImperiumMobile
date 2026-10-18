@@ -247,6 +247,7 @@ const bridge = `
       }));
       return {state: {...game,trucks,orders}, serverTime:now, catalog, cardVehicles,
         level:levelForXp(game.xp,game), expeditionCapacity:expeditionCapacity(),
+        regeneration:{expeditionNextAt:game.expedition.points<expeditionCapacity()?game.expedition.lastRegenAt+EXPEDITION_REGEN_MS:null,overtimeNextAt:game.overtimePoints<game.overtimeCapacity?game.overtimeLastRegenAt+OVERTIME_REGEN_MS:null},
         templates:[0,1,2].map(i=>fleetTemplate(i)),
         cardBonuses:Object.fromEntries(EXPEDITION_CHARACTERS.map(c=>[c.id,cardBonusValue(c)])),
         openRegions:EXPEDITION_REGIONS.map((_,i)=>expeditionRegionOpen(i)),
