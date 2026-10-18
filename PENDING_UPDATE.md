@@ -5,6 +5,8 @@
 - Server liefert neu erreichte Level auch beim Nachholen passiver Transporte. Command-Belege speichern Meldungen für sichere Wiederholung. Andere offene App-Dialoge werden vorübergehend ausgeblendet und danach wieder angezeigt. Kontowechsel/Reset bereinigen die Meldungswarteschlange und offene Verteilungsauswahl.
 - Überstunden: feste Auswahl 1, 5, 10, Max statt Zahleneingabe/Stepper. Auswahl ändert nur die Einstellung, rechter Button setzt direkt ein. Refill und Verhalten bei 0/knappem Vorrat bleiben erhalten.
 - Max ermittelt serverseitig die kleinste ganze Punktzahl, nach der die gespeicherte Flotte innerhalb der Restfrist fertig wird. Laufende Touren und gemischte Flotten werden berücksichtigt. Ist die Frist bereits machbar, werden keine Punkte verbraucht. Bei zu wenig Vorrat wird nur der Rest eingesetzt; das kann weiterhin unzureichend für die Frist sein. Kein Sofortabschluss, wenn passive Restfahrt möglich ist.
+- Vorrats-Auftragsauswahl bündelt Expeditionsaufträge je Art und Rang über alle Regionen hinweg. Pro vorhandenem Rang eine Karte mit „Anzahl X“ und Umfang, keine Einzelinstanz-/Regionszeilen mehr. Rang 1 Common grau, Rang 2 Uncommon grün, Rang 3 Rare blau. Leere Ränge fehlen.
+- Beim Antippen startet die bisher erste vorhandene Instanz des Stapels über die freie Fahrzeugwahl. Region/Rang stehen in der Zuweisung; konkrete Herkunft, Belohnungen und Instanz-ID bleiben erhalten. Verbrauch reduziert genau diesen Stapel um 1, laufende Aufträge bleiben außerhalb des Vorrats. Übergeordnete Artübersicht bleibt erhalten.
 - Nur Sammelbranch. Kein Firebase-Deployment, OTA-Update oder APK-Build.
 
 ---

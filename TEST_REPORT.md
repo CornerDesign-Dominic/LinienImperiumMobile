@@ -167,3 +167,10 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Browser bei 393 und 320 px mit lokaler Engine/simulierter Firebase-Anbindung: Level-Up-Modal aus Einstellungen, tatsächliche Belohnungen, Rückkehr zur gleichen Seite, kein altes Popup nach Reload, nacheinander Level 3/4/5. Verteilung aktuell links/Bedienung Mitte/Ergebnis rechts, vierter Punkt gesperrt, 2+1 gespeichert, kein Refill-Hinweis in Karte.
 - Überstunden-Browserprüfung: genau vier Optionen 1/5/10/Max, keine freie Eingabe/Übernehmen. Auswahl verbraucht nichts. Restvorrat bei Auswahl 10 korrekt verbraucht; bei 0 nur Refill. Max nach Refill lässt Flotten-ETA innerhalb der Frist, wiederholter Max-Einsatz gesperrt. Normale Einsätze ohne Popup; echte Levelaufstiege zeigen das gewünschte neue Level-Modal. Keine JavaScript-Seitenfehler.
 - Keine Veröffentlichung. Physische Android-/iOS-Prüfung steht für dieses neue Paket aus.
+
+### Vorratsstapel nach Rang und Seltenheitsfarbe
+
+- Typprüfung und Web-Export bestanden. Backend und Belohnungslogik unverändert.
+- Browser bei 393 und 320 px mit lokaler Engine/simulierter Firebase-Anbindung: Materialrang 1 mit 13 Aufträgen aus zwei Regionen als eine Karte; Rang 2 mit 2 und Rang 3 mit 1 jeweils separat. Drei unterschiedliche passende Rand-/Hintergrundfarben, keine Regions-Einzelzeilen. Fahrzeugkartenrang 2 aus zwei Regionen ebenfalls ein Stapel mit Anzahl 3.
+- Zuweisung eines Rang-1-Stapelauftrags erhält die tatsächliche Herkunft und Rang; genau die gewählte vorhandene Instanz wird entfernt, Stapel sinkt 13 → 12 und Art-/Gesamtzählung entsprechend. Rücknavigation und Wechsel der Auftragsart geprüft. Keine JavaScript-Seitenfehler.
+- Kein Deployment/OTA-Update; Ergänzung im Sammelpaket.
