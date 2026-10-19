@@ -288,3 +288,10 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Mobile-Konstante für Expedition von 20 auf 10 Minuten geändert, strukturgesichert beim Laden des unveränderten gepinnten Web-Vendors. Überstunden bereits 10 Minuten. Server-Gutschrift, NextAt-Countdown und dynamische Hilfe verwenden damit denselben 600.000-ms-Takt.
 - Alle 33 Node-Testeinträge bestanden. Bestehende Zeitprüfungen auf den neuen Expeditionstakt angepasst: Frist nach 10 Minuten, laufende Phase bei Verbrauch, volle/überfüllte Vorräte, Neustart nach Pause, Offline-Nachholung und Auffüller unterhalb des Limits. Überstundenphase und automatische Angebotswechsel bleiben unverändert.
 - Keine UI-Änderungen; im Sammelbranch gespeichert, nicht veröffentlicht.
+
+
+## Stadthub-Hinweis auf Start – 19.10.2026, vorbereitet
+
+- Neue einzeilige Karte unter den Auftragskacheln: „Stadthub / Letzte Stunde“ bei fünf abgeschlossenen Kassenzyklen und aktiven Stadttransportern, „Stadthub / Kasse voll“ ab sechs Zyklen unabhängig von eingesetzten Fahrzeugen. Antippen navigiert zum Stadthub. Anzeige aus bestehendem Serverzustand, keine Wirtschaftsänderung.
+- Typprüfung und Expo-Webexport bestanden. Browser-QA mit lokaler Engine/simuliertem Firebase auf 393/320 px bestanden: ohne Hub/bei vier Zyklen/pausiertem letzten Zyklus ausgeblendet, letzter aktiver Zyklus und volle Kasse sichtbar, Kartenhöhe unter 50 px, Direktnavigation und Ausblenden nach Abholung. Keine Browserfehler, 320-px-Ansicht visuell geprüft. Serverregression wegen reiner UI-Ergänzung nicht wiederholt.
+- Sammelbranch, nicht veröffentlicht.

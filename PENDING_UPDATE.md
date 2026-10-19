@@ -10,6 +10,7 @@
 - Fahrzeugkarten öffnen aus der Sammlung eine eigene Detailseite statt eines Modals. Fester, zentrierter 180×180-Bildplatzhalter (1:1), Name/Stufe/Kapazität/Rang kompakt zusammengefasst. Bonus und Geltungsbereich separat hervorgehoben, Fahrzeugdaten als klare links/rechts ausgerichtete Werte. Kartenstufe, Kapazität und Rang haben eigene Verbesserungsbereiche mit Fortschritt, Bestand/Kosten und passenden Maximum-/Sperrzuständen.
 - Nicht entdeckte Karten haben ebenfalls eine Detailseite, ohne Upgrade-Aktionen. Keine Auftragszuweisungen in der Sammlung. Rücknavigation führt ins Kartenraster; vorhandene Upgradeaktionen unverändert. Optionale spätere Beschreibung wird am Seitenende unterstützt, ohne erfundene Texte. Seltenheitsfarben mit übrigem Inventar vereinheitlicht.
 - Expeditions- und Überstundenpunkte regenerieren nun beide genau 1 Punkt je 10 Minuten. Countdown, Offline-Nachholung und Spielhilfe verwenden denselben Engine-Takt. Verbrauch unterhalb des Limits setzt den Zyklus weiterhin nicht zurück; Pause bei vollem Vorrat bleibt bestehen.
+- Startseite: schmale, einzeilige Stadthub-Karte nur im letzten aktiven Stundenzyklus (5 von 6 Stunden) oder bei voller Kasse. Anzeige „Letzte Stunde“ bzw. hervorgehoben „Kasse voll“, Antippen öffnet direkt den Stadthub. Nach Abholen wieder ausgeblendet. Kein Hinweis ohne Hub, in früheren Zyklen oder bei pausiertem Hub vor der Füllgrenze.
 - Nur Sammelbranch, kein Deployment oder App-Update.
 
 ---

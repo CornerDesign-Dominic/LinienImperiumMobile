@@ -19,6 +19,7 @@ import {VehicleCards} from './VehicleCards';
 import {VehicleCardDetail} from './VehicleCardDetail';
 import {Garage} from './Garage';
 import {HubVehicles} from './HubVehicles';
+import {HubNotice} from './HubNotice';
 import {C,s,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes,plain} from './ui';
 const TABS=[['home','⌂','Home'],['fleet','▦','Flotte'],['garage','▤','Garage'],['orders','≡','Einzelaufträge'],['projects','◇','Großaufträge']];
 const NAMES:Record<string,string>={home:'Start',fleet:'Flotte',garage:'Garage',orders:'Einzelaufträge',runningOrders:'Laufende Aufträge',savedOrders:'Aufträge aus Vorräten',savedOrderType:'Auftragsauswahl',orderDetail:'Auftragsdetails',projects:'Großaufträge',projectType:'Großauftrag',runningProjects:'Laufende Großaufträge',projectDetail:'Großauftrag',expeditions:'Expedition',cards:'Fahrzeugkarten',cardDetail:'Fahrzeugkarte',company:'Firma',transportUpgrade:'Transport verbessern',hub:'Stadthub',inventory:'Vorräte',crafting:'Herstellen',customers:'Stammkunden',customerDetail:'Kundendetails',statistics:'Statistik',account:'Einstellungen',dealer:'Stadthub Händler',wholesaler:'Großhändler',help:'Spielhilfe',events:'Events & Ankündigungen'};
@@ -92,6 +93,7 @@ function Game(){
    case 'home':return <>
     <Row style={{marginBottom:14}}><Txt style={{fontSize:15,fontWeight:'700',flexShrink:1}}>{g.profile.companyName}</Txt><Txt muted style={{fontSize:12}}>{g.profile.cityName}</Txt></Row>
     <View style={v.tiles}>{[false,true].map(isProject=>{const label=isProject?'Großaufträge':'Einzelaufträge';const active=g.orders.filter((o:any)=>Boolean(o.isProject)===isProject&&o.status==='active').length+(isProject?0:g.expedition.missions.filter((m:any)=>m.kind==='endless'&&m.status==='active').length);const count=rewards.filter((o:any)=>Boolean(o.isProject)===isProject).length;return <Pressable key={label} accessibilityRole="button" accessibilityLabel={`${label}, ${active} unterwegs, ${count} Belohnungen`} onPress={()=>go(isProject?(count?'runningProjects':'projects'):'orders')} style={v.tile}><Text numberOfLines={2} style={{color:C.text,fontSize:15,fontWeight:'700',lineHeight:20,height:40}}>{isProject?'Groß-\naufträge':'Einzel-\naufträge'}</Text><Txt muted style={{fontSize:13}}>{active} unterwegs</Txt><View style={{height:24,justifyContent:'flex-end'}}>{count>0&&<Txt gold style={{fontSize:12}}>{count} {count===1?'Belohnung':'Belohnungen'}</Txt>}</View></Pressable>;})}</View>
+    <HubNotice data={data} onOpen={()=>go('hub')}/>
     {g.pendingLevelUps.length>0&&<LevelUpAllocation data={data} busy={busy} allocation={allocation} onChange={setAllocation} onConfirm={()=>act('level',allocation)}/>}
 
     <Pressable onPress={()=>go('events')}><Card><Row><Pill gold>EVENTS & ANKÜNDIGUNGEN</Pill><Txt muted>↗</Txt></Row><Txt muted>Aktuell keine Events aktiv.</Txt></Card></Pressable>
