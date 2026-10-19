@@ -1,7 +1,7 @@
 import C from './palette.json';
 import names from '../functions/src/item-names.json';
 export const itemName=(id:string,amount=1)=>((names as Record<string,string[]>)[id]||[id,id])[amount===1?0:1];
-export const rarityColor=(id:string)=>({common:C.common,uncommon:C.uncommon,rare:C.rare,epic:C.epic,legendary:C.gold} as Record<string,string>)[id]||C.common;
+export const rarityColor=(id:string)=>({common:C.common,uncommon:C.uncommon,rare:C.rare,epic:C.epic,legendary:C.legendary} as Record<string,string>)[id]||C.common;
 export type StockItem={id:string;name:string;amount:number;source:string;description:string;recipe?:string;craft?:boolean;use?:string;refill?:'expedition'|'overtime';color?:string};
 export function stockItems(data:any):StockItem[]{
  const {state:g,catalog:c}=data;
