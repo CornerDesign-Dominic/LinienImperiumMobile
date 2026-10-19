@@ -349,7 +349,9 @@ const mobileGuard = "  function spendOvertime(orderId, amount, now = Date.now())
 if(source.split(overtimeGuard).length!==2)throw Error('Overtime validation boundary changed');
 const refillGuard='  const OVERTIME_REFILL_POINTS = 100;';
 if(source.split(refillGuard).length!==2)throw Error('Refill constant boundary changed');
-const compiled = new vm.Script(source.slice(0,boundary).replace(overtimeGuard,mobileGuard).replace(refillGuard,'  const OVERTIME_REFILL_POINTS = 50;') + bridge, {filename:'web-engine.cjs'});
+const expeditionRegenGuard='  const EXPEDITION_REGEN_MS = 20 * 60 * 1000;';
+if(source.split(expeditionRegenGuard).length!==2)throw Error('Expedition regeneration boundary changed');
+const compiled = new vm.Script(source.slice(0,boundary).replace(overtimeGuard,mobileGuard).replace(refillGuard,'  const OVERTIME_REFILL_POINTS = 50;').replace(expeditionRegenGuard,'  const EXPEDITION_REGEN_MS = 10 * 60 * 1000;') + bridge, {filename:'web-engine.cjs'});
 function session(state, now=Date.now(), random=Math.random) {
   const storage = new Map();
   const elements = new Map();

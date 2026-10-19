@@ -451,11 +451,11 @@ test('Max overtime uses the minimum whole points that make the saved fleet meet 
 test('Token regeneration countdowns follow server deadlines and stop at or above capacity',()=>{
  const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
  assert.deepEqual(start.view.regeneration,{expeditionNextAt:null,overtimeNextAt:null});
- const state=start.state;state.expedition.points=48;state.overtimePoints=98;state.expedition.lastRegenAt=now-20*60000+1000;state.overtimeLastRegenAt=now-10*60000+3000;
+ const state=start.state;state.expedition.points=48;state.overtimePoints=98;state.expedition.lastRegenAt=now-10*60000+1000;state.overtimeLastRegenAt=now-10*60000+3000;
  const initial=execute(state,'sync',{},now,fixed);assert.equal(initial.view.regeneration.expeditionNextAt,now+1000);assert.equal(initial.view.regeneration.overtimeNextAt,now+3000);
- const expedition=execute(initial.state,'sync',{},now+1000,fixed);assert.equal(expedition.state.expedition.points,49);assert.equal(expedition.view.regeneration.expeditionNextAt,now+1000+20*60000);
+ const expedition=execute(initial.state,'sync',{},now+1000,fixed);assert.equal(expedition.state.expedition.points,49);assert.equal(expedition.view.regeneration.expeditionNextAt,now+1000+10*60000);
  const overtime=execute(expedition.state,'sync',{},now+3000,fixed);assert.equal(overtime.state.overtimePoints,99);assert.equal(overtime.view.regeneration.overtimeNextAt,now+3000+10*60000);
- const full=execute(overtime.state,'sync',{},now+20*60000+1000,fixed);assert.equal(full.state.expedition.points,50);assert.equal(full.state.overtimePoints,100);assert.deepEqual(full.view.regeneration,{expeditionNextAt:null,overtimeNextAt:null});
+ const full=execute(overtime.state,'sync',{},now+10*60000+3000,fixed);assert.equal(full.state.expedition.points,50);assert.equal(full.state.overtimePoints,100);assert.deepEqual(full.view.regeneration,{expeditionNextAt:null,overtimeNextAt:null});
  full.state.expedition.points=75;full.state.overtimePoints=200;
  const over=execute(full.state,'sync',{},now+21*60000,fixed);assert.deepEqual(over.view.regeneration,{expeditionNextAt:null,overtimeNextAt:null});assert.equal(over.state.expedition.points,75);assert.equal(over.state.overtimePoints,200);
 });
@@ -530,7 +530,7 @@ test('Expedition consumption keeps the running regeneration clock and only leavi
  let game=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
  game.state.expedition.points=30;game.state.expedition.lastRegenAt=now-5*60000;
  game.state.expedition.regions[0].discovered=7;game.state.expedition.regions[0].endlessUnlocked=true;
- const deadline=now+15*60000;
+ const deadline=now+5*60000;
  for(const elapsed of [60000,120000]){
   game=execute(game.state,'draw',{region:0},now+elapsed,fixed);
   assert.equal(game.view.regeneration.expeditionNextAt,deadline);
@@ -538,20 +538,20 @@ test('Expedition consumption keeps the running regeneration clock and only leavi
  }
  assert.equal(game.state.expedition.points,20);
  game=execute(game.state,'sync',{},deadline,fixed);
- assert.equal(game.state.expedition.points,21);assert.equal(game.view.regeneration.expeditionNextAt,deadline+20*60000);
- game=execute(game.state,'sync',{},deadline+3*20*60000+60000,fixed);
- assert.equal(game.state.expedition.points,24);assert.equal(game.view.regeneration.expeditionNextAt,deadline+4*20*60000);
+ assert.equal(game.state.expedition.points,21);assert.equal(game.view.regeneration.expeditionNextAt,deadline+10*60000);
+ game=execute(game.state,'sync',{},deadline+3*10*60000+60000,fixed);
+ assert.equal(game.state.expedition.points,24);assert.equal(game.view.regeneration.expeditionNextAt,deadline+4*10*60000);
  let full=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
  full=execute(full.state,'discover',{region:0},now+60000,fixed);
- assert.equal(full.view.regeneration.expeditionNextAt,now+60000+20*60000);
+ assert.equal(full.view.regeneration.expeditionNextAt,now+60000+10*60000);
  full=execute(full.state,'discover',{region:0},now+120000,fixed);
- assert.equal(full.view.regeneration.expeditionNextAt,now+60000+20*60000);
+ assert.equal(full.view.regeneration.expeditionNextAt,now+60000+10*60000);
  const natural=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
- natural.state.expedition.points=49;natural.state.expedition.lastRegenAt=now-20*60000+1000;
+ natural.state.expedition.points=49;natural.state.expedition.lastRegenAt=now-10*60000+1000;
  let paused=execute(natural.state,'sync',{},now+1000,fixed);assert.equal(paused.view.regeneration.expeditionNextAt,null);
  paused=execute(paused.state,'sync',{},now+300000,fixed);assert.equal(paused.state.expedition.points,50);
  const restarted=execute(paused.state,'discover',{region:0},now+400000,fixed);
- assert.equal(restarted.state.expedition.points,49);assert.equal(restarted.view.regeneration.expeditionNextAt,now+400000+20*60000);
+ assert.equal(restarted.state.expedition.points,49);assert.equal(restarted.view.regeneration.expeditionNextAt,now+400000+10*60000);
 });
 
 test('Overtime consumption, refills below capacity and offline regeneration retain their own clock',()=>{
@@ -604,7 +604,7 @@ test('Legacy saves receive an empty expedition filler slot without retroactive r
  const migrated=execute(original,'sync',{},now,fixed);assert.equal(migrated.state.inventory.expeditionRefills,0);assert.equal(migrated.state.inventory.overtimeRefills,2);assert.deepEqual(migrated.state.pendingLevelUps,[2]);
  const empty=execute(migrated.state,'expeditionRefill',{},now,fixed);assert.equal(empty.state.expedition.points,migrated.state.expedition.points);
  migrated.state.inventory.expeditionRefills=1;migrated.state.expedition.levelCapacityBonus=100;migrated.state.expedition.points=10;migrated.state.expedition.lastRegenAt=now-60000;
- const used=execute(migrated.state,'expeditionRefill',{},now,fixed);assert.equal(used.state.expedition.points,60);assert.equal(used.view.regeneration.expeditionNextAt,now+19*60000);assert.equal(used.state.inventory.expeditionRefills,0);
+ const used=execute(migrated.state,'expeditionRefill',{},now,fixed);assert.equal(used.state.expedition.points,60);assert.equal(used.view.regeneration.expeditionNextAt,now+9*60000);assert.equal(used.state.inventory.expeditionRefills,0);
  const twice=execute(used.state,'expeditionRefill',{},now,fixed);assert.equal(twice.state.expedition.points,60);
  const reset=execute(used.state,'reset',{},now,fixed);assert.equal(reset.state.inventory.expeditionRefills,0);assert.equal(reset.state.inventory.overtimeRefills,0);
 });

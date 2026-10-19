@@ -281,3 +281,10 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Neue Navigation `cardDetail` mit Zurück/Spielhilfe und bestehender globaler Level-Up-Anzeige. Rückweg zum Raster setzt den Scrollbereich zurück. Nicht entdeckte Karten zeigen Daten/Herkunft und keine Upgrade-Aktionen; keinerlei Zuweisungsstatus in der Sammlung.
 - Typprüfung und Expo-Webexport bestanden. Browser-QA mit lokaler Engine/simuliertem Firebase auf 393/320 px: alle 15 Karten öffnen eigene Seiten und kehren ins Raster zurück, kein Detailmodal/Schließenbutton mehr; Bild exakt 180×180 auf beiden Breiten, keine Überbreite oder Browserfehler. Fahrzeugstufe, Kapazität und Rang lassen sich verbessern und zeigen erhaltene Werte in Seite und Raster. Nicht entdeckte Karten ohne Upgradecontrols. 320-px-Ansicht visuell geprüft.
 - Reine UI-/Navigationsänderung, keine erneute Serverregression erforderlich. Im Sammelbranch gespeichert, nicht veröffentlicht.
+
+
+## Beide Regenerationen mit 10-Minuten-Zyklus – 19.10.2026, vorbereitet
+
+- Mobile-Konstante für Expedition von 20 auf 10 Minuten geändert, strukturgesichert beim Laden des unveränderten gepinnten Web-Vendors. Überstunden bereits 10 Minuten. Server-Gutschrift, NextAt-Countdown und dynamische Hilfe verwenden damit denselben 600.000-ms-Takt.
+- Alle 33 Node-Testeinträge bestanden. Bestehende Zeitprüfungen auf den neuen Expeditionstakt angepasst: Frist nach 10 Minuten, laufende Phase bei Verbrauch, volle/überfüllte Vorräte, Neustart nach Pause, Offline-Nachholung und Auffüller unterhalb des Limits. Überstundenphase und automatische Angebotswechsel bleiben unverändert.
+- Keine UI-Änderungen; im Sammelbranch gespeichert, nicht veröffentlicht.
