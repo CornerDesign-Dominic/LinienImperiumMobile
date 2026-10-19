@@ -1,6 +1,6 @@
 import React from 'react';
-import {View} from 'react-native';
-import {Bar,Btn,Card,Empty,Pill,Row,Txt,n,remaining,minutes} from './ui';
+import {View,StyleSheet} from 'react-native';
+import {Bar,Btn,Card,Empty,Pill,Row,Txt,C,n,remaining,minutes} from './ui';
 import {TestEvent,epicStyle} from './Events';
 
 export function EventProject({event,busy,clock,onFleet,onManage,onEnd}:{
@@ -38,10 +38,17 @@ export function EventProject({event,busy,clock,onFleet,onManage,onEnd}:{
    </Card>
    <Card>
     <Row><Txt style={{fontWeight:'700'}}>Eingesetzte Flotte</Txt><Pill>Flotte {project.template+1}</Pill></Row>
-    {project.vehicles.map(vehicle=><View key={vehicle.cardId} style={{marginBottom:14}}>
-     <Row><Txt style={{flex:1}}>{vehicle.model}</Txt><Txt muted>{n(vehicle.capacity,1)} t</Txt></Row>
-     {running&&<><Bar value={(1-Math.max(0,vehicle.nextAt-clock)/vehicle.cycleMs)*100}/><Txt muted style={{fontSize:12}}>Nächste Lieferung in {remaining(vehicle.nextAt,clock)}</Txt></>}
-    </View>)}
+    {project.vehicles.map(vehicle=>{
+     const progress=Math.min(100,Math.max(0,(1-(vehicle.nextAt-clock)/vehicle.cycleMs)*100));
+     return <View key={vehicle.cardId} style={styles.vehicle}>
+      <Txt style={{fontWeight:'700'}}>{vehicle.model}</Txt>
+      {running?<>
+       <Row style={{marginTop:6,marginBottom:0}}><Txt muted style={styles.small}>Aktuelle Tour</Txt><Txt style={styles.small}>{n(Math.floor(progress))} %</Txt></Row>
+       <Bar value={progress}/>
+       <Row style={{marginBottom:0}}><Txt gold style={styles.small}>{remaining(vehicle.nextAt,clock)}</Txt><Txt muted style={styles.small}>{n(vehicle.capacity,2)} t bei Ankunft</Txt></Row>
+      </>:<Txt muted style={[styles.small,{marginTop:6}]}>Einsatz beendet</Txt>}
+     </View>;
+    })}
     <Txt muted style={{fontSize:12}}>Fahrzeugwerte bleiben für diesen Einsatz gespeichert.</Txt>
    </Card>
   </>}
@@ -49,3 +56,7 @@ export function EventProject({event,busy,clock,onFleet,onManage,onEnd}:{
   {running&&<Btn secondary danger disabled={busy} onPress={onEnd}>Event beenden</Btn>}
  </>;
 }
+const styles=StyleSheet.create({
+ vehicle:{borderTopWidth:1,borderTopColor:C.line,paddingTop:10,marginTop:6,paddingBottom:12},
+ small:{fontSize:12,lineHeight:18},
+});
