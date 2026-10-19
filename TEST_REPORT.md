@@ -241,3 +241,10 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Expo: Android-OTA im Kanal `preview` erfolgreich veröffentlicht. Installierte Test-App erhält das Update beim erneuten Öffnen; kein APK-Build und keine Neuinstallation für dieses Paket erforderlich.
 - Enthält alle seit dem letzten Release gesammelten Anpassungen: Level-Up, Überstunden-Max, Vorratsstapel, Auftragsnamen, Token-Countdowns, schwebende Hinweise, Garage, Stadthub-Fahrzeuge, Verkehrsart/Dauer, Item-Audit und Kundenzuteilung.
 - Lokale Browserprüfungen und Regressionstests sind in den vorherigen Abschnitten dokumentiert. Kein physischer Gerätetest. Temporäre 15-Sekunden-Expeditionslieferungen bleiben für die Testphase aktiv.
+
+
+## Bedarfsabhängige Kunden-Verteilbuttons – 19.10.2026, vorbereitet
+
+- Rein visuelle Anpassung: Verteilung nur bei freien Punkten oder lokalem Entwurf; Minus/Mengenanzeige nur pro vorgemerkt verbessertem Bereich; Speichern nur mit Entwurf. Fähigkeiten und dauerhafte Boni bleiben bei 0 Punkten sichtbar.
+- Typprüfung und Expo-Webexport bestanden. Browser-QA mit lokaler Engine und simuliertem Firebase auf 393/320 px bestanden: 0 Punkte ohne Verteilcontrols, frischer Punkt nur mit Plus, vorgemerkter letzter Punkt weiterhin rücknehmbar/speicherbar, vollständiges Zurücknehmen blendet Minus/Speichern aus, Speichern blendet bei 0 Punkten sämtliche Controls aus. Genau eine Servermutation; Bonus weiterhin sichtbar. Keine Browserfehler, 320-px-Ansicht visuell geprüft.
+- Keine Serveränderungen, daher Serverregressionen nicht erneut ausgeführt. Neues Sammelpaket, nicht veröffentlicht.

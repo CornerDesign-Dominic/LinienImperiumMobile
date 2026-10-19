@@ -1,3 +1,12 @@
+## Neues Sammelpaket vom 19.10.2026 – noch nicht veröffentlicht
+
+- Stammkunden: ohne freie Punkte und ohne Entwurf keine Verteilbuttons, keine Punkteanzeige und kein Speichern. Bestehende Fähigkeiten/Bonusse bleiben lesbar.
+- Bei freien Punkten zunächst nur Plus je Bereich, ohne „+0“ oder Minus. Minus und vorgemerkte Menge erscheinen nur bei tatsächlich vorgemerkten Punkten im jeweiligen Bereich. Speichern erscheint erst bei einem Entwurf.
+- Nach Vormerken des letzten freien Punktes bleiben Rücknahme und Speichern erreichbar. Nach vollständigem Zurücknehmen verschwindet Minus/Speichern, nach dem Speichern aller Punkte verschwindet die Verteilung wieder. Bestehende Server- und Punktelogik unverändert.
+- Nur Sammelbranch, kein Deployment oder App-Update.
+
+---
+
 ## Sammelpaket vom 18./19.10.2026 – veröffentlicht
 
 Release: `c76d08d9795bd20eb45cc01f13e152b1d58bf4bd` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39243835875). Am 19.10.2026 erfolgreich veröffentlicht: Validierung, Firebase-Deployment, Live-API-Test und Android-Update im Preview-Kanal. Die nachfolgenden früheren Hinweise „nur vorbereitet“ dokumentieren den Stand vor diesem Release.
