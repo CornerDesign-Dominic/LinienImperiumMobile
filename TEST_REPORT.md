@@ -313,3 +313,9 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Typprüfung und Expo-Webexport bestanden. 35 Node-Testeinträge bestanden. Neuer Test prüft alle fünf Fundtabellen, Summe 100 %, Kartenherkunft, absolute Chancen 6/3/1 und 18/67,5/4,05/0,45 %, unterschiedliche bedingte Ranggewichte und konkrete Projektnamen.
 - Browser-QA mit lokaler Engine/simuliertem Firebase auf 393/320 px bestanden: inverse DOM-Reihenfolge, automatischer Fokus ohne manuelles Scrollen, einzelne Erkundungspunkte, neuer Lieferbutton und zwei Balken bei 100 % Erkundung, Fahrzeugwahl ohne sichtbare Modalüberlagerung, echte temporäre 15-Sekunden-Lieferung, vollständige Balken und Abholen, fertig/gesperrt nur Schließen. Region 1 und Region 5 zeigen unterschiedliche Ränge. Fertige Region bleibt oben; Endlos-Fragezeichen und Fundmeldung kehren korrekt zurück. Keine Browserfehler. Orts- und Chancenmodal visuell geprüft.
 - Sammelbranch, nicht veröffentlicht; kein physischer Gerätetest.
+
+
+## Großhändler: weitere Preisideen – 19.10.2026, vorbereitet
+
+- Zwei schmale Infokarten ergänzt: Echtgeld-Münzen (Menge X, Preis offen) und Fahrzeugkartenkiste (X Echtgeld-Münzen). Bestehende Preisideen bleiben erhalten; Kaufgrenzen nur bei festgelegten Grenzen sichtbar. Keine Kaufabwicklung.
+- TypeScript-Typprüfung bestanden. Sammelbranch, nicht veröffentlicht.

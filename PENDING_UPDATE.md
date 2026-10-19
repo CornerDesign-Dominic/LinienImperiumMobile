@@ -1,5 +1,6 @@
 ## Neues Sammelpaket vom 19.10.2026 – noch nicht veröffentlicht
 
+- Großhändler: zwei zusätzliche Preisideen „Echtgeld-Münzen“ (Menge X, Preis offen) und „Fahrzeugkartenkiste“ (X Echtgeld-Münzen). Platzhalter ohne Kaufaktion.
 - Stammkunden: ohne freie Punkte und ohne Entwurf keine Verteilbuttons, keine Punkteanzeige und kein Speichern. Bestehende Fähigkeiten/Bonusse bleiben lesbar.
 - Bei freien Punkten zunächst nur Plus je Bereich, ohne „+0“ oder Minus. Minus und vorgemerkte Menge erscheinen nur bei tatsächlich vorgemerkten Punkten im jeweiligen Bereich. Speichern erscheint erst bei einem Entwurf.
 - Nach Vormerken des letzten freien Punktes bleiben Rücknahme und Speichern erreichbar. Nach vollständigem Zurücknehmen verschwindet Minus/Speichern, nach dem Speichern aller Punkte verschwindet die Verteilung wieder. Bestehende Server- und Punktelogik unverändert.
