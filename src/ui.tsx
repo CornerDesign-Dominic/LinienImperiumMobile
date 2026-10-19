@@ -1,11 +1,14 @@
+import {t} from './i18n';
+import {getLocale} from './i18n';
+import {Text} from './Language';
 import React from 'react';
-import {View,Text,Pressable,StyleSheet,ViewStyle} from 'react-native';
+import {View,Pressable,StyleSheet,ViewStyle} from 'react-native';
 export const C={bg:'#0B1017',panel:'#141D28',raised:'#1B2735',line:'#293545',text:'#EEF3F8',muted:'#97A7BA',accent:'#62D5BC',gold:'#E2BB75',red:'#F19B98'};
-export const n=(v:any,d=0)=>Number(v||0).toLocaleString('de-DE',{maximumFractionDigits:d});
+export const n=(v:any,d=0)=>Number(v||0).toLocaleString(getLocale(),{maximumFractionDigits:d});
 export const remaining=(at:number,now:number)=>{const sec=Math.max(0,Math.ceil((at-now)/1000));return `${Math.floor(sec/3600).toString().padStart(2,'0')}:${Math.floor(sec%3600/60).toString().padStart(2,'0')}:${(sec%60).toString().padStart(2,'0')}`;};
 export const minutes=(seconds:number)=>`${n(seconds/60,1)} Min.`;
 export const plain=(value:string)=>value.replace(/<br\s*\/?\s*>/gi,'\n').replace(/<\/p>/g,'\n\n').replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
-export function Txt({children,muted=false,gold=false,style}:any){return <Text style={[s.text,muted&&s.muted,gold&&{color:C.gold},style]}>{children}</Text>;}
+export function Txt({children,muted=false,gold=false,style,literal=false}:any){return <Text literal={literal} style={[s.text,muted&&s.muted,gold&&{color:C.gold},style]}>{children}</Text>;}
 export function Heading({children,eyebrow}:any){return <View style={{marginBottom:16}}>{eyebrow&&<Text style={s.eyebrow}>{eyebrow}</Text>}<Text style={s.heading}>{children}</Text></View>;}
 export function Card({children,style}:any){return <View style={[s.card,style]}>{children}</View>;}
 export function Row({children,style}:any){return <View style={[s.row,style]}>{children}</View>;}

@@ -1,3 +1,4 @@
+import {t} from './i18n';
 import React,{useState} from 'react';
 import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,n,remaining,Empty} from './ui';
@@ -8,7 +9,7 @@ export function HubVehicles({data,busy,clock,onCommand,onSell,modalBlocked=false
  const truck=vehicles.find((t:any)=>t.id===selected);
  const fact=(label:string,value:string)=><Row><Txt muted>{label}</Txt><Txt>{value}</Txt></Row>;
  return <>
-  {vehicles.map((t:any)=><Pressable key={t.id} accessibilityRole="button" accessibilityLabel={`${t.model}, ${t.id} verwalten`} onPress={()=>setSelected(t.id)}><Card><Row style={{marginBottom:3}}><Txt style={{fontWeight:'700'}}>{t.model}</Txt><Txt muted>›</Txt></Row><Txt muted>{n(t.capacity,1)} t · Rang {t.rarity.total}</Txt><Txt muted style={{fontSize:12}}>{t.hubAssigned?'Im Hub eingesetzt':t.free?'Bereit':'Im Einsatz'}</Txt></Card></Pressable>)}
+  {vehicles.map((t:any)=><Pressable key={t.id} accessibilityRole="button" accessibilityLabel={t(`${t.model}, ${t.id} verwalten`)} onPress={()=>setSelected(t.id)}><Card><Row style={{marginBottom:3}}><Txt style={{fontWeight:'700'}}>{t.model}</Txt><Txt muted>›</Txt></Row><Txt muted>{n(t.capacity,1)} t · Rang {t.rarity.total}</Txt><Txt muted style={{fontSize:12}}>{t.hubAssigned?'Im Hub eingesetzt':t.free?'Bereit':'Im Einsatz'}</Txt></Card></Pressable>)}
   {!vehicles.length&&<Empty>Keine Stadttransporter</Empty>}
   <Modal visible={!!truck&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setSelected(null)}>
    <View style={styles.overlay}><View style={styles.detail}>

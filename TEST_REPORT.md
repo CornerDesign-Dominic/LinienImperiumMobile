@@ -339,3 +339,12 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 
 - Fahrzeugkarten aus dem Vorratskatalog entfernt; Shards, Auftragsgegenstände und tatsächlicher Kartenbesitz unverändert. Item-Abgleich aktualisiert.
 - TypeScript und alle drei Item-Katalogtests bestanden; Test bestätigt fehlende Fahrzeugkarten in Vorräten bei erhaltenem Eigentum sowie sichtbare Shards und Aufträge. Noch nicht veröffentlicht.
+
+
+## Deutsch/Englisch – 19.10.2026, vorbereitet
+
+- Einstellungen: Deutsch als Standard, Auswahl Deutsch/English mit sichtbarer und zugänglicher Markierung. Speicherung lokal über AsyncStorage; Schreibvorgänge geordnet. Speicherung vor UI-Umschaltung, Fehlerhinweis bei Speicherfehler. Ungültige/fehlende Einstellung fällt auf Deutsch zurück. Sprache unabhängig vom Kontostand.
+- Zentraler Textkatalog, dynamische Nachrichten mit geprüften Platzhaltern, englische Hilfe für alle 13 Bereiche, localeabhängige Zahlen, native Dialoge/Platzhalter/Bedienungshilfen. Firmennamen und Stadtnamen ausdrücklich wörtlich. Daten/IDs werden nicht umgeschrieben. Erweiterungsanleitung LOCALIZATION.md.
+- TypeScript und Webexport bestanden. Alle 38 Node-Testeinträge bestanden; neue Prüfungen für deutschen Standard, gültige/ungültige Auswahl, Zahlen-Locale, dynamische Texte/Karten-/Auftragsnamen, unveränderte unbekannte Namen/IDs/Timer, Platzhalterkonsistenz und vollständige englische Hilfebereiche.
+- Browser-QA mit echter Engine/simuliertem Firebase auf 393/320 px bestanden: deutscher Start, sofortige englische Einstellungen/Platzhalter/Navigation, Neustart in Englisch, übersetzte Vorratskacheln und Herkunftsmodal, Fahrzeugdetail inkl. Rang/Verkehr/Zahlen, Rückwechsel und Neustart auf Deutsch. Firmenname „Vorräte“ bleibt auch auf Englisch unverändert. Keine Browserfehler/kein horizontaler Überlauf. Einstellungen und Fahrzeugdetail visuell geprüft.
+- Sammelbranch, nicht veröffentlicht; kein physischer Gerätetest.

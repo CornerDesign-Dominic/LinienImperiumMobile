@@ -1,5 +1,7 @@
 ## Neues Sammelpaket – noch nicht veröffentlicht
 
+- Sprache: Einstellungen mit Deutsch/English-Auswahl; Deutsch bleibt unabhängig von der Gerätesprache Standard. Auswahl wird lokal gespeichert und nach Neustart geladen, auch bei Kontowechsel/Spielreset erhalten. Sofortige Umschaltung von Texten, Zahlen-Locale, Eingabeplatzhaltern und Bedienungshilfen.
+- Zentraler Quelltext-/Übersetzungskatalog mit Platzhaltern für dynamische Anzeigen, englische Spielhilfe und gemeinsames Sprachregister. Weitere Sprachen durch Kataloge und Registrierung ergänzbar; Anleitung in LOCALIZATION.md. Firmen-/Stadtnamen bleiben wörtlich; Serverzustand, IDs und Spielregeln unverändert.
 - Fahrzeugkarten aus Vorräten entfernt. Sammlung und Eigentum unverändert; Shards und Fahrzeugkartenaufträge bleiben als nutzbare Gegenstände sichtbar.
 
 ---

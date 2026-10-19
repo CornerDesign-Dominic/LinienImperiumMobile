@@ -1,5 +1,7 @@
+import {Text} from './Language';
+import {t} from './i18n';
 import React from 'react';
-import {View,Text,Pressable,StyleSheet} from 'react-native';
+import {View,Pressable,StyleSheet} from 'react-native';
 import {C,Txt,Row,Pill,n} from './ui';
 import {rarityColor} from './items';
 
@@ -12,7 +14,7 @@ export function VehicleCards({data,onOpen}:any){
   <Row style={{marginBottom:14}}>{c.rarities.slice(0,3).map((r:any)=><Pill key={r.id}>{r.label}: {n(g.expedition.shards[r.id])}</Pill>)}</Row>
   {rows.map((row:any[],i:number)=><View key={i} style={styles.row}>{row.map(item=>{
    const owned=g.expedition.characters[item.id],stats=vehicle(item);
-   return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={`${item.name}, ${owned?`Stufe ${owned.level}`:'Nicht entdeckt'}, Geschwindigkeitsrang ${stats.rank.total}, ${n(stats.capacity,1)} Tonnen`} onPress={()=>onOpen(item.id)} style={({pressed})=>[styles.card,{borderColor:rarityColor(item.rarity)},!owned&&{opacity:.5},pressed&&{opacity:.7}]}>
+   return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={t(`${item.name}, ${owned?`Stufe ${owned.level}`:'Nicht entdeckt'}, Geschwindigkeitsrang ${stats.rank.total}, ${n(stats.capacity,1)} Tonnen`)} onPress={()=>onOpen(item.id)} style={({pressed})=>[styles.card,{borderColor:rarityColor(item.rarity)},!owned&&{opacity:.5},pressed&&{opacity:.7}]}>
     <Txt style={styles.level}>{owned?`Stufe ${owned.level}`:'Stufe —'}</Txt>
     <View style={styles.artwork}><Text numberOfLines={2} ellipsizeMode="tail" style={styles.name}>{item.name}</Text></View>
     <Txt style={styles.rank}>Rang {stats.rank.total}</Txt>

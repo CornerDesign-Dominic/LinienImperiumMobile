@@ -1,5 +1,7 @@
+import {t} from './i18n';
+import {Text} from './Language';
 import React from 'react';
-import {View,Pressable,Text,StyleSheet} from 'react-native';
+import {View,Pressable,StyleSheet} from 'react-native';
 import {C,n} from './ui';
 function cooldown(at:number|null|undefined,now:number){
  if(at===null)return 'Voll';
@@ -10,7 +12,7 @@ function cooldown(at:number|null|undefined,now:number){
 export function TokenHeader({data,clock,onInventory}:any){
  const token=(name:string,value:number,capacity:number,next:number|null|undefined,color:string)=><>
   <Text style={s.label}>{name} <Text style={{color,fontWeight:'700'}}>{n(value)}/{n(capacity)}</Text></Text>
-  <Text accessibilityLabel={`${name} Regeneration`} style={s.timer}>{cooldown(next,clock)}</Text>
+  <Text accessibilityLabel={t(`${name} Regeneration`)} style={s.timer}>{cooldown(next,clock)}</Text>
  </>;
  return <View style={s.row}>
   <View style={s.token}>{token('Expedition',data?.state.expedition.points||0,data?.expeditionCapacity||50,data?.regeneration?.expeditionNextAt,C.accent)}</View>

@@ -1,0 +1,164 @@
+{
+  "dashboard": [
+    [
+      "Player level",
+      "Delivered tonnes grant XP: tonnes × paid directions × (1 + active card XP bonuses / 100). Dual Way pays both directions. The next level requires 100 × level XP up to level 24, then 4 × level² XP. Each level grants one expedition refill, one overtime refill and 3 points to increase your maximum reserves. Each allocated point also adds 1 point to that reserve."
+    ],
+    [
+      "Coins",
+      "Trip profit = freight payment − vehicle costs − load costs. Collect completion bonuses separately. Test tools add coins, points or XP; resetting deletes this account’s progress."
+    ],
+    [
+      "Progress",
+      "Transport continues by time while you are away. Due trips and deliveries settle when you reconnect. Your game is saved on the server."
+    ]
+  ],
+  "orders": [
+    [
+      "Offers",
+      "Start with 5 offers; Dispatch can increase this to 15. New offers: 80% regional, 20% long-distance. Each has a base 5% chance to come from an unlocked customer in that segment. Routes: 90% Single Way, 10% Dual Way."
+    ],
+    [
+      "Payments",
+      "Freight payment = delivered tonnes × one-way km × 1.00 M/tkm × paid directions × (1 + customer payment skill / 1000) × (1 + active card payment bonuses / 100). Single Way pays outbound freight; Dual Way pays both directions. Load costs = tonnes × one-way km × 0.10 M/tkm × paid directions. Vehicle costs include the return journey. Completion bonus = contract volume × paid directions × 1.00 M/t × (1 + company bonus)."
+    ],
+    [
+      "Time and refresh",
+      "Trip time = outbound distance / loaded speed + return distance / empty speed. On Dual Way the return trip is loaded too. Offers refresh every 15 minutes. Manual refresh costs 250 M × max(1, owned vehicles) × (1 + manual refreshes since the last automatic refresh). Held offers survive either refresh."
+    ]
+  ],
+  "special": [
+    [
+      "Discovery",
+      "Normal customer contracts can yield special contracts: base 20% regional or 40% long-distance, plus customer skill. Endless expeditions have absolute chances of 4.05% for a special contract and 0.45% for a referral contract. Special volume: 400 + region index × 120 t; distance: 120 + region index × 25 km. The shared referral contract has 1,100 t and 240 km."
+    ],
+    [
+      "Fleet and deadline",
+      "Special deadline: 60 minutes; referral deadline: 3 hours. Choose a fleet with 1–5 cards. Every vehicle has its own capacity, speed and trips. The ETA simulates the remaining trips. Current project stats are stored at assignment; later changes apply to new projects. Cards may also operate in the garage and other projects. Missing the deadline forfeits the completion reward."
+    ],
+    [
+      "Overtime",
+      "Choose 1, 5, 10 or Max. Each point delivers 1,000 loaded tkm: tonnes = points × 1000 / one-way km. Empty returns do not count. Max uses the minimum points needed for the fleet to finish before the deadline, limited to available stock. Delivered freight, costs, XP and distance are accounted for proportionally. Points regenerate every 10 minutes up to your maximum."
+    ]
+  ],
+  "fleet": [
+    [
+      "Garage",
+      "10 slots for card vehicles; each owned card may occupy one garage slot. It may also be used in fleets. City vehicles are managed at the city hub. Every expedition vehicle card can handle regional and long-distance contracts."
+    ],
+    [
+      "Speed and upgrades",
+      "Speed = 1 km/s × (1 + 0.005 × speed ranks) × (1 + active speed bonuses / 100) × (1 − 0.01 × loaded tonnes). Maximum speed rank: 50. A capacity module adds 0.5 t within the model limit. Cost per km = max(0, base cost − workshop levels × 0.001) × (1 − card cost bonus / 100). Upgrade card vehicles in the collection."
+    ],
+    [
+      "Removing vehicles",
+      "Cards remain in your collection, retaining upgrades and statistics. A vehicle on a single contract or expedition delivery can only leave the garage once finished."
+    ]
+  ],
+  "dealer": [
+    [
+      "City vehicles",
+      "Sprinter: 4,000 M, 1 t. 3.5-tonne truck: 20,000 M, 1.5 t. Open the city hub first. City vehicle limit = max(1, floor(player level × 0.75))."
+    ],
+    [
+      "Operation",
+      "Base empty costs: Sprinter 0.20 M/km, 3.5-tonne truck 0.50 M/km, reduced by workshop upgrades. They use the general speed formula and support capacity modules and gears. Find regional and long-distance vehicles through expeditions."
+    ]
+  ],
+  "hub": [
+    [
+      "Hourly cycle",
+      "Opening is free. A cycle lasts 60 minutes: 45 minutes of trips and 15 minutes of rest. Trips cover 12 km loaded and 12 km empty. Hourly capacity sums floor(2700 seconds / trip duration) × capacity for each vehicle."
+    ],
+    [
+      "Cashbox",
+      "Sales purchases 75% of hourly capacity, +1 percentage point per sales level, up to 100%. Each tonne earns 10 M sales − 3 M purchase. Each working hour yields 8–12 pickup clues. The cashbox fills after 6 uncollected cycles."
+    ],
+    [
+      "Upgrades",
+      "Next sales level N costs 5 × N supplier contacts, 1 + floor((N−1)/25) company upgrade items and 500 + 50 × N M. Construction takes 12 × N hours. Maximum level: 25."
+    ]
+  ],
+  "inventory": [
+    [
+      "Refills",
+      "Each level grants one expedition refill, one overtime refill and 3 allocation points. Each refill adds 50 points when used, even above your maximum. Natural regeneration pauses at or above the maximum."
+    ],
+    [
+      "Items",
+      "Gears improve vehicle speed ranks; capacity modules increase capacity. Pickup clues craft private pickups. Supplier contacts upgrade city hub sales. Company upgrade items improve the company or craft customer contracts. Stored contracts remain here until started. Vehicle cards belong in the collection; shards stay here."
+    ],
+    [
+      "Sources",
+      "Normal regional and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Material expedition contracts have a 6% chance for 1/2/3 items according to rank, and a 0.3% chance for a capacity module. Hub cycles yield 8–12 pickup clues."
+    ],
+    [
+      "Gear loot",
+      "Per 100 tkm: Common 40% for 1 and another 20% for 2 gears. Per 1,000 tkm: Uncommon 18% for 1 and another 7% for 2. Customer contracts: Rare 8% for 1. Partial blocks scale proportionally. Fleet contracts can also yield Epic and Legendary gears."
+    ]
+  ],
+  "development": [
+    [
+      "Crafting",
+      "100 pickup clues craft one private pickup. 10 company upgrade items craft a contract from a random unlocked regular customer. Assign a suitable garage vehicle under Single contracts → Stored contracts."
+    ],
+    [
+      "Shards",
+      "Combine 10 shards into 1 of the next rarity: Common → Uncommon → Rare. Card levels require shards of the matching rarity. Upgrade costs to level 10: 1, 2, 4, 8, 16, 32, 64, 128 and 256 shards."
+    ]
+  ],
+  "company": [
+    [
+      "Departments",
+      "Dispatch, Workshop and Sales each cost 5,000 M to open. Dispatch: 5 + level offers, up to 15; next level costs 500 × new level M plus items. Workshop: −0.001 M/km per level, up to 50; cost 100 × ceil(new level/5) M plus items. Sales: 1 + level held offers, up to 4; next level costs 500 × new level M plus items."
+    ],
+    [
+      "Transport upgrades",
+      "Bonus upgrades add 1 percentage point to completion bonuses per level. Volume upgrades add 1 t to maximum volume per level and 1 t to minimum volume every two levels. Range adds 1 km to the upper distance limit. New level N costs 2 + floor((N−1)/10) items; coins: bonus 10×N², volume 50×N², range 100×N²."
+    ]
+  ],
+  "personnel": [
+    [
+      "Fleets and bonuses",
+      "Three fleets with five slots each. A card can be assigned once per fleet and also to the garage. Bonuses apply to the card itself, all garage vehicles, its single contracts or all vehicles in a fleet project, depending on scope. Choose a fleet when starting a project; one card is enough. A template can run multiple projects."
+    ],
+    [
+      "Card levels",
+      "Each region offers Common cards at 6%, Uncommon at 3% and Rare at 1% per endless expedition. Levels 1–10 use shards of the matching rarity. Bonus percentages: Common 1 + (level−1) × 0.5; Uncommon 3 + (level−1) × 1; Rare 5 + (level−1) × 1.5. Matching bonuses add; speed/payment multipliers then apply, and costs decrease accordingly."
+    ]
+  ],
+  "expeditions": [
+    [
+      "Exploration",
+      "Start with 50 expedition points. Both point types regenerate 1 point every 10 minutes. Spending below the maximum preserves the countdown; full reserves pause it. Leaving full reserves starts a fresh cycle. Spend exploration points one at a time in a location’s modal. Complete exploration reaches 100%; delivery is an additional bonus."
+    ],
+    [
+      "Discovery chances",
+      "An endless expedition costs 5 points. Absolute chances: Common card 6%, Uncommon 3%, Rare 1%, vehicle card contract 18%, material contract 67.5%, special contract 4.05%, referral contract 0.45%. Duplicates yield 1 shard of their rarity. The question mark at each endless location shows its regional cards and contract rank chances."
+    ],
+    [
+      "Locations and bonuses",
+      "Seven locations per region; point cost = 3 + 9 × region index + floor(location index/2), using zero-based indices. The seventh discovery unlocks the next region and endless location. Each location’s one-off delivery grants +1 maximum expedition capacity when collected. Unlocking the endless location grants 1 module; its one-off delivery unlocks that region’s customer. Assign vehicles from the garage."
+    ]
+  ],
+  "statistics": [
+    [
+      "Transport values",
+      "Delivered tonnes count per paid direction, including both on Dual Way. Distance includes empty return journeys. Tonne-kilometres = delivered tonnes × one-way km × paid directions. CO₂ estimate = loaded tkm × 52.75 g/tkm; empty trips are excluded."
+    ],
+    [
+      "Coins",
+      "Transport profit = freight revenue − vehicle costs − load costs. Collected completion bonuses and expedition coins are separate. Purchases, upgrades and test coins are tracked separately."
+    ]
+  ],
+  "customers": [
+    [
+      "Unlock and relationship",
+      "Unlock a customer with the one-off endless-location delivery in its region. Normal contracts give 10 relationship points, specials 25 and referrals 100. Customer level L requires 110 × L + 5 × L × (L−1) total relationship, up to level 150. Each level grants one ability point."
+    ],
+    [
+      "Abilities",
+      "Payment: +0.1% freight payment per point, up to 100. Special chance: +0.1 percentage points per point, up to 25, on a base of 20% regional / 40% long-distance. Referral chance: +0.1 percentage points per point, up to 25, on a base of 4% / 6%. Preview with +/− and save together. Saved allocations are permanent."
+    ]
+  ]
+}

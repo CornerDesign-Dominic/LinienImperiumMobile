@@ -1,5 +1,7 @@
+import {Text} from './Language';
+import {t} from './i18n';
 import React,{useState} from 'react';
-import {View,Text,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
+import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {C,Txt,Row,Btn,Bar,n,remaining} from './ui';
 
 export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
@@ -8,12 +10,12 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
  const regular=g.trucks.filter((t:any)=>!!t.cardId);
  const truck=g.trucks.find((t:any)=>t.id===selected);
  const available=c.cards.filter((card:any)=>g.expedition.characters[card.id]&&!g.trucks.some((t:any)=>t.cardId===card.id));
- const tile=(t:any,index:number)=>t?<Pressable accessibilityRole="button" accessibilityLabel={`Garagenplatz ${index+1}: ${t.model}`} onPress={()=>setSelected(t.id)} style={styles.tile}>
+ const tile=(t:any,index:number)=>t?<Pressable accessibilityRole="button" accessibilityLabel={t(`Garagenplatz ${index+1}: ${t.model}`)} onPress={()=>setSelected(t.id)} style={styles.tile}>
   <Text numberOfLines={2} style={styles.name}>{t.model}</Text>
   <Txt style={styles.capacity}>{n(t.capacity,1)} t</Txt>
   <Txt muted style={styles.small}>Stufe {g.expedition.characters[t.cardId]?.level||1}</Txt>
   <Txt muted style={styles.small}>Geschw.-Rang {t.rarity.total}</Txt>
- </Pressable>:<Pressable accessibilityRole="button" accessibilityLabel={`Garagenplatz ${index+1} hinzufügen`} disabled={busy} onPress={()=>setAdding(true)} style={[styles.tile,styles.empty]}><Txt style={styles.plus}>+</Txt></Pressable>;
+ </Pressable>:<Pressable accessibilityRole="button" accessibilityLabel={t(`Garagenplatz ${index+1} hinzufügen`)} disabled={busy} onPress={()=>setAdding(true)} style={[styles.tile,styles.empty]}><Txt style={styles.plus}>+</Txt></Pressable>;
  return <>
   {Array.from({length:5},(_,row)=><View key={row} style={styles.row}>{[0,1].map(col=><React.Fragment key={col}>{tile(regular[row*2+col],row*2+col)}</React.Fragment>)}</View>)}
   <Modal transparent visible={(!!truck||adding)&&!modalBlocked} animationType="none" onRequestClose={()=>{setSelected(null);setAdding(false);}}>

@@ -1,3 +1,4 @@
+import {t} from './i18n';
 import React from 'react';
 import {View,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n} from './ui';
@@ -15,7 +16,7 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
  return <>
   <Card>
    <Row style={{marginBottom:14}}><Txt style={{color:rarityColor(card.rarity),fontSize:11,fontWeight:'700'}}>{rarity.label}</Txt><Txt muted style={{fontSize:11}}>Region {card.region+1}</Txt></Row>
-   <View accessibilityLabel="Fahrzeugbild Platzhalter" style={[styles.artwork,{borderColor:rarityColor(card.rarity)}]}><Txt muted style={{fontSize:36,lineHeight:44}}>▧</Txt></View>
+   <View accessibilityLabel={t('Fahrzeugbild Platzhalter')} style={[styles.artwork,{borderColor:rarityColor(card.rarity)}]}><Txt muted style={{fontSize:36,lineHeight:44}}>▧</Txt></View>
    <Txt style={styles.name}>{card.name}</Txt>
    <View style={styles.badges}><Pill>{own?`Stufe ${level}`:'Nicht entdeckt'}</Pill><Txt muted style={{fontSize:12}}>{n(stats.capacity,1)} t · Rang {stats.rank.total}</Txt></View>
   </Card>

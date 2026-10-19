@@ -1,3 +1,4 @@
+import {t} from './i18n';
 import React,{useEffect,useState} from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Bar,Pill,Empty,Btn,n} from './ui';
@@ -7,7 +8,7 @@ function Relationship({customer,trust}:any){
 }
 export function CustomerList({data,onOpen}:any){
  if(!data.customers.length)return <Empty>Stammkunden über den Endlosort freischalten.</Empty>;
- return <>{data.customers.map((customer:any)=><Pressable key={customer.id} accessibilityRole="button" accessibilityLabel={`${customer.name}, Level ${customer.level}`} onPress={()=>onOpen(customer.id)}>
+ return <>{data.customers.map((customer:any)=><Pressable key={customer.id} accessibilityRole="button" accessibilityLabel={t(`${customer.name}, Level ${customer.level}`)} onPress={()=>onOpen(customer.id)}>
   <Card style={styles.summary}>
    <Row><Txt style={[styles.title,{flex:1}]}>{customer.name}</Txt><Txt muted>›</Txt></Row>
    <Row><Txt muted>{customer.industry}</Txt><Pill>Level {customer.level}</Pill></Row>
@@ -32,9 +33,9 @@ export function CustomerDetail({data,id,busy,onSave}:any){
     <Txt style={{fontWeight:'700',marginBottom:6}}>{skill.label}</Txt>
     <Row style={{marginBottom:0,flexWrap:'nowrap'}}><View style={{flex:1,minWidth:0}}><Txt gold style={styles.small}>{skill.kind==='pay'?'Vergütung':'Chance'} +{n(next*.1,1)} %</Txt><Txt muted style={styles.small}>Stufe {level}{extra?` → ${next}`:''} / {skill.limit}</Txt></View>
      {editing&&<View style={{flexDirection:'row',alignItems:'center',gap:6}}>
-      {extra>0&&<Pressable accessibilityRole="button" accessibilityLabel={`${skill.label} reduzieren`} accessibilityState={{disabled:busy||!extra}} disabled={busy||!extra} onPress={()=>setDraft(d=>({...d,[skill.kind]:d[skill.kind]-1}))} style={[styles.plus,(busy||!extra)&&{opacity:.4}]}><Txt style={{fontSize:20}}>−</Txt></Pressable>}
+      {extra>0&&<Pressable accessibilityRole="button" accessibilityLabel={t(`${skill.label} reduzieren`)} accessibilityState={{disabled:busy||!extra}} disabled={busy||!extra} onPress={()=>setDraft(d=>({...d,[skill.kind]:d[skill.kind]-1}))} style={[styles.plus,(busy||!extra)&&{opacity:.4}]}><Txt style={{fontSize:20}}>−</Txt></Pressable>}
       {extra>0&&<Txt style={{fontSize:12,minWidth:18,textAlign:'center'}}>+{extra}</Txt>}
-      <Pressable accessibilityRole="button" accessibilityLabel={`${skill.label} hinzufügen`} accessibilityState={{disabled:busy||left<=0||next>=skill.limit}} disabled={busy||left<=0||next>=skill.limit} onPress={()=>setDraft(d=>({...d,[skill.kind]:d[skill.kind]+1}))} style={[styles.plus,(busy||left<=0||next>=skill.limit)&&{opacity:.4}]}><Txt style={{fontSize:20}}>+</Txt></Pressable>
+      <Pressable accessibilityRole="button" accessibilityLabel={t(`${skill.label} hinzufügen`)} accessibilityState={{disabled:busy||left<=0||next>=skill.limit}} disabled={busy||left<=0||next>=skill.limit} onPress={()=>setDraft(d=>({...d,[skill.kind]:d[skill.kind]+1}))} style={[styles.plus,(busy||left<=0||next>=skill.limit)&&{opacity:.4}]}><Txt style={{fontSize:20}}>+</Txt></Pressable>
      </View>}
     </Row>
    </View>;})}
