@@ -1,3 +1,4 @@
+import {t} from './i18n';
 import React,{useRef,useState} from 'react';
 import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,n,remaining} from './ui';
@@ -10,7 +11,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
  const focus=useRef<{offset:number|null;target:number|null;done:boolean}>({offset:null,target:null,done:false});
  const g=data.state,maps=data.expeditionMap;
  const button=(label:string,action:string,payload:any,disabled=false)=><Btn disabled={busy||disabled} onPress={()=>onCommand(action,payload)}>{label}</Btn>;
- if(region===null)return <>{maps.map((map:any)=><Pressable key={map.index} accessibilityRole="button" accessibilityLabel={`${map.name}, ${map.customer.name}${map.open?'':', Gesperrt'}`} accessibilityState={{disabled:!map.open}} disabled={!map.open} onPress={()=>onSelectRegion(map.index)}>
+ if(region===null)return <>{maps.map((map:any)=><Pressable key={map.index} accessibilityRole="button" accessibilityLabel={t(`${map.name}, ${map.customer.name}${map.open?'':', Gesperrt'}`)} accessibilityState={{disabled:!map.open}} disabled={!map.open} onPress={()=>onSelectRegion(map.index)}>
   <Card style={[styles.region,!map.open&&styles.locked]}>
    <Row><Txt style={styles.title}>{map.name}</Txt><Txt muted>{n(map.progress)} %</Txt></Row>
    <Row><Txt muted>{map.customer.name}</Txt>{!map.open&&<Pill>Gesperrt</Pill>}</Row>
@@ -24,7 +25,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
  const targetLayout=(key:number|'endless',y:number)=>{if(key===focusKey){focus.current.target=y;tryFocus();}};
  const close=()=>chances?setChances(false):setSelected(null);
  const info=(event?:any)=>{event?.stopPropagation();setChances(true);};
- const question=(positioned=false)=> <Pressable accessibilityRole="button" accessibilityLabel={`Fundchancen ${map.name}`} onPress={info} style={[styles.question,positioned&&{position:'absolute',top:16,right:16}]}><Txt style={{color:C.accent,fontSize:18}}>?</Txt></Pressable>;
+ const question=(positioned=false)=> <Pressable accessibilityRole="button" accessibilityLabel={t(`Fundchancen ${map.name}`)} onPress={info} style={[styles.question,positioned&&{position:'absolute',top:16,right:16}]}><Txt style={{color:C.accent,fontSize:18}}>?</Txt></Pressable>;
  const place=typeof selected==='number'?map.places[selected]:null;
  const discovered=place&&Number(selected)<r.discovered,next=place&&selected===r.discovered;
  const done=place&&r.deliveries[selected as number],mission=place&&missions.find((m:any)=>m.kind==='delivery'&&m.place===selected);
@@ -33,7 +34,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
  return <View onLayout={e=>{focus.current.offset=e.nativeEvent.layout.y;tryFocus();}}>
   <Row><Txt style={styles.title}>{map.name}</Txt><Txt muted>{map.customer.name}</Txt></Row>
   <View onLayout={e=>targetLayout('endless',e.nativeEvent.layout.y)}>
-   <Pressable accessibilityRole="button" accessibilityLabel="Endlosort öffnen" onPress={()=>setSelected('endless')}>
+   <Pressable accessibilityRole="button" accessibilityLabel={t('Endlosort öffnen')} onPress={()=>setSelected('endless')}>
     <Card style={[styles.endless,!endlessOpen&&styles.locked]}>
      <Row style={{marginBottom:2}}><Txt style={[styles.title,{flex:1}]}>∞ Endlosort</Txt><Txt muted>{n(map.progress)} %</Txt><View style={{width:44,height:44}}/></Row>
      <Txt muted style={styles.small}>{map.customer.name}</Txt>
@@ -46,7 +47,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
   {[...map.places].reverse().map((p:any)=>{
    const i=p.index,known=i<r.discovered,complete=r.deliveries[i],locked=i>r.discovered;
    const m=missions.find((m:any)=>m.kind==='delivery'&&m.place===i),value=p.invested/p.discoveryCost*100;
-   return <View key={i} onLayout={e=>targetLayout(i,e.nativeEvent.layout.y)}><Pressable accessibilityRole="button" accessibilityLabel={`Ort ${i+1} öffnen`} onPress={()=>setSelected(i)}>
+   return <View key={i} onLayout={e=>targetLayout(i,e.nativeEvent.layout.y)}><Pressable accessibilityRole="button" accessibilityLabel={t(`Ort ${i+1} öffnen`)} onPress={()=>setSelected(i)}>
     <Card style={[styles.place,locked&&styles.locked]}><Row style={{marginBottom:4}}><Txt style={styles.title}>Ort {i+1}</Txt><Txt muted>{n(value)} %</Txt></Row>
      <Progress explored={value} delivered={deliveryProgress(m,complete,clock)} showDelivery={known}/>
      {locked?<Pill>Gesperrt</Pill>:complete?<Txt muted style={styles.small}>Abgeschlossen ✓</Txt>:m?.status==='active'?<Txt gold style={styles.small}>{remaining(m.endsAt,clock)}</Txt>:m?.status==='completed'?<Txt gold style={styles.small}>Bonus bereit</Txt>:null}

@@ -1,3 +1,12 @@
+## Sprach- und Vorratspaket – Veröffentlichung gestartet
+
+- Mit dem aktuellen Hauptbranch zusammengeführt: Eventprojekt und Tourwechsel einschließlich Reservierungen bleiben erhalten. Neue Texte ebenfalls auf Englisch.
+- Sprache: Einstellungen mit Deutsch/English-Auswahl; Deutsch bleibt unabhängig von der Gerätesprache Standard. Auswahl wird lokal gespeichert und nach Neustart geladen, auch bei Kontowechsel/Spielreset erhalten. Sofortige Umschaltung von Texten, Zahlen-Locale, Eingabeplatzhaltern und Bedienungshilfen.
+- Zentraler Quelltext-/Übersetzungskatalog mit Platzhaltern für dynamische Anzeigen, englische Spielhilfe und gemeinsames Sprachregister. Weitere Sprachen durch Kataloge und Registrierung ergänzbar; Anleitung in LOCALIZATION.md. Firmen-/Stadtnamen bleiben wörtlich; Serverzustand, IDs und Spielregeln unverändert.
+- Fahrzeugkarten aus Vorräten entfernt. Sammlung und Eigentum unverändert; Shards und Fahrzeugkartenaufträge bleiben als nutzbare Gegenstände sichtbar.
+
+---
+
 ## Sammelpaket vom 19.10.2026 – veröffentlicht
 
 - Laufende Großaufträge: unter der eingesetzten Flotte je Fahrzeug eigener Tour-Countdown und tatsächliche Restladung „X t bei Ankunft“. Fahrzeuge ohne weitere Fracht zeigen „Keine weitere Tour“. Automatischer Serverabgleich an jeder einzelnen Tourankunft, damit Folgetour und Gesamtfortschritt zeitnah aktualisieren.

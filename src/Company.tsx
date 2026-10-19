@@ -1,3 +1,4 @@
+import {t} from './i18n';
 import {itemName} from './items';
 import React from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
@@ -40,9 +41,9 @@ export function TransportEditor({data,draft,onDraft,busy,onSave,onInventory}:any
      <Row><Txt style={{fontWeight:'700'}}>{LABELS[o.kind]}</Txt><Txt muted style={{fontSize:12}}>{o.level}{selected?` → ${o.level+selected}`:''} / {o.limit}</Txt></Row>
      <Txt muted style={{fontSize:12}}>{effect(o,o.level)}{selected?` → ${effect(o,o.level+selected)}`:''}</Txt>
      <Row style={{marginTop:8,marginBottom:0,flexWrap:'nowrap'}}><Txt muted style={{fontSize:12,flex:1}}>{next?`${n(next.coins)} M · ${next.items} Items`:'Maximum'}</Txt><View style={styles.stepper}>
-      <Pressable accessibilityRole="button" accessibilityLabel={`${category==='national'?'Regionalverkehr':'Fernverkehr'} ${LABELS[o.kind]} verringern`} accessibilityState={{disabled:busy||!selected}} disabled={busy||!selected} onPress={()=>change(-1)} style={[styles.step,!selected&&styles.disabled]}><Txt>−</Txt></Pressable>
+      <Pressable accessibilityRole="button" accessibilityLabel={t(`${category==='national'?'Regionalverkehr':'Fernverkehr'} ${LABELS[o.kind]} verringern`)} accessibilityState={{disabled:busy||!selected}} disabled={busy||!selected} onPress={()=>change(-1)} style={[styles.step,!selected&&styles.disabled]}><Txt>−</Txt></Pressable>
       <Txt gold style={{minWidth:24,textAlign:'center'}}>+{selected}</Txt>
-      <Pressable accessibilityRole="button" accessibilityLabel={`${category==='national'?'Regionalverkehr':'Fernverkehr'} ${LABELS[o.kind]} erhöhen`} accessibilityState={{disabled:!canAdd}} disabled={!canAdd} onPress={()=>change(1)} style={[styles.step,!canAdd&&styles.disabled]}><Txt>+</Txt></Pressable>
+      <Pressable accessibilityRole="button" accessibilityLabel={t(`${category==='national'?'Regionalverkehr':'Fernverkehr'} ${LABELS[o.kind]} erhöhen`)} accessibilityState={{disabled:!canAdd}} disabled={!canAdd} onPress={()=>change(1)} style={[styles.step,!canAdd&&styles.disabled]}><Txt>+</Txt></Pressable>
      </View></Row>
     </View>;
    })}

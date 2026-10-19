@@ -1,3 +1,4 @@
+import {t} from './i18n';
 import {itemName} from './items';
 import React from 'react';
 import {View,Pressable,Modal,StyleSheet} from 'react-native';
@@ -13,9 +14,9 @@ export function LevelUpAllocation({data,busy,allocation,onChange,onConfirm}:{dat
    return <View key={kind} style={s.area}><Txt style={{fontWeight:'700',marginBottom:8}}>{label}</Txt><View style={s.values}>
     <View style={s.value}><Txt muted style={s.caption}>Aktuell</Txt><Txt>{n(current)}</Txt></View>
     <View style={s.controls}>
-     <Pressable accessibilityRole="button" accessibilityLabel={`${label} verringern`} accessibilityState={{disabled:busy||allocation[kind]===0}} disabled={busy||allocation[kind]===0} onPress={()=>onChange({...allocation,[kind]:allocation[kind]-1})} style={[s.step,{opacity:allocation[kind]?1:.4}]}><Txt>−</Txt></Pressable>
+     <Pressable accessibilityRole="button" accessibilityLabel={t(`${label} verringern`)} accessibilityState={{disabled:busy||allocation[kind]===0}} disabled={busy||allocation[kind]===0} onPress={()=>onChange({...allocation,[kind]:allocation[kind]-1})} style={[s.step,{opacity:allocation[kind]?1:.4}]}><Txt>−</Txt></Pressable>
      <Txt gold style={{minWidth:22,textAlign:'center'}}>+{allocation[kind]}</Txt>
-     <Pressable accessibilityRole="button" accessibilityLabel={`${label} erhöhen`} accessibilityState={{disabled:busy||free===0}} disabled={busy||free===0} onPress={()=>onChange({...allocation,[kind]:allocation[kind]+1})} style={[s.step,{opacity:free?1:.4}]}><Txt>+</Txt></Pressable>
+     <Pressable accessibilityRole="button" accessibilityLabel={t(`${label} erhöhen`)} accessibilityState={{disabled:busy||free===0}} disabled={busy||free===0} onPress={()=>onChange({...allocation,[kind]:allocation[kind]+1})} style={[s.step,{opacity:free?1:.4}]}><Txt>+</Txt></Pressable>
     </View>
     <View style={s.value}><Txt muted style={s.caption}>Danach</Txt><Txt gold>{n(current+allocation[kind])}</Txt></View>
    </View></View>;

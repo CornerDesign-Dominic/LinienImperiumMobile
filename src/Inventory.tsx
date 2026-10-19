@@ -1,5 +1,7 @@
+import {Text} from './Language';
+import {t} from './i18n';
 import React,{useState} from 'react';
-import {View,Text,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
+import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {C,Txt,Row,Btn,Pill,Empty,n} from './ui';
 
@@ -13,7 +15,7 @@ export function Inventory({data,busy,onNavigate,onUseRefill,modalBlocked=false}:
  const navigate=(screen:string)=>{setSelected(null);onNavigate(screen);};
  return <>
   {!owned.length&&<Empty>Noch keine Vorräte.</Empty>}
-  {rows.map((row,i)=><View key={i} style={styles.row}>{row.map(stock=><Pressable key={stock.id} accessibilityRole="button" accessibilityLabel={`${stock.name}, ${n(stock.amount)} vorhanden`} onPress={()=>setSelected(stock.id)} style={({pressed})=>[styles.card,{borderColor:stock.color||C.line},pressed&&{opacity:.7}]}>
+  {rows.map((row,i)=><View key={i} style={styles.row}>{row.map(stock=><Pressable key={stock.id} accessibilityRole="button" accessibilityLabel={t(`${stock.name}, ${n(stock.amount)} vorhanden`)} onPress={()=>setSelected(stock.id)} style={({pressed})=>[styles.card,{borderColor:stock.color||C.line},pressed&&{opacity:.7}]}>
    <View style={styles.artwork} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><Txt muted style={{fontSize:25}}>▧</Txt></View>
    <Text numberOfLines={3} style={styles.name}>{stock.name.replace(/Kapazitätsmodul/g,'Kapazitäts\u00admodul').replace(/Firmenausbau/g,'Firmen\u00adausbau').replace(/Abholhinweis/g,'Abhol\u00adhinweis').replace(/Lieferantenkontakt/g,'Lieferanten\u00adkontakt').replace(/Fahrzeugkartenauftrag/g,'Fahrzeug\u00adkarten\u00adauftrag').replace(/Empfehlungsauftrag/g,'Empfehlungs\u00adauftrag').replace(/Sonderauftrag/g,'Sonder\u00adauftrag')}</Text><Txt style={styles.amount}>{n(stock.amount)}</Txt>
   </Pressable>)}{Array.from({length:3-row.length},(_,i)=><View key={`empty-${i}`} style={{flex:1}}/>)}</View>)}

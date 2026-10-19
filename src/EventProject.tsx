@@ -63,3 +63,4 @@ const styles=StyleSheet.create({
  vehicle:{borderTopWidth:1,borderTopColor:C.line,paddingTop:10,marginTop:6,paddingBottom:12},
  small:{fontSize:12,lineHeight:18},
 });
+

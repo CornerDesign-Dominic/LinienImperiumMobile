@@ -22,7 +22,8 @@ test('Every usable material, gear rarity and shard rarity is represented in inve
  assert.equal(items.find(i=>i.id==='overtimeRefills').name,'Überstundenauffüller');
  assert.equal(items.find(i=>i.id==='capacityModules').use,undefined);
  assert.equal(items.find(i=>i.id==='gear:common').use,undefined);
- assert.ok(ids.has('card:navigator'));
+ assert.ok(!items.some(i=>i.id.startsWith('card:')),'Vehicle cards belong only in the collection');
+ assert.ok(g.expedition.characters.navigator,'Inventory filtering must retain owned cards');
 });
 
 test('All four engine recipes are listed and crafting outputs return to inventory',()=>{

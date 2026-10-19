@@ -20,7 +20,7 @@ Nur vorhandener Bestand wird angezeigt. Mengenänderungen kommen aus dem Serverz
 | Privatabholung | Herstellung | Einzelaufträge → Aufträge aus Vorräten | Ja |
 | Kundenauftrag | Herstellung bzw. wartende Kundenaufträge | Einzelaufträge → Aufträge aus Vorräten | Ja |
 | Sonderauftrag / Empfehlungsauftrag | Expeditionen und Stammkunden | Großaufträge | Nein |
-| Fahrzeugkarte, mit Kartenstufe | Expeditionen | Sammlung | Nein |
+Fahrzeugkarten werden ausschließlich in der Sammlung angezeigt, nicht in den Vorräten. Shards bleiben in den Vorräten.
 
 Das sind 14 nutzbare Materialarten: sechs Grundmaterialien, fünf Zahnrad-Seltenheiten und drei Shard-Seltenheiten. Aufträge und Fahrzeugkarten werden zusätzlich gezeigt. Münzen, XP, aktuelle Expeditions-/Überstundenpunkte und der tkm-Restzähler sind Ressourcen bzw. Fortschrittszähler und keine zusätzlichen Gegenstände. Laufende Aufträge erscheinen nicht gleichzeitig als startbarer Vorrat; ihre Details liegen bei den laufenden Aufträgen.
 
@@ -37,7 +37,7 @@ Alle vier bestehenden Funktionen sind auf der Herstellungsseite vertreten. Rezep
 
 ## Korrigiert
 
-- Fehlende Vorratskarten für wartende Aufträge, Großaufträge und gesammelte Fahrzeugkarten ergänzt.
+- Fehlende Vorratskarten für wartende Aufträge und Großaufträge ergänzt. Fahrzeugkarten werden ausschließlich in der Sammlung verwaltet.
 - Material-/Fahrzeugkartenaufträge werden nach Art und Rang über Regionen hinweg gestapelt; Großaufträge nach Auftragstyp.
 - Kapazitätsmodule und Zahnräder führen zur Sammlung bzw. zum Stadthub; die Garage bietet keine Upgrades.
 - Gemeinsame Namen für Grundmaterialien und Auftragsarten in `functions/src/item-names.json`, verwendet von App und Rezeptkatalog. Raritätsnamen kommen aus dem bestehenden Engine-Katalog.

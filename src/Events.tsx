@@ -1,6 +1,7 @@
+import {t} from './i18n';
 import React from 'react';
 import {Pressable,StyleSheet} from 'react-native';
-import {Btn,Card,Pill,Row,Txt,C} from './ui';
+import {Btn,Card,Pill,Row,Txt,C,n} from './ui';
 
 export type TestEvent = {
  id:string; title:string; description:string;
@@ -20,13 +21,13 @@ export function Events({events,busy,onStart,onEnd,onInfo}:{
   {events.map(event=>{
    const running=event.status==='running';
    return <Card key={event.id} style={styles.epic}>
-    <Pressable accessibilityRole="button" accessibilityLabel={`${event.title}, ${running?'läuft':event.status==='ended'?'beendet':'bereit'}`} disabled={busy} onPress={()=>running?onInfo(event):onStart(event)} style={{minHeight:44}}>
+    <Pressable accessibilityRole="button" accessibilityLabel={t(`${t(event.title)}, ${running?'läuft':event.status==='ended'?'beendet':'bereit'}`)} disabled={busy} onPress={()=>running?onInfo(event):onStart(event)} style={{minHeight:44}}>
      <Row><Txt style={styles.epicLabel}>EPISCH</Txt><Pill gold={!running}>{running?'LÄUFT':event.status==='ended'?'BEENDET':'BEREIT'}</Pill><Txt muted>›</Txt></Row>
      <Txt style={styles.title}>{event.title}</Txt>
      <Txt muted style={{marginTop:8}}>{event.description}</Txt>
      {event.run>0&&<Txt muted style={styles.meta}>Testdurchlauf {event.run}</Txt>}
     </Pressable>
-    <Txt muted style={styles.meta}>Unbegrenzter Projektumfang{event.project?` · ${event.project.delivered.toLocaleString('de-DE',{maximumFractionDigits:1})} t geliefert`:''}</Txt>
+    <Txt muted style={styles.meta}>Unbegrenzter Projektumfang{event.project?` · ${n(event.project.delivered,1)} t geliefert`:''}</Txt>
     {running&&<Btn secondary danger disabled={busy} onPress={()=>onEnd(event)}>Event beenden</Btn>}
    </Card>;
   })}
@@ -34,3 +35,4 @@ export function Events({events,busy,onStart,onEnd,onInfo}:{
 }
 export const epicStyle={backgroundColor:'#291F3B',borderColor:'#A579DC'};
 const styles=StyleSheet.create({title:{fontSize:17,fontWeight:'700'},meta:{fontSize:12,marginTop:10},epic:epicStyle,epicLabel:{color:'#C39AF5',fontSize:11,fontWeight:'700',letterSpacing:1}});
+
