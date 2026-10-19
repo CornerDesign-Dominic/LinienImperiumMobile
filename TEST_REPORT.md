@@ -263,3 +263,13 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Auftragstyp aus `routeType` in der kompakten Beschreibungszeile ergänzt; geteilter Kartenbaustein für Angebote, wartende und laufende Einzelaufträge. Keine neue Spielmechanik.
 - Typprüfung und Expo-Webexport bestanden. Browserprüfung auf 393/320 px mit beiden Auftragstypen bestanden, keine Überbreite/Browserfehler; 320-px-Ansicht visuell geprüft. Server unverändert, keine erneute Serverregression erforderlich.
 - Nur Sammelbranch, nicht veröffentlicht.
+
+
+## Zwei speicherbare 50-Punkte-Auffüller pro Level – 19.10.2026, vorbereitet
+
+- Neue Levelbelohnung: je 1 Expeditionsauffüller und Überstundenauffüller, weiterhin 3 verteilbare Punkte. Kein sofortiges +50 auf Expeditionsvorrat. Mehrfachaufstiege vergeben je Gegenstand pro Level einmal; normale Syncs vergeben nichts erneut.
+- Beide Auffüller lösen manuell je 50 Punkte ein, auch über dem Limit. Neues Inventarfeld wird bei alten Spielständen mit 0 ergänzt, Bestände/Punktzahlen bleiben bestehen. Reset setzt beide Gegenstandsbestände zurück. Überstunden-Verbrauchs-/Abrechnungslogik unverändert; gepinnte Vendor-Datei unverändert, Konstante im Mobile-Adapter strukturgesichert auf 50 angepasst.
+- Vorräte zeigen jetzt 14 nutzbare Materialarten. Gemeinsame Namen Expeditionsauffüller/Überstundenauffüller, Level-Up-Modal ohne Füllmenge. Herkünfte, Benutzen, Hilfe und Item-Prüfmatrix aktualisiert. Kein neues Herstellungsrezept.
+- Typprüfung und Expo-Webexport bestanden. 33 Node-Testeinträge bestanden (29 Adaptertests, 3 Item-Katalogtests und Wrapper mit 23 ursprünglichen Web-Regressionsdateien). Zusätzliche Fälle: beide Gegenstände je Level, Mehrfachaufstieg ohne sofortige Punkte, Wiederholung/Altdaten ohne Nachvergütung, je +50 mit Bestandsverbrauch, leerer Vorrat, Reset und Regeneration bei Einlösen unterhalb eines erhöhten Limits. Bisherige Erwartungen gezielt an neue Belohnungswerte angepasst.
+- Browser-QA mit lokaler Engine/simuliertem Firebase auf 393/320 px bestanden: globales Modal mit genau beiden Gegenständen und drei Punkten, keine 50-/100-Werte im Modal; kein automatisches Einlösen; beide Vorratskarten und Beschreibung; manuelle +50-Verwendung und deaktivierte Verwendung bei 0, anschließend kein positiver Bestand mehr. Keine Browserfehler; 320-px-Modal visuell geprüft.
+- Live-Smoke-Skript um beide Auffüller und wiederholtes Einlösen mit gleicher Command-ID ergänzt; dieses Skript wird erst beim nächsten Deployment gegen den Server ausgeführt. Neues Sammelpaket, nicht veröffentlicht.

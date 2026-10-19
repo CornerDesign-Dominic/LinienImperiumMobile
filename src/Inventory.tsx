@@ -28,7 +28,7 @@ export function Inventory({data,busy,onNavigate,onUseRefill,modalBlocked=false}:
      {item.craft&&<Btn secondary disabled={busy} onPress={()=>navigate('crafting')}>{item.recipe?'Herstellen ›':'In Herstellung verwenden ›'}</Btn>}
      {(item.id==='capacityModules'||item.id.startsWith('gear:'))&&<><Btn disabled={busy} onPress={()=>navigate('cards')}>Zur Sammlung ›</Btn><Btn secondary disabled={busy} onPress={()=>navigate('hub')}>Zum Stadthub ›</Btn></>}
      {item.use&&<Btn disabled={busy||item.amount<1} onPress={()=>navigate(item.use!)}>Benutzen ›</Btn>}
-     {item.refill&&<Btn disabled={busy||item.amount<1} onPress={onUseRefill}>Benutzen · +100 Überstundenpunkte</Btn>}
+     {item.refill&&<Btn disabled={busy||item.amount<1} onPress={()=>onUseRefill(item.refill)}>Benutzen · +{c.refillPoints?.[item.refill]??50} {item.refill==='expedition'?'Expeditionspunkte':'Überstundenpunkte'}</Btn>}
     </ScrollView>}
    </SafeAreaView></View>
   </Modal>

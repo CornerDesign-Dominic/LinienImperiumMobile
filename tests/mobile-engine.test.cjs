@@ -33,9 +33,9 @@ test('Persisted state is not mutated in place and level packages survive a round
  assert.equal(JSON.stringify(initial.state),saved);assert.equal(next.state.coins,51000);
  next.state.inventory.overtimeRefills=2;
  const used=execute(next.state,'refill',{},now,fixed);
- assert.equal(used.state.inventory.overtimeRefills,1);assert.equal(used.state.overtimePoints,200);
+ assert.equal(used.state.inventory.overtimeRefills,1);assert.equal(used.state.overtimePoints,150);
  const restored=execute(JSON.parse(JSON.stringify(used.state)),'sync',{},now+600000,fixed);
- assert.equal(restored.state.inventory.overtimeRefills,1);assert.equal(restored.state.overtimePoints,200);
+ assert.equal(restored.state.inventory.overtimeRefills,1);assert.equal(restored.state.overtimePoints,150);
 });
 
 test('Company and fantasy city names are validated cosmetics and preserve existing progress',()=>{
@@ -142,7 +142,7 @@ test('Test grants persist points above capacity and XP produces normal level rew
  assert.equal(overtime.state.overtimePoints,200);
  const xp=execute(overtime.state,'testGrant',{kind:'xp',amount:100},now,fixed);
  assert.equal(xp.state.xp,100);assert.equal(xp.view.level.level,2);
- assert.equal(xp.state.expedition.points,200);assert.equal(xp.state.inventory.overtimeRefills,1);
+ assert.equal(xp.state.expedition.points,150);assert.equal(xp.state.inventory.overtimeRefills,1);
  assert.deepEqual(xp.state.pendingLevelUps,[2]);
  const large=execute(xp.state,'testGrant',{kind:'xp',amount:1000},now,fixed);
  assert.equal(large.state.xp,1100);
@@ -574,6 +574,37 @@ test('Overtime consumption, refills below capacity and offline regeneration reta
  assert.equal(full.state.overtimePoints,99);assert.equal(full.view.regeneration.overtimeNextAt,now+60000+10*60000);
  full=execute(full.state,'overtime',{id:project.id,amount:1},now+120000,fixed);assert.equal(full.view.regeneration.overtimeNextAt,now+60000+10*60000);
  const refill=structuredClone(active);refill.overtimeCapacity=300;refill.overtimePoints=10;refill.overtimeLastRegenAt=now-60000;refill.inventory.overtimeRefills=1;
- let added=execute(refill,'refill',{},now+60000,fixed);assert.equal(added.state.overtimePoints,110);assert.equal(added.view.regeneration.overtimeNextAt,now+9*60000);
- added=execute(added.state,'testGrant',{kind:'overtime',amount:100},now+120000,fixed);assert.equal(added.state.overtimePoints,210);assert.equal(added.view.regeneration.overtimeNextAt,now+9*60000);
+ let added=execute(refill,'refill',{},now+60000,fixed);assert.equal(added.state.overtimePoints,60);assert.equal(added.view.regeneration.overtimeNextAt,now+9*60000);
+ added=execute(added.state,'testGrant',{kind:'overtime',amount:100},now+120000,fixed);assert.equal(added.state.overtimePoints,160);assert.equal(added.view.regeneration.overtimeNextAt,now+9*60000);
+});
+
+test('Every new level grants one of each stored 50-point filler and three allocation points, with no instant expedition award',()=>{
+ const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ const gained=execute(start.state,'testGrant',{kind:'xp',amount:1000},now,fixed);
+ const levels=gained.view.level.level-1;
+ assert.equal(gained.state.inventory.expeditionRefills,levels);assert.equal(gained.state.inventory.overtimeRefills,levels);
+ assert.equal(gained.state.expedition.points,start.state.expedition.points);
+ assert.equal(gained.state.overtimePoints,start.state.overtimePoints);
+ assert.equal(gained.state.pendingLevelUps.length,levels);
+ const again=execute(gained.state,'sync',{},now,fixed);assert.equal(again.state.inventory.expeditionRefills,levels);
+ const allocated=execute(again.state,'level',{expedition:1,overtime:2},now,fixed);
+ assert.equal(allocated.view.expeditionCapacity,gained.view.expeditionCapacity+1);assert.equal(allocated.state.overtimeCapacity,gained.state.overtimeCapacity+2);
+ for(const [action,field,points] of [['expeditionRefill','expeditionRefills','expedition'],['refill','overtimeRefills','overtime']]){
+  const used=execute(gained.state,action,{},now,fixed);
+  assert.equal(used.state.inventory[field],levels-1);
+  assert.equal(points==='expedition'?used.state.expedition.points:used.state.overtimePoints,(points==='expedition'?gained.state.expedition.points:gained.state.overtimePoints)+50);
+ }
+ assert.deepEqual(gained.view.catalog.refillPoints,{expedition:50,overtime:50});
+ assert.doesNotMatch(JSON.stringify(gained.view.help),/sofort 50 Expeditionspunkte|für 100 Punkte|5 dauerhaft verteilbare/);
+});
+
+test('Legacy saves receive an empty expedition filler slot without retroactive rewards and both fillers consume only once',()=>{
+ const original=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed).state;
+ delete original.inventory.expeditionRefills;original.inventory.overtimeRefills=2;original.pendingLevelUps=[2];
+ const migrated=execute(original,'sync',{},now,fixed);assert.equal(migrated.state.inventory.expeditionRefills,0);assert.equal(migrated.state.inventory.overtimeRefills,2);assert.deepEqual(migrated.state.pendingLevelUps,[2]);
+ const empty=execute(migrated.state,'expeditionRefill',{},now,fixed);assert.equal(empty.state.expedition.points,migrated.state.expedition.points);
+ migrated.state.inventory.expeditionRefills=1;migrated.state.expedition.levelCapacityBonus=100;migrated.state.expedition.points=10;migrated.state.expedition.lastRegenAt=now-60000;
+ const used=execute(migrated.state,'expeditionRefill',{},now,fixed);assert.equal(used.state.expedition.points,60);assert.equal(used.view.regeneration.expeditionNextAt,now+19*60000);assert.equal(used.state.inventory.expeditionRefills,0);
+ const twice=execute(used.state,'expeditionRefill',{},now,fixed);assert.equal(twice.state.expedition.points,60);
+ const reset=execute(used.state,'reset',{},now,fixed);assert.equal(reset.state.inventory.expeditionRefills,0);assert.equal(reset.state.inventory.overtimeRefills,0);
 });
