@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const itemNames = require('./item-names.json');
+const {eventViews, changeEvent} = require('./events.cjs');
 const source = fs.readFileSync(path.join(__dirname, '../vendor/web-game.js'), 'utf8');
 const boundary = source.indexOf("  document.addEventListener('click'");
 if (boundary < 0) throw Error('Web engine boundary missing');
@@ -350,6 +351,8 @@ const companyProfile = p => {
 function execute(state, action='sync', p={}, now=Date.now(), random=Math.random) {
   const a=session(state,now,random), before=JSON.stringify(a.state);
   const calls={
+    eventStart:()=>changeEvent(a.state,id(p.id),'start',num(p.run),now),
+    eventEnd:()=>changeEvent(a.state,id(p.id),'end',num(p.run),now),
     sync:()=>{},start:()=>a.chooseStartCity(id(p.id)),foundCompany:()=>a.foundCompany(companyProfile(p)),
     garageAdd:()=>a.addCardToGarage(id(p.id)),garageRemove:()=>a.removeCardFromGarage(id(p.id)),
     seat:()=>a.assignCharacterSeat(id(p.id),num(p.seat,4),num(p.template,2)),
@@ -399,6 +402,8 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const ok=calls[action]();
   if(action==='mission')a.shortenTestMissions();
   const view=a.view();
+  view.testEvents=eventViews(a.state);
+  if(action==='eventStart'||action==='eventEnd')view.message=ok;
   const normalizeNames=text=>typeof text==='string'?text.replace(/Sonderfahrten/g,'Sonderaufträge').replace(/Sonderfahrt/g,'Sonderauftrag').replace(/Firmen-Items/g,'Firmenausbau-Items').replace(/Firmen-Item/g,'Firmenausbau-Item').replace(/100-Token-Refill/g,'Überstunden-Refill').replace(/\b(common|uncommon|rare)-Shard/g,(_,r)=>r[0].toUpperCase()+r.slice(1)+'-Shard'):text;
   view.message=normalizeNames(view.message);
   for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(normalizeNames);
