@@ -645,5 +645,16 @@
   "Sammlung und Fahrzeugboni": "Collection and vehicle bonuses",
   "Waren und Angebote": "Goods and offers",
   "Flottentransporte": "Fleet deliveries",
-  "Einzeltransporte": "Single deliveries"
+  "Einzeltransporte": "Single deliveries",
+  "In Flotte · Platz {0}": "In fleet · Slot {0}",
+  "Ausgewählt · Platz {0}": "Selected · Slot {0}",
+  "Flotte {0} · Platz {1}": "Fleet {0} · Slot {1}",
+  "Markierte Fahrzeuge sind bereits in dieser Flotte. Ihre Auswahl verschiebt sie auf diesen Platz.": "Marked vehicles are already in this fleet. Selecting one moves it to this slot.",
+  "Noch keine Fahrzeugkarten entdeckt.": "No vehicle cards discovered yet.",
+  "Verfügbar": "Available",
+  "5 Plätze · Änderungen greifen nach der laufenden Fahrzeugtour.": "5 slots · Changes apply after the current vehicle trip.",
+  "Flottenplatz {0}: {1}": "Fleet slot {0}: {1}",
+  "Änderung konnte nicht gespeichert werden. Bitte erneut versuchen.": "Could not save change. Please try again.",
+  "Fahrzeug auswählen": "Choose vehicle",
+  "Wechseln": "Change"
 }
