@@ -41,6 +41,14 @@ const bridge = `
     ? { ...legacyStartCityById('hamburg'), id, city:(foundingProfile || game?.profile)?.cityName || 'Hauptsitz' }
     : legacyStartCityById(id);
   showToast = text => { mobileToast = text; };
+  // Spending below the cap must retain the current regeneration interval.
+  // regenerateExpedition already starts a fresh interval when leaving a full stock.
+  spendExpeditionPoints = amount => {
+    regenerateExpedition();
+    if(game.expedition.points<amount)return false;
+    game.expedition.points-=amount;
+    return true;
+  };
   const mobileProjectNames = {
     special:['Großauftrag Stadtversorgung','Großauftrag Baustellenlogistik','Großauftrag Materialbergung','Großauftrag Ferntransport','Großauftrag Handelsroute'],
     referral:['Großprojekt Hafenverbund','Großprojekt Versorgungskette','Großprojekt Industrieanlage','Großprojekt Fernkorridor','Großprojekt Kontinentalnetz']
@@ -195,8 +203,8 @@ const bridge = `
     grantTestCoins() { game.coins += TEST_COINS_GRANT; game.stats.testCoinsGranted += TEST_COINS_GRANT; addEvent('Testmünzen: +50.000 M'); },
     grantTestResource(kind, amount) {
       if (kind === 'xp') awardTransportXp(amount);
-      else if (kind === 'expedition') { game.expedition.points += amount; game.expedition.lastRegenAt = Date.now(); }
-      else { game.overtimePoints += amount; game.overtimeLastRegenAt = Date.now(); }
+      else if (kind === 'expedition') { game.expedition.points += amount; if(game.expedition.points>=expeditionCapacity())game.expedition.lastRegenAt = Date.now(); }
+      else { game.overtimePoints += amount; if(game.overtimePoints>=game.overtimeCapacity)game.overtimeLastRegenAt = Date.now(); }
       const label = kind === 'xp' ? 'XP' : kind === 'expedition' ? 'Expeditionspunkte' : 'Überstundenpunkte';
       addEvent('Test: +' + amount + ' ' + label + '.');
       mobileToast = '+' + amount + ' ' + label;

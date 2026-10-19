@@ -248,3 +248,11 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Rein visuelle Anpassung: Verteilung nur bei freien Punkten oder lokalem Entwurf; Minus/Mengenanzeige nur pro vorgemerkt verbessertem Bereich; Speichern nur mit Entwurf. Fähigkeiten und dauerhafte Boni bleiben bei 0 Punkten sichtbar.
 - Typprüfung und Expo-Webexport bestanden. Browser-QA mit lokaler Engine und simuliertem Firebase auf 393/320 px bestanden: 0 Punkte ohne Verteilcontrols, frischer Punkt nur mit Plus, vorgemerkter letzter Punkt weiterhin rücknehmbar/speicherbar, vollständiges Zurücknehmen blendet Minus/Speichern aus, Speichern blendet bei 0 Punkten sämtliche Controls aus. Genau eine Servermutation; Bonus weiterhin sichtbar. Keine Browserfehler, 320-px-Ansicht visuell geprüft.
 - Keine Serveränderungen, daher Serverregressionen nicht erneut ausgeführt. Neues Sammelpaket, nicht veröffentlicht.
+
+
+## Durchlaufende Regenerationszyklen – 19.10.2026, vorbereitet
+
+- Ursache: die ursprüngliche `spendExpeditionPoints`-Funktion setzte nach jedem Verbrauch `lastRegenAt` neu. Mobile-Adapter erhält nun die vorhandene Phase; Regeneration vor dem Abzug und Kapazitätsgrenzen bleiben unverändert. Volle/überfüllte Vorräte pausieren weiterhin und starten beim Unterschreiten einen vollständigen Zyklus. Überstundenverbrauch verhielt sich bereits so und ist nun ausdrücklich abgesichert.
+- Testgutschriften setzen die Phase nur beim Erreichen des Limits zurück. Überstunden-Refill unterhalb eines erhöhten Limits erhält die Phase. Keine Änderung von Regenerationsraten (20/10 Minuten), Punktkosten oder Bonusmengen. Gepinnte Vendor-Datei unverändert.
+- `npm test`: 31 Einträge bestanden (27 Adaptertests, 3 Item-Katalogtests, Wrapper mit 23 ursprünglichen Web-Regressionsdateien). Neue Tests prüfen wiederholten Expeditions-/Überstundenverbrauch ohne Friständerung, tatsächliche Gutschrift am bestehenden Fristende, mehrere Offline-Zyklen mit Restphase, natürliches Erreichen des Limits, Pause ohne weitere Gutschrift, vollständigen Neustart nach Ausgeben aus vollem Bestand und Refill/Testgutschrift unterhalb des Limits.
+- Reine Serverlogik, keine geänderte Oberfläche. Neues Sammelpaket, nicht veröffentlicht.

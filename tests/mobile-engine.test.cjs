@@ -525,3 +525,55 @@ test('Customer points save as one validated allocation and cannot overspend, exc
  assert.throws(()=>execute(allocated.state,'customerBatch',{id:'frischgut',points:{pay:1,special:0,referral:0},base:{pay:0,special:0,referral:0}},now,fixed),/verfügbar/);
  assert.equal(JSON.stringify(allocated.state),snapshot);
 });
+
+test('Expedition consumption keeps the running regeneration clock and only leaving full stock starts a new cycle',()=>{
+ let game=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ game.state.expedition.points=30;game.state.expedition.lastRegenAt=now-5*60000;
+ game.state.expedition.regions[0].discovered=7;game.state.expedition.regions[0].endlessUnlocked=true;
+ const deadline=now+15*60000;
+ for(const elapsed of [60000,120000]){
+  game=execute(game.state,'draw',{region:0},now+elapsed,fixed);
+  assert.equal(game.view.regeneration.expeditionNextAt,deadline);
+  assert.equal(game.state.expedition.lastRegenAt,now-5*60000);
+ }
+ assert.equal(game.state.expedition.points,20);
+ game=execute(game.state,'sync',{},deadline,fixed);
+ assert.equal(game.state.expedition.points,21);assert.equal(game.view.regeneration.expeditionNextAt,deadline+20*60000);
+ game=execute(game.state,'sync',{},deadline+3*20*60000+60000,fixed);
+ assert.equal(game.state.expedition.points,24);assert.equal(game.view.regeneration.expeditionNextAt,deadline+4*20*60000);
+ let full=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ full=execute(full.state,'discover',{region:0},now+60000,fixed);
+ assert.equal(full.view.regeneration.expeditionNextAt,now+60000+20*60000);
+ full=execute(full.state,'discover',{region:0},now+120000,fixed);
+ assert.equal(full.view.regeneration.expeditionNextAt,now+60000+20*60000);
+ const natural=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ natural.state.expedition.points=49;natural.state.expedition.lastRegenAt=now-20*60000+1000;
+ let paused=execute(natural.state,'sync',{},now+1000,fixed);assert.equal(paused.view.regeneration.expeditionNextAt,null);
+ paused=execute(paused.state,'sync',{},now+300000,fixed);assert.equal(paused.state.expedition.points,50);
+ const restarted=execute(paused.state,'discover',{region:0},now+400000,fixed);
+ assert.equal(restarted.state.expedition.points,49);assert.equal(restarted.view.regeneration.expeditionNextAt,now+400000+20*60000);
+});
+
+test('Overtime consumption, refills below capacity and offline regeneration retain their own clock',()=>{
+ let game=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ game.state.expedition.regions[0].discovered=7;game.state.expedition.regions[0].endlessUnlocked=true;game.state.expedition.seats[0]='navigator';
+ game=execute(game.state,'draw',{region:0},now,()=>.999);
+ const project=game.state.orders.find(o=>o.kind==='referral');
+ game=execute(game.state,'projectStart',{id:project.id,template:0},now,fixed);
+ const active=structuredClone(game.state);
+ game.state.overtimePoints=10;game.state.overtimeLastRegenAt=now-5*60000;
+ const deadline=now+5*60000;
+ for(const elapsed of [60000,120000]){
+  game=execute(game.state,'overtime',{id:project.id,amount:1},now+elapsed,fixed);
+  assert.equal(game.view.regeneration.overtimeNextAt,deadline);
+ }
+ assert.equal(game.state.overtimePoints,8);
+ game=execute(game.state,'sync',{},deadline,fixed);assert.equal(game.state.overtimePoints,9);assert.equal(game.view.regeneration.overtimeNextAt,deadline+10*60000);
+ active.overtimePoints=100;
+ let full=execute(active,'overtime',{id:project.id,amount:1},now+60000,fixed);
+ assert.equal(full.state.overtimePoints,99);assert.equal(full.view.regeneration.overtimeNextAt,now+60000+10*60000);
+ full=execute(full.state,'overtime',{id:project.id,amount:1},now+120000,fixed);assert.equal(full.view.regeneration.overtimeNextAt,now+60000+10*60000);
+ const refill=structuredClone(active);refill.overtimeCapacity=300;refill.overtimePoints=10;refill.overtimeLastRegenAt=now-60000;refill.inventory.overtimeRefills=1;
+ let added=execute(refill,'refill',{},now+60000,fixed);assert.equal(added.state.overtimePoints,110);assert.equal(added.view.regeneration.overtimeNextAt,now+9*60000);
+ added=execute(added.state,'testGrant',{kind:'overtime',amount:100},now+120000,fixed);assert.equal(added.state.overtimePoints,210);assert.equal(added.view.regeneration.overtimeNextAt,now+9*60000);
+});
