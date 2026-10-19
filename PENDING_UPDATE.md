@@ -4,6 +4,7 @@
 - Bei freien Punkten zunächst nur Plus je Bereich, ohne „+0“ oder Minus. Minus und vorgemerkte Menge erscheinen nur bei tatsächlich vorgemerkten Punkten im jeweiligen Bereich. Speichern erscheint erst bei einem Entwurf.
 - Nach Vormerken des letzten freien Punktes bleiben Rücknahme und Speichern erreichbar. Nach vollständigem Zurücknehmen verschwindet Minus/Speichern, nach dem Speichern aller Punkte verschwindet die Verteilung wieder. Bestehende Server- und Punktelogik unverändert.
 - Regeneration läuft unterhalb des Limits unabhängig von Ausgaben weiter. Expeditionsverbrauch setzt den Takt nicht mehr zurück; Überstundenverhalten bestätigt. Volle/überfüllte Vorräte pausieren; beim erneuten Unterschreiten startet ein voller Zyklus. Offline-Nachholung und verbleibender Zyklusanteil bleiben erhalten. Testgutschriften unterhalb des Limits erhalten ebenfalls die Phase. Intervalle unverändert: Expedition 20 Minuten, Überstunden 10 Minuten.
+- Kompakte Einzelauftragskarten zeigen neben Verkehrsart und Dauerklasse auch „Single Way“ bzw. „Dual Way“ aus dem tatsächlichen Auftragstyp. Gilt für Angebote, Vorräte und laufende Einzelaufträge.
 - Nur Sammelbranch, kein Deployment oder App-Update.
 
 ---

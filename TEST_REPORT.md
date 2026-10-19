@@ -256,3 +256,10 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Testgutschriften setzen die Phase nur beim Erreichen des Limits zurück. Überstunden-Refill unterhalb eines erhöhten Limits erhält die Phase. Keine Änderung von Regenerationsraten (20/10 Minuten), Punktkosten oder Bonusmengen. Gepinnte Vendor-Datei unverändert.
 - `npm test`: 31 Einträge bestanden (27 Adaptertests, 3 Item-Katalogtests, Wrapper mit 23 ursprünglichen Web-Regressionsdateien). Neue Tests prüfen wiederholten Expeditions-/Überstundenverbrauch ohne Friständerung, tatsächliche Gutschrift am bestehenden Fristende, mehrere Offline-Zyklen mit Restphase, natürliches Erreichen des Limits, Pause ohne weitere Gutschrift, vollständigen Neustart nach Ausgeben aus vollem Bestand und Refill/Testgutschrift unterhalb des Limits.
 - Reine Serverlogik, keine geänderte Oberfläche. Neues Sammelpaket, nicht veröffentlicht.
+
+
+## Single/Dual Way auf kompakten Auftragskarten – 19.10.2026, vorbereitet
+
+- Auftragstyp aus `routeType` in der kompakten Beschreibungszeile ergänzt; geteilter Kartenbaustein für Angebote, wartende und laufende Einzelaufträge. Keine neue Spielmechanik.
+- Typprüfung und Expo-Webexport bestanden. Browserprüfung auf 393/320 px mit beiden Auftragstypen bestanden, keine Überbreite/Browserfehler; 320-px-Ansicht visuell geprüft. Server unverändert, keine erneute Serverregression erforderlich.
+- Nur Sammelbranch, nicht veröffentlicht.
