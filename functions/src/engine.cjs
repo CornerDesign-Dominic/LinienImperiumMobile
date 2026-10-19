@@ -133,6 +133,19 @@ const bridge = `
     discoverExpeditionPlace, drawExpeditionJob, startExpeditionMission, claimExpeditionMission,
     buyHub, toggleHubTruck, collectHub, startHubUpgrade, combinePickupHints, craftCustomerOrder,
     unlockDepartment, upgradeWorkshop, upgradeSales, upgradeOfferLimit, upgradeTransport,
+    allocateCustomerBatch(customerId,points,base) {
+      if(!customerById(customerId)||!customerUnlocked(customerId))throw Error('Stammkunde nicht verfügbar.');
+      const current=customerSkillLevels(customerId),keys=Object.keys(CUSTOMER_SKILL_LIMITS);
+      for(const key of keys){
+        if(current[key]!==base[key])throw Error('Kundenwerte wurden geändert. Bitte erneut verteilen.');
+        if(current[key]+points[key]>CUSTOMER_SKILL_LIMITS[key])throw Error('Maximale Kundenstufe überschritten.');
+      }
+      const total=keys.reduce((sum,key)=>sum+points[key],0);
+      if(!total||total>availableCustomerSkillPoints(customerId))throw Error('Nicht genügend Kundenpunkte.');
+      for(const key of keys)for(let i=0;i<points[key];i++)allocateCustomerSkill(customerId,key);
+      mobileToast='Kundenpunkte gespeichert.';
+      return true;
+    },
     allocateCustomerSkill, toggleOrderPin, manualRefreshOrders, applyOrderReward,
     upgradeTransportBatch(upgrades) {
       let coins=0,items=0;
@@ -368,6 +381,13 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
       return a.upgradeTransportBatch(upgrades);
     },
     transport:()=>a.upgradeTransport(choice(p.category,['national','international']),choice(p.kind,['premium','volume','range'])),
+    customerBatch:()=>{
+      const keys=['pay','special','referral'];
+      for(const value of [p.points,p.base])if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length!==3||!keys.every(key=>Object.hasOwn(value,key)))throw Error('Ungültige Punkteverteilung.');
+      const points=Object.fromEntries(keys.map(key=>[key,num(p.points[key],100)]));
+      const base=Object.fromEntries(keys.map(key=>[key,num(p.base[key],100)]));
+      return a.allocateCustomerBatch(id(p.id),points,base);
+    },
     customerSkill:()=>a.allocateCustomerSkill(id(p.id),choice(p.kind,['pay','special','referral'])),
     pin:()=>a.toggleOrderPin(id(p.id)),refresh:()=>a.manualRefreshOrders(),level:()=>a.allocateLevel(num(p.expedition,3),p.overtime===undefined?3-num(p.expedition,3):num(p.overtime,3)),
     testCoins:()=>a.grantTestCoins(),testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>a.reset()
@@ -390,6 +410,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   if(['assign','assignPrivate','assignCrafted'].includes(action)&&view.state.orders.find(o=>o.id===p.order)?.status==='active')view.message='Auftrag gestartet.';
   if(action==='claimSingles'&&ok!==false)view.claimSummary=ok;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;
+  if(action==='customerBatch')view.customerBatchApplied=ok===true;
   if(action==='draw'&&ok!==false){
     const order=view.state.orders.find(o=>!oldOrders.has(o.id));
     const job=view.state.expedition.jobs.find(j=>!oldJobs.has(j.id));

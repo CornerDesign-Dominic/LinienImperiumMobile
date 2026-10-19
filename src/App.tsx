@@ -114,7 +114,7 @@ function Game(){
    case 'inventory':return <Inventory modalBlocked={levelNotices.length>0} data={data} busy={busy} onNavigate={go} onUseRefill={()=>act('refill')}/>;
    case 'crafting':return <Crafting data={data} busy={busy} onCommand={act}/>;
    case 'customers':return <CustomerList data={data} onOpen={(id:string)=>{setCustomerId(id);go('customerDetail');}}/>;
-   case 'customerDetail':return <CustomerDetail data={data} id={customerId} busy={busy} onUpgrade={(id:string,kind:string)=>act('customerSkill',{id,kind})}/>;
+   case 'customerDetail':return <CustomerDetail key={customerId} data={data} id={customerId} busy={busy} onSave={(id:string,points:any,base:any)=>act('customerBatch',{id,points,base})}/>;
    case 'wholesaler':return <Wholesaler/>;
    case 'statistics':return <Statistics state={g}/>;
    case 'events':return <><Empty>Aktuell keine Events.</Empty></>;

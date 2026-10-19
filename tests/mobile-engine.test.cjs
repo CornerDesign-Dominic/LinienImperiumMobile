@@ -506,3 +506,22 @@ test('Single-order summaries expose traffic type and total duration bands withou
  assert.equal(order.from,started.state.orders.find(o=>o.id===order.id).from);
  assert.equal(order.to,started.state.orders.find(o=>o.id===order.id).to);
 });
+
+test('Customer points save as one validated allocation and cannot overspend, exceed caps or replay stale values',()=>{
+ let game=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ game.state.expedition.regions[0].customerUnlocked=true;
+ game.state.customerTrust.nordbau=1000;
+ game=execute(game.state,'sync',{},now,fixed);
+ const customer=game.view.customers.find(c=>c.id==='nordbau'),base=customer.skills;
+ assert.ok(customer.points>=3);
+ const allocated=execute(game.state,'customerBatch',{id:'nordbau',points:{pay:1,special:2,referral:0},base},now,fixed);
+ assert.equal(allocated.view.customerBatchApplied,true);
+ assert.deepEqual(allocated.state.customerSkills.nordbau,{pay:1,special:2,referral:0});
+ assert.equal(allocated.view.customers.find(c=>c.id==='nordbau').points,customer.points-3);
+ const snapshot=JSON.stringify(allocated.state);
+ for(const points of [{pay:-1,special:0,referral:0},{pay:.5,special:0,referral:0},{pay:100,special:0,referral:0},{pay:0,special:26,referral:0},{pay:0,special:0,referral:0},{pay:1,special:0,referral:0,other:1}])
+  assert.throws(()=>execute(allocated.state,'customerBatch',{id:'nordbau',points,base:allocated.state.customerSkills.nordbau},now,fixed));
+ assert.throws(()=>execute(allocated.state,'customerBatch',{id:'nordbau',points:{pay:1,special:0,referral:0},base},now,fixed),/geändert/);
+ assert.throws(()=>execute(allocated.state,'customerBatch',{id:'frischgut',points:{pay:1,special:0,referral:0},base:{pay:0,special:0,referral:0}},now,fixed),/verfügbar/);
+ assert.equal(JSON.stringify(allocated.state),snapshot);
+});
