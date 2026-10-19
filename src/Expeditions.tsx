@@ -1,6 +1,8 @@
 import React,{useRef,useState} from 'react';
 import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,n,remaining} from './ui';
+import {AtlasHeading,RegionSeal,atlasStyles} from './Atlas';
+import {displayFont,regionInks} from './theme';
 import {rarityColor} from './items';
 const deliveryProgress=(mission:any,done:boolean,clock:number)=>done||mission?.status==='completed'?100:mission?.status==='active'?Math.max(0,Math.min(100,(clock-mission.startedAt)/(mission.endsAt-mission.startedAt)*100)):0;
 function Progress({explored,delivered,showDelivery=false}:any){return <><Bar value={explored}/>{showDelivery&&<Bar value={delivered} gold/>}</>;}
@@ -10,9 +12,10 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
  const focus=useRef<{offset:number|null;target:number|null;done:boolean}>({offset:null,target:null,done:false});
  const g=data.state,maps=data.expeditionMap;
  const button=(label:string,action:string,payload:any,disabled=false)=><Btn disabled={busy||disabled} onPress={()=>onCommand(action,payload)}>{label}</Btn>;
- if(region===null)return <>{maps.map((map:any)=><Pressable key={map.index} accessibilityRole="button" accessibilityLabel={`${map.name}, ${map.customer.name}${map.open?'':', Gesperrt'}`} accessibilityState={{disabled:!map.open}} disabled={!map.open} onPress={()=>onSelectRegion(map.index)}>
-  <Card style={[styles.region,!map.open&&styles.locked]}>
-   <Row><Txt style={styles.title}>{map.name}</Txt><Txt muted>{n(map.progress)} %</Txt></Row>
+ if(region===null)return <><AtlasHeading title="Reiseatlas" detail="Erschließe Regionen, entdecke Orte und gewinne Verbündete."/>{maps.map((map:any)=><Pressable key={map.index} accessibilityRole="button" accessibilityLabel={`${map.name}, ${map.customer.name}${map.open?'':', Gesperrt'}`} accessibilityState={{disabled:!map.open}} disabled={!map.open} onPress={()=>onSelectRegion(map.index)}>
+  <Card style={[styles.region,{borderTopColor:regionInks[map.index%regionInks.length]},!map.open&&styles.locked]}>
+   <Row style={{alignItems:'flex-start'}}><RegionSeal index={map.index} locked={!map.open}/><View style={{flex:1,minWidth:0}}><Txt gold style={styles.small}>EXPEDITIONSGEBIET</Txt><Txt style={styles.title}>{map.name}</Txt></View><Txt muted>↗</Txt></Row>
+   <Row><Txt muted style={styles.small}>Erkundung</Txt><Txt muted>{n(map.progress)} %</Txt></Row>
    <Row><Txt muted>{map.customer.name}</Txt>{!map.open&&<Pill>Gesperrt</Pill>}</Row>
    <Bar value={map.progress}/><Row style={{marginBottom:0}}><Txt muted style={styles.small}>Orte {map.discovered}/7</Txt><Txt muted style={styles.small}>Boni {map.deliveries+Number(map.finalClaimed)}/8</Txt></Row>
   </Card>
@@ -31,7 +34,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
  const explored=place?place.invested/place.discoveryCost*100:map.progress;
  const shipment=deliveryProgress(place?mission:final,place?done:r.finalClaimed,clock);
  return <View onLayout={e=>{focus.current.offset=e.nativeEvent.layout.y;tryFocus();}}>
-  <Row><Txt style={styles.title}>{map.name}</Txt><Txt muted>{map.customer.name}</Txt></Row>
+  <AtlasHeading title={map.name} detail={map.customer.name}/>
   <View onLayout={e=>targetLayout('endless',e.nativeEvent.layout.y)}>
    <Pressable accessibilityRole="button" accessibilityLabel="Endlosort öffnen" onPress={()=>setSelected('endless')}>
     <Card style={[styles.endless,!endlessOpen&&styles.locked]}>
@@ -46,7 +49,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
   {[...map.places].reverse().map((p:any)=>{
    const i=p.index,known=i<r.discovered,complete=r.deliveries[i],locked=i>r.discovered;
    const m=missions.find((m:any)=>m.kind==='delivery'&&m.place===i),value=p.invested/p.discoveryCost*100;
-   return <View key={i} onLayout={e=>targetLayout(i,e.nativeEvent.layout.y)}><Pressable accessibilityRole="button" accessibilityLabel={`Ort ${i+1} öffnen`} onPress={()=>setSelected(i)}>
+   return <View key={i} style={atlasStyles.journey} onLayout={e=>targetLayout(i,e.nativeEvent.layout.y)}><View style={atlasStyles.waypoint}/><Pressable accessibilityRole="button" accessibilityLabel={`Ort ${i+1} öffnen`} onPress={()=>setSelected(i)}>
     <Card style={[styles.place,locked&&styles.locked]}><Row style={{marginBottom:4}}><Txt style={styles.title}>Ort {i+1}</Txt><Txt muted>{n(value)} %</Txt></Row>
      <Progress explored={value} delivered={deliveryProgress(m,complete,clock)} showDelivery={known}/>
      {locked?<Pill>Gesperrt</Pill>:complete?<Txt muted style={styles.small}>Abgeschlossen ✓</Txt>:m?.status==='active'?<Txt gold style={styles.small}>{remaining(m.endsAt,clock)}</Txt>:m?.status==='completed'?<Txt gold style={styles.small}>Bonus bereit</Txt>:null}
@@ -92,4 +95,5 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
   </Modal>
  </View>;
 }
-const styles=StyleSheet.create({region:{backgroundColor:'#192534',borderColor:'#3B506A'},place:{backgroundColor:'#182331',borderColor:'#35485E'},endless:{backgroundColor:'#192C2D',borderColor:'#42635C'},title:{fontSize:16,fontWeight:'700'},section:{fontSize:14,fontWeight:'700',marginTop:18,marginBottom:8},small:{fontSize:12,lineHeight:18},locked:{opacity:.45,borderStyle:'dashed'},question:{width:44,height:44,alignItems:'center',justifyContent:'center',borderWidth:1,borderColor:C.line,borderRadius:10},overlay:{flex:1,backgroundColor:'#000B',justifyContent:'center',padding:18},modal:{width:'100%',maxWidth:460,maxHeight:'85%',alignSelf:'center',borderWidth:1,borderColor:C.line,borderRadius:18,backgroundColor:C.panel,padding:16},chance:{paddingVertical:9,borderBottomWidth:1,borderColor:C.line}});
+const styles=StyleSheet.create({region:{backgroundColor:C.panel,borderColor:C.line,borderTopWidth:3},place:{backgroundColor:C.panel,borderColor:C.line},endless:{backgroundColor:C.greenWash,borderColor:C.accent},title:{fontFamily:displayFont,fontSize:19,lineHeight:25,fontWeight:'700'},section:{fontSize:14,fontWeight:'700',marginTop:18,marginBottom:8},small:{fontSize:12,lineHeight:18},locked:{backgroundColor:C.raised,borderStyle:'dashed'},question:{width:44,height:44,alignItems:'center',justifyContent:'center',borderWidth:1,borderColor:C.line,borderRadius:10},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:18},modal:{width:'100%',maxWidth:460,maxHeight:'85%',alignSelf:'center',borderWidth:1,borderColor:C.line,borderRadius:18,backgroundColor:C.panel,padding:16},chance:{paddingVertical:9,borderBottomWidth:1,borderColor:C.line}});
+

@@ -1,6 +1,6 @@
 # Linien Imperium Online — Mobile
 
-Native React-Native-/Expo-App für Android, mit vorbereitetem iOS-Projekt. Dunkles Hochformat-Layout ohne Spielgrafiken oder Animationen.
+Native React-Native-/Expo-App für Android, mit vorbereitetem iOS-Projekt. Hochformat-Oberfläche im Stil eines Reiseatlas: Pergament, Tintenpetrol, Messingdetails und eine malerische Hafenillustration. Die gestalterischen Regeln stehen in [DESIGN.md](DESIGN.md).
 
 ## Einmalige Cloud-Einrichtung
 
@@ -68,3 +68,4 @@ Die Kartensammlung zeigt Kartenstufe, Geschwindigkeitsrang und aktuelle Kapazit�
 ## Gesammeltes Update: Expeditionen und Testwerkzeuge
 
 Fünf Regionskarten führen zu je sieben Ortskarten und einer Endloskarte. Kunde, Fortschritt und Sperren stehen direkt auf den Karten. Unter **Einstellungen → Testwerkzeuge** lassen sich zusätzlich Expeditionspunkte, Überstundenpunkte und XP hinzufügen. Test-XP verwendet die normalen Levelbelohnungen. Dieses Paket enthält auch die vorbereitete Wiederholung von Verbindungsfehlern und die kontrastreicheren Angebotskarten. Die Vorschläge für neue Startangebote bleiben unverändert offen. Details zur Prüfung stehen in [TEST_REPORT.md](TEST_REPORT.md).
+

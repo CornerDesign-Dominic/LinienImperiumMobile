@@ -13,4 +13,5 @@ export function Wholesaler(){
   <View style={s.row}><View style={{flex:1}}><Txt style={s.title}>{idea.title}</Txt>{!!idea.detail&&<Txt muted style={s.small}>{idea.detail}</Txt>}{idea.limit!==undefined&&<Txt muted style={s.small}>Bis zu {idea.limit}×</Txt>}</View><View style={{alignItems:'flex-end'}}><Txt gold style={s.price}>{idea.price}</Txt>{(idea.priceNote||idea.limit!==undefined)&&<Txt muted style={s.small}>{idea.priceNote??'je Kauf'}</Txt>}</View></View>
  </Card>)}</>;
 }
-const s=StyleSheet.create({card:{padding:12,backgroundColor:'#192534',borderColor:'#3B506A'},row:{flexDirection:'row',alignItems:'center',gap:12},title:{fontSize:14,fontWeight:'700'},small:{fontSize:11,lineHeight:17,marginTop:3},price:{fontSize:17,fontWeight:'700'}});
+const s=StyleSheet.create({card:{padding:12,backgroundColor:C.panel,borderColor:C.line},row:{flexDirection:'row',alignItems:'center',gap:12},title:{fontSize:14,fontWeight:'700'},small:{fontSize:11,lineHeight:17,marginTop:3},price:{fontSize:17,fontWeight:'700'}});
+

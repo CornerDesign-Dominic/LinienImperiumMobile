@@ -30,4 +30,5 @@ export function HubVehicles({data,busy,clock,onCommand,onSell,modalBlocked=false
   </Modal>
  </>;
 }
-const styles=StyleSheet.create({overlay:{flex:1,backgroundColor:'#000B',justifyContent:'center',padding:18},detail:{width:'100%',maxWidth:480,maxHeight:'85%',alignSelf:'center',backgroundColor:C.panel,borderColor:C.line,borderWidth:1,borderRadius:18,padding:16}});
+const styles=StyleSheet.create({overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:18},detail:{width:'100%',maxWidth:480,maxHeight:'85%',alignSelf:'center',backgroundColor:C.panel,borderColor:C.line,borderWidth:1,borderRadius:18,padding:16}});
+

@@ -32,5 +32,6 @@ export function Events({events,busy,onStart,onEnd,onInfo}:{
   })}
  </>;
 }
-export const epicStyle={backgroundColor:'#291F3B',borderColor:'#A579DC'};
-const styles=StyleSheet.create({title:{fontSize:17,fontWeight:'700'},meta:{fontSize:12,marginTop:10},epic:epicStyle,epicLabel:{color:'#C39AF5',fontSize:11,fontWeight:'700',letterSpacing:1}});
+export const epicStyle={backgroundColor:C.purpleWash,borderColor:C.epic};
+const styles=StyleSheet.create({title:{fontSize:17,fontWeight:'700'},meta:{fontSize:12,marginTop:10},epic:epicStyle,epicLabel:{color:C.epic,fontSize:11,fontWeight:'700',letterSpacing:1}});
+

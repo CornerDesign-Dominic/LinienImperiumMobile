@@ -11,7 +11,7 @@ export function EventProject({event,busy,clock,onFleet,onManage,onEnd}:{
  const running=event.status==='running',project=event.project;
  return <>
   <Card style={epicStyle}>
-   <Row><Txt style={{color:'#C39AF5',fontWeight:'700'}}>EPISCH · EVENT</Txt><Pill>{running?'LÄUFT':'BEENDET'}</Pill></Row>
+   <Row><Txt style={{color:C.epic,fontWeight:'700'}}>EPISCH · EVENT</Txt><Pill>{running?'LÄUFT':'BEENDET'}</Pill></Row>
    <Txt style={{fontSize:18,fontWeight:'700'}}>{event.title}</Txt>
    <Txt muted style={{marginTop:10}}>Unbegrenzter Projektumfang · {n(event.distance)} km je beladener Hinfahrt, anschließend leer zurück.</Txt>
    <Txt muted style={{marginTop:8}}>Testdurchlauf {event.run} · läuft bis zum manuellen Beenden.</Txt>
@@ -63,3 +63,4 @@ const styles=StyleSheet.create({
  vehicle:{borderTopWidth:1,borderTopColor:C.line,paddingTop:10,marginTop:6,paddingBottom:12},
  small:{fontSize:12,lineHeight:18},
 });
+

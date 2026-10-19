@@ -43,4 +43,5 @@ export function CustomerDetail({data,id,busy,onSave}:any){
   <Card><Row><Txt muted>Ware</Txt><Txt>{customer.cargo}</Txt></Row><Row><Txt muted>Verkehr</Txt><Txt>{category?.label||customer.category}</Txt></Row><Row style={{marginBottom:0}}><Txt muted>Herkunft</Txt><Txt>{region?.name||'Expedition'}</Txt></Row></Card>
  </>;
 }
-const styles=StyleSheet.create({summary:{backgroundColor:'#192534',borderColor:'#3B506A'},title:{fontSize:16,fontWeight:'700'},small:{fontSize:12,lineHeight:18},skill:{paddingVertical:14,borderBottomWidth:1,borderColor:C.line},plus:{minWidth:44,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:10}});
+const styles=StyleSheet.create({summary:{backgroundColor:C.panel,borderColor:C.line},title:{fontSize:16,fontWeight:'700'},small:{fontSize:12,lineHeight:18},skill:{paddingVertical:14,borderBottomWidth:1,borderColor:C.line},plus:{minWidth:44,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:10}});
+
