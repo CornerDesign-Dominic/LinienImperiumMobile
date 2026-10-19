@@ -21,6 +21,7 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
   </Card>
   <Card style={styles.bonus}><Row style={{marginBottom:3}}><Txt style={styles.title}>{BONUS[card.stat]}</Txt><Txt style={styles.bonusValue}>+{n(data.cardBonuses[id],1)} %</Txt></Row><Txt muted style={{fontSize:12}}>{SCOPE[card.scope]}</Txt></Card>
   <Card><Txt style={[styles.title,{marginBottom:14}]}>Fahrzeugdaten</Txt>
+   <Fact label="Einsatz" value="Regional- und Fernverkehr"/>
    <Fact label="Tempo leer" value={`${n(stats.speed,2)} km/s`}/>
    <Fact label="Tempo beladen" value={`${n(stats.loadedSpeed,2)} km/s`}/>
    <Fact label="Betriebskosten" value={`${n(stats.costPerKm,2)} M/km`}/>

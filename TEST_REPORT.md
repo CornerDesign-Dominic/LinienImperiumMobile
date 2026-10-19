@@ -295,3 +295,11 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Neue einzeilige Karte unter den Auftragskacheln: „Stadthub / Letzte Stunde“ bei fünf abgeschlossenen Kassenzyklen und aktiven Stadttransportern, „Stadthub / Kasse voll“ ab sechs Zyklen unabhängig von eingesetzten Fahrzeugen. Antippen navigiert zum Stadthub. Anzeige aus bestehendem Serverzustand, keine Wirtschaftsänderung.
 - Typprüfung und Expo-Webexport bestanden. Browser-QA mit lokaler Engine/simuliertem Firebase auf 393/320 px bestanden: ohne Hub/bei vier Zyklen/pausiertem letzten Zyklus ausgeblendet, letzter aktiver Zyklus und volle Kasse sichtbar, Kartenhöhe unter 50 px, Direktnavigation und Ausblenden nach Abholung. Keine Browserfehler, 320-px-Ansicht visuell geprüft. Serverregression wegen reiner UI-Ergänzung nicht wiederholt.
 - Sammelbranch, nicht veröffentlicht.
+
+
+## Alle Expeditions-Fahrzeugkarten für Regional- und Fernverkehr – 19.10.2026, vorbereitet
+
+- Mobile-Eignungsprüfung erlaubt jeder gültigen Fahrzeugkarte beide Kategorien. Bestehende Prüfung bleibt für andere Fahrzeuge bestehen. Auswahl, Verfügbarkeitsstatus sowie normale/gefertigte/private Zuweisungen verwenden weiterhin die gemeinsame Eignungsfunktion; Kosten, Tempo, Kapazität und Tourenzahl unverändert. Großauftragsflotten waren bereits ohne diese Klassenbeschränkung nutzbar.
+- Fahrzeugdetail nennt „Regional- und Fernverkehr“, widersprüchliche Klassenliste in der Spielhilfe ersetzt. Gepinnter Vendor unverändert.
+- Typprüfung bestanden. 34 Node-Testeinträge bestanden: neuer Test durchläuft alle 15 Karten für beide Verkehrsarten und startet jeden Auftrag tatsächlich (30 Kombinationen). Jeweils weitere Garagenzuweisung während der Fahrt ausgeschlossen. Gekaufte Stadttransporter bleiben für Fernverkehr ungeeignet. Bisheriger Verfügbarkeits-Test auf neue Eignung angepasst (beschäftigt statt fehlend bei eingesetztem Starter).
+- Sammelbranch, nicht veröffentlicht.

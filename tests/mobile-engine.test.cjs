@@ -275,7 +275,7 @@ test('Single-order views expose forecasts, truck availability and live trip timi
  const unavailable=active.view.state.orders.find(o=>o.status==='available'&&o.category==='national');
  assert.equal(unavailable.vehicleStatus,'busy');
  const missing=active.view.state.orders.find(o=>o.status==='available'&&o.category==='international');
- if(missing)assert.equal(missing.vehicleStatus,'missing');
+ if(missing)assert.equal(missing.vehicleStatus,'busy');
  const parked=execute(start.state,'garageRemove',{id:'navigator'},now,fixed);
  assert.equal(parked.view.state.orders.find(o=>o.id===raw.id).vehicleStatus,'missing');
  let rolls=0;const api=session(active.state,now,()=>{rolls++;return .5;});
@@ -607,4 +607,30 @@ test('Legacy saves receive an empty expedition filler slot without retroactive r
  const used=execute(migrated.state,'expeditionRefill',{},now,fixed);assert.equal(used.state.expedition.points,60);assert.equal(used.view.regeneration.expeditionNextAt,now+9*60000);assert.equal(used.state.inventory.expeditionRefills,0);
  const twice=execute(used.state,'expeditionRefill',{},now,fixed);assert.equal(twice.state.expedition.points,60);
  const reset=execute(used.state,'reset',{},now,fixed);assert.equal(reset.state.inventory.expeditionRefills,0);assert.equal(reset.state.inventory.overtimeRefills,0);
+});
+
+test('All expedition cards can start regional and long-distance orders while garage exclusivity and city vehicle restrictions remain',()=>{
+ const initial=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ assert.match(initial.view.help.fleet[1][0][1],/Alle gefundenen Fahrzeugkarten können Regionalverkehr und Fernverkehr/);
+ for(const card of initial.view.catalog.cards)for(const category of ['national','international']){
+  let state=structuredClone(initial.state);state.expedition.characters[card.id]={level:1,progress:0};
+  let ready=execute(state,'garageAdd',{id:card.id},now,fixed);
+  const truck=ready.state.trucks.find(t=>t.cardId===card.id);assert.ok(truck);
+  const raw=ready.state.orders[0];Object.assign(raw,{category,customer:null,status:'available',volume:10,distance:60,delivered:0});
+  ready=execute(ready.state,'sync',{},now,fixed);
+  const offer=ready.view.state.orders.find(o=>o.id===raw.id);
+  assert.ok(offer.choices.some(t=>t.id===truck.id),card.id+' '+category);
+  assert.equal(offer.vehicleStatus,'ready');
+  const active=execute(ready.state,'assign',{order:raw.id,truck:truck.id},now,fixed);
+  assert.equal(active.state.orders.find(o=>o.id===raw.id).status,'active',card.id+' '+category);
+  const other=active.view.state.orders.find(o=>o.status==='available'&&!o.isProject);assert.ok(other);
+  assert.ok(!other.choices.some(t=>t.id===truck.id));
+  const blocked=execute(active.state,'assign',{order:other.id,truck:truck.id},now,fixed);
+  assert.equal(blocked.state.orders.find(o=>o.id===other.id).status,'available');
+ }
+ let city=initial;city.state.coins=100000;city=execute(city.state,'buyHub',{},now,fixed);city=execute(city.state,'buyTruck',{model:0},now,fixed);
+ const bought=city.state.trucks.find(t=>!t.cardId);city=execute(city.state,'hubTruck',{id:bought.id},now,fixed);
+ for(const o of city.state.orders)o.category='international';
+ const views=execute(city.state,'sync',{},now,fixed).view.state.orders;
+ assert.ok(views.every(o=>!o.choices.some(t=>t.id===bought.id)));
 });
