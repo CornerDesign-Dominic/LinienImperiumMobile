@@ -1,4 +1,6 @@
-## Neues Sammelpaket vom 18.10.2026 – noch nicht veröffentlicht
+## Sammelpaket vom 18./19.10.2026 – veröffentlicht
+
+Release: `c76d08d9795bd20eb45cc01f13e152b1d58bf4bd` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39243835875). Am 19.10.2026 erfolgreich veröffentlicht: Validierung, Firebase-Deployment, Live-API-Test und Android-Update im Preview-Kanal. Die nachfolgenden früheren Hinweise „nur vorbereitet“ dokumentieren den Stand vor diesem Release.
 
 - Punkteverteilung: Titel „Level Up“, freie Punkte rechts oben. Je Bereich aktuelles Kapazitätsmaximum links, −/zugewiesene Punkte/+ mittig, Ergebnis rechts. Weiterhin exakt drei Punkte je Level, kein Refill-Hinweis in der Verteilung.
 - Globales mittiges Level-Up-Modal mit Glückwunsch, erreichtem Level und tatsächlichen Belohnungen: 1 Refill à 100 Überstundenpunkte, 3 verteilbare Punkte und die bereits bestehenden 50 Expeditionspunkte. Keine Änderung dieser Belohnungen. Mehrere Aufstiege werden nacheinander angezeigt, vorhandene offene Verteilungen lösen beim normalen Neuladen keine alten Meldungen aus.
@@ -19,7 +21,7 @@
 - Gemeinsamer Namenskatalog für Grundmaterialien und Auftragsarten. Firmenausbau-Item und Überstunden-Refill konsistent in Vorräten, Rezepten, Prämien, Level-Up, Firma und Überstundenmodal; Shard-Seltenheiten in Beutemeldungen großgeschrieben. Prüfmatrix in ITEM_AUDIT.md. Keine Änderung der Fundchancen, Kosten oder Belohnungen.
 - Kundendetails: Punkte zunächst mit Plus/Minus vormerken und zurücknehmen, Bonus/Stufe als Vorschau. Freie Punkte werden entsprechend reduziert. Erst „Speichern“ sendet die gesamte Verteilung als eine validierte Serveraktion. Minus nimmt nur ungespeicherte Punkte zurück; gespeicherte Fähigkeiten bleiben dauerhaft. Überbelegung, Fähigkeitslimits und veraltete Ausgangswerte werden serverseitig abgewiesen. Wiederholte identische Anfragen bleiben über Command-Belege abgesichert. Ungespeicherte Verteilung wird beim Verlassen verworfen.
 - Kundenkarte zeigt nur das aktuelle Level, nicht zusätzlich das nächste Level. Beziehungsfortschritt bleibt sichtbar.
-- Nur Sammelbranch. Kein Firebase-Deployment, OTA-Update oder APK-Build.
+- Am 19.10.2026 für Server und installierte Android-Test-App veröffentlicht. Kein neuer APK-Build erforderlich.
 
 ---
 

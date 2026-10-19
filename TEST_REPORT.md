@@ -231,3 +231,13 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Typprüfung und Expo-Webexport bestanden. 29 Node-Testeinträge bestanden (25 Adaptertests, 3 Item-Katalogtests und Wrapper für 23 ursprüngliche Web-Regressionsdateien). Neuer Test: gemeinsame Vergabe, Restpunkte, negative/gebrochene/zu viele Punkte, Fähigkeitslimit, leere/falsche Payload, gesperrter Kunde, veralteter Entwurf; Fehler verändern keinen Spielstand.
 - Browser-QA mit lokaler Engine und simuliertem Firebase auf 393/320 px bestanden: Plus/Minus ohne Serveraufruf, Vorratsgrenze, eine Speicheraktion mit korrekten Werten, Beständigkeit nach Neuladen, deaktiviertes Minus nach Speichern, verworfene ungespeicherte Navigation, kein nächstes Level. Keine Überbreite/Browserfehler; 320-px-Ansicht visuell geprüft.
 - Nur Sammelbranch, nicht veröffentlicht; kein physischer Gerätetest.
+
+
+## Veröffentlichung des gesamten Sammelpakets – 19.10.2026
+
+- Release: `c76d08d9795bd20eb45cc01f13e152b1d58bf4bd` · [GitHub Actions](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39243835875). Gesamtstatus erfolgreich.
+- CI: Abhängigkeiten, Typprüfung, alle 29 Testeinträge und Android-Export erfolgreich.
+- Firebase: Spielserver und Firestore-Regeln erfolgreich deployed, anschließender Test der tatsächlich veröffentlichten Spiel-API erfolgreich.
+- Expo: Android-OTA im Kanal `preview` erfolgreich veröffentlicht. Installierte Test-App erhält das Update beim erneuten Öffnen; kein APK-Build und keine Neuinstallation für dieses Paket erforderlich.
+- Enthält alle seit dem letzten Release gesammelten Anpassungen: Level-Up, Überstunden-Max, Vorratsstapel, Auftragsnamen, Token-Countdowns, schwebende Hinweise, Garage, Stadthub-Fahrzeuge, Verkehrsart/Dauer, Item-Audit und Kundenzuteilung.
+- Lokale Browserprüfungen und Regressionstests sind in den vorherigen Abschnitten dokumentiert. Kein physischer Gerätetest. Temporäre 15-Sekunden-Expeditionslieferungen bleiben für die Testphase aktiv.

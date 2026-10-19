@@ -44,4 +44,4 @@ Alle vier bestehenden Funktionen sind auf der Herstellungsseite vertreten. Rezep
 - Schaltflächen unterscheiden das Herstellen eines Gegenstands vom Verwenden eines Materials in der Herstellung. Common-Shards können nur gefunden werden; sie sind Eingang für Uncommon-Shards.
 - Der irreführende Herstellen-Verweis beim Firmenausbau wurde durch Vorräte/Herkunft ersetzt, da Firmenausbau-Items nicht herstellbar sind.
 
-Status: Sammelpaket, noch nicht veröffentlicht. Tests und Bildschirmprüfung siehe `TEST_REPORT.md`.
+Status: Am 19.10.2026 mit Release `c76d08d9795bd20eb45cc01f13e152b1d58bf4bd` veröffentlicht. Tests und Bildschirmprüfung siehe `TEST_REPORT.md`.
