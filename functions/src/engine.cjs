@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const itemNames = require('./item-names.json');
-const {eventViews, changeEvent} = require('./events.cjs');
+const {eventViews, changeEvent, assignEventFleet, settleEvents, EVENT_PROJECT_DISTANCE_KM} = require('./events.cjs');
 const source = fs.readFileSync(path.join(__dirname, '../vendor/web-game.js'), 'utf8');
 const boundary = source.indexOf("  document.addEventListener('click'");
 if (boundary < 0) throw Error('Web engine boundary missing');
@@ -112,6 +112,13 @@ const bridge = `
     return low;
   }
   globalThis.mobile = {
+    eventFleetOptions() {
+      const order={distance:${EVENT_PROJECT_DISTANCE_KM},routeType:'single'};
+      return [0,1,2].map(index=>({index,vehicles:projectFleetVehicles(index)?.map(vehicle=>({
+        ...vehicle,bonusStats:{...vehicle.bonusStats},
+        cycleMs:Math.max(1,Math.ceil(tourSeconds(order,vehicle,vehicle.capacity)*1000))
+      }))||null}));
+    },
     get state() { return game; }, set state(value) { game = value; },
     newGame, save, loadGame, shortenTestMissions, normalizeQueuedReferrals, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
     autoRefreshOrders, regenerateExpedition, regenerateOvertime,
@@ -349,10 +356,13 @@ const companyProfile = p => {
   return {companyName:name(p.companyName,'Firmenname',40),cityName:name(p.cityName,'Stadtname',30)};
 };
 function execute(state, action='sync', p={}, now=Date.now(), random=Math.random) {
-  const a=session(state,now,random), before=JSON.stringify(a.state);
+  const a=session(state,now,random);
+  settleEvents(a.state,now);
+  const before=JSON.stringify(a.state);
   const calls={
     eventStart:()=>changeEvent(a.state,id(p.id),'start',num(p.run),now),
     eventEnd:()=>changeEvent(a.state,id(p.id),'end',num(p.run),now),
+    eventFleet:()=>assignEventFleet(a.state,id(p.id),num(p.run),num(p.template,2),a.eventFleetOptions(),now),
     sync:()=>{},start:()=>a.chooseStartCity(id(p.id)),foundCompany:()=>a.foundCompany(companyProfile(p)),
     garageAdd:()=>a.addCardToGarage(id(p.id)),garageRemove:()=>a.removeCardFromGarage(id(p.id)),
     seat:()=>a.assignCharacterSeat(id(p.id),num(p.seat,4),num(p.template,2)),
@@ -402,8 +412,8 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const ok=calls[action]();
   if(action==='mission')a.shortenTestMissions();
   const view=a.view();
-  view.testEvents=eventViews(a.state);
-  if(action==='eventStart'||action==='eventEnd')view.message=ok;
+  view.testEvents=eventViews(a.state,a.eventFleetOptions());
+  if(['eventStart','eventEnd','eventFleet'].includes(action))view.message=ok;
   const normalizeNames=text=>typeof text==='string'?text.replace(/Sonderfahrten/g,'Sonderaufträge').replace(/Sonderfahrt/g,'Sonderauftrag').replace(/Firmen-Items/g,'Firmenausbau-Items').replace(/Firmen-Item/g,'Firmenausbau-Item').replace(/100-Token-Refill/g,'Überstunden-Refill').replace(/\b(common|uncommon|rare)-Shard/g,(_,r)=>r[0].toUpperCase()+r.slice(1)+'-Shard'):text;
   view.message=normalizeNames(view.message);
   for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(normalizeNames);
