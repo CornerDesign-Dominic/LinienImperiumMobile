@@ -325,3 +325,11 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 
 - Eingesetzte Flotte zeigt pro Fahrzeug den aktuellen Tour-Countdown und die tatsächlich noch geladene Menge bei Ankunft, statt nur Kapazität. Ohne weitere Fracht eigener Ruhezustand. Sekündliche lokale Uhr; Serverabgleich an den individuellen Ankunftsterminen übernimmt Folgetouren und Gesamtliefermenge. Keine Änderung der Transportberechnung.
 - TypeScript, Expo-Webexport und alle 35 Node-Testeinträge bestanden. Browser-QA mit echter lokaler Engine und simuliertem Firebase: laufenden Auftrag geöffnet, fahrzeugeigene Ladung/Timerzeile geprüft, 393/320 px ohne horizontalen Überlauf oder Browserfehler. Kein physischer Gerätetest. Noch nicht veröffentlicht.
+
+
+## Sammelpaket veröffentlicht – 19.10.2026
+
+- Release: `887c3f40ef46ad9c0158319bbf00b8a28045734c`; [Workflow 39285637912](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39285637912). Alle seit der letzten Veröffentlichung vorbereiteten Änderungen enthalten. Frühere Abschnitte mit „vorbereitet“ dokumentieren den damaligen Prüfstand und sind mit dieser Veröffentlichung ausgeliefert.
+- Ausführungsprotokolle bestätigen TypeScript, 35 erfolgreiche Node-Testeinträge (0 Fehler), Androidexport, Firebase-Deployment und erfolgreichen Live-Smoke-Test (Gastanmeldung, Persistenz, Command-Deduplizierung, Expeditionen, Testgutschriften, neue Levelbelohnungen/Auffüller und Authentifizierungsprüfungen).
+- EAS meldet am 19.10.2026 um 16:32 UTC „Published!“ für das Android-Update auf preview; Ergebnisartefakt 12202953565 hochgeladen. Keine neue APK erforderlich. GitHub-Statusendpunkte lieferten beim Abfragen noch veraltetes „queued“; die vollständigen Jobprotokolle einschließlich Abschluss und Aufräumen wurden separat abgerufen und geprüft.
+- Kein physischer Gerätetest durch Codex. Temporäre 15-Sekunden-Expeditionslieferungen weiterhin aktiv. Echtgeldangebote weiterhin reine Preisideen, keine Kaufabwicklung.

@@ -1,4 +1,4 @@
-## Neues Sammelpaket vom 19.10.2026 – noch nicht veröffentlicht
+## Sammelpaket vom 19.10.2026 – veröffentlicht
 
 - Laufende Großaufträge: unter der eingesetzten Flotte je Fahrzeug eigener Tour-Countdown und tatsächliche Restladung „X t bei Ankunft“. Fahrzeuge ohne weitere Fracht zeigen „Keine weitere Tour“. Automatischer Serverabgleich an jeder einzelnen Tourankunft, damit Folgetour und Gesamtfortschritt zeitnah aktualisieren.
 - Großhändler: zwei zusätzliche Preisideen „Echtgeld-Münzen“ (Menge X, Preis offen) und „Fahrzeugkartenkiste“ (X Echtgeld-Münzen). Platzhalter ohne Kaufaktion.
@@ -17,7 +17,7 @@
 - Expedition: Ortskarten öffnen mittige Modals. Erkundung mit je einem Punkt/Klick, danach eigener Bonuslieferungsbalken unter dem Erkundungsbalken. Fahrzeugwahl, laufende Restzeit und Bonusabholung im Ablauf; nach vollständiger Bonusabholung nur noch Schließen. Gesperrte Orte zeigen Informationen ohne Aktionen. Listen enthalten keine direkten Erkundungs-/Lieferbuttons mehr.
 - Regionsliste rückwärts: Endlosort zuerst, anschließend Ort 7 bis Ort 1. Beim Eintritt in eine unfertige Region automatische Positionierung auf die unterste noch nicht vollständig erledigte Ortskarte (inklusive Bonuslieferung); bei erledigten Orten auf den noch offenen Endlosbonus. Fertige Regionen bleiben oben. Einmalige Positionierung, kein Springen bei Fortschritts-/Timeraktualisierungen.
 - Endlosort mit Fragezeichen für die regionsbezogene Fundtabelle: konkrete Fahrzeugkarten, tatsächliche absolute Fundchancen, Auftragstypen samt konkreten Sonder-/Empfehlungsnamen und Seltenheiten sowie bedingte Auftragsrang-Verteilung. Quelle sind die tatsächlich verwendeten Engine-Konstanten je Region; keine Änderung der Chancen. Eigene Modals werden während Fahrzeugwahl/Fundmeldung/Level-Up ausgeblendet und danach fortgesetzt.
-- Nur Sammelbranch, kein Deployment oder App-Update.
+- Veröffentlicht mit Commit `887c3f40ef46ad9c0158319bbf00b8a28045734c`, Workflow 39285637912. Serverdeployment und Live-Smoke-Test bestanden; Android-OTA auf Kanal preview laut Ausführungsprotokoll erfolgreich veröffentlicht. Alle 35 Tests und Androidexport bestanden.
 
 ---
 

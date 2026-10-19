@@ -45,4 +45,4 @@ Alle vier bestehenden Funktionen sind auf der Herstellungsseite vertreten. Rezep
 - Schaltflächen unterscheiden das Herstellen eines Gegenstands vom Verwenden eines Materials in der Herstellung. Common-Shards können nur gefunden werden; sie sind Eingang für Uncommon-Shards.
 - Der irreführende Herstellen-Verweis beim Firmenausbau wurde durch Vorräte/Herkunft ersetzt, da Firmenausbau-Items nicht herstellbar sind.
 
-Status: Auffüller-Anpassung im neuen Sammelpaket vorbereitet, noch nicht veröffentlicht. Vorheriger Item-Abgleich wurde am 19.10.2026 veröffentlicht. Tests und Bildschirmprüfung siehe `TEST_REPORT.md`.
+Status: Einschließlich beider 50-Punkte-Auffüller am 19.10.2026 veröffentlicht (Commit 887c3f40, Workflow 39285637912). Neuer Live-Smoke-Test erfolgreich. Tests und Bildschirmprüfung siehe `TEST_REPORT.md`.
