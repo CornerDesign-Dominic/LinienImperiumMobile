@@ -333,3 +333,9 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Ausführungsprotokolle bestätigen TypeScript, 35 erfolgreiche Node-Testeinträge (0 Fehler), Androidexport, Firebase-Deployment und erfolgreichen Live-Smoke-Test (Gastanmeldung, Persistenz, Command-Deduplizierung, Expeditionen, Testgutschriften, neue Levelbelohnungen/Auffüller und Authentifizierungsprüfungen).
 - EAS meldet am 19.10.2026 um 16:32 UTC „Published!“ für das Android-Update auf preview; Ergebnisartefakt 12202953565 hochgeladen. Keine neue APK erforderlich. GitHub-Statusendpunkte lieferten beim Abfragen noch veraltetes „queued“; die vollständigen Jobprotokolle einschließlich Abschluss und Aufräumen wurden separat abgerufen und geprüft.
 - Kein physischer Gerätetest durch Codex. Temporäre 15-Sekunden-Expeditionslieferungen weiterhin aktiv. Echtgeldangebote weiterhin reine Preisideen, keine Kaufabwicklung.
+
+
+## Fahrzeugkarten nur in Sammlung – 19.10.2026, vorbereitet
+
+- Fahrzeugkarten aus dem Vorratskatalog entfernt; Shards, Auftragsgegenstände und tatsächlicher Kartenbesitz unverändert. Item-Abgleich aktualisiert.
+- TypeScript und alle drei Item-Katalogtests bestanden; Test bestätigt fehlende Fahrzeugkarten in Vorräten bei erhaltenem Eigentum sowie sichtbare Shards und Aufträge. Noch nicht veröffentlicht.

@@ -1,3 +1,9 @@
+## Neues Sammelpaket – noch nicht veröffentlicht
+
+- Fahrzeugkarten aus Vorräten entfernt. Sammlung und Eigentum unverändert; Shards und Fahrzeugkartenaufträge bleiben als nutzbare Gegenstände sichtbar.
+
+---
+
 ## Sammelpaket vom 19.10.2026 – veröffentlicht
 
 - Laufende Großaufträge: unter der eingesetzten Flotte je Fahrzeug eigener Tour-Countdown und tatsächliche Restladung „X t bei Ankunft“. Fahrzeuge ohne weitere Fracht zeigen „Keine weitere Tour“. Automatischer Serverabgleich an jeder einzelnen Tourankunft, damit Folgetour und Gesamtfortschritt zeitnah aktualisieren.
