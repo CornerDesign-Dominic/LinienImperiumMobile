@@ -20,7 +20,7 @@ function OrderTile({order:o,data,clock,onOpen}:any){
  return <Pressable accessibilityRole="button" accessibilityLabel={`${o.cargo}, ${o.id}`} onPress={()=>onOpen(o.id)}>
   <Card style={[styles.offer,{borderLeftColor:active?C.accent:o.customer?C.gold:'#526B88'}]}>
    <Row style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{o.cargo}</Txt>{active?<Txt gold style={styles.small}>{remaining(o.runningEndsAt||clock,clock)}</Txt>:done?<Pill gold>Prämie</Pill>:<Txt style={styles.small}>{n(o.volume,1)} t · {n(o.distance)} km</Txt>}</Row>
-   <Txt muted style={styles.small}>{transportSummary(o)}</Txt>
+   <Txt muted style={styles.small}>{transportSummary(o)}{o.routeType==='single'?' · Single Way':o.routeType==='dual'?' · Dual Way':''}</Txt>
    {active?<><Row style={{marginTop:5,marginBottom:0}}><Txt muted style={styles.small}>{truck?.model||'Fahrzeug'}</Txt><Txt muted style={styles.small}>{n(o.delivered,1)} / {n(o.volume)} t</Txt></Row><Bar value={progress(o,clock)}/></>:<Row style={{marginBottom:0,marginTop:5}}>{o.customer&&<Txt gold style={styles.small}>{o.customerName}</Txt>}{!done&&!o.choices.length?<Txt muted style={styles.small}>{unavailable(o)}</Txt>:o.pinned?<Txt muted style={styles.small}>Gehalten</Txt>:null}</Row>}
   </Card>
  </Pressable>;

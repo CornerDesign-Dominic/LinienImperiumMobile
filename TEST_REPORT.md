@@ -241,3 +241,95 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Expo: Android-OTA im Kanal `preview` erfolgreich veröffentlicht. Installierte Test-App erhält das Update beim erneuten Öffnen; kein APK-Build und keine Neuinstallation für dieses Paket erforderlich.
 - Enthält alle seit dem letzten Release gesammelten Anpassungen: Level-Up, Überstunden-Max, Vorratsstapel, Auftragsnamen, Token-Countdowns, schwebende Hinweise, Garage, Stadthub-Fahrzeuge, Verkehrsart/Dauer, Item-Audit und Kundenzuteilung.
 - Lokale Browserprüfungen und Regressionstests sind in den vorherigen Abschnitten dokumentiert. Kein physischer Gerätetest. Temporäre 15-Sekunden-Expeditionslieferungen bleiben für die Testphase aktiv.
+
+
+## Bedarfsabhängige Kunden-Verteilbuttons – 19.10.2026, vorbereitet
+
+- Rein visuelle Anpassung: Verteilung nur bei freien Punkten oder lokalem Entwurf; Minus/Mengenanzeige nur pro vorgemerkt verbessertem Bereich; Speichern nur mit Entwurf. Fähigkeiten und dauerhafte Boni bleiben bei 0 Punkten sichtbar.
+- Typprüfung und Expo-Webexport bestanden. Browser-QA mit lokaler Engine und simuliertem Firebase auf 393/320 px bestanden: 0 Punkte ohne Verteilcontrols, frischer Punkt nur mit Plus, vorgemerkter letzter Punkt weiterhin rücknehmbar/speicherbar, vollständiges Zurücknehmen blendet Minus/Speichern aus, Speichern blendet bei 0 Punkten sämtliche Controls aus. Genau eine Servermutation; Bonus weiterhin sichtbar. Keine Browserfehler, 320-px-Ansicht visuell geprüft.
+- Keine Serveränderungen, daher Serverregressionen nicht erneut ausgeführt. Neues Sammelpaket, nicht veröffentlicht.
+
+
+## Durchlaufende Regenerationszyklen – 19.10.2026, vorbereitet
+
+- Ursache: die ursprüngliche `spendExpeditionPoints`-Funktion setzte nach jedem Verbrauch `lastRegenAt` neu. Mobile-Adapter erhält nun die vorhandene Phase; Regeneration vor dem Abzug und Kapazitätsgrenzen bleiben unverändert. Volle/überfüllte Vorräte pausieren weiterhin und starten beim Unterschreiten einen vollständigen Zyklus. Überstundenverbrauch verhielt sich bereits so und ist nun ausdrücklich abgesichert.
+- Testgutschriften setzen die Phase nur beim Erreichen des Limits zurück. Überstunden-Refill unterhalb eines erhöhten Limits erhält die Phase. Keine Änderung von Regenerationsraten (20/10 Minuten), Punktkosten oder Bonusmengen. Gepinnte Vendor-Datei unverändert.
+- `npm test`: 31 Einträge bestanden (27 Adaptertests, 3 Item-Katalogtests, Wrapper mit 23 ursprünglichen Web-Regressionsdateien). Neue Tests prüfen wiederholten Expeditions-/Überstundenverbrauch ohne Friständerung, tatsächliche Gutschrift am bestehenden Fristende, mehrere Offline-Zyklen mit Restphase, natürliches Erreichen des Limits, Pause ohne weitere Gutschrift, vollständigen Neustart nach Ausgeben aus vollem Bestand und Refill/Testgutschrift unterhalb des Limits.
+- Reine Serverlogik, keine geänderte Oberfläche. Neues Sammelpaket, nicht veröffentlicht.
+
+
+## Single/Dual Way auf kompakten Auftragskarten – 19.10.2026, vorbereitet
+
+- Auftragstyp aus `routeType` in der kompakten Beschreibungszeile ergänzt; geteilter Kartenbaustein für Angebote, wartende und laufende Einzelaufträge. Keine neue Spielmechanik.
+- Typprüfung und Expo-Webexport bestanden. Browserprüfung auf 393/320 px mit beiden Auftragstypen bestanden, keine Überbreite/Browserfehler; 320-px-Ansicht visuell geprüft. Server unverändert, keine erneute Serverregression erforderlich.
+- Nur Sammelbranch, nicht veröffentlicht.
+
+
+## Zwei speicherbare 50-Punkte-Auffüller pro Level – 19.10.2026, vorbereitet
+
+- Neue Levelbelohnung: je 1 Expeditionsauffüller und Überstundenauffüller, weiterhin 3 verteilbare Punkte. Kein sofortiges +50 auf Expeditionsvorrat. Mehrfachaufstiege vergeben je Gegenstand pro Level einmal; normale Syncs vergeben nichts erneut.
+- Beide Auffüller lösen manuell je 50 Punkte ein, auch über dem Limit. Neues Inventarfeld wird bei alten Spielständen mit 0 ergänzt, Bestände/Punktzahlen bleiben bestehen. Reset setzt beide Gegenstandsbestände zurück. Überstunden-Verbrauchs-/Abrechnungslogik unverändert; gepinnte Vendor-Datei unverändert, Konstante im Mobile-Adapter strukturgesichert auf 50 angepasst.
+- Vorräte zeigen jetzt 14 nutzbare Materialarten. Gemeinsame Namen Expeditionsauffüller/Überstundenauffüller, Level-Up-Modal ohne Füllmenge. Herkünfte, Benutzen, Hilfe und Item-Prüfmatrix aktualisiert. Kein neues Herstellungsrezept.
+- Typprüfung und Expo-Webexport bestanden. 33 Node-Testeinträge bestanden (29 Adaptertests, 3 Item-Katalogtests und Wrapper mit 23 ursprünglichen Web-Regressionsdateien). Zusätzliche Fälle: beide Gegenstände je Level, Mehrfachaufstieg ohne sofortige Punkte, Wiederholung/Altdaten ohne Nachvergütung, je +50 mit Bestandsverbrauch, leerer Vorrat, Reset und Regeneration bei Einlösen unterhalb eines erhöhten Limits. Bisherige Erwartungen gezielt an neue Belohnungswerte angepasst.
+- Browser-QA mit lokaler Engine/simuliertem Firebase auf 393/320 px bestanden: globales Modal mit genau beiden Gegenständen und drei Punkten, keine 50-/100-Werte im Modal; kein automatisches Einlösen; beide Vorratskarten und Beschreibung; manuelle +50-Verwendung und deaktivierte Verwendung bei 0, anschließend kein positiver Bestand mehr. Keine Browserfehler; 320-px-Modal visuell geprüft.
+- Live-Smoke-Skript um beide Auffüller und wiederholtes Einlösen mit gleicher Command-ID ergänzt; dieses Skript wird erst beim nächsten Deployment gegen den Server ausgeführt. Neues Sammelpaket, nicht veröffentlicht.
+
+
+## Eigene Fahrzeugkarten-Detailseiten – 19.10.2026, vorbereitet
+
+- Sammlungsmodal durch eigene Detailseite je Katalogkarte ersetzt. Kopf mit festem 180×180-Bildplatzhalter, Kartenname/Stufe/Kapazität/Rang. Bonus/Geltungsbereich, strukturierte Fahrzeugdaten und getrennte Kartenstufen-/Kapazitäts-/Rangverbesserungen mit Beständen/Kosten. Optionales Beschreibungsfeld am Seitenende vorbereitet. Bestehende Verbesserungskosten und Serveraktionen unverändert.
+- Neue Navigation `cardDetail` mit Zurück/Spielhilfe und bestehender globaler Level-Up-Anzeige. Rückweg zum Raster setzt den Scrollbereich zurück. Nicht entdeckte Karten zeigen Daten/Herkunft und keine Upgrade-Aktionen; keinerlei Zuweisungsstatus in der Sammlung.
+- Typprüfung und Expo-Webexport bestanden. Browser-QA mit lokaler Engine/simuliertem Firebase auf 393/320 px: alle 15 Karten öffnen eigene Seiten und kehren ins Raster zurück, kein Detailmodal/Schließenbutton mehr; Bild exakt 180×180 auf beiden Breiten, keine Überbreite oder Browserfehler. Fahrzeugstufe, Kapazität und Rang lassen sich verbessern und zeigen erhaltene Werte in Seite und Raster. Nicht entdeckte Karten ohne Upgradecontrols. 320-px-Ansicht visuell geprüft.
+- Reine UI-/Navigationsänderung, keine erneute Serverregression erforderlich. Im Sammelbranch gespeichert, nicht veröffentlicht.
+
+
+## Beide Regenerationen mit 10-Minuten-Zyklus – 19.10.2026, vorbereitet
+
+- Mobile-Konstante für Expedition von 20 auf 10 Minuten geändert, strukturgesichert beim Laden des unveränderten gepinnten Web-Vendors. Überstunden bereits 10 Minuten. Server-Gutschrift, NextAt-Countdown und dynamische Hilfe verwenden damit denselben 600.000-ms-Takt.
+- Alle 33 Node-Testeinträge bestanden. Bestehende Zeitprüfungen auf den neuen Expeditionstakt angepasst: Frist nach 10 Minuten, laufende Phase bei Verbrauch, volle/überfüllte Vorräte, Neustart nach Pause, Offline-Nachholung und Auffüller unterhalb des Limits. Überstundenphase und automatische Angebotswechsel bleiben unverändert.
+- Keine UI-Änderungen; im Sammelbranch gespeichert, nicht veröffentlicht.
+
+
+## Stadthub-Hinweis auf Start – 19.10.2026, vorbereitet
+
+- Neue einzeilige Karte unter den Auftragskacheln: „Stadthub / Letzte Stunde“ bei fünf abgeschlossenen Kassenzyklen und aktiven Stadttransportern, „Stadthub / Kasse voll“ ab sechs Zyklen unabhängig von eingesetzten Fahrzeugen. Antippen navigiert zum Stadthub. Anzeige aus bestehendem Serverzustand, keine Wirtschaftsänderung.
+- Typprüfung und Expo-Webexport bestanden. Browser-QA mit lokaler Engine/simuliertem Firebase auf 393/320 px bestanden: ohne Hub/bei vier Zyklen/pausiertem letzten Zyklus ausgeblendet, letzter aktiver Zyklus und volle Kasse sichtbar, Kartenhöhe unter 50 px, Direktnavigation und Ausblenden nach Abholung. Keine Browserfehler, 320-px-Ansicht visuell geprüft. Serverregression wegen reiner UI-Ergänzung nicht wiederholt.
+- Sammelbranch, nicht veröffentlicht.
+
+
+## Alle Expeditions-Fahrzeugkarten für Regional- und Fernverkehr – 19.10.2026, vorbereitet
+
+- Mobile-Eignungsprüfung erlaubt jeder gültigen Fahrzeugkarte beide Kategorien. Bestehende Prüfung bleibt für andere Fahrzeuge bestehen. Auswahl, Verfügbarkeitsstatus sowie normale/gefertigte/private Zuweisungen verwenden weiterhin die gemeinsame Eignungsfunktion; Kosten, Tempo, Kapazität und Tourenzahl unverändert. Großauftragsflotten waren bereits ohne diese Klassenbeschränkung nutzbar.
+- Fahrzeugdetail nennt „Regional- und Fernverkehr“, widersprüchliche Klassenliste in der Spielhilfe ersetzt. Gepinnter Vendor unverändert.
+- Typprüfung bestanden. 34 Node-Testeinträge bestanden: neuer Test durchläuft alle 15 Karten für beide Verkehrsarten und startet jeden Auftrag tatsächlich (30 Kombinationen). Jeweils weitere Garagenzuweisung während der Fahrt ausgeschlossen. Gekaufte Stadttransporter bleiben für Fernverkehr ungeeignet. Bisheriger Verfügbarkeits-Test auf neue Eignung angepasst (beschäftigt statt fehlend bei eingesetztem Starter).
+- Sammelbranch, nicht veröffentlicht.
+
+
+## Expeditionsorte als Modals, umgekehrte Reihenfolge und regionale Fundtabellen – 19.10.2026, vorbereitet
+
+- Jede Ortskarte einschließlich Endlosort öffnet ein mittiges Modal; Aktionen aus der Liste entfernt. Erkundungsbalken und anschließend separater Bonuslieferungsbalken; Token weiterhin einzeln, Bonuslieferung nach unveränderter Mechanik. Fertiger normaler Ort bietet ausschließlich Schließen. Gesperrte Orte nur lesbar. Fahrzeugwahl und Fundmeldungen blockieren das Ortsmodal vorübergehend, ohne doppelte sichtbare Dialoge.
+- Endlosort oben, danach 7…1. Beim Regionseintritt einmaliges Scrollen zur untersten unerledigten Ortskarte (Erkundung/Bonus), gegebenenfalls zum offenen Endlosbonus; fertige Region bleibt oben. Fortschrittsänderungen lösen kein erneutes automatisches Springen aus.
+- Fragezeichen am Endlosort und im Endlosmodal zeigt tatsächliche regionale Funddaten: 3 konkrete Karten, 4 Auftragsarten mit absoluten Prozenten, konkrete Projektnamen/Seltenheit und bedingte positive Ranggewichte. Regionseigene API-Metadaten aus den auch beim Auslosen verwendeten Konstanten. Kosten/Fundchancen/Transportregeln unverändert.
+- Typprüfung und Expo-Webexport bestanden. 35 Node-Testeinträge bestanden. Neuer Test prüft alle fünf Fundtabellen, Summe 100 %, Kartenherkunft, absolute Chancen 6/3/1 und 18/67,5/4,05/0,45 %, unterschiedliche bedingte Ranggewichte und konkrete Projektnamen.
+- Browser-QA mit lokaler Engine/simuliertem Firebase auf 393/320 px bestanden: inverse DOM-Reihenfolge, automatischer Fokus ohne manuelles Scrollen, einzelne Erkundungspunkte, neuer Lieferbutton und zwei Balken bei 100 % Erkundung, Fahrzeugwahl ohne sichtbare Modalüberlagerung, echte temporäre 15-Sekunden-Lieferung, vollständige Balken und Abholen, fertig/gesperrt nur Schließen. Region 1 und Region 5 zeigen unterschiedliche Ränge. Fertige Region bleibt oben; Endlos-Fragezeichen und Fundmeldung kehren korrekt zurück. Keine Browserfehler. Orts- und Chancenmodal visuell geprüft.
+- Sammelbranch, nicht veröffentlicht; kein physischer Gerätetest.
+
+
+## Großhändler: weitere Preisideen – 19.10.2026, vorbereitet
+
+- Zwei schmale Infokarten ergänzt: Echtgeld-Münzen (Menge X, Preis offen) und Fahrzeugkartenkiste (X Echtgeld-Münzen). Bestehende Preisideen bleiben erhalten; Kaufgrenzen nur bei festgelegten Grenzen sichtbar. Keine Kaufabwicklung.
+- TypeScript-Typprüfung bestanden. Sammelbranch, nicht veröffentlicht.
+
+
+## Separate Fahrzeugtouren im Großauftrag – 19.10.2026, vorbereitet
+
+- Eingesetzte Flotte zeigt pro Fahrzeug den aktuellen Tour-Countdown und die tatsächlich noch geladene Menge bei Ankunft, statt nur Kapazität. Ohne weitere Fracht eigener Ruhezustand. Sekündliche lokale Uhr; Serverabgleich an den individuellen Ankunftsterminen übernimmt Folgetouren und Gesamtliefermenge. Keine Änderung der Transportberechnung.
+- TypeScript, Expo-Webexport und alle 35 Node-Testeinträge bestanden. Browser-QA mit echter lokaler Engine und simuliertem Firebase: laufenden Auftrag geöffnet, fahrzeugeigene Ladung/Timerzeile geprüft, 393/320 px ohne horizontalen Überlauf oder Browserfehler. Kein physischer Gerätetest. Noch nicht veröffentlicht.
+
+
+## Sammelpaket veröffentlicht – 19.10.2026
+
+- Release: `887c3f40ef46ad9c0158319bbf00b8a28045734c`; [Workflow 39285637912](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39285637912). Alle seit der letzten Veröffentlichung vorbereiteten Änderungen enthalten. Frühere Abschnitte mit „vorbereitet“ dokumentieren den damaligen Prüfstand und sind mit dieser Veröffentlichung ausgeliefert.
+- Ausführungsprotokolle bestätigen TypeScript, 35 erfolgreiche Node-Testeinträge (0 Fehler), Androidexport, Firebase-Deployment und erfolgreichen Live-Smoke-Test (Gastanmeldung, Persistenz, Command-Deduplizierung, Expeditionen, Testgutschriften, neue Levelbelohnungen/Auffüller und Authentifizierungsprüfungen).
+- EAS meldet am 19.10.2026 um 16:32 UTC „Published!“ für das Android-Update auf preview; Ergebnisartefakt 12202953565 hochgeladen. Keine neue APK erforderlich. GitHub-Statusendpunkte lieferten beim Abfragen noch veraltetes „queued“; die vollständigen Jobprotokolle einschließlich Abschluss und Aufräumen wurden separat abgerufen und geprüft.
+- Kein physischer Gerätetest durch Codex. Temporäre 15-Sekunden-Expeditionslieferungen weiterhin aktiv. Echtgeldangebote weiterhin reine Preisideen, keine Kaufabwicklung.

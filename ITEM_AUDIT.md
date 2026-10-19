@@ -8,7 +8,8 @@ Nur vorhandener Bestand wird angezeigt. Mengenänderungen kommen aus dem Serverz
 
 | Bestand | Herkunft | Nutzung | Herstellbar |
 | --- | --- | --- | --- |
-| Überstunden-Refill | Levelaufstieg | +100 Überstundenpunkte | Nein |
+| Expeditionsauffüller | Levelaufstieg | +50 Expeditionspunkte beim Benutzen | Nein |
+| Überstundenauffüller | Levelaufstieg | +50 Überstundenpunkte beim Benutzen | Nein |
 | Kapazitätsmodul | Endlosort, seltene Auftragsbeute | Fahrzeugkapazität in Sammlung oder Stadthub | Nein |
 | Firmenausbau-Item | Normale Aufträge, Materialaufträge | Firmenausbau, Kundenauftrag herstellen | Nein |
 | Abholhinweis | Stadthub-Kasse | Privatabholung herstellen | Nein |
@@ -21,7 +22,7 @@ Nur vorhandener Bestand wird angezeigt. Mengenänderungen kommen aus dem Serverz
 | Sonderauftrag / Empfehlungsauftrag | Expeditionen und Stammkunden | Großaufträge | Nein |
 | Fahrzeugkarte, mit Kartenstufe | Expeditionen | Sammlung | Nein |
 
-Das sind 13 nutzbare Materialarten: fünf Grundmaterialien, fünf Zahnrad-Seltenheiten und drei Shard-Seltenheiten. Aufträge und Fahrzeugkarten werden zusätzlich gezeigt. Münzen, XP, aktuelle Expeditions-/Überstundenpunkte und der tkm-Restzähler sind Ressourcen bzw. Fortschrittszähler und keine zusätzlichen Gegenstände. Laufende Aufträge erscheinen nicht gleichzeitig als startbarer Vorrat; ihre Details liegen bei den laufenden Aufträgen.
+Das sind 14 nutzbare Materialarten: sechs Grundmaterialien, fünf Zahnrad-Seltenheiten und drei Shard-Seltenheiten. Aufträge und Fahrzeugkarten werden zusätzlich gezeigt. Münzen, XP, aktuelle Expeditions-/Überstundenpunkte und der tkm-Restzähler sind Ressourcen bzw. Fortschrittszähler und keine zusätzlichen Gegenstände. Laufende Aufträge erscheinen nicht gleichzeitig als startbarer Vorrat; ihre Details liegen bei den laufenden Aufträgen.
 
 ## Vollständige Herstellung
 
@@ -40,8 +41,8 @@ Alle vier bestehenden Funktionen sind auf der Herstellungsseite vertreten. Rezep
 - Material-/Fahrzeugkartenaufträge werden nach Art und Rang über Regionen hinweg gestapelt; Großaufträge nach Auftragstyp.
 - Kapazitätsmodule und Zahnräder führen zur Sammlung bzw. zum Stadthub; die Garage bietet keine Upgrades.
 - Gemeinsame Namen für Grundmaterialien und Auftragsarten in `functions/src/item-names.json`, verwendet von App und Rezeptkatalog. Raritätsnamen kommen aus dem bestehenden Engine-Katalog.
-- Varianten „Firmen-Item“, „Token-Refill“, alleinstehendes „Refill“ sowie kleingeschriebene Seltenheiten bei Shard-Beute vereinheitlicht. Anzeigen und Meldungen verwenden Firmenausbau-Item, Überstunden-Refill und Common-/Uncommon-/Rare-Shard.
+- Varianten „Firmen-Item“, „Token-Refill“, alleinstehendes „Refill“ sowie kleingeschriebene Seltenheiten bei Shard-Beute vereinheitlicht. Anzeigen und Meldungen verwenden Firmenausbau-Item, Expeditionsauffüller, Überstundenauffüller und Common-/Uncommon-/Rare-Shard.
 - Schaltflächen unterscheiden das Herstellen eines Gegenstands vom Verwenden eines Materials in der Herstellung. Common-Shards können nur gefunden werden; sie sind Eingang für Uncommon-Shards.
 - Der irreführende Herstellen-Verweis beim Firmenausbau wurde durch Vorräte/Herkunft ersetzt, da Firmenausbau-Items nicht herstellbar sind.
 
-Status: Am 19.10.2026 mit Release `c76d08d9795bd20eb45cc01f13e152b1d58bf4bd` veröffentlicht. Tests und Bildschirmprüfung siehe `TEST_REPORT.md`.
+Status: Einschließlich beider 50-Punkte-Auffüller am 19.10.2026 veröffentlicht (Commit 887c3f40, Workflow 39285637912). Neuer Live-Smoke-Test erfolgreich. Tests und Bildschirmprüfung siehe `TEST_REPORT.md`.

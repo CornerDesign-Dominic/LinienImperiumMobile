@@ -19,7 +19,7 @@ test('Every usable material, gear rarity and shard rarity is represented in inve
  for(const r of game.view.catalog.rarities)assert.ok(ids.has('gear:'+r.id),r.id);
  for(const r of ['common','uncommon','rare'])assert.ok(ids.has('shard:'+r),r);
  assert.equal(items.find(i=>i.id==='companyItems').name,itemName('companyItems'));
- assert.equal(items.find(i=>i.id==='overtimeRefills').name,'Überstunden-Refill');
+ assert.equal(items.find(i=>i.id==='overtimeRefills').name,'Überstundenauffüller');
  assert.equal(items.find(i=>i.id==='capacityModules').use,undefined);
  assert.equal(items.find(i=>i.id==='gear:common').use,undefined);
  assert.ok(ids.has('card:navigator'));

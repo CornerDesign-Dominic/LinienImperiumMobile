@@ -12,6 +12,19 @@ const EXPEDITION_TEST_DURATION_MS = 15000;
 const bridge = `
   const itemNames = ${JSON.stringify(itemNames)};
   const expeditionTestDuration = ${JSON.stringify(EXPEDITION_TEST_DURATION_MS)};
+  const originalNewGame=newGame;
+  newGame=(...args)=>{const state=originalNewGame(...args);state.inventory.expeditionRefills=0;return state;};
+  awardTransportXp=xp=>{
+    const before=levelForXp(game.xp,game).level;
+    game.xp=round2(game.xp+xp);
+    const after=levelForXp(game.xp,game).level,levels=after-before;
+    if(levels<=0)return;
+    game.inventory.expeditionRefills=(game.inventory.expeditionRefills||0)+levels;
+    game.inventory.overtimeRefills=(game.inventory.overtimeRefills||0)+levels;
+    game.pendingLevelUps ||= [];
+    for(let level=before+1;level<=after;level++)game.pendingLevelUps.push(level);
+    addEvent('Level '+after+' erreicht! '+levels+' Expeditionsauffüller, '+levels+' Überstundenauffüller und '+(3*levels)+' Punkte zum Verteilen.');
+  };
   const originalExpeditionDuration = expeditionDuration;
   expeditionDuration = (...args) => expeditionTestDuration ?? originalExpeditionDuration(...args);
   function shortenTestMissions() {
@@ -42,6 +55,17 @@ const bridge = `
     ? { ...legacyStartCityById('hamburg'), id, city:(foundingProfile || game?.profile)?.cityName || 'Hauptsitz' }
     : legacyStartCityById(id);
   showToast = text => { mobileToast = text; };
+  const originalCanTruckTakeOrder=canTruckTakeOrder;
+  canTruckTakeOrder=(truck,order)=>truck.cardId&&vehicleCardById(truck.cardId)&&['national','international'].includes(order.category)
+    ? !truck.hubAssigned : originalCanTruckTakeOrder(truck,order);
+  // Spending below the cap must retain the current regeneration interval.
+  // regenerateExpedition already starts a fresh interval when leaving a full stock.
+  spendExpeditionPoints = amount => {
+    regenerateExpedition();
+    if(game.expedition.points<amount)return false;
+    game.expedition.points-=amount;
+    return true;
+  };
   const mobileProjectNames = {
     special:['Großauftrag Stadtversorgung','Großauftrag Baustellenlogistik','Großauftrag Materialbergung','Großauftrag Ferntransport','Großauftrag Handelsroute'],
     referral:['Großprojekt Hafenverbund','Großprojekt Versorgungskette','Großprojekt Industrieanlage','Großprojekt Fernkorridor','Großprojekt Kontinentalnetz']
@@ -137,6 +161,15 @@ const bridge = `
     },
     upgradeTruckCapacity, assignOrder, assignCraftedOrder, assignPrivatePickup,
     startFleetProject, spendOvertime, useOvertimeRefill, claimOrderReward,
+    useExpeditionRefill(now=Date.now()) {
+      if(!(game.inventory.expeditionRefills>0))return false;
+      regenerateExpedition(now);
+      game.inventory.expeditionRefills--;
+      game.expedition.points+=50;
+      if(game.expedition.points>=expeditionCapacity())game.expedition.lastRegenAt=now;
+      mobileToast='Expeditionsauffüller: +50 Expeditionspunkte.';
+      return true;
+    },
     spendMaxOvertime(orderId){const amount=overtimeToDeadline(game.orders.find(o=>o.id===orderId));return amount>0?spendOvertime(orderId,amount):false;},
     discoverExpeditionPlace, drawExpeditionJob, startExpeditionMission, claimExpeditionMission,
     buyHub, toggleHubTruck, collectHub, startHubUpgrade, combinePickupHints, craftCustomerOrder,
@@ -203,8 +236,8 @@ const bridge = `
     grantTestCoins() { game.coins += TEST_COINS_GRANT; game.stats.testCoinsGranted += TEST_COINS_GRANT; addEvent('Testmünzen: +50.000 M'); },
     grantTestResource(kind, amount) {
       if (kind === 'xp') awardTransportXp(amount);
-      else if (kind === 'expedition') { game.expedition.points += amount; game.expedition.lastRegenAt = Date.now(); }
-      else { game.overtimePoints += amount; game.overtimeLastRegenAt = Date.now(); }
+      else if (kind === 'expedition') { game.expedition.points += amount; if(game.expedition.points>=expeditionCapacity())game.expedition.lastRegenAt = Date.now(); }
+      else { game.overtimePoints += amount; if(game.overtimePoints>=game.overtimeCapacity)game.overtimeLastRegenAt = Date.now(); }
       const label = kind === 'xp' ? 'XP' : kind === 'expedition' ? 'Expeditionspunkte' : 'Überstundenpunkte';
       addEvent('Test: +' + amount + ' ' + label + '.');
       mobileToast = '+' + amount + ' ' + label;
@@ -237,6 +270,7 @@ const bridge = `
         cities: START_CITIES.map(({id, city, country, continent}) => ({id, city, country, continent})),
         cards: EXPEDITION_CHARACTERS, rarities: RARITIES, models: TRUCKS,
         customers: CUSTOMERS, categories: CATEGORIES, departments: DEPARTMENTS,
+        refillPoints:{expedition:50,overtime:OVERTIME_REFILL_POINTS},
         recipes:[
           {id:'pickup',inputId:'pickupHints',outputId:'private',input:itemNames.pickupHints[1],output:itemNames.private[0],needed:PRIVATE_PICKUP_HINT_COST,action:'pickupCraft'},
           {id:'customer',inputId:'companyItems',outputId:'customer',input:itemNames.companyItems[1],output:itemNames.customer[0],needed:COMPANY_BALANCE.craftedOrderItems,action:'customerCraft'},
@@ -302,6 +336,10 @@ const bridge = `
           deliveries:region.deliveries.filter(Boolean).length, finalClaimed:region.finalClaimed,
           progress:Array.from({length:7},(_,place)=>place<region.discovered?expeditionDiscoveryCost(index,place):(region.discoveryPoints?.[place]||0)).reduce((sum,v)=>sum+v,0)/Array.from({length:7},(_,place)=>expeditionDiscoveryCost(index,place)).reduce((sum,v)=>sum+v,0)*100,
           places:Array.from({length:7},(_,place)=>({index:place,discoveryCost:expeditionDiscoveryCost(index,place),invested:place<region.discovered?expeditionDiscoveryCost(index,place):(region.discoveryPoints?.[place]||0),durationMs:expeditionDuration(index,'delivery',place)})),
+          finds:{cost:EXPEDITION_COST,
+            cards:EXPEDITION_CARD_CHANCES.map(chance=>{const card=EXPEDITION_CHARACTERS.find(c=>c.region===index&&c.rarity===chance.rarity);return {id:card.id,name:card.name,rarity:chance.rarity,chance:round2(chance.chance*100)};}),
+            orders:EXPEDITION_JOB_WEIGHTS.map(weight=>({kind:weight.kind,name:weight.kind==='character'?itemNames.character[0]:weight.kind==='material'?itemNames.material[0]:weight.kind==='special'?'Sonderauftrag '+mobileProjectNames.special[index].slice('Großauftrag '.length):'Empfehlungsauftrag '+mobileProjectNames.referral[0].slice('Großprojekt '.length),chance:round2((1-EXPEDITION_CARD_CHANCES.reduce((sum,c)=>sum+c.chance,0))*weight.chance*100),...(weight.kind==='character'||weight.kind==='material'?{ranks:EXPEDITION_STAGE_WEIGHTS[index].flatMap((chance,i)=>chance>0?[{rank:i+1,chance:round2(chance*100)}]:[])}:{rarity:weight.kind==='special'?'rare':'epic'})}))
+          },
           finalDurationMs:expeditionDuration(index,'final')
         })),
         projectCatalog:[...EXPEDITION_REGIONS.map((_,region)=>mobileProjectInfo('special',region)),{...mobileProjectInfo('referral',0),sources:EXPEDITION_REGIONS.map((_,region)=>mobileProjectInfo('referral',region))}],
@@ -324,7 +362,11 @@ const bridge = `
 const overtimeGuard = "  function spendOvertime(orderId, amount, now = Date.now()) {\n    if (![1, 5, 10].includes(amount)) return false;";
 const mobileGuard = "  function spendOvertime(orderId, amount, now = Date.now()) {\n    if (!Number.isSafeInteger(amount) || amount < 1 || amount > 100000) return false;\n    amount = Math.min(amount, Math.max(0, game.overtimePoints || 0));\n    if (!amount) return false;";
 if(source.split(overtimeGuard).length!==2)throw Error('Overtime validation boundary changed');
-const compiled = new vm.Script(source.slice(0,boundary).replace(overtimeGuard,mobileGuard) + bridge, {filename:'web-engine.cjs'});
+const refillGuard='  const OVERTIME_REFILL_POINTS = 100;';
+if(source.split(refillGuard).length!==2)throw Error('Refill constant boundary changed');
+const expeditionRegenGuard='  const EXPEDITION_REGEN_MS = 20 * 60 * 1000;';
+if(source.split(expeditionRegenGuard).length!==2)throw Error('Expedition regeneration boundary changed');
+const compiled = new vm.Script(source.slice(0,boundary).replace(overtimeGuard,mobileGuard).replace(refillGuard,'  const OVERTIME_REFILL_POINTS = 50;').replace(expeditionRegenGuard,'  const EXPEDITION_REGEN_MS = 10 * 60 * 1000;') + bridge, {filename:'web-engine.cjs'});
 function session(state, now=Date.now(), random=Math.random) {
   const storage = new Map();
   const elements = new Map();
@@ -338,6 +380,7 @@ function session(state, now=Date.now(), random=Math.random) {
   compiled.runInContext(context,{timeout:2000});
   const api=context.mobile;
   if(state) api.state=JSON.parse(JSON.stringify(state));
+  if(!Number.isSafeInteger(api.state.inventory.expeditionRefills)||api.state.inventory.expeditionRefills<0)api.state.inventory.expeditionRefills=0;
   api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleTrips(now);api.settleFleetProjects(now);api.settleExpeditions(now);api.settleHub(now);
   api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);
   return api;
@@ -371,7 +414,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     cardCapacity:()=>a.upgradeCardVehicle(id(p.id),'capacity'),cardRank:()=>a.upgradeCardVehicle(id(p.id),'rank'),
     buyTruck:()=>a.buyTruck(num(p.model,1)),rank:()=>a.upgradeTruckRarity(id(p.id)),capacity:()=>a.upgradeTruckCapacity(id(p.id)),sell:()=>a.sell(id(p.id)),
     assign:()=>a.assignOrder(id(p.order),id(p.truck)),assignPrivate:()=>a.assignPrivatePickup(id(p.order),id(p.truck)),assignCrafted:()=>a.assignCraftedOrder(id(p.order),id(p.truck)),
-    projectStart:()=>a.startFleetProject(id(p.id),num(p.template,2)),overtime:()=>p.amount==='max'?a.spendMaxOvertime(id(p.id)):a.spendOvertime(id(p.id),num(p.amount)),refill:()=>a.useOvertimeRefill(),
+    projectStart:()=>a.startFleetProject(id(p.id),num(p.template,2)),overtime:()=>p.amount==='max'?a.spendMaxOvertime(id(p.id)):a.spendOvertime(id(p.id),num(p.amount)),refill:()=>a.useOvertimeRefill(),expeditionRefill:()=>a.useExpeditionRefill(),
     claimSingles:()=>a.claimSingleRewards(),
     claim:()=>a.claimOrderReward(id(p.id)),claimAll:()=>{for(const order of a.state.orders)a.applyOrderReward(order);},
     discover:()=>a.discoverExpeditionPlace(num(p.region,4)),draw:()=>a.drawExpeditionJob(num(p.region,4)),
@@ -414,10 +457,12 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const view=a.view();
   view.testEvents=eventViews(a.state,a.eventFleetOptions());
   if(['eventStart','eventEnd','eventFleet'].includes(action))view.message=ok;
-  const normalizeNames=text=>typeof text==='string'?text.replace(/Sonderfahrten/g,'Sonderaufträge').replace(/Sonderfahrt/g,'Sonderauftrag').replace(/Firmen-Items/g,'Firmenausbau-Items').replace(/Firmen-Item/g,'Firmenausbau-Item').replace(/100-Token-Refill/g,'Überstunden-Refill').replace(/\b(common|uncommon|rare)-Shard/g,(_,r)=>r[0].toUpperCase()+r.slice(1)+'-Shard'):text;
+  const normalizeNames=text=>typeof text==='string'?text.replace('Geeignete Klassen: Regionalverkehr 7,5-Tonner, 18-Tonner und 26-Tonner; Fernverkehr Sattelzug, 26-Tonner und 40-t-Tautliner.','Alle gefundenen Fahrzeugkarten können Regionalverkehr und Fernverkehr fahren.').replace(/Sonderfahrten/g,'Sonderaufträge').replace(/Sonderfahrt/g,'Sonderauftrag').replace(/Firmen-Items/g,'Firmenausbau-Items').replace(/Firmen-Item/g,'Firmenausbau-Item').replace(/100-Token-Refill|Überstunden-Refill/g,'Überstundenauffüller').replace(/\b(common|uncommon|rare)-Shard/g,(_,r)=>r[0].toUpperCase()+r.slice(1)+'-Shard'):text;
   view.message=normalizeNames(view.message);
   for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(normalizeNames);
   for(const key of Object.keys(view.help)){const help=view.help[key];help[1]=help[1].map(([title,body])=>[normalizeNames(title),normalizeNames(body)]);}
+  view.help.inventory[1].unshift(['Auffüller','Pro Levelaufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 verteilbare Punkte. Beide Auffüller geben beim Benutzen 50 Punkte.']);
+  for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[title,body.replace(/Je Aufstieg: sofort 50 Expeditionspunkte, ein speicherbares Refill-Paket für 50 Überstundenpunkte sowie 5 dauerhaft verteilbare Punkte/g,'Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller sowie 3 dauerhaft verteilbare Punkte').replace(/Pro Level-up erhältst du ein speicherbares Überstundenauffüller für (?:50|100) Punkte\./g,'Auffüller werden in den Vorräten aufbewahrt.')]);
   for(const mission of view.state.expedition.missions)mission.reward=normalizeNames(mission.reward);
   const knownLevels=new Set(state?.pendingLevelUps||[]);
   const levelUps=view.state.pendingLevelUps.filter(level=>!knownLevels.has(level));

@@ -1,7 +1,7 @@
 import names from '../functions/src/item-names.json';
 export const itemName=(id:string,amount=1)=>((names as Record<string,string[]>)[id]||[id,id])[amount===1?0:1];
 export const rarityColor=(id:string)=>({common:'#788796',uncommon:'#5BAA78',rare:'#619CE8',epic:'#A579DC',legendary:'#E2BB75'} as Record<string,string>)[id];
-export type StockItem={id:string;name:string;amount:number;source:string;description:string;recipe?:string;craft?:boolean;use?:string;refill?:boolean;color?:string};
+export type StockItem={id:string;name:string;amount:number;source:string;description:string;recipe?:string;craft?:boolean;use?:string;refill?:'expedition'|'overtime';color?:string};
 export function stockItems(data:any):StockItem[]{
  const {state:g,catalog:c}=data;
  const recipes=c.recipes||[];
@@ -9,7 +9,8 @@ export function stockItems(data:any):StockItem[]{
  const recipeText=(id:string)=>{const r=recipeFor(id);return r?`${r.needed} ${r.input} → 1 ${r.output}`:undefined;};
  const material=(id:string,source:string,description:string,use?:string):StockItem=>({id,name:itemName(id),amount:g.inventory[id]||0,source,description,use,craft:recipes.some((r:any)=>r.inputId===id)});
  const items:StockItem[]=[
-  {...material('overtimeRefills','Levelaufstieg.','Gibt 100 Überstundenpunkte – auch über das Maximum hinaus.'),refill:true,color:rarityColor('legendary')},
+  {...material('expeditionRefills','Levelaufstieg.',`Gibt ${c.refillPoints?.expedition??50} Expeditionspunkte – auch über das Maximum hinaus.`),refill:'expedition',color:rarityColor('uncommon')},
+  {...material('overtimeRefills','Levelaufstieg.',`Gibt ${c.refillPoints?.overtime??50} Überstundenpunkte – auch über das Maximum hinaus.`),refill:'overtime',color:rarityColor('legendary')},
   material('capacityModules','Endlosorte und seltene Auftragsbeute.','Erhöht die Fahrzeugkapazität um 0,5 t.'),
   material('companyItems','Normale Aufträge und Materialaufträge.',`Für Firmenausbau und Kundenaufträge. ${g.inventory.companyItemTkmRemainder||0} / 750.000 tkm zum nächsten Item.`,'company'),
   material('pickupHints','Kasse des Stadthubs.','Für die Herstellung von Privatabholungen.'),

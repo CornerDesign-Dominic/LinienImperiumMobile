@@ -19,7 +19,9 @@ async function main(){
   const expedition=await call('testGrant',{kind:'expedition',amount:100});assert.equal(expedition.state.expedition.points,150);
   const overtime=await call('testGrant',{kind:'overtime',amount:100});assert.equal(overtime.state.overtimePoints,200);
   const xpId=crypto.randomUUID();await call('testGrant',{kind:'xp',amount:100},xpId);
-  const xp=await call('testGrant',{kind:'xp',amount:100},xpId);assert.equal(xp.state.xp,100);assert.equal(xp.state.inventory.overtimeRefills,1);
+  const xp=await call('testGrant',{kind:'xp',amount:100},xpId);assert.equal(xp.state.xp,100);assert.equal(xp.state.inventory.overtimeRefills,1);assert.equal(xp.state.inventory.expeditionRefills,1);assert.equal(xp.state.expedition.points,150);
+  const expUseId=crypto.randomUUID();await call('expeditionRefill',{},expUseId);const expUsed=await call('expeditionRefill',{},expUseId);assert.equal(expUsed.state.expedition.points,200);assert.equal(expUsed.state.inventory.expeditionRefills,0);
+  const otUseId=crypto.randomUUID();await call('refill',{},otUseId);const otUsed=await call('refill',{},otUseId);assert.equal(otUsed.state.overtimePoints,250);assert.equal(otUsed.state.inventory.overtimeRefills,0);
   const unauth=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{action:'sync'}})});
   assert.equal(unauth.status,401);
   await call('reset');
