@@ -303,3 +303,13 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Fahrzeugdetail nennt „Regional- und Fernverkehr“, widersprüchliche Klassenliste in der Spielhilfe ersetzt. Gepinnter Vendor unverändert.
 - Typprüfung bestanden. 34 Node-Testeinträge bestanden: neuer Test durchläuft alle 15 Karten für beide Verkehrsarten und startet jeden Auftrag tatsächlich (30 Kombinationen). Jeweils weitere Garagenzuweisung während der Fahrt ausgeschlossen. Gekaufte Stadttransporter bleiben für Fernverkehr ungeeignet. Bisheriger Verfügbarkeits-Test auf neue Eignung angepasst (beschäftigt statt fehlend bei eingesetztem Starter).
 - Sammelbranch, nicht veröffentlicht.
+
+
+## Expeditionsorte als Modals, umgekehrte Reihenfolge und regionale Fundtabellen – 19.10.2026, vorbereitet
+
+- Jede Ortskarte einschließlich Endlosort öffnet ein mittiges Modal; Aktionen aus der Liste entfernt. Erkundungsbalken und anschließend separater Bonuslieferungsbalken; Token weiterhin einzeln, Bonuslieferung nach unveränderter Mechanik. Fertiger normaler Ort bietet ausschließlich Schließen. Gesperrte Orte nur lesbar. Fahrzeugwahl und Fundmeldungen blockieren das Ortsmodal vorübergehend, ohne doppelte sichtbare Dialoge.
+- Endlosort oben, danach 7…1. Beim Regionseintritt einmaliges Scrollen zur untersten unerledigten Ortskarte (Erkundung/Bonus), gegebenenfalls zum offenen Endlosbonus; fertige Region bleibt oben. Fortschrittsänderungen lösen kein erneutes automatisches Springen aus.
+- Fragezeichen am Endlosort und im Endlosmodal zeigt tatsächliche regionale Funddaten: 3 konkrete Karten, 4 Auftragsarten mit absoluten Prozenten, konkrete Projektnamen/Seltenheit und bedingte positive Ranggewichte. Regionseigene API-Metadaten aus den auch beim Auslosen verwendeten Konstanten. Kosten/Fundchancen/Transportregeln unverändert.
+- Typprüfung und Expo-Webexport bestanden. 35 Node-Testeinträge bestanden. Neuer Test prüft alle fünf Fundtabellen, Summe 100 %, Kartenherkunft, absolute Chancen 6/3/1 und 18/67,5/4,05/0,45 %, unterschiedliche bedingte Ranggewichte und konkrete Projektnamen.
+- Browser-QA mit lokaler Engine/simuliertem Firebase auf 393/320 px bestanden: inverse DOM-Reihenfolge, automatischer Fokus ohne manuelles Scrollen, einzelne Erkundungspunkte, neuer Lieferbutton und zwei Balken bei 100 % Erkundung, Fahrzeugwahl ohne sichtbare Modalüberlagerung, echte temporäre 15-Sekunden-Lieferung, vollständige Balken und Abholen, fertig/gesperrt nur Schließen. Region 1 und Region 5 zeigen unterschiedliche Ränge. Fertige Region bleibt oben; Endlos-Fragezeichen und Fundmeldung kehren korrekt zurück. Keine Browserfehler. Orts- und Chancenmodal visuell geprüft.
+- Sammelbranch, nicht veröffentlicht; kein physischer Gerätetest.

@@ -634,3 +634,18 @@ test('All expedition cards can start regional and long-distance orders while gar
  const views=execute(city.state,'sync',{},now,fixed).view.state.orders;
  assert.ok(views.every(o=>!o.choices.some(t=>t.id===bought.id)));
 });
+
+test('Every expedition exposes its actual absolute find chances and conditional regional job ranks',()=>{
+ const view=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed).view;
+ const weights=[[100],[75,25],[50,50],[25,50,25],[10,45,45]];
+ for(const map of view.expeditionMap){
+  const finds=map.finds;assert.equal(finds.cost,5);assert.equal(finds.cards.length,3);assert.equal(finds.orders.length,4);
+  assert.ok(Math.abs([...finds.cards,...finds.orders].reduce((sum,f)=>sum+f.chance,0)-100)<1e-6);
+  for(const card of finds.cards)assert.equal(view.catalog.cards.find(c=>c.id===card.id).region,map.index);
+  assert.deepEqual(finds.cards.map(c=>c.chance),[6,3,1]);
+  assert.deepEqual(finds.orders.map(o=>o.chance),[18,67.5,4.05,.45]);
+  for(const order of finds.orders.filter(o=>o.ranks))assert.deepEqual(order.ranks.map(r=>r.chance),weights[map.index]);
+  assert.match(finds.orders.find(o=>o.kind==='special').name,/^Sonderauftrag /);
+  assert.equal(finds.orders.find(o=>o.kind==='referral').name,'Empfehlungsauftrag Hafenverbund');
+ }
+});

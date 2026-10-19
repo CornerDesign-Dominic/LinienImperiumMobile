@@ -328,6 +328,10 @@ const bridge = `
           deliveries:region.deliveries.filter(Boolean).length, finalClaimed:region.finalClaimed,
           progress:Array.from({length:7},(_,place)=>place<region.discovered?expeditionDiscoveryCost(index,place):(region.discoveryPoints?.[place]||0)).reduce((sum,v)=>sum+v,0)/Array.from({length:7},(_,place)=>expeditionDiscoveryCost(index,place)).reduce((sum,v)=>sum+v,0)*100,
           places:Array.from({length:7},(_,place)=>({index:place,discoveryCost:expeditionDiscoveryCost(index,place),invested:place<region.discovered?expeditionDiscoveryCost(index,place):(region.discoveryPoints?.[place]||0),durationMs:expeditionDuration(index,'delivery',place)})),
+          finds:{cost:EXPEDITION_COST,
+            cards:EXPEDITION_CARD_CHANCES.map(chance=>{const card=EXPEDITION_CHARACTERS.find(c=>c.region===index&&c.rarity===chance.rarity);return {id:card.id,name:card.name,rarity:chance.rarity,chance:round2(chance.chance*100)};}),
+            orders:EXPEDITION_JOB_WEIGHTS.map(weight=>({kind:weight.kind,name:weight.kind==='character'?itemNames.character[0]:weight.kind==='material'?itemNames.material[0]:weight.kind==='special'?'Sonderauftrag '+mobileProjectNames.special[index].slice('Großauftrag '.length):'Empfehlungsauftrag '+mobileProjectNames.referral[0].slice('Großprojekt '.length),chance:round2((1-EXPEDITION_CARD_CHANCES.reduce((sum,c)=>sum+c.chance,0))*weight.chance*100),...(weight.kind==='character'||weight.kind==='material'?{ranks:EXPEDITION_STAGE_WEIGHTS[index].flatMap((chance,i)=>chance>0?[{rank:i+1,chance:round2(chance*100)}]:[])}:{rarity:weight.kind==='special'?'rare':'epic'})}))
+          },
           finalDurationMs:expeditionDuration(index,'final')
         })),
         projectCatalog:[...EXPEDITION_REGIONS.map((_,region)=>mobileProjectInfo('special',region)),{...mobileProjectInfo('referral',0),sources:EXPEDITION_REGIONS.map((_,region)=>mobileProjectInfo('referral',region))}],
