@@ -205,3 +205,10 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Typprüfung und Expo-Webexport bestanden. `npm test`: 25 Einträge bestanden (24 Adaptertests und Wrapper für 23 ursprüngliche Web-Regressionsdateien). Neuer Test prüft Dauergrenzen, Regional-/Fernverkehr und Schätzung ohne Fahrzeug.
 - Browserprüfung mit lokaler Engine/simuliertem Firebase auf 393/320 px bestanden: alle drei Klassen, beide Verkehrsarten, keine Ortsrelation in Angeboten/Details/laufender Liste, funktionierender Start. Screenshot auf 320 px visuell geprüft, keine Browserfehler/Überbreite.
 - Nur Sammelbranch; kein Deployment, OTA-Update oder APK-Build.
+
+
+## Gekaufte Fahrzeuge ausschließlich im Stadthub – 19.10.2026, vorbereitet
+
+- Garagenraster filtert auf Kartenfahrzeuge; Stadttransporter und Händlerlink aus der Garage entfernt. Im Stadthub öffnen gekaufte Fahrzeuge ein mittiges Detailmodal mit Daten, Kapazität/Rang verbessern, Hub zuweisen/entfernen und bestätigtem Verkauf. Bestehende Serveraktionen und Kosten unverändert. Hubeinsatz blockiert den Entfernenbutton nicht mehr selbst über `free=false`.
+- Typprüfung und Expo-Webexport bestanden. Browser-QA mit lokaler Engine/simuliertem Firebase auf 393/320 px bestanden: gekauftes Fahrzeug fehlt in der zehnteiligen Garage, erscheint im Stadthub, beide Upgradearten mit Ressourcenverbrauch, Einsatz entfernen/wiederherstellen, bestätigter Verkauf und Händlernavigation. Keine Browserfehler; Detailmodal visuell geprüft. Keine neue Serverlogik, daher bestehende Servertests nicht erneut ausgeführt.
+- Im Sammelbranch gespeichert, nicht veröffentlicht.
