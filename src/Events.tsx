@@ -1,6 +1,7 @@
-import {t} from './i18n';
+import {t as translate} from './i18n';
 import React from 'react';
 import {Pressable,StyleSheet} from 'react-native';
+import {Icon} from './Icon';
 import {Btn,Card,Pill,Row,Txt,C,n} from './ui';
 
 export type TestEvent = {
@@ -21,8 +22,8 @@ export function Events({events,busy,onStart,onEnd,onInfo}:{
   {events.map(event=>{
    const running=event.status==='running';
    return <Card key={event.id} style={styles.epic}>
-    <Pressable accessibilityRole="button" accessibilityLabel={t(`${t(event.title)}, ${running?'läuft':event.status==='ended'?'beendet':'bereit'}`)} disabled={busy} onPress={()=>running?onInfo(event):onStart(event)} style={{minHeight:44}}>
-     <Row><Txt style={styles.epicLabel}>EPISCH</Txt><Pill gold={!running}>{running?'LÄUFT':event.status==='ended'?'BEENDET':'BEREIT'}</Pill><Txt muted>›</Txt></Row>
+    <Pressable accessibilityRole="button" accessibilityLabel={translate(`${translate(event.title)}, ${running?'läuft':event.status==='ended'?'beendet':'bereit'}`)} disabled={busy} onPress={()=>running?onInfo(event):onStart(event)} style={{minHeight:44}}>
+     <Row><Txt style={styles.epicLabel}>EPISCH</Txt><Pill gold={!running}>{running?'LÄUFT':event.status==='ended'?'BEENDET':'BEREIT'}</Pill><Icon name="chevron" size={17} color={C.muted}/></Row>
      <Txt style={styles.title}>{event.title}</Txt>
      <Txt muted style={{marginTop:8}}>{event.description}</Txt>
      {event.run>0&&<Txt muted style={styles.meta}>Testdurchlauf {event.run}</Txt>}
@@ -33,6 +34,5 @@ export function Events({events,busy,onStart,onEnd,onInfo}:{
   })}
  </>;
 }
-export const epicStyle={backgroundColor:'#291F3B',borderColor:'#A579DC'};
-const styles=StyleSheet.create({title:{fontSize:17,fontWeight:'700'},meta:{fontSize:12,marginTop:10},epic:epicStyle,epicLabel:{color:'#C39AF5',fontSize:11,fontWeight:'700',letterSpacing:1}});
-
+export const epicStyle={backgroundColor:C.purpleWash,borderColor:C.epic};
+const styles=StyleSheet.create({title:{fontSize:17,fontWeight:'700'},meta:{fontSize:12,marginTop:10},epic:epicStyle,epicLabel:{color:C.epic,fontSize:11,fontWeight:'700',letterSpacing:1}});

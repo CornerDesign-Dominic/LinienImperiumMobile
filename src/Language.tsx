@@ -1,7 +1,7 @@
 import React,{createContext,useContext,useEffect,useState,useRef} from 'react';
 import {Text as NativeText,TextProps} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {DEFAULT_LANGUAGE,LANGUAGE_STORAGE_KEY,Language,setLanguage,t,validLanguage} from './i18n';
+import {DEFAULT_LANGUAGE,LANGUAGE_STORAGE_KEY,Language,setLanguage,t as translate,validLanguage} from './i18n';
 type LanguageContext={language:Language;changeLanguage:(value:Language)=>Promise<void>};
 const Context=createContext<LanguageContext>({language:DEFAULT_LANGUAGE,changeLanguage:async()=>{}});
 export const useLanguage=()=>useContext(Context);
@@ -15,12 +15,12 @@ export function LanguageProvider({children}:{children:React.ReactNode}){
 function translatedChildren(children:React.ReactNode):React.ReactNode{
  const list=React.Children.toArray(children);
  if(list.every(c=>typeof c==='string'||typeof c==='number')){
-  const combined=list.join(''),translated=t(combined);
-  return translated!==combined?translated:list.map(c=>typeof c==='string'?t(c):c);
+  const combined=list.join(''),translated=translate(combined);
+  return translated!==combined?translated:list.map(c=>typeof c==='string'?translate(c):c);
  }
- return list.map(c=>typeof c==='string'?t(c):c);
+ return list.map(c=>typeof c==='string'?translate(c):c);
 }
 export function Text({children,literal=false,...props}:TextProps&{literal?:boolean}){
  useLanguage();
- return <NativeText {...props} accessibilityLabel={props.accessibilityLabel?t(props.accessibilityLabel):undefined}>{literal?children:translatedChildren(children)}</NativeText>;
+ return <NativeText {...props} accessibilityLabel={props.accessibilityLabel?translate(props.accessibilityLabel):undefined}>{literal?children:translatedChildren(children)}</NativeText>;
 }

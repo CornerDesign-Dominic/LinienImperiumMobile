@@ -1,6 +1,7 @@
-import {t} from './i18n';
+import {t as translate} from './i18n';
 import React,{useState} from 'react';
 import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
+import {Icon} from './Icon';
 import {C,Txt,Card,Row,Btn,Bar,n,remaining,Empty} from './ui';
 
 export function HubVehicles({data,busy,clock,onCommand,onSell,modalBlocked=false}:any){
@@ -9,11 +10,11 @@ export function HubVehicles({data,busy,clock,onCommand,onSell,modalBlocked=false
  const truck=vehicles.find((t:any)=>t.id===selected);
  const fact=(label:string,value:string)=><Row><Txt muted>{label}</Txt><Txt>{value}</Txt></Row>;
  return <>
-  {vehicles.map((t:any)=><Pressable key={t.id} accessibilityRole="button" accessibilityLabel={t(`${t.model}, ${t.id} verwalten`)} onPress={()=>setSelected(t.id)}><Card><Row style={{marginBottom:3}}><Txt style={{fontWeight:'700'}}>{t.model}</Txt><Txt muted>›</Txt></Row><Txt muted>{n(t.capacity,1)} t · Rang {t.rarity.total}</Txt><Txt muted style={{fontSize:12}}>{t.hubAssigned?'Im Hub eingesetzt':t.free?'Bereit':'Im Einsatz'}</Txt></Card></Pressable>)}
+  {vehicles.map((t:any)=><Pressable key={t.id} accessibilityRole="button" accessibilityLabel={translate(`${t.model}, ${t.id} verwalten`)} onPress={()=>setSelected(t.id)}><Card><Row style={{marginBottom:3}}><Icon name="truck" size={26} color={C.gold}/><Txt style={{fontWeight:'700',flex:1}}>{t.model}</Txt><Icon name="chevron" size={17}/></Row><Txt muted>{n(t.capacity,1)} t · Rang {t.rarity.total}</Txt><Txt muted style={{fontSize:12}}>{t.hubAssigned?'Im Hub eingesetzt':t.free?'Bereit':'Im Einsatz'}</Txt></Card></Pressable>)}
   {!vehicles.length&&<Empty>Keine Stadttransporter</Empty>}
   <Modal visible={!!truck&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setSelected(null)}>
    <View style={styles.overlay}><View style={styles.detail}>
-    <Row style={{flexWrap:'nowrap'}}><Txt style={{fontSize:17,fontWeight:'700',flex:1}}>{truck?.model}</Txt><Btn secondary onPress={()=>setSelected(null)}>Schließen</Btn></Row>
+    <Row style={{flexWrap:'nowrap'}}><Txt style={{fontSize:17,fontWeight:'700',flex:1}}>{truck?.model}</Txt><Btn icon="close" secondary onPress={()=>setSelected(null)}>Schließen</Btn></Row>
     {truck&&<ScrollView keyboardShouldPersistTaps="handled">
      {fact('Kapazität',`${n(truck.capacity,1)} t`)}
      {fact('Geschwindigkeitsrang',`${truck.rarity.label} ${truck.rarity.level}`)}
@@ -31,4 +32,4 @@ export function HubVehicles({data,busy,clock,onCommand,onSell,modalBlocked=false
   </Modal>
  </>;
 }
-const styles=StyleSheet.create({overlay:{flex:1,backgroundColor:'#000B',justifyContent:'center',padding:18},detail:{width:'100%',maxWidth:480,maxHeight:'85%',alignSelf:'center',backgroundColor:C.panel,borderColor:C.line,borderWidth:1,borderRadius:18,padding:16}});
+const styles=StyleSheet.create({overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:18},detail:{width:'100%',maxWidth:480,maxHeight:'85%',alignSelf:'center',backgroundColor:C.panel,borderColor:C.line,borderWidth:1,borderRadius:18,padding:16}});

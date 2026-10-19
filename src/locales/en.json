@@ -629,5 +629,15 @@
   "5 Karten je Flotte · Änderungen greifen in laufenden Aufträgen nach der jeweiligen Fahrzeugtour.": "5 cards per fleet · Changes apply after each vehicle’s current trip.",
   "{0} t · Wechsel nach Ende der laufenden Tour": "{0} t · Switch after the current trip",
   "Das Ersatzfahrzeug wird bis zum Wechsel reserviert. Die laufende Tour wird unverändert abgeschlossen.": "The replacement vehicle is reserved until the switch. The current trip finishes unchanged.",
-  "Flotte {0} einsetzen": "Assign fleet {0}"
+  "Flotte {0} einsetzen": "Assign fleet {0}",
+  "DEIN HANDELSIMPERIUM": "YOUR TRADING EMPIRE",
+  "Reiseatlas öffnen": "Open travel atlas",
+  "Regionen im Reiseatlas entdecken": "Explore regions in the travel atlas",
+  "Reiseatlas": "Travel atlas",
+  "Deine Sammlung": "Your collection",
+  "Fahrzeugkarten und die Fähigkeiten deiner Flotte.": "Vehicle cards and your fleet's abilities.",
+  "Erschließe Regionen, entdecke Orte und gewinne Verbündete.": "Explore regions, discover places and gain allies.",
+  "EXPEDITIONSGEBIET": "EXPEDITION REGION",
+  "Fahrzeugsymbol": "Vehicle symbol",
+  "Karten finden": "Find cards"
 }
