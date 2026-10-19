@@ -319,3 +319,9 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 
 - Zwei schmale Infokarten ergänzt: Echtgeld-Münzen (Menge X, Preis offen) und Fahrzeugkartenkiste (X Echtgeld-Münzen). Bestehende Preisideen bleiben erhalten; Kaufgrenzen nur bei festgelegten Grenzen sichtbar. Keine Kaufabwicklung.
 - TypeScript-Typprüfung bestanden. Sammelbranch, nicht veröffentlicht.
+
+
+## Separate Fahrzeugtouren im Großauftrag – 19.10.2026, vorbereitet
+
+- Eingesetzte Flotte zeigt pro Fahrzeug den aktuellen Tour-Countdown und die tatsächlich noch geladene Menge bei Ankunft, statt nur Kapazität. Ohne weitere Fracht eigener Ruhezustand. Sekündliche lokale Uhr; Serverabgleich an den individuellen Ankunftsterminen übernimmt Folgetouren und Gesamtliefermenge. Keine Änderung der Transportberechnung.
+- TypeScript, Expo-Webexport und alle 35 Node-Testeinträge bestanden. Browser-QA mit echter lokaler Engine und simuliertem Firebase: laufenden Auftrag geöffnet, fahrzeugeigene Ladung/Timerzeile geprüft, 393/320 px ohne horizontalen Überlauf oder Browserfehler. Kein physischer Gerätetest. Noch nicht veröffentlicht.
