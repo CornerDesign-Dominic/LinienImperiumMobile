@@ -315,7 +315,7 @@ test('Project catalog lists five customer specials and one shared referral with 
   const saved=running.project.vehicles[0].capacity;
   active.state.expedition.seats[0]=null;active.state.trucks[0].capacity+=10;
   const sync=execute(active.state,'sync',{},now,fixed).view.state.orders.find(o=>o.id===order.id);
-  assert.equal(sync.project.vehicles[0].capacity,saved);assert.equal(sync.eta,running.eta);
+  assert.equal(sync.project.vehicles[0].capacity,saved);assert.equal(sync.project.vehicles[0].nextAt,running.project.vehicles[0].nextAt);assert.equal(sync.eta,null);assert.equal(sync.projection.feasible,false);
  }
 });
 
@@ -349,8 +349,8 @@ test('Bulk single-order claim reports actual combined loot, excludes projects an
   const started=execute(state,'projectStart',{id:legacy.id,template:0},now,fixed);
   const running=started.state.orders.find(o=>o.id===legacy.id);running.volume=running.baseVolume=2000;running.distance=400;running.category='international';running.projectName='Altes Projekt';
   const saved=JSON.stringify(running.project);
-  const synced=execute(started.state,'sync',{},now,fixed).view.state.orders.find(o=>o.id===legacy.id);
-  assert.equal(synced.volume,2000);assert.equal(synced.distance,400);assert.equal(synced.projectName,'Altes Projekt');assert.equal(JSON.stringify(synced.project),saved);assert.equal(synced.projectInfo.key,'referral');
+  const result=execute(started.state,'sync',{},now,fixed),synced=result.view.state.orders.find(o=>o.id===legacy.id);
+  assert.equal(synced.volume,2000);assert.equal(synced.distance,400);assert.equal(synced.projectName,'Altes Projekt');assert.equal(JSON.stringify(result.state.orders.find(o=>o.id===legacy.id).project),saved);assert.equal(synced.projectInfo.key,'referral');
  });
 
 test('Discovery spends one point per tap, persists partial progress and reaches 100 before bonus delivery',()=>{

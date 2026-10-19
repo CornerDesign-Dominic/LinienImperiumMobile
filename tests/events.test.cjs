@@ -84,17 +84,17 @@ test('Unbounded event uses the saved fleet timings and settles offline without d
 
 test('Fleet snapshot survives edits; ending freezes production and restarting discards the previous project',()=>{
  const assigned=assignedFixture();
- const original=JSON.parse(JSON.stringify(assigned.state.eventTests[id].project.vehicles));
+ const original=JSON.parse(JSON.stringify(assigned.state.eventTests[id].project.vehicles.filter(v=>v.cardId)));
  const edited=JSON.parse(JSON.stringify(assigned.state));
  edited.expedition.seats.fill(null);
  edited.trucks[0].capacity=100;
  edited.trucks[0].rarityLevel=50;
  edited.expedition.characters.r1_rare.level=10;
- const cycle=Math.max(...original.map(v=>v.cycleMs));
+ const cycle=Math.min(...original.map(v=>v.cycleMs))/2;
  const ended=execute(edited,'eventEnd',{id,run:1},now+cycle,fixed);
  assert.equal(ended.state.eventTests[id].project.vehicles[0].capacity,original[0].capacity);
  assert.equal(ended.state.eventTests[id].project.vehicles[0].cycleMs,original[0].cycleMs);
- assert.ok(ended.state.eventTests[id].project.delivered>0,'Ending settles deliveries up to the stop time');
+ assert.equal(ended.state.eventTests[id].project.delivered,0,'Ending mid-tour does not deliver unfinished cargo');
  const later=execute(ended.state,'sync',{},now+cycle+86400000,fixed);
  assert.deepEqual(later.state.eventTests,ended.state.eventTests);
  const restart=execute(later.state,'eventStart',{id,run:1},now+cycle+86400000,fixed);

@@ -8,7 +8,7 @@ export type TestEvent = {
  startedAt?:number; endedAt?:number|null;
  rarity:'epic'; unlimited:boolean; distance:number;
  project?:{template:number;assignedAt:number;delivered:number;km:number;tonKm:number;tours:number;
-  vehicles:{cardId:string;model:string;capacity:number;cycleMs:number;nextAt:number;completedTours:number}[]};
+  vehicles:{cardId:string;model:string;capacity:number;cycleMs:number;nextAt:number;completedTours:number;slot?:number;pendingCardId?:string|null;pendingModel?:string|null}[]};
  fleetOptions:{index:number;vehicles:{cardId:string;model:string;capacity:number;cycleMs:number}[]|null}[];
 };
 export function Events({events,busy,onStart,onEnd,onInfo}:{

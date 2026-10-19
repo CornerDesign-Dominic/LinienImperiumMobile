@@ -10,9 +10,15 @@ const EVENTS = [{
 }];
 
 function eventViews(state, fleetOptions = []) {
-  return EVENTS.map(event => ({...event, status: 'available', run: 0,
-    ...state.eventTests?.[event.id],
-    fleetOptions: state.eventTests?.[event.id]?.status === 'running' && !state.eventTests[event.id].project ? fleetOptions : []}));
+  return EVENTS.map(event => {
+    const saved=state.eventTests?.[event.id];
+    return {...event,status:'available',run:0,...saved,
+      project:saved?.project?{...saved.project,vehicles:saved.project.vehicles.filter(v=>v.cardId).map(v=>{
+        const desired=fleetOptions.find(option=>option.index===saved.project.template)?.vehicles?.find(next=>next.slot===v.slot);
+        return {...v,pendingCardId:desired?.cardId||null,pendingModel:desired?.model||null};
+      })}:undefined,
+      fleetOptions:saved?.status==='running'&&!saved.project?fleetOptions:[]};
+  });
 }
 
 function currentEvent(state, eventId, expectedRun) {
@@ -51,21 +57,4 @@ function assignEventFleet(state, eventId, expectedRun, template, fleetOptions, n
   return 'Flotte eingesetzt. Das Großprojekt läuft.';
 }
 
-function settleEvents(state, now) {
-  for (const event of Object.values(state.eventTests || {})) {
-    const project = event.project;
-    if (event.status !== 'running' || !project) continue;
-    for (const vehicle of project.vehicles) {
-      // Arithmetic catch-up: no finite target, fake huge volume or per-tour loop.
-      const completed = Math.floor(Math.max(0, now - project.assignedAt) / vehicle.cycleMs);
-      vehicle.completedTours = Math.max(vehicle.completedTours, completed);
-      vehicle.nextAt = project.assignedAt + (vehicle.completedTours + 1) * vehicle.cycleMs;
-    }
-    project.delivered = project.vehicles.reduce((sum, vehicle) => sum + vehicle.completedTours * vehicle.capacity, 0);
-    project.km = project.vehicles.reduce((sum, vehicle) => sum + vehicle.completedTours * project.distance * 2, 0);
-    project.tonKm = project.delivered * project.distance;
-    project.tours = project.vehicles.reduce((sum, vehicle) => sum + vehicle.completedTours, 0);
-  }
-}
-
-module.exports = {eventViews, changeEvent, assignEventFleet, settleEvents, EVENT_PROJECT_DISTANCE_KM};
+module.exports = {eventViews, changeEvent, assignEventFleet, EVENT_PROJECT_DISTANCE_KM};

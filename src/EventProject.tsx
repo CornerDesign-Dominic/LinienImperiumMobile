@@ -40,16 +40,19 @@ export function EventProject({event,busy,clock,onFleet,onManage,onEnd}:{
     <Row><Txt style={{fontWeight:'700'}}>Eingesetzte Flotte</Txt><Pill>Flotte {project.template+1}</Pill></Row>
     {project.vehicles.map(vehicle=>{
      const progress=Math.min(100,Math.max(0,(1-(vehicle.nextAt-clock)/vehicle.cycleMs)*100));
-     return <View key={vehicle.cardId} style={styles.vehicle}>
+     return <View key={vehicle.slot??vehicle.cardId} style={styles.vehicle}>
       <Txt style={{fontWeight:'700'}}>{vehicle.model}</Txt>
       {running?<>
        <Row style={{marginTop:6,marginBottom:0}}><Txt muted style={styles.small}>Aktuelle Tour</Txt><Txt style={styles.small}>{n(Math.floor(progress))} %</Txt></Row>
        <Bar value={progress}/>
        <Row style={{marginBottom:0}}><Txt gold style={styles.small}>{remaining(vehicle.nextAt,clock)}</Txt><Txt muted style={styles.small}>{n(vehicle.capacity,2)} t bei Ankunft</Txt></Row>
       </>:<Txt muted style={[styles.small,{marginTop:6}]}>Einsatz beendet</Txt>}
+      {running&&vehicle.pendingCardId!==undefined&&vehicle.pendingCardId!==vehicle.cardId&&<Txt gold style={styles.small}>{vehicle.pendingModel?`Danach: ${vehicle.pendingModel}`:'Wird nach der Tour entfernt'}</Txt>}
      </View>;
     })}
-    <Txt muted style={{fontSize:12}}>Fahrzeugwerte bleiben für diesen Einsatz gespeichert.</Txt>
+    {running&&!project.vehicles.length&&<Txt muted>Keine Fahrzeuge aktiv. Ergänze die Flotte, um weiterzuliefern.</Txt>}
+    <Txt muted style={{fontSize:12}}>Änderungen an Fahrzeugen und Boni gelten ab der nächsten Tour. Laufende Touren bleiben unverändert.</Txt>
+    {running&&<Btn secondary disabled={busy} onPress={onManage}>Flotte für nächste Touren ändern</Btn>}
    </Card>
   </>}
   <Txt muted style={{fontSize:12,marginVertical:12}}>Überstundeneinsatz, Rangliste und Belohnungen folgen im nächsten Schritt.</Txt>
