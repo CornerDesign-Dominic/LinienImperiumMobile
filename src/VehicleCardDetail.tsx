@@ -1,7 +1,8 @@
+import {t as translate} from './i18n';
 import React from 'react';
 import {View,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n} from './ui';
-import {Compass} from './Atlas';
+import {Icon} from './Icon';
 import {displayFont} from './theme';
 import {itemName,rarityColor} from './items';
 const BONUS:Record<string,string>={speed:'Tempo',cost:'Kostenersparnis',pay:'Frachtvergütung',xp:'Spieler-XP'};
@@ -17,7 +18,7 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
  return <>
   <Card>
    <Row style={{marginBottom:14}}><Txt style={{color:rarityColor(card.rarity),fontSize:11,fontWeight:'700'}}>{rarity.label}</Txt><Txt muted style={{fontSize:11}}>Region {card.region+1}</Txt></Row>
-   <View accessibilityLabel="Fahrzeugbild Platzhalter" style={[styles.artwork,{borderColor:rarityColor(card.rarity)}]}><Compass size={72} color={rarityColor(card.rarity)}/></View>
+   <View accessibilityLabel={translate('Fahrzeugsymbol')} style={[styles.artwork,{borderColor:rarityColor(card.rarity)}]}><Icon name="truck" size={88} color={rarityColor(card.rarity)}/></View>
    <Txt style={styles.name}>{card.name}</Txt>
    <View style={styles.badges}><Pill>{own?`Stufe ${level}`:'Nicht entdeckt'}</Pill><Txt muted style={{fontSize:12}}>{n(stats.capacity,1)} t · Rang {stats.rank.total}</Txt></View>
   </Card>
@@ -44,4 +45,3 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
  </>;
 }
 const styles=StyleSheet.create({artwork:{width:180,height:180,alignSelf:'center',backgroundColor:C.raised,borderWidth:1,borderRadius:12,alignItems:'center',justifyContent:'center'},name:{fontFamily:displayFont,fontSize:22,lineHeight:26,fontWeight:'700',textAlign:'center',marginTop:14},badges:{flexDirection:'row',alignItems:'center',justifyContent:'center',flexWrap:'wrap',gap:10,marginTop:9},title:{fontSize:14,fontWeight:'700'},fact:{flexWrap:'nowrap',marginBottom:10},bonus:{backgroundColor:C.greenWash,borderColor:C.accent},bonusValue:{fontSize:20,lineHeight:26,fontWeight:'700',color:C.accent},value:{fontSize:18,lineHeight:25,fontWeight:'700'}});
-

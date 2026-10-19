@@ -27,7 +27,5 @@ export function stockItems(data:any):StockItem[]{
  const projectGroups=new Map<string,any[]>();
  for(const o of g.orders.filter((o:any)=>o.isProject&&o.status==='queued')){const key=o.projectInfo.key;projectGroups.set(key,[...(projectGroups.get(key)||[]),o]);}
  for(const [key,orders] of projectGroups){const o=orders[0];items.push({id:`project:${key}`,name:`${o.kind==='referral'?'Empfehlungsauftrag':'Sonderauftrag'} ${(o.projectName||'').replace(/^(?:Großauftrag|Großprojekt|Sonderauftrag|Empfehlungsauftrag)\s+/,'')}`,amount:orders.length,source:'Expeditionen und Stammkunden.',description:'Mit einer Flotte unter Großaufträge starten.',use:'projects',color:rarityColor(o.kind==='referral'?'epic':'rare')});}
- for(const card of c.cards){const owned=g.expedition.characters[card.id];if(owned)items.push({id:`card:${card.id}`,name:card.name,amount:1,source:'Expeditionen.',description:`Fahrzeugkarte · Stufe ${owned.level}. Verwalten und verbessern in der Sammlung.`,use:'cards',color:rarityColor(card.rarity)});}
  return items;
 }
-

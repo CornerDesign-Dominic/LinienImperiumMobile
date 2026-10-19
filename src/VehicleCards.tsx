@@ -1,7 +1,10 @@
+import {Text} from './Language';
+import {t as translate} from './i18n';
 import React from 'react';
-import {View,Text,Pressable,StyleSheet} from 'react-native';
+import {View,Pressable,StyleSheet} from 'react-native';
 import {C,Txt,Row,Pill,n} from './ui';
-import {AtlasHeading,Compass} from './Atlas';
+import {Icon} from './Icon';
+import {AtlasHeading} from './Atlas';
 import {displayFont} from './theme';
 import {rarityColor} from './items';
 
@@ -15,9 +18,9 @@ export function VehicleCards({data,onOpen}:any){
   <Row style={{marginBottom:14}}>{c.rarities.slice(0,3).map((r:any)=><Pill key={r.id}>{r.label}: {n(g.expedition.shards[r.id])}</Pill>)}</Row>
   {rows.map((row:any[],i:number)=><View key={i} style={styles.row}>{row.map(item=>{
    const owned=g.expedition.characters[item.id],stats=vehicle(item);
-   return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={`${item.name}, ${owned?`Stufe ${owned.level}`:'Nicht entdeckt'}, Geschwindigkeitsrang ${stats.rank.total}, ${n(stats.capacity,1)} Tonnen`} onPress={()=>onOpen(item.id)} style={({pressed})=>[styles.card,{borderColor:rarityColor(item.rarity)},!owned&&{backgroundColor:C.raised,borderStyle:'dashed'},pressed&&{opacity:.7}]}>
+   return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={translate(`${item.name}, ${owned?`Stufe ${owned.level}`:'Nicht entdeckt'}, Geschwindigkeitsrang ${stats.rank.total}, ${n(stats.capacity,1)} Tonnen`)} onPress={()=>onOpen(item.id)} style={({pressed})=>[styles.card,{borderColor:rarityColor(item.rarity)},!owned&&{backgroundColor:C.raised,borderStyle:'dashed'},pressed&&{opacity:.7}]}>
     <Txt style={styles.level}>{owned?`Stufe ${owned.level}`:'Stufe —'}</Txt>
-    <View style={styles.artwork}><Compass size={28} color={C.line}/><Text numberOfLines={3} ellipsizeMode="tail" style={styles.name}>{item.name.replace(/([a-zäöü])([A-ZÄÖÜ])/g,'$1\u00ad$2').replace(/Versorgungswagen/g,'Versorgungs\u00adwagen').replace(/Expeditionsträger/g,'Expeditions\u00adträger').replace(/Schrottsammler/g,'Schrott\u00adsammler')}</Text></View>
+    <View style={styles.artwork}><Icon name="truck" size={32} color={rarityColor(item.rarity)}/><Text numberOfLines={3} ellipsizeMode="tail" style={styles.name}>{item.name.replace(/([a-zäöü])([A-ZÄÖÜ])/g,'$1\u00ad$2').replace(/Versorgungswagen/g,'Versorgungs\u00adwagen').replace(/Expeditionsträger/g,'Expeditions\u00adträger').replace(/Schrottsammler/g,'Schrott\u00adsammler')}</Text></View>
     <Txt style={styles.rank}>Rang {stats.rank.total}</Txt>
     <Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt>
    </Pressable>;
@@ -31,4 +34,3 @@ const styles=StyleSheet.create({
  artwork:{width:'100%',aspectRatio:1,backgroundColor:C.raised,borderColor:C.line,borderWidth:1,borderRadius:7,alignItems:'center',justifyContent:'center',padding:4},
  name:{width:'100%',flexShrink:1,fontFamily:displayFont,fontSize:11,lineHeight:14,textAlign:'center',color:C.text,marginTop:6},rank:{fontSize:11,lineHeight:18,textAlign:'center',marginTop:7,color:C.muted},capacity:{fontSize:13,lineHeight:20,fontWeight:'700',textAlign:'center'},
 });
-

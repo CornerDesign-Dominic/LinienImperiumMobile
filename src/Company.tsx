@@ -1,3 +1,5 @@
+import {t as translate} from './i18n';
+import {Icon} from './Icon';
 import {itemName} from './items';
 import React from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
@@ -29,7 +31,7 @@ export function TransportEditor({data,draft,onDraft,busy,onSave,onInventory}:any
  const invalid=options.some((o:any)=>(draft[upgradeKey(o)]||0)>o.costs.length);
  const afford=!invalid&&g.coins>=quote.coins&&g.inventory.companyItems>=quote.items;
  return <>
-  <Card><Row><Txt>{itemName('companyItems',2)}</Txt><Txt gold>{n(g.inventory.companyItems)}</Txt></Row><Txt muted>Aus Aufträgen und Expeditionen.</Txt><Btn secondary onPress={onInventory}>Vorräte ›</Btn></Card>
+  <Card><Row><Txt>{itemName('companyItems',2)}</Txt><Txt gold>{n(g.inventory.companyItems)}</Txt></Row><Txt muted>Aus Aufträgen und Expeditionen.</Txt><Btn endIcon="chevron" secondary onPress={onInventory}>Vorräte</Btn></Card>
   {['national','international'].map(category=><Card key={category}>
    <Txt style={styles.title}>{category==='national'?'Regionalverkehr':'Fernverkehr'}</Txt>
    {options.filter((o:any)=>o.category===category).map((o:any)=>{
@@ -40,9 +42,9 @@ export function TransportEditor({data,draft,onDraft,busy,onSave,onInventory}:any
      <Row><Txt style={{fontWeight:'700'}}>{LABELS[o.kind]}</Txt><Txt muted style={{fontSize:12}}>{o.level}{selected?` → ${o.level+selected}`:''} / {o.limit}</Txt></Row>
      <Txt muted style={{fontSize:12}}>{effect(o,o.level)}{selected?` → ${effect(o,o.level+selected)}`:''}</Txt>
      <Row style={{marginTop:8,marginBottom:0,flexWrap:'nowrap'}}><Txt muted style={{fontSize:12,flex:1}}>{next?`${n(next.coins)} M · ${next.items} Items`:'Maximum'}</Txt><View style={styles.stepper}>
-      <Pressable accessibilityRole="button" accessibilityLabel={`${category==='national'?'Regionalverkehr':'Fernverkehr'} ${LABELS[o.kind]} verringern`} accessibilityState={{disabled:busy||!selected}} disabled={busy||!selected} onPress={()=>change(-1)} style={[styles.step,!selected&&styles.disabled]}><Txt>−</Txt></Pressable>
+      <Pressable accessibilityRole="button" accessibilityLabel={translate(`${category==='national'?'Regionalverkehr':'Fernverkehr'} ${LABELS[o.kind]} verringern`)} accessibilityState={{disabled:busy||!selected}} disabled={busy||!selected} onPress={()=>change(-1)} style={[styles.step,!selected&&styles.disabled]}><Icon name="minus" size={18}/></Pressable>
       <Txt gold style={{minWidth:24,textAlign:'center'}}>+{selected}</Txt>
-      <Pressable accessibilityRole="button" accessibilityLabel={`${category==='national'?'Regionalverkehr':'Fernverkehr'} ${LABELS[o.kind]} erhöhen`} accessibilityState={{disabled:!canAdd}} disabled={!canAdd} onPress={()=>change(1)} style={[styles.step,!canAdd&&styles.disabled]}><Txt>+</Txt></Pressable>
+      <Pressable accessibilityRole="button" accessibilityLabel={translate(`${category==='national'?'Regionalverkehr':'Fernverkehr'} ${LABELS[o.kind]} erhöhen`)} accessibilityState={{disabled:!canAdd}} disabled={!canAdd} onPress={()=>change(1)} style={[styles.step,!canAdd&&styles.disabled]}><Icon name="plus" size={18}/></Pressable>
      </View></Row>
     </View>;
    })}
@@ -51,4 +53,3 @@ export function TransportEditor({data,draft,onDraft,busy,onSave,onInventory}:any
  </>;
 }
 const styles=StyleSheet.create({summary:{backgroundColor:C.panel,borderColor:C.line},title:{fontSize:16,fontWeight:'700'},group:{paddingVertical:14,borderBottomWidth:1,borderColor:C.line,marginBottom:4},upgrade:{paddingVertical:14,borderBottomWidth:1,borderColor:C.line},stepper:{flexDirection:'row',alignItems:'center',gap:8},step:{minWidth:44,minHeight:44,borderWidth:1,borderColor:C.line,borderRadius:10,alignItems:'center',justifyContent:'center'},disabled:{opacity:.4}});
-

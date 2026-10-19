@@ -1,21 +1,16 @@
 import React from 'react';
-import {View,Text,Image,Pressable,StyleSheet} from 'react-native';
+import {View,Image,Pressable,StyleSheet} from 'react-native';
+import {Icon} from './Icon';
+import {Text} from './Language';
+import {t as translate} from './i18n';
 import {C,displayFont,regionInks} from './theme';
 
-// Native geometry keeps the compass crisp without fonts or dependencies.
-export function Compass({size=48,color=C.brass}: {size?:number;color?:string}){
- return <View accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={{width:size,height:size,alignItems:'center',justifyContent:'center'}}>
-  <View style={{position:'absolute',width:size*.76,height:size*.76,borderRadius:size,borderWidth:1,borderColor:color,opacity:.6}}/>
-  {[0,45,90,135].map(deg=><View key={deg} style={{position:'absolute',width:1,height:size,backgroundColor:color,transform:[{rotate:`${deg}deg`}],opacity:deg%90?0.35:0.7}}/>)}
-  <View style={{width:size*.32,height:size*.32,backgroundColor:color,transform:[{rotate:'45deg'}]}}/>
-  <View style={{position:'absolute',width:size*.16,height:size*.16,backgroundColor:C.ink,transform:[{rotate:'45deg'}]}}/>
- </View>;
-}
+export function Compass({size=48,color=C.brass}:{size?:number;color?:string}){return <Icon name="expedition" size={size} color={color}/>;}
 export function Harbor({company,city,onExplore}:{company:string;city:string;onExplore:()=>void}){
  return <View style={a.harbor}>
   <Image source={require('../assets/art/harbor.jpg')} resizeMode="cover" style={a.harborImage} accessible={false}/>
-  <View style={a.harborCaption}><View style={{flex:1,minWidth:0}}><Text style={a.eyebrow}>DEIN HANDELSIMPERIUM</Text><Text style={a.company}>{company}</Text><Text style={a.city}>{city}</Text></View><Compass size={40}/></View>
-  <Pressable accessibilityRole="button" accessibilityLabel="Regionen im Reiseatlas entdecken" onPress={onExplore} style={({pressed})=>[a.explore,pressed&&{opacity:.8}]}><Text style={a.exploreText}>Reiseatlas öffnen</Text><Text style={a.exploreArrow}>↗</Text></Pressable>
+  <View style={a.harborCaption}><View style={{flex:1,minWidth:0}}><Text style={a.eyebrow}>DEIN HANDELSIMPERIUM</Text><Text literal style={a.company}>{company}</Text><Text literal style={a.city}>{city}</Text></View><Compass size={40}/></View>
+  <Pressable accessibilityRole="button" accessibilityLabel={translate('Regionen im Reiseatlas entdecken')} onPress={onExplore} style={({pressed})=>[a.explore,pressed&&{opacity:.8}]}><Text style={a.exploreText}>Reiseatlas öffnen</Text><Icon name="arrow" size={20} color={C.brassLight}/></Pressable>
  </View>;
 }
 export function AtlasHeading({title,detail}:{title:string;detail?:string}){

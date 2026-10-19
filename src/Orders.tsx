@@ -1,3 +1,5 @@
+import {t as translate} from './i18n';
+import {Icon} from './Icon';
 import {itemName} from './items';
 import React,{useState} from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
@@ -17,7 +19,7 @@ function progress(o:any,clock:number){
 }
 function OrderTile({order:o,data,clock,onOpen}:any){
  const active=o.status==='active',done=o.status==='completed',truck=data.state.trucks.find((t:any)=>t.id===o.truckId);
- return <Pressable accessibilityRole="button" accessibilityLabel={`${o.cargo}, ${o.id}`} onPress={()=>onOpen(o.id)}>
+ return <Pressable accessibilityRole="button" accessibilityLabel={translate(`${o.cargo}, ${o.id}`)} onPress={()=>onOpen(o.id)}>
   <Card style={[styles.offer,{borderLeftColor:active?C.accent:o.customer?C.gold:C.rare}]}>
    <Row style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{o.cargo}</Txt>{active?<Txt gold style={styles.small}>{remaining(o.runningEndsAt||clock,clock)}</Txt>:done?<Pill gold>Prämie</Pill>:<Txt style={styles.small}>{n(o.volume,1)} t · {n(o.distance)} km</Txt>}</Row>
    <Txt muted style={styles.small}>{transportSummary(o)}{o.routeType==='single'?' · Single Way':o.routeType==='dual'?' · Dual Way':''}</Txt>
@@ -32,9 +34,9 @@ export function Orders({data,clock,busy,onOpen,onRunning,onSaved,onRefresh,onCla
  const savedCount=queued.length+data.state.expedition.jobs.length;
  const tile=(o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>;
  return <>
-  {!!runningCount&&<Pressable accessibilityRole="button" accessibilityLabel={`${runningCount} ${runningCount===1?'Auftrag':'Aufträge'} laufend`} onPress={onRunning}><Card style={styles.running}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700'}}>{runningCount} {runningCount===1?'Auftrag':'Aufträge'} laufend</Txt><Txt style={{color:C.accent}}>›</Txt></Row></Card></Pressable>}
+  {!!runningCount&&<Pressable accessibilityRole="button" accessibilityLabel={translate(`${runningCount} ${runningCount===1?'Auftrag':'Aufträge'} laufend`)} onPress={onRunning}><Card style={styles.running}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700'}}>{runningCount} {runningCount===1?'Auftrag':'Aufträge'} laufend</Txt><Icon name="chevron" size={17} color={C.accent}/></Row></Card></Pressable>}
   {!!rewards.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {rewards.length}</Btn>}
-  <Pressable accessibilityRole="button" accessibilityLabel={`Aufträge aus Vorräten, ${savedCount} verfügbar`} onPress={onSaved}><Card style={styles.saved}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700',flex:1}}>Aufträge aus Vorräten</Txt><Pill>{savedCount}</Pill><Txt muted>›</Txt></Row></Card></Pressable>
+  <Pressable accessibilityRole="button" accessibilityLabel={translate(`Aufträge aus Vorräten, ${savedCount} verfügbar`)} onPress={onSaved}><Card style={styles.saved}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700',flex:1}}>Aufträge aus Vorräten</Txt><Pill>{savedCount}</Pill><Icon name="chevron" size={17} color={C.muted}/></Row></Card></Pressable>
   <View style={styles.refresh}><Txt muted style={styles.small}>Neu {remaining(data.state.nextAutoRefreshAt,clock)}</Txt><Btn secondary style={{marginTop:0,flex:1}} disabled={busy||data.state.coins<data.refreshCost} onPress={onRefresh}>Wechseln · {n(data.refreshCost)} M</Btn></View>
   {section('Angebote')}{available.map(tile)}{!available.length&&<Empty>Keine Angebote.</Empty>}
  </>;
@@ -48,17 +50,17 @@ export function SavedOrders({data,clock,busy,onOpen,onJob,typeKey,onType}:any){
   {key:'private',name:itemName('private',2),count:allOrders.filter((o:any)=>o.kind==='private').length},
   {key:'customer',name:itemName('customer',2),count:allOrders.filter((o:any)=>o.kind!=='private').length}
  ].filter(g=>g.count>0);
- if(!typeKey)return <>{groups.map(group=><Pressable key={group.key} accessibilityRole="button" accessibilityLabel={`${group.name}, Anzahl ${group.count}`} onPress={()=>onType(group.key)}><Card style={styles.saved}><Row style={{marginBottom:0}}><View style={{flex:1}}><Txt style={styles.title}>{group.name}</Txt><Txt muted style={styles.small}>Anzahl {group.count}</Txt></View><Txt muted>›</Txt></Row></Card></Pressable>)}{!groups.length&&<Empty>Keine Aufträge verfügbar.</Empty>}</>;
+ if(!typeKey)return <>{groups.map(group=><Pressable key={group.key} accessibilityRole="button" accessibilityLabel={translate(`${group.name}, Anzahl ${group.count}`)} onPress={()=>onType(group.key)}><Card style={styles.saved}><Row style={{marginBottom:0}}><View style={{flex:1}}><Txt style={styles.title}>{group.name}</Txt><Txt muted style={styles.small}>Anzahl {group.count}</Txt></View><Icon name="chevron" size={17} color={C.muted}/></Row></Card></Pressable>)}{!groups.length&&<Empty>Keine Aufträge verfügbar.</Empty>}</>;
  const queued=allOrders.filter((o:any)=>typeKey==='private'?o.kind==='private':typeKey==='customer'?o.kind!=='private':false);
  const jobs=allJobs.filter((j:any)=>j.kind===typeKey),free=data.state.trucks.some((t:any)=>t.free&&t.tier>=2);
  const ranks=[1,2,3].map(rank=>({rank,entries:jobs.filter((job:any)=>expeditionRank(job)===rank)})).filter(group=>group.entries.length);
- return <>{ranks.map(group=><Pressable key={group.rank} accessibilityRole="button" accessibilityLabel={`${expeditionName(typeKey)}, Rang ${group.rank}, Anzahl ${group.entries.length}`} disabled={busy} onPress={()=>onJob(group.entries[0])}><Card style={[styles.offer,rankStyle(group.rank)]}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{expeditionName(typeKey)}</Txt><Pill>Rang {group.rank}</Pill></Row><Row style={{marginBottom:0}}><Txt muted style={styles.small}>Anzahl {group.entries.length}</Txt><Txt muted style={styles.small}>{group.rank*20} t</Txt></Row>{!free&&<Txt muted style={styles.small}>Passender LKW im Einsatz oder nicht vorhanden</Txt>}</Card></Pressable>)}{queued.map((o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>)}{!queued.length&&!jobs.length&&<Empty>Keine Aufträge verfügbar.</Empty>}</>;
+ return <>{ranks.map(group=><Pressable key={group.rank} accessibilityRole="button" accessibilityLabel={translate(`${expeditionName(typeKey)}, Rang ${group.rank}, Anzahl ${group.entries.length}`)} disabled={busy} onPress={()=>onJob(group.entries[0])}><Card style={[styles.offer,rankStyle(group.rank)]}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{expeditionName(typeKey)}</Txt><Pill>Rang {group.rank}</Pill></Row><Row style={{marginBottom:0}}><Txt muted style={styles.small}>Anzahl {group.entries.length}</Txt><Txt muted style={styles.small}>{group.rank*20} t</Txt></Row>{!free&&<Txt muted style={styles.small}>Passender LKW im Einsatz oder nicht vorhanden</Txt>}</Card></Pressable>)}{queued.map((o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>)}{!queued.length&&!jobs.length&&<Empty>Keine Aufträge verfügbar.</Empty>}</>;
 }
 export function RunningOrders({data,clock,busy,onOpen,onClaim,onMission}:any){
  const orders=data.state.orders.filter((o:any)=>!o.isProject),active=orders.filter((o:any)=>o.status==='active'),ready=orders.filter((o:any)=>o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt);
  const tile=(o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>;
  const missions=endlessMissions(data);
- return <>{missions.map((m:any)=><Pressable key={`mission-${m.id}`} accessibilityRole="button" accessibilityLabel={`${expeditionName(m.lootKind)}, unterwegs, ${m.id}`} onPress={()=>onMission(m)}><Card style={[styles.offer,{borderLeftColor:C.accent}]}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{expeditionName(m.lootKind)}</Txt><Txt gold style={styles.small}>{remaining(m.endsAt,clock)}</Txt></Row><Txt muted style={styles.small}>{data.catalog.regionNames[m.region]} · {data.state.trucks.find((t:any)=>t.id===m.truckId)?.model||'Fahrzeug'}</Txt><Bar value={(clock-m.startedAt)/(m.endsAt-m.startedAt)*100}/></Card></Pressable>)}{!!ready.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {ready.length}</Btn>}{active.map(tile)}{!active.length&&!missions.length&&<Empty>Keine Aufträge unterwegs.</Empty>}{!!ready.length&&<>{section('Prämien')}{ready.map(tile)}</>}</>;
+ return <>{missions.map((m:any)=><Pressable key={`mission-${m.id}`} accessibilityRole="button" accessibilityLabel={translate(`${expeditionName(m.lootKind)}, unterwegs, ${m.id}`)} onPress={()=>onMission(m)}><Card style={[styles.offer,{borderLeftColor:C.accent}]}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{expeditionName(m.lootKind)}</Txt><Txt gold style={styles.small}>{remaining(m.endsAt,clock)}</Txt></Row><Txt muted style={styles.small}>{data.catalog.regionNames[m.region]} · {data.state.trucks.find((t:any)=>t.id===m.truckId)?.model||'Fahrzeug'}</Txt><Bar value={(clock-m.startedAt)/(m.endsAt-m.startedAt)*100}/></Card></Pressable>)}{!!ready.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {ready.length}</Btn>}{active.map(tile)}{!active.length&&!missions.length&&<Empty>Keine Aufträge unterwegs.</Empty>}{!!ready.length&&<>{section('Prämien')}{ready.map(tile)}</>}</>;
 }
 export function OrderDetail({data,id,busy,clock,onCommand,onBack,onSwitch}:any){
  const o=data.state.orders.find((o:any)=>o.id===id&&!o.isProject);
@@ -76,7 +78,7 @@ export function OrderDetail({data,id,busy,clock,onCommand,onBack,onSwitch}:any){
    </>}
   </Card>
   {!active&&!done&&<Card>
-   {!o.choices.length?<Txt muted>{unavailable(o)}</Txt>:<><Txt style={styles.title}>Fahrzeug</Txt>{o.choices.map((t:any)=><Pressable key={t.id} accessibilityRole="button" accessibilityLabel={`${t.model}, ${t.id} auswählen`} accessibilityState={{selected:truckId===t.id,disabled:busy}} disabled={busy} onPress={()=>setTruckId(t.id)} style={[styles.vehicle,truckId===t.id&&{borderColor:C.accent}]}><Row style={{marginBottom:0}}><Txt>{t.model} · {n(t.capacity,1)} t</Txt><Txt style={{color:C.accent}}>{truckId===t.id?'✓':'○'}</Txt></Row><Txt muted style={styles.small}>{t.trips} Touren · {minutes(t.seconds)}</Txt></Pressable>)}<Btn disabled={busy||!selected} onPress={()=>onCommand(o.kind==='private'?'assignPrivate':o.crafted?'assignCrafted':'assign',{order:o.id,truck:selected.id})}>Auftrag starten</Btn></>}
+   {!o.choices.length?<Txt muted>{unavailable(o)}</Txt>:<><Txt style={styles.title}>Fahrzeug</Txt>{o.choices.map((t:any)=><Pressable key={t.id} accessibilityRole="button" accessibilityLabel={translate(`${t.model}, ${t.id} auswählen`)} accessibilityState={{selected:truckId===t.id,disabled:busy}} disabled={busy} onPress={()=>setTruckId(t.id)} style={[styles.vehicle,truckId===t.id&&{borderColor:C.accent}]}><Row style={{marginBottom:0}}><Txt>{t.model} · {n(t.capacity,1)} t</Txt><View style={{width:22}}>{truckId===t.id&&<Icon name="check" size={20} color={C.accent}/>}</View></Row><Txt muted style={styles.small}>{t.trips} Touren · {minutes(t.seconds)}</Txt></Pressable>)}<Btn disabled={busy||!selected} onPress={()=>onCommand(o.kind==='private'?'assignPrivate':o.crafted?'assignCrafted':'assign',{order:o.id,truck:selected.id})}>Auftrag starten</Btn></>}
    {o.status==='available'&&<Btn secondary disabled={busy} onPress={()=>onCommand('pin',{id:o.id})}>{o.pinned?'Freigeben':'Angebot halten'}</Btn>}
   </Card>}
   {!done&&<Card><Txt style={[styles.title,{marginBottom:12}]}>Prognose gesamt</Txt>{forecast&&<>
@@ -87,4 +89,3 @@ export function OrderDetail({data,id,busy,clock,onCommand,onBack,onSwitch}:any){
  </>;
 }
 const styles=StyleSheet.create({title:{fontSize:15,fontWeight:'700'},small:{fontSize:12,lineHeight:18},section:{fontSize:13,fontWeight:'700',color:C.muted,marginTop:10,marginBottom:9},offer:{padding:12,backgroundColor:C.panel,borderColor:C.line,borderLeftWidth:3,marginBottom:9},saved:{padding:12,backgroundColor:C.panel,borderColor:C.line},running:{padding:12,backgroundColor:C.greenWash,borderColor:C.accent},refresh:{flexDirection:'row',alignItems:'center',gap:10,marginBottom:8},vehicle:{padding:11,borderWidth:1,borderColor:C.line,borderRadius:10,marginTop:10}});
-

@@ -28,15 +28,36 @@ Die Farbwerte stehen zentral in `src/palette.json`; `src/theme.ts` ergänzt Schr
 | Messingdetails | `#B69352` |
 | Helle Schrift auf Tinte | `#F4EBD8` |
 
-Regionen ergänzen die gemeinsame Gestaltung mit zurückhaltenden eigenen Akzentfarben. Individuelle Landschafts- und Fahrzeugbilder müssen die gemeinsame Perspektive, Lichtführung und Detailtiefe beibehalten. In der Sammlung ist der Kompass ein neutraler Platzhalter bis zur Erstellung passender Fahrzeugillustrationen.
+Regionen ergänzen die gemeinsame Gestaltung mit zurückhaltenden eigenen Akzentfarben. Individuelle Landschafts- und Fahrzeugbilder müssen die gemeinsame Perspektive, Lichtführung und Detailtiefe beibehalten. In der Sammlung kennzeichnet ein neutrales Fahrzeugsymbol die Bildfläche bis zur Erstellung individueller Fahrzeugillustrationen.
 
 ## Erstes umgesetztes Paket
 
 - Start mit eingebetteter Hafenillustration, Firmenschild und direktem Zugang zum Reiseatlas.
 - Gemeinsame Gestaltung für Karten, Aktionen, Fortschrittsbalken, Dialoge, Aufträge, Events, Vorräte und weitere bestehende Ansichten.
 - Expedition mit Regionssiegeln und verbundenen Ortskarten; Reihenfolge, automatische Fokussierung und sämtliche bestehenden Aktionen bleiben erhalten.
-- Sammelkarten mit einheitlichem Rahmen, lesbaren Seltenheitsfarben und neutralem Kompassmotiv.
+- Sammelkarten mit einheitlichem Rahmen, lesbaren Seltenheitsfarben und neutralem Fahrzeugsymbol.
 - Vorhandene Spiellogik, Spielstände, Wirtschaftsparameter und Fahrzeugwerte bleiben unverändert.
+
+
+## Icons und kleine Ortsbilder
+
+34 eigens gezeichnete Bildsymbole bilden ein gemeinsames Set. Fünf davon kennzeichnen die feste Navigation: Hauptsitz, Flotte, Garage, Einzelaufträge und Großaufträge. Zurück, Hilfe, Öffnen, Schließen, Plus-/Minus-Steuerungen, Event- und Auswahlpfeile verwenden ebenfalls dieses Set. Jeder Stadtpunkt besitzt neben dem Ortsbild ein eigenes semantisches Icon. Die Navigation zeigt den aktiven Bereich zusätzlich durch Textfarbe, Fläche und Markierung an.
+
+Jeder der zehn Menüpunkte auf der Start-/Stadtansicht erhält ein eigenes Motiv: Expeditionslager, Kartenarchiv, Firmenkontor, Verteilerdepot, Lagerhaus, Werkstatt, Händlergilde, Markt, Zählhaus und Ausrüstungsschrank. Zwei weitere Motive zeigen Garage und Fahrzeugflotte. Die Ortsbilder verwenden dieselbe reduzierte malerische Bildsprache wie die Hafenillustration.
+
+- `src/Icon.tsx`: gemeinsame Icons und Zuordnung der Vorratsarten.
+- `assets/icons/source/`: originale SVG-Zeichnungen auf einem 32er-Raster.
+- `assets/icons/`: vorgerenderte transparente PNGs mit 96 Pixeln für scharfe kleine Symbole. Farbe wird passend zum Hintergrund gesetzt.
+- `scripts/build-icons.cjs`: optionaler Entwicklungsrenderer; benötigt `sharp` im Tooling-Umfeld. `ICON_RENDERER_NODE_MODULES` kann auf dessen Modulverzeichnis verweisen. Die App benötigt weder `sharp` noch ein natives SVG-Modul.
+- `src/LocationArt.tsx`: zeigt jeweils genau eine der zwölf quadratischen Zellen des unveränderten 4×3-Bildlayouts. Keine benachbarten Motive werden absichtlich angeschnitten oder wiederverwendet.
+- `assets/art/town-atlas.png`: transparentes, verlustfrei komprimiertes Bildlayout (1448×1086 Pixel). Mit dem integrierten Bildgenerierungswerkzeug erstellt; der vollständige Prompt steht in `assets/art/town-atlas.prompt.txt`.
+
+Vorräte und Herstellung zeigen semantisch passende Icons für Kisten, Zahnräder, Shards, Kapazitätsmodule, Aufträge und Kontakte. Der Stadthub, sein Händler und der Großhändler verwenden ebenfalls passende Ortsbilder. Ein laufender Großauftrag erhält ein illustratives Flottenmotiv. Alle Bilder sind im App-Bundle enthalten. Es gibt keine neue native Abhängigkeit und keinen Bildabruf zur Laufzeit.
+
+![Stadtpunkte](docs/design/town.jpg)
+![Weitere Stadtpunkte](docs/design/town-services.jpg)
+![Vorratssymbole](docs/design/inventory.jpg)
+![Herstellung](docs/design/crafting.jpg)
 
 ## Illustrationsquelle
 
@@ -48,7 +69,7 @@ Verwendeter Prompt:
 
 ## Prüfung
 
-TypeScript-Prüfung, alle 67 vorhandenen Tests und der Android-Export mit eingebettetem Bild sind erfolgreich. Die Screenshots unter `docs/design/` zeigen die tatsächlichen React-Native-Komponenten über React Native Web mit einem lokalen Testspielstand. Die Testansicht ersetzt ausschließlich die Firebase-Verbindung; sie wird nicht in die App übernommen. Start, Atlas, Ortsdialog und Sammlung wurden in der lokalen Testansicht bedient. Bei 320, 360, 390 und 430 Pixel Breite gab es keinen horizontalen Überlauf und keine JavaScript-Laufzeitfehler. Ein Test auf einem physischen Android-Gerät ist damit nicht ersetzt.
+TypeScript-Prüfung, alle 70 vorhandenen Tests und der Android-Export mit eingebettetem Bild sind erfolgreich. Die Screenshots unter `docs/design/` zeigen die tatsächlichen React-Native-Komponenten über React Native Web mit einem lokalen Testspielstand. Die Testansicht ersetzt ausschließlich die Firebase-Verbindung; sie wird nicht in die App übernommen. Start, Atlas, Ortsdialog und Sammlung wurden in der lokalen Testansicht bedient. Zusätzlich wurden alle zehn Stadtpunkte und alle fünf Navigationstasten bei 320 und 430 Pixel Breite geöffnet. Bei 320, 360, 390 und 430 Pixel Breite gab es keinen horizontalen Überlauf und keine JavaScript-Laufzeitfehler. Die Sprachwahl Deutsch/Englisch wurde mit dem aktuellen Hauptstand zusammengeführt. Eine Namenskollision zwischen der Übersetzungsfunktion und lokalen Fahrzeugvariablen wurde durch den eindeutigen Namen `translate` beseitigt. Ein Test auf einem physischen Android-Gerät ist damit nicht ersetzt.
 
 ![Startbildschirm](docs/design/home.jpg)
 ![Reiseatlas](docs/design/atlas.jpg)

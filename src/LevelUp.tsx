@@ -1,3 +1,5 @@
+import {t as translate} from './i18n';
+import {Icon} from './Icon';
 import {itemName} from './items';
 import React from 'react';
 import {View,Pressable,Modal,StyleSheet} from 'react-native';
@@ -13,9 +15,9 @@ export function LevelUpAllocation({data,busy,allocation,onChange,onConfirm}:{dat
    return <View key={kind} style={s.area}><Txt style={{fontWeight:'700',marginBottom:8}}>{label}</Txt><View style={s.values}>
     <View style={s.value}><Txt muted style={s.caption}>Aktuell</Txt><Txt>{n(current)}</Txt></View>
     <View style={s.controls}>
-     <Pressable accessibilityRole="button" accessibilityLabel={`${label} verringern`} accessibilityState={{disabled:busy||allocation[kind]===0}} disabled={busy||allocation[kind]===0} onPress={()=>onChange({...allocation,[kind]:allocation[kind]-1})} style={[s.step,{opacity:allocation[kind]?1:.4}]}><Txt>−</Txt></Pressable>
+     <Pressable accessibilityRole="button" accessibilityLabel={translate(`${label} verringern`)} accessibilityState={{disabled:busy||allocation[kind]===0}} disabled={busy||allocation[kind]===0} onPress={()=>onChange({...allocation,[kind]:allocation[kind]-1})} style={[s.step,{opacity:allocation[kind]?1:.4}]}><Icon name="minus" size={18}/></Pressable>
      <Txt gold style={{minWidth:22,textAlign:'center'}}>+{allocation[kind]}</Txt>
-     <Pressable accessibilityRole="button" accessibilityLabel={`${label} erhöhen`} accessibilityState={{disabled:busy||free===0}} disabled={busy||free===0} onPress={()=>onChange({...allocation,[kind]:allocation[kind]+1})} style={[s.step,{opacity:free?1:.4}]}><Txt>+</Txt></Pressable>
+     <Pressable accessibilityRole="button" accessibilityLabel={translate(`${label} erhöhen`)} accessibilityState={{disabled:busy||free===0}} disabled={busy||free===0} onPress={()=>onChange({...allocation,[kind]:allocation[kind]+1})} style={[s.step,{opacity:free?1:.4}]}><Icon name="plus" size={18}/></Pressable>
     </View>
     <View style={s.value}><Txt muted style={s.caption}>Danach</Txt><Txt gold>{n(current+allocation[kind])}</Txt></View>
    </View></View>;
@@ -29,8 +31,7 @@ export function LevelUpNotice({level,onClose}:{level:number|undefined;onClose:()
   <Txt style={s.reward}>+1 {itemName('expeditionRefills')}</Txt>
   <Txt style={s.reward}>+1 {itemName('overtimeRefills')}</Txt>
   <Txt style={s.reward}>+3 Punkte zum Verteilen</Txt>
-  <Btn secondary onPress={onClose}>Schließen</Btn>
+  <Btn icon="close" secondary onPress={onClose}>Schließen</Btn>
  </SafeAreaView></View></Modal>;
 }
 const s=StyleSheet.create({title:{fontSize:16,fontWeight:'700'},area:{paddingVertical:10,borderBottomWidth:1,borderColor:C.line},values:{flexDirection:'row',alignItems:'center',gap:8},value:{width:42,alignItems:'center'},caption:{fontSize:10},controls:{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',gap:6},step:{minWidth:44,minHeight:44,borderRadius:10,borderWidth:1,borderColor:C.line,alignItems:'center',justifyContent:'center'},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},modal:{width:'100%',maxWidth:440,borderRadius:20,padding:20,backgroundColor:C.panel,borderWidth:1,borderColor:C.accent},congrats:{fontSize:19,fontWeight:'700',textAlign:'center'},level:{fontSize:26,fontWeight:'700',textAlign:'center',color:C.accent,marginTop:8,marginBottom:18,lineHeight:32},reward:{fontSize:13,lineHeight:21,marginBottom:8}});
-

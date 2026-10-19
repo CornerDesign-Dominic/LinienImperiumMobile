@@ -1,5 +1,7 @@
 import React from 'react';
 import {View,StyleSheet} from 'react-native';
+import {LocationArt} from './LocationArt';
+import {Icon} from './Icon';
 import {C,Txt,Card,Row,Pill} from './ui';
 // Price ideas only. Purchase fulfillment and interaction with company upgrades are undecided.
 const IDEAS:{id:string;title:string;detail:string;limit?:number;price:string;priceNote?:string}[]=[
@@ -9,9 +11,8 @@ const IDEAS:{id:string;title:string;detail:string;limit?:number;price:string;pri
  {id:'vehicle-crate',title:'Fahrzeugkartenkiste',detail:'',price:'X',priceNote:'Echtgeld-Münzen'}
 ];
 export function Wholesaler(){
- return <><Row><Pill>Preisideen</Pill></Row>{IDEAS.map(idea=><Card key={idea.id} style={s.card}>
-  <View style={s.row}><View style={{flex:1}}><Txt style={s.title}>{idea.title}</Txt>{!!idea.detail&&<Txt muted style={s.small}>{idea.detail}</Txt>}{idea.limit!==undefined&&<Txt muted style={s.small}>Bis zu {idea.limit}×</Txt>}</View><View style={{alignItems:'flex-end'}}><Txt gold style={s.price}>{idea.price}</Txt>{(idea.priceNote||idea.limit!==undefined)&&<Txt muted style={s.small}>{idea.priceNote??'je Kauf'}</Txt>}</View></View>
+ return <><View style={{alignItems:'center',marginBottom:12}}><LocationArt name="wholesaler" width={138}/></View><Row><Pill>Preisideen</Pill></Row>{IDEAS.map(idea=><Card key={idea.id} style={s.card}>
+  <View style={s.row}><Icon name={idea.id==='coins'?'coin':idea.id==='vehicle-crate'?'reward':'orders'} size={28} color={C.gold}/><View style={{flex:1}}><Txt style={s.title}>{idea.title}</Txt>{!!idea.detail&&<Txt muted style={s.small}>{idea.detail}</Txt>}{idea.limit!==undefined&&<Txt muted style={s.small}>Bis zu {idea.limit}×</Txt>}</View><View style={{alignItems:'flex-end'}}><Txt gold style={s.price}>{idea.price}</Txt>{(idea.priceNote||idea.limit!==undefined)&&<Txt muted style={s.small}>{idea.priceNote??'je Kauf'}</Txt>}</View></View>
  </Card>)}</>;
 }
 const s=StyleSheet.create({card:{padding:12,backgroundColor:C.panel,borderColor:C.line},row:{flexDirection:'row',alignItems:'center',gap:12},title:{fontSize:14,fontWeight:'700'},small:{fontSize:11,lineHeight:17,marginTop:3},price:{fontSize:17,fontWeight:'700'}});
-
