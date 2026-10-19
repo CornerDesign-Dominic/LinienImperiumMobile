@@ -46,3 +46,6 @@ Alle vier bestehenden Funktionen sind auf der Herstellungsseite vertreten. Rezep
 - Der irreführende Herstellen-Verweis beim Firmenausbau wurde durch Vorräte/Herkunft ersetzt, da Firmenausbau-Items nicht herstellbar sind.
 
 Status: Einschließlich beider 50-Punkte-Auffüller am 19.10.2026 veröffentlicht (Commit 887c3f40, Workflow 39285637912). Neuer Live-Smoke-Test erfolgreich. Tests und Bildschirmprüfung siehe `TEST_REPORT.md`.
+
+
+Vorratsbereinigung am 19.10.2026 mit Release 0ba088d8 veröffentlicht: Fahrzeugkarten ausschließlich in der Sammlung, Shards weiterhin in Vorräten.

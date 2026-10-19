@@ -20,4 +20,4 @@ Serverzustand, Auftrags-/Karten-IDs, Command-Namen und Firebase-Dokumente bleibe
 4. Neue Spieltexte in alle Kataloge eintragen. Firmen-/Stadtnamen, E-Mail-Adressen und andere Nutzereingaben immer mit `literal` anzeigen. Unbekannte Texte bleiben als deutsche Quelle sichtbar statt zu verschwinden.
 5. Typprüfung, Übersetzungstests und UI-Prüfung auf schmalen Displays ausführen. Neue dynamische Nachrichten mit Testfall ergänzen.
 
-Vorbereitet im Sammelbranch; noch nicht veröffentlicht.
+Veröffentlicht am 19.10.2026 mit Release 0ba088d8, Workflow 39307392702.

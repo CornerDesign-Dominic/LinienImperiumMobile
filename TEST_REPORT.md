@@ -355,3 +355,11 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - Aktuellen main-Stand mit Eventprojekt und Tourwechseln vollständig übernommen. Überschneidung in App-Navigation manuell zusammengeführt: Eventseiten und Spracheinstellungen gemeinsam erhalten. Englische Eventtexte, neue Tourwechselhinweise und Hilfebeschreibungen angepasst. Kein Zurücksetzen der neuen Serverlogik.
 - TypeScript und alle 70 vereinten Node-Testeinträge bestanden; darin Event-Lifecycle, Offline-Lieferungen, Tourwechsel-/Bonus-/Reservierungsprüfungen und Sprach-/Inventartests. Webexport bestanden.
 - Vereinte Browser-QA bestanden: Sprachwechsel/Neustart/Vorräte/Fahrzeugdetails weiterhin korrekt, zusätzlich englischen Event-Startdialog geöffnet, Event gestartet, Flotte zugewiesen und laufende Einzelfahrzeug-Touranzeige geprüft. Auf 320 px ohne Browserfehler. Abschließende Typprüfung bestanden.
+
+
+## Sprach- und Vorratspaket erfolgreich veröffentlicht – 19.10.2026
+
+- Merge-Release `0ba088d8fba9f4cb8e3dd1c28bbbb9b6dce8265e` erhält beide Entwicklungsstände. [Workflow 39307392702](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39307392702) vollständig erfolgreich.
+- validate: Typprüfung, 70 Node-Testeinträge und Androidexport bestanden. deploy: Firebase-Server und Regeln sowie Live-Smoke-Test bestanden. update: Android-Update auf preview erfolgreich veröffentlicht. APK-Erstellung planmäßig übersprungen; keine nativen Abhängigkeiten geändert.
+- Damit sind die zuvor als vorbereitet beschriebenen Sprach- und Vorratsänderungen veröffentlicht. Eventprojekt und Tourgrenzen-/Fahrzeugwechsel aus main bleiben vollständig erhalten; dazugehörige neue Anzeigen ebenfalls übersetzt.
+- Kein physischer Gerätetest durch Codex.
