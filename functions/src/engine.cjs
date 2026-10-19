@@ -2,12 +2,14 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
+const itemNames = require('./item-names.json');
 const source = fs.readFileSync(path.join(__dirname, '../vendor/web-game.js'), 'utf8');
 const boundary = source.indexOf("  document.addEventListener('click'");
 if (boundary < 0) throw Error('Web engine boundary missing');
 // Temporary test switch. Set to null to restore the original expedition timings.
 const EXPEDITION_TEST_DURATION_MS = 15000;
 const bridge = `
+  const itemNames = ${JSON.stringify(itemNames)};
   const expeditionTestDuration = ${JSON.stringify(EXPEDITION_TEST_DURATION_MS)};
   const originalExpeditionDuration = expeditionDuration;
   expeditionDuration = (...args) => expeditionTestDuration ?? originalExpeditionDuration(...args);
@@ -214,6 +216,12 @@ const bridge = `
         cities: START_CITIES.map(({id, city, country, continent}) => ({id, city, country, continent})),
         cards: EXPEDITION_CHARACTERS, rarities: RARITIES, models: TRUCKS,
         customers: CUSTOMERS, categories: CATEGORIES, departments: DEPARTMENTS,
+        recipes:[
+          {id:'pickup',inputId:'pickupHints',outputId:'private',input:itemNames.pickupHints[1],output:itemNames.private[0],needed:PRIVATE_PICKUP_HINT_COST,action:'pickupCraft'},
+          {id:'customer',inputId:'companyItems',outputId:'customer',input:itemNames.companyItems[1],output:itemNames.customer[0],needed:COMPANY_BALANCE.craftedOrderItems,action:'customerCraft'},
+          {id:'uncommon',inputId:'shard:common',outputId:'shard:uncommon',input:'Common-Shards',output:'Uncommon-Shard',needed:SHARD_COMBINE_RATIO,action:'shardCombine',payload:{rarity:'common'},color:'#5BAA78'},
+          {id:'rare',inputId:'shard:uncommon',outputId:'shard:rare',input:'Uncommon-Shards',output:'Rare-Shard',needed:SHARD_COMBINE_RATIO,action:'shardCombine',payload:{rarity:'uncommon'},color:'#619CE8'}
+        ],
         cardLevelCosts: CHARACTER_LEVEL_COSTS, regionNames: EXPEDITION_REGIONS, craftedOrderItems:COMPANY_BALANCE.craftedOrderItems
       };
       const trucks = game.trucks.map(t => ({ ...t, free: free.has(t.id),
@@ -233,7 +241,7 @@ const bridge = `
         const referenceTier=(CATEGORIES.find(c=>c.id===o.category)?.tiers||[2])[0];
         const durationTruck=forecastTruck||{...TRUCKS[referenceTier],tier:referenceTier,rarityLevel:0};
         const durationSeconds=project?null:orderDuration({...o,delivered:0},durationTruck);
-        const possibleRewards = project ? [] : o.kind==='private' ? ['1–2 Lieferantenkontakte'] : ['Common-Zahnräder','Uncommon-Zahnräder',...(o.customer?['Rare-Zahnräder']:[]),...(o.kind==='normal'&&TRANSPORT_BASE[o.category]?['Fortschritt für Firmen-Items']:[]),...(o.customer&&o.kind==='normal'?[round2(customerTripChance(o,'award')*100)+' % Chance auf Sonderauftrag']:[])];
+        const possibleRewards = project ? [] : o.kind==='private' ? ['1–2 Lieferantenkontakte'] : ['Common-Zahnräder','Uncommon-Zahnräder',...(o.customer?['Rare-Zahnräder']:[]),...(o.kind==='normal'&&TRANSPORT_BASE[o.category]?['Fortschritt für Firmenausbau-Items']:[]),...(o.customer&&o.kind==='normal'?[round2(customerTripChance(o,'award')*100)+' % Chance auf Sonderauftrag']:[])];
         return { ...o, isProject: project,
           transportLabel:CATEGORIES.find(c=>c.id===o.category)?.label||'Regionalverkehr',
           durationSeconds, durationBand:durationSeconds==null?null:durationSeconds<=300?'Kurz':durationSeconds<=900?'Mittel':'Lang',
@@ -371,6 +379,11 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const ok=calls[action]();
   if(action==='mission')a.shortenTestMissions();
   const view=a.view();
+  const normalizeNames=text=>typeof text==='string'?text.replace(/Sonderfahrten/g,'Sonderaufträge').replace(/Sonderfahrt/g,'Sonderauftrag').replace(/Firmen-Items/g,'Firmenausbau-Items').replace(/Firmen-Item/g,'Firmenausbau-Item').replace(/100-Token-Refill/g,'Überstunden-Refill').replace(/\b(common|uncommon|rare)-Shard/g,(_,r)=>r[0].toUpperCase()+r.slice(1)+'-Shard'):text;
+  view.message=normalizeNames(view.message);
+  for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(normalizeNames);
+  for(const key of Object.keys(view.help)){const help=view.help[key];help[1]=help[1].map(([title,body])=>[normalizeNames(title),normalizeNames(body)]);}
+  for(const mission of view.state.expedition.missions)mission.reward=normalizeNames(mission.reward);
   const knownLevels=new Set(state?.pendingLevelUps||[]);
   const levelUps=view.state.pendingLevelUps.filter(level=>!knownLevels.has(level));
   if(levelUps.length)view.levelUps=levelUps;
@@ -382,8 +395,8 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     const job=view.state.expedition.jobs.find(j=>!oldJobs.has(j.id));
     const card=typeof ok==='string'&&ok.startsWith('card:')?view.catalog.cards.find(c=>c.id===ok.slice(5)):null;
     view.expeditionFind=order?{type:'order',id:order.id,title:order.projectName||order.cargo,detail:order.volume+' t · '+order.distance+' km'}
-      :job?{type:'job',id:job.id,region:job.region,title:job.kind==='character'?'Fahrzeugkartenauftrag':'Materialauftrag',detail:'Stufe '+job.tier}
-      :{type:'reward',title:card?.name||view.message||'Fund erhalten',detail:card?(state?.expedition.characters[card.id]?'1 '+card.rarity+'-Shard':'Fahrzeugkarte'):''};
+      :job?{type:'job',id:job.id,region:job.region,title:itemNames[job.kind==='character'?'character':'material'][0],detail:'Stufe '+job.tier}
+      :{type:'reward',title:card?.name||view.message||'Fund erhalten',detail:card?(state?.expedition.characters[card.id]?'1 '+card.rarity[0].toUpperCase()+card.rarity.slice(1)+'-Shard':'Fahrzeugkarte'):''};
   }
   if(action!=='sync'&&(ok===false||JSON.stringify(a.state)===before))view.message ||= 'Aktion nicht möglich: Voraussetzungen oder Vorräte prüfen.';
   return {state:JSON.parse(JSON.stringify(a.state)),view:JSON.parse(JSON.stringify(view))};

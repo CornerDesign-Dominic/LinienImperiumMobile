@@ -1,3 +1,4 @@
+import {itemName} from './items';
 import React from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Pill,n} from './ui';
@@ -22,13 +23,13 @@ export function TransportSummary({data,onImprove}:any){
   <Btn onPress={onImprove}>Verbessern</Btn>
  </Card>;
 }
-export function TransportEditor({data,draft,onDraft,busy,onSave,onCraft}:any){
+export function TransportEditor({data,draft,onDraft,busy,onSave,onInventory}:any){
  const options=data.transportUpgradeOptions,quote=upgradeQuote(options,draft),g=data.state;
  const count=Object.values(draft as UpgradeDraft).reduce((s,v)=>s+v,0);
  const invalid=options.some((o:any)=>(draft[upgradeKey(o)]||0)>o.costs.length);
  const afford=!invalid&&g.coins>=quote.coins&&g.inventory.companyItems>=quote.items;
  return <>
-  <Card><Row><Txt>Firmenausbau-Items</Txt><Txt gold>{n(g.inventory.companyItems)}</Txt></Row><Btn secondary onPress={onCraft}>Herstellen ›</Btn></Card>
+  <Card><Row><Txt>{itemName('companyItems',2)}</Txt><Txt gold>{n(g.inventory.companyItems)}</Txt></Row><Txt muted>Aus Aufträgen und Expeditionen.</Txt><Btn secondary onPress={onInventory}>Vorräte ›</Btn></Card>
   {['national','international'].map(category=><Card key={category}>
    <Txt style={styles.title}>{category==='national'?'Regionalverkehr':'Fernverkehr'}</Txt>
    {options.filter((o:any)=>o.category===category).map((o:any)=>{

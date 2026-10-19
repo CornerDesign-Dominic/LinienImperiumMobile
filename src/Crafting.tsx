@@ -13,12 +13,7 @@ function Ingredient({name,amount,color,owned}:any){
 }
 export function Crafting({data,busy,onCommand}:any){
  const {state:g,catalog:c}=data;
- const recipes:Recipe[]=[
-  {id:'pickup',input:'Abholhinweise',output:'Privatabholung',needed:100,owned:g.inventory.pickupHints,action:'pickupCraft'},
-  {id:'customer',input:'Firmen-Items',output:'Kundenauftrag',needed:c.craftedOrderItems,owned:g.inventory.companyItems,action:'customerCraft',locked:!data.customers.length},
-  {id:'uncommon',input:'Common-Shards',output:'Uncommon-Shard',needed:10,owned:g.expedition.shards.common,color:C.accent,action:'shardCombine',payload:{rarity:'common'}},
-  {id:'rare',input:'Uncommon-Shards',output:'Rare-Shard',needed:10,owned:g.expedition.shards.uncommon,color:C.gold,action:'shardCombine',payload:{rarity:'uncommon'}}
- ];
+ const recipes:Recipe[]=(c.recipes||[]).map((r:any)=>({...r,owned:r.inputId.startsWith('shard:')?g.expedition.shards[r.inputId.slice(6)]||0:g.inventory[r.inputId]||0,locked:r.id==='customer'&&!data.customers.length}));
  return <>{recipes.map(recipe=><Card key={recipe.id} style={styles.recipe}>
   <View style={styles.process}>
    <Ingredient name={recipe.input} amount={recipe.needed} owned={recipe.owned}/>

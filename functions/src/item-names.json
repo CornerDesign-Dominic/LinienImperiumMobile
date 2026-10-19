@@ -1,0 +1,11 @@
+{
+  "overtimeRefills": ["Überstunden-Refill", "Überstunden-Refills"],
+  "capacityModules": ["Kapazitätsmodul", "Kapazitätsmodule"],
+  "companyItems": ["Firmenausbau-Item", "Firmenausbau-Items"],
+  "pickupHints": ["Abholhinweis", "Abholhinweise"],
+  "supplierContacts": ["Lieferantenkontakt", "Lieferantenkontakte"],
+  "private": ["Privatabholung", "Privatabholungen"],
+  "customer": ["Kundenauftrag", "Kundenaufträge"],
+  "material": ["Materialauftrag", "Materialaufträge"],
+  "character": ["Fahrzeugkartenauftrag", "Fahrzeugkartenaufträge"]
+}

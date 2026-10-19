@@ -1,3 +1,4 @@
+import {itemName} from './items';
 import React from 'react';
 import {View,Pressable,Modal,StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -25,7 +26,7 @@ export function LevelUpAllocation({data,busy,allocation,onChange,onConfirm}:{dat
 export function LevelUpNotice({level,onClose}:{level:number|undefined;onClose:()=>void}){
  return <Modal visible={level!==undefined} transparent animationType="none" onRequestClose={onClose}><View style={s.overlay}><SafeAreaView edges={[]} style={s.modal}>
   <Txt style={s.congrats}>Herzlichen Glückwunsch!</Txt><Txt style={s.level}>Level {level}</Txt>
-  <Txt style={s.reward}>+1 Refill · 100 Überstundenpunkte</Txt>
+  <Txt style={s.reward}>+1 {itemName('overtimeRefills')} · 100 Überstundenpunkte</Txt>
   <Txt style={s.reward}>+3 Punkte zum Verteilen</Txt>
   <Txt style={s.reward}>+50 Expeditionspunkte</Txt>
   <Btn secondary onPress={onClose}>Schließen</Btn>

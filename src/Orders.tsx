@@ -1,3 +1,4 @@
+import {itemName} from './items';
 import React,{useState} from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes} from './ui';
@@ -6,7 +7,7 @@ const transportSummary=(o:any,seconds?:number)=>`${o.transportLabel||({internati
 const unavailable=(o:any)=>o.vehicleStatus==='missing'?'Passender LKW fehlt':'Passender LKW im Einsatz';
 const rankStyle=(rank:number)=>rank===3?{backgroundColor:'#192B40',borderColor:'#619CE8',borderLeftColor:'#619CE8'}:rank===2?{backgroundColor:'#193026',borderColor:'#5BAA78',borderLeftColor:'#5BAA78'}:{backgroundColor:'#202831',borderColor:'#788796',borderLeftColor:'#788796'};
 const expeditionRank=(job:any)=>[1,2,3].includes(job.tier)?job.tier:1;
-const expeditionName=(kind:string)=>kind==='character'?'Fahrzeugkartenauftrag':'Materialauftrag';
+const expeditionName=(kind:string)=>itemName(kind==='character'?'character':'material');
 const endlessMissions=(data:any)=>data.state.expedition.missions.filter((m:any)=>m.kind==='endless'&&m.status==='active');
 const section=(name:string)=><Txt style={styles.section}>{name}</Txt>;
 function progress(o:any,clock:number){
@@ -42,10 +43,10 @@ export function SavedOrders({data,clock,busy,onOpen,onJob,typeKey,onType}:any){
  const allOrders=data.state.orders.filter((o:any)=>!o.isProject&&o.status==='queued');
  const allJobs=data.state.expedition.jobs;
  const groups=[
-  {key:'material',name:'Materialaufträge',count:allJobs.filter((j:any)=>j.kind==='material').length},
-  {key:'character',name:'Fahrzeugkartenaufträge',count:allJobs.filter((j:any)=>j.kind==='character').length},
-  {key:'private',name:'Privatabholungen',count:allOrders.filter((o:any)=>o.kind==='private').length},
-  {key:'customer',name:'Kundenaufträge',count:allOrders.filter((o:any)=>o.kind!=='private').length}
+  {key:'material',name:itemName('material',2),count:allJobs.filter((j:any)=>j.kind==='material').length},
+  {key:'character',name:itemName('character',2),count:allJobs.filter((j:any)=>j.kind==='character').length},
+  {key:'private',name:itemName('private',2),count:allOrders.filter((o:any)=>o.kind==='private').length},
+  {key:'customer',name:itemName('customer',2),count:allOrders.filter((o:any)=>o.kind!=='private').length}
  ].filter(g=>g.count>0);
  if(!typeKey)return <>{groups.map(group=><Pressable key={group.key} accessibilityRole="button" accessibilityLabel={`${group.name}, Anzahl ${group.count}`} onPress={()=>onType(group.key)}><Card style={styles.saved}><Row style={{marginBottom:0}}><View style={{flex:1}}><Txt style={styles.title}>{group.name}</Txt><Txt muted style={styles.small}>Anzahl {group.count}</Txt></View><Txt muted>›</Txt></Row></Card></Pressable>)}{!groups.length&&<Empty>Keine Aufträge verfügbar.</Empty>}</>;
  const queued=allOrders.filter((o:any)=>typeKey==='private'?o.kind==='private':typeKey==='customer'?o.kind!=='private':false);
@@ -79,7 +80,7 @@ export function OrderDetail({data,id,busy,clock,onCommand,onBack}:any){
    <Txt muted style={[styles.small,{marginBottom:12}]}>{forecast.model} · aktuelle Werte</Txt>
    {fact('Fracht',`${n(forecast.revenue,2)} M`)}{fact('Betriebskosten',`${n(forecast.cost,2)} M`)}{fact('Abschlussprämie',`${n(forecast.bonus,2)} M`)}{fact('Gewinn',`${n(forecast.totalProfit,2)} M`)}
   </>}{fact(forecast?'XP':'Basis-XP',n(forecast?.xp??o.baseXp,2))}{!!o.relationshipReward&&fact('Beziehung',`+${o.relationshipReward}`)}</Card>}
-  {done&&reward?<Card><Txt style={[styles.title,{marginBottom:12}]}>Abschlussprämie</Txt>{fact('Münzen',`${n(reward.coins,2)} M`)}{Object.entries(reward.gears||{}).filter(([,amount])=>Number(amount)>0).map(([rarity,amount])=><View key={rarity}>{fact(`${data.catalog.rarities.find((r:any)=>r.id===rarity)?.label||rarity}-Zahnräder`,n(amount))}</View>)}{reward.companyItems>0&&fact('Firmen-Items',n(reward.companyItems))}{reward.capacityModule&&fact('Kapazitätsmodul','1')}{reward.supplierContacts>0&&fact('Lieferantenkontakte',n(reward.supplierContacts))}{!reward.claimedAt?<Btn disabled={busy} onPress={()=>onCommand('claim',{id:o.id})}>Prämie abholen</Btn>:<Txt muted>Abgeholt</Txt>}</Card>:<Card><Txt style={[styles.title,{marginBottom:12}]}>Mögliche Beute</Txt>{o.possibleRewards.map((label:string)=><Txt key={label} muted style={{marginBottom:6}}>{label}</Txt>)}</Card>}
+  {done&&reward?<Card><Txt style={[styles.title,{marginBottom:12}]}>Abschlussprämie</Txt>{fact('Münzen',`${n(reward.coins,2)} M`)}{Object.entries(reward.gears||{}).filter(([,amount])=>Number(amount)>0).map(([rarity,amount])=><View key={rarity}>{fact(`${data.catalog.rarities.find((r:any)=>r.id===rarity)?.label||rarity}-Zahnräder`,n(amount))}</View>)}{reward.companyItems>0&&fact(itemName('companyItems',2),n(reward.companyItems))}{reward.capacityModule&&fact('Kapazitätsmodul','1')}{reward.supplierContacts>0&&fact('Lieferantenkontakte',n(reward.supplierContacts))}{!reward.claimedAt?<Btn disabled={busy} onPress={()=>onCommand('claim',{id:o.id})}>Prämie abholen</Btn>:<Txt muted>Abgeholt</Txt>}</Card>:<Card><Txt style={[styles.title,{marginBottom:12}]}>Mögliche Beute</Txt>{o.possibleRewards.map((label:string)=><Txt key={label} muted style={{marginBottom:6}}>{label}</Txt>)}</Card>}
  </>;
 }
 const styles=StyleSheet.create({title:{fontSize:15,fontWeight:'700'},small:{fontSize:12,lineHeight:18},section:{fontSize:13,fontWeight:'700',color:C.muted,marginTop:10,marginBottom:9},offer:{padding:12,backgroundColor:'#1D2A3A',borderColor:'#405571',borderLeftWidth:3,marginBottom:9},saved:{padding:12,backgroundColor:'#192534',borderColor:'#3B506A'},running:{padding:12,backgroundColor:'#17332F',borderColor:C.accent},refresh:{flexDirection:'row',alignItems:'center',gap:10,marginBottom:8},vehicle:{padding:11,borderWidth:1,borderColor:C.line,borderRadius:10,marginTop:10}});
