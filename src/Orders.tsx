@@ -1,6 +1,8 @@
 import React,{useState} from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes} from './ui';
+const durationBand=(seconds:number)=>seconds<=300?'Kurz':seconds<=900?'Mittel':'Lang';
+const transportSummary=(o:any,seconds?:number)=>`${o.transportLabel||({international:'Fernverkehr',city:'Stadtverkehr',national:'Regionalverkehr'} as Record<string,string>)[o.category]||'Regionalverkehr'} · ${seconds!=null?durationBand(seconds):o.durationBand||durationBand(o.durationSeconds??o.forecast?.seconds??0)}`;
 const unavailable=(o:any)=>o.vehicleStatus==='missing'?'Passender LKW fehlt':'Passender LKW im Einsatz';
 const rankStyle=(rank:number)=>rank===3?{backgroundColor:'#192B40',borderColor:'#619CE8',borderLeftColor:'#619CE8'}:rank===2?{backgroundColor:'#193026',borderColor:'#5BAA78',borderLeftColor:'#5BAA78'}:{backgroundColor:'#202831',borderColor:'#788796',borderLeftColor:'#788796'};
 const expeditionRank=(job:any)=>[1,2,3].includes(job.tier)?job.tier:1;
@@ -17,7 +19,7 @@ function OrderTile({order:o,data,clock,onOpen}:any){
  return <Pressable accessibilityRole="button" accessibilityLabel={`${o.cargo}, ${o.id}`} onPress={()=>onOpen(o.id)}>
   <Card style={[styles.offer,{borderLeftColor:active?C.accent:o.customer?C.gold:'#526B88'}]}>
    <Row style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{o.cargo}</Txt>{active?<Txt gold style={styles.small}>{remaining(o.runningEndsAt||clock,clock)}</Txt>:done?<Pill gold>Prämie</Pill>:<Txt style={styles.small}>{n(o.volume,1)} t · {n(o.distance)} km</Txt>}</Row>
-   <Txt muted style={styles.small}>{o.from} → {o.to}</Txt>
+   <Txt muted style={styles.small}>{transportSummary(o)}</Txt>
    {active?<><Row style={{marginTop:5,marginBottom:0}}><Txt muted style={styles.small}>{truck?.model||'Fahrzeug'}</Txt><Txt muted style={styles.small}>{n(o.delivered,1)} / {n(o.volume)} t</Txt></Row><Bar value={progress(o,clock)}/></>:<Row style={{marginBottom:0,marginTop:5}}>{o.customer&&<Txt gold style={styles.small}>{o.customerName}</Txt>}{!done&&!o.choices.length?<Txt muted style={styles.small}>{unavailable(o)}</Txt>:o.pinned?<Txt muted style={styles.small}>Gehalten</Txt>:null}</Row>}
   </Card>
  </Pressable>;
@@ -66,7 +68,7 @@ export function OrderDetail({data,id,busy,clock,onCommand,onBack}:any){
  const fact=(label:string,value:string)=><Row><Txt muted>{label}</Txt><Txt style={{textAlign:'right'}}>{value}</Txt></Row>;
  const reward=o.completionReward;
  return <>
-  <Card><Row><Txt style={[styles.title,{flex:1}]}>{o.cargo}</Txt><Txt muted style={styles.small}>{o.id}</Txt></Row><Txt muted>{o.from} → {o.to}</Txt><Row style={{marginTop:12}}><Txt>{n(o.volume,1)} t · {n(o.distance)} km</Txt><Pill gold={!!o.customer}>{o.customer?o.customerName:o.routeType==='dual'?'Dual Way':'Single Way'}</Pill></Row>
+  <Card><Row><Txt style={[styles.title,{flex:1}]}>{o.cargo}</Txt><Txt muted style={styles.small}>{o.id}</Txt></Row><Txt muted>{transportSummary(o,!active&&!done?forecast?.seconds:undefined)}</Txt><Row style={{marginTop:12}}><Txt>{n(o.volume,1)} t · {n(o.distance)} km</Txt><Pill gold={!!o.customer}>{o.customer?o.customerName:o.routeType==='dual'?'Dual Way':'Single Way'}</Pill></Row>
    {active&&<><Bar value={progress(o,clock)}/>{fact('LKW',truck?.model||'—')}{fact('Restzeit',remaining(o.runningEndsAt||clock,clock))}{fact('Geliefert',`${n(o.delivered,1)} / ${n(o.volume)} t`)}</>}
   </Card>
   {!active&&!done&&<Card>

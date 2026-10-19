@@ -484,3 +484,25 @@ test('Collection upgrades work for parked cards without creating garage slots an
  const unowned=upgraded.view.catalog.cards.find(c=>!upgraded.state.expedition.characters[c.id]);
  assert.equal(execute(upgraded.state,'cardRank',{id:unowned.id},now,fixed).state.trucks.length,count+1);
 });
+
+test('Single-order summaries expose traffic type and total duration bands without changing route economics',()=>{
+ const started=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
+ const a=session(started.state,now,fixed);
+ const order=a.state.orders.find(o=>o.category==='national');
+ assert.ok(order);
+ let view=a.view(),shown=view.state.orders.find(o=>o.id===order.id);
+ assert.equal(shown.transportLabel,'Regionalverkehr');assert.ok(shown.durationSeconds>0);
+ const baseDistance=order.distance,baseDuration=shown.durationSeconds;
+ for(const [seconds,band] of [[299,'Kurz'],[301,'Mittel'],[899,'Mittel'],[901,'Lang']]){
+  order.distance=baseDistance*seconds/baseDuration;
+  shown=a.view().state.orders.find(o=>o.id===order.id);
+  assert.ok(Math.abs(shown.durationSeconds-seconds)<.01);assert.equal(shown.durationBand,band);
+ }
+ order.category='international';shown=a.view().state.orders.find(o=>o.id===order.id);
+ assert.equal(shown.transportLabel,'Fernverkehr');assert.ok(Number.isFinite(shown.durationSeconds));
+ a.state.trucks=[];
+ shown=a.view().state.orders.find(o=>o.id===order.id);
+ assert.ok(shown.durationSeconds>0);assert.equal(shown.durationBand,shown.durationSeconds<=300?'Kurz':shown.durationSeconds<=900?'Mittel':'Lang');
+ assert.equal(order.from,started.state.orders.find(o=>o.id===order.id).from);
+ assert.equal(order.to,started.state.orders.find(o=>o.id===order.id).to);
+});

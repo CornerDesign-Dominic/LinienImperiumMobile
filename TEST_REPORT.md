@@ -197,3 +197,11 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - `npm test`: 24 Node-Testeinträge bestanden (23 Adaptertests und Wrapper mit 23 ursprünglichen Web-Regressionsdateien). Neuer Test prüft geparkte/eingesetzte Upgrades, Ressourcenverbrauch, fehlenden Vorrat, ungültige/unentdeckte Karten und Wiedereinsetzen.
 - Browser-QA mit echter lokaler Engine und simuliertem Firebase-Transport auf 393/320 px bestanden: 5×2-Geometrie, gestrichelte Plätze, keine Rasterüberläufe, Detailinformationen ohne Upgrade-Aktionen, Entfernen/Auswahl, Kapazitäts-/Rang-Upgrades in der Sammlung und erhaltene Werte beim Wiedereinsetzen. Screenshots von Raster und Detailmodal visuell geprüft. Keine Browserfehler.
 - Nur Sammelbranch; kein Firebase-Deployment, OTA-Update oder APK-Build. Kein physischer Gerätetest.
+
+
+## Einzelaufträge: Verkehrsart und Dauer – 19.10.2026, vorbereitet
+
+- Ortsrelation in allen normalen Einzelauftragskarten und Details entfernt. Verkehrsart aus bestehender Kategorie, Dauer aus tatsächlicher Gesamtfahrzeit; Kurz ≤ 300 Sekunden, Mittel ≤ 900 Sekunden, Lang > 900 Sekunden. Ohne passendes Fahrzeug Schätzung mit Basisfahrzeug der Kategorie. In der Fahrzeugwahl wird die ausgewählte Prognose verwendet. Kilometer- und Wirtschaftsdaten unverändert.
+- Typprüfung und Expo-Webexport bestanden. `npm test`: 25 Einträge bestanden (24 Adaptertests und Wrapper für 23 ursprüngliche Web-Regressionsdateien). Neuer Test prüft Dauergrenzen, Regional-/Fernverkehr und Schätzung ohne Fahrzeug.
+- Browserprüfung mit lokaler Engine/simuliertem Firebase auf 393/320 px bestanden: alle drei Klassen, beide Verkehrsarten, keine Ortsrelation in Angeboten/Details/laufender Liste, funktionierender Start. Screenshot auf 320 px visuell geprüft, keine Browserfehler/Überbreite.
+- Nur Sammelbranch; kein Deployment, OTA-Update oder APK-Build.

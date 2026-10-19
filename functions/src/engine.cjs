@@ -230,8 +230,13 @@ const bridge = `
         const choices = !project && ['available','queued'].includes(o.status) ? eligibleFreeTrucks(o).map(estimate) : [];
         const assigned = !project && o.status==='active' ? truckById(o.truckId) : null;
         const forecastTruck = assigned || suitable[0];
+        const referenceTier=(CATEGORIES.find(c=>c.id===o.category)?.tiers||[2])[0];
+        const durationTruck=forecastTruck||{...TRUCKS[referenceTier],tier:referenceTier,rarityLevel:0};
+        const durationSeconds=project?null:orderDuration({...o,delivered:0},durationTruck);
         const possibleRewards = project ? [] : o.kind==='private' ? ['1–2 Lieferantenkontakte'] : ['Common-Zahnräder','Uncommon-Zahnräder',...(o.customer?['Rare-Zahnräder']:[]),...(o.kind==='normal'&&TRANSPORT_BASE[o.category]?['Fortschritt für Firmen-Items']:[]),...(o.customer&&o.kind==='normal'?[round2(customerTripChance(o,'award')*100)+' % Chance auf Sonderauftrag']:[])];
         return { ...o, isProject: project,
+          transportLabel:CATEGORIES.find(c=>c.id===o.category)?.label||'Regionalverkehr',
+          durationSeconds, durationBand:durationSeconds==null?null:durationSeconds<=300?'Kurz':durationSeconds<=900?'Mittel':'Lang',
           customerName: o.customer ? customerById(o.customer)?.name : 'Freie Frachtbörse',
           choices, vehicleStatus: choices.length?'ready':suitable.length?'busy':'missing',
           forecast: forecastTruck && o.status!=='completed' ? estimate(forecastTruck) : null,
