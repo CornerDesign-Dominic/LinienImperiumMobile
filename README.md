@@ -35,7 +35,7 @@ Der erste Start erstellt ein dauerhaft auf dem Gerät gespeichertes anonymes Fir
 
 ## Architektur
 
-`functions/vendor/web-game.js` enthält die unveränderte Webquelle. `functions/src/engine.cjs` bindet deren Spiellogik auf dem Server ein und stellt ausschließlich eine feste Liste erlaubter Befehle und mobile Ansichtsmodelle bereit. Die Weboberfläche wird nicht in einer WebView ausgeführt; `src/App.tsx` rendert native React-Native-Komponenten.
+`functions/vendor/web-game.js` enthält die unveränderte Webquelle. `functions/src/engine.cjs` bindet deren Spiellogik und die mobilen Tourregeln aus `functions/src/tour-runtime.js` auf dem Server ein und stellt ausschließlich eine feste Liste erlaubter Befehle und mobile Ansichtsmodelle bereit. Die Weboberfläche wird nicht in einer WebView ausgeführt; `src/App.tsx` rendert native React-Native-Komponenten.
 
 Die authentifizierte callable Function `game` in `europe-west3` berechnet alle Aktionen und prüft Besitz/Vorräte. Spielstände werden komprimiert in Firestore gespeichert. Transaktionen und Anfragekennungen verhindern doppelte Mutationen bei Wiederholungen; direkte Clientzugriffe auf Firestore sind gesperrt. `EXPO_TOKEN` bleibt ein GitHub-Secret. Firebase-Deployments authentifizieren sich per Workload Identity Federation. Die Android-Testsignatur bleibt in Google Secret Manager, nicht im Repository.
 

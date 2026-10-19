@@ -3,6 +3,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const itemNames = require('./item-names.json');
+const {eventViews, changeEvent, assignEventFleet, EVENT_PROJECT_DISTANCE_KM} = require('./events.cjs');
+const tourRuntime = fs.readFileSync(path.join(__dirname, 'tour-runtime.js'), 'utf8');
 const source = fs.readFileSync(path.join(__dirname, '../vendor/web-game.js'), 'utf8');
 const boundary = source.indexOf("  document.addEventListener('click'");
 if (boundary < 0) throw Error('Web engine boundary missing');
@@ -134,7 +136,16 @@ const bridge = `
     while(low<high){const mid=Math.floor((low+high)/2);if(eta(mid)<=order.project.deadlineAt)high=mid;else low=mid+1;}
     return low;
   }
+  ${tourRuntime}
   globalThis.mobile = {
+    settleEventTours, refreshTourStarts, queueSingleVehicle,
+    eventFleetOptions() {
+      const order={distance:${EVENT_PROJECT_DISTANCE_KM},routeType:'single'};
+      return [0,1,2].map(index=>({index,vehicles:projectFleetVehicles(index)?.map(vehicle=>({
+        ...vehicle,bonusStats:{...vehicle.bonusStats},
+        cycleMs:Math.max(1,Math.ceil(tourSeconds(order,vehicle,vehicle.capacity)*1000))
+      }))||null}));
+    },
     get state() { return game; }, set state(value) { game = value; },
     newGame, save, loadGame, shortenTestMissions, normalizeQueuedReferrals, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
     autoRefreshOrders, regenerateExpedition, regenerateOvertime,
@@ -284,24 +295,31 @@ const bridge = `
         const estimate = t => ({id:t.id,model:t.model,capacity:t.capacity,seconds:orderDuration({...o,delivered:0},t),xp:round2(o.volume*paidLegs(o)*(1+activeCardBonus(t,'xp','single')/100)),...orderEconomics(o,t)});
         const choices = !project && ['available','queued'].includes(o.status) ? eligibleFreeTrucks(o).map(estimate) : [];
         const assigned = !project && o.status==='active' ? truckById(o.truckId) : null;
+        const projection=project&&o.status==='active'?projectProjection(o,now):null;
         const forecastTruck = assigned || suitable[0];
         const referenceTier=(CATEGORIES.find(c=>c.id===o.category)?.tiers||[2])[0];
         const durationTruck=forecastTruck||{...TRUCKS[referenceTier],tier:referenceTier,rarityLevel:0};
         const durationSeconds=project?null:orderDuration({...o,delivered:0},durationTruck);
         const possibleRewards = project ? [] : o.kind==='private' ? ['1–2 Lieferantenkontakte'] : ['Common-Zahnräder','Uncommon-Zahnräder',...(o.customer?['Rare-Zahnräder']:[]),...(o.kind==='normal'&&TRANSPORT_BASE[o.category]?['Fortschritt für Firmenausbau-Items']:[]),...(o.customer&&o.kind==='normal'?[round2(customerTripChance(o,'award')*100)+' % Chance auf Sonderauftrag']:[])];
         return { ...o, isProject: project,
+          project:o.project?{...o.project,vehicles:o.project.vehicles.filter(v=>v.cardId).map(v=>({...v,
+            pendingCardId:(fleetTemplate(o.project.template)||[])[v.slot]||null,
+            pendingModel:vehicleCardById((fleetTemplate(o.project.template)||[])[v.slot])?.name||null}))}:undefined,
           transportLabel:CATEGORIES.find(c=>c.id===o.category)?.label||'Regionalverkehr',
           durationSeconds, durationBand:durationSeconds==null?null:durationSeconds<=300?'Kurz':durationSeconds<=900?'Mittel':'Lang',
           customerName: o.customer ? customerById(o.customer)?.name : 'Freie Frachtbörse',
           choices, vehicleStatus: choices.length?'ready':suitable.length?'busy':'missing',
-          forecast: forecastTruck && o.status!=='completed' ? estimate(forecastTruck) : null,
+          forecast: assigned ? singleForecast(o) : forecastTruck && o.status!=='completed' ? estimate(forecastTruck) : null,
+          replacementChoices:assigned?game.trucks.filter(t=>canTruckTakeOrder(t,o)&&(free.has(t.id)||o.pendingTruckId===t.id)).map(t=>({id:t.id,model:t.model,capacity:t.capacity})):[],
+          pendingTruckName:o.pendingTruckId?truckById(o.pendingTruckId)?.model:null,
+          projection,
           projectInfo:project?mobileProjectInfo(o.kind,o.projectRegion??Math.max(0,EXPEDITION_CUSTOMER_IDS.indexOf(o.customer)),o):null,
           baseXp:round2(o.volume*paidLegs(o)), premium:completionPremium(o),
           possibleRewards, relationshipReward:o.customer?(TRUST_REWARDS[o.kind]||0):0,
-          tripEndsAt:assigned?o.tripStartAt+tourSeconds(o,assigned,o.tripCargo??Math.min(assigned.capacity,o.volume-o.delivered))*1000:null,
+          tripEndsAt:assigned?o.tripSnapshot?.endsAt:null,
           runningEndsAt:assigned?now+remainingOrderSeconds(o,assigned,now)*1000:null,
           overtimeForDeadline:project&&o.status==='active'?overtimeToDeadline(o,now):null,
-          eta: o.project && o.status==='active' ? projectEstimatedEnd(o,now) : null,
+          eta: projection?.eta ?? null,
           templates: project && o.status==='queued' ? [0,1,2].map(index=>{
             const vehicles=projectFleetVehicles(index);
             return {index, vehicles, eta:vehicles ? projectEstimatedEnd({...o,delivered:0,project:{vehicles:vehicles.map(v=>({...v,cargo:0,nextAt:null}))}},now) : null};
@@ -373,7 +391,7 @@ function session(state, now=Date.now(), random=Math.random) {
   const api=context.mobile;
   if(state) api.state=JSON.parse(JSON.stringify(state));
   if(!Number.isSafeInteger(api.state.inventory.expeditionRefills)||api.state.inventory.expeditionRefills<0)api.state.inventory.expeditionRefills=0;
-  api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleTrips(now);api.settleFleetProjects(now);api.settleExpeditions(now);api.settleHub(now);
+  api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleTrips(now);api.settleFleetProjects(now);api.settleExpeditions(now);api.settleHub(now);api.settleEventTours(now);
   api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);
   return api;
 }
@@ -391,8 +409,13 @@ const companyProfile = p => {
   return {companyName:name(p.companyName,'Firmenname',40),cityName:name(p.cityName,'Stadtname',30)};
 };
 function execute(state, action='sync', p={}, now=Date.now(), random=Math.random) {
-  const a=session(state,now,random), before=JSON.stringify(a.state);
+  const a=session(state,now,random);
+  const before=JSON.stringify(a.state);
   const calls={
+    eventStart:()=>changeEvent(a.state,id(p.id),'start',num(p.run),now),
+    eventEnd:()=>changeEvent(a.state,id(p.id),'end',num(p.run),now),
+    eventFleet:()=>assignEventFleet(a.state,id(p.id),num(p.run),num(p.template,2),a.eventFleetOptions(),now),
+    singleVehicle:()=>a.queueSingleVehicle(id(p.order),id(p.truck)),
     sync:()=>{},start:()=>a.chooseStartCity(id(p.id)),foundCompany:()=>a.foundCompany(companyProfile(p)),
     garageAdd:()=>a.addCardToGarage(id(p.id)),garageRemove:()=>a.removeCardFromGarage(id(p.id)),
     seat:()=>a.assignCharacterSeat(id(p.id),num(p.seat,4),num(p.template,2)),
@@ -441,7 +464,10 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const oldJobs = new Set(a.state.expedition.jobs.map(j=>j.id));
   const ok=calls[action]();
   if(action==='mission')a.shortenTestMissions();
+  a.refreshTourStarts(now);
   const view=a.view();
+  view.testEvents=eventViews(a.state,a.eventFleetOptions());
+  if(['eventStart','eventEnd','eventFleet'].includes(action))view.message=ok;
   const normalizeNames=text=>typeof text==='string'?text.replace('Geeignete Klassen: Regionalverkehr 7,5-Tonner, 18-Tonner und 26-Tonner; Fernverkehr Sattelzug, 26-Tonner und 40-t-Tautliner.','Alle gefundenen Fahrzeugkarten können Regionalverkehr und Fernverkehr fahren.').replace(/Sonderfahrten/g,'Sonderaufträge').replace(/Sonderfahrt/g,'Sonderauftrag').replace(/Firmen-Items/g,'Firmenausbau-Items').replace(/Firmen-Item/g,'Firmenausbau-Item').replace(/100-Token-Refill|Überstunden-Refill/g,'Überstundenauffüller').replace(/\b(common|uncommon|rare)-Shard/g,(_,r)=>r[0].toUpperCase()+r.slice(1)+'-Shard'):text;
   view.message=normalizeNames(view.message);
   for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(normalizeNames);

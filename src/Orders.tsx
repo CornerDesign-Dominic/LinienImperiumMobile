@@ -60,7 +60,7 @@ export function RunningOrders({data,clock,busy,onOpen,onClaim,onMission}:any){
  const missions=endlessMissions(data);
  return <>{missions.map((m:any)=><Pressable key={`mission-${m.id}`} accessibilityRole="button" accessibilityLabel={`${expeditionName(m.lootKind)}, unterwegs, ${m.id}`} onPress={()=>onMission(m)}><Card style={[styles.offer,{borderLeftColor:C.accent}]}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{expeditionName(m.lootKind)}</Txt><Txt gold style={styles.small}>{remaining(m.endsAt,clock)}</Txt></Row><Txt muted style={styles.small}>{data.catalog.regionNames[m.region]} · {data.state.trucks.find((t:any)=>t.id===m.truckId)?.model||'Fahrzeug'}</Txt><Bar value={(clock-m.startedAt)/(m.endsAt-m.startedAt)*100}/></Card></Pressable>)}{!!ready.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {ready.length}</Btn>}{active.map(tile)}{!active.length&&!missions.length&&<Empty>Keine Aufträge unterwegs.</Empty>}{!!ready.length&&<>{section('Prämien')}{ready.map(tile)}</>}</>;
 }
-export function OrderDetail({data,id,busy,clock,onCommand,onBack}:any){
+export function OrderDetail({data,id,busy,clock,onCommand,onBack,onSwitch}:any){
  const o=data.state.orders.find((o:any)=>o.id===id&&!o.isProject);
  const [truckId,setTruckId]=useState<string|null>(o?.choices[0]?.id||null);
  if(!o)return <Empty>Angebot nicht mehr verfügbar.<Btn secondary onPress={onBack}>Zur Übersicht</Btn></Empty>;
@@ -70,14 +70,17 @@ export function OrderDetail({data,id,busy,clock,onCommand,onBack}:any){
  const reward=o.completionReward;
  return <>
   <Card><Row><Txt style={[styles.title,{flex:1}]}>{o.cargo}</Txt><Txt muted style={styles.small}>{o.id}</Txt></Row><Txt muted>{transportSummary(o,!active&&!done?forecast?.seconds:undefined)}</Txt><Row style={{marginTop:12}}><Txt>{n(o.volume,1)} t · {n(o.distance)} km</Txt><Pill gold={!!o.customer}>{o.customer?o.customerName:o.routeType==='dual'?'Dual Way':'Single Way'}</Pill></Row>
-   {active&&<><Bar value={progress(o,clock)}/>{fact('LKW',truck?.model||'—')}{fact('Restzeit',remaining(o.runningEndsAt||clock,clock))}{fact('Geliefert',`${n(o.delivered,1)} / ${n(o.volume)} t`)}</>}
+   {active&&<><Bar value={progress(o,clock)}/>{fact('LKW',truck?.model||'—')}{fact('Restzeit',remaining(o.runningEndsAt||clock,clock))}{fact('Geliefert',`${n(o.delivered,1)} / ${n(o.volume)} t`)}
+    {o.pendingTruckName&&<Txt gold style={styles.small}>Ab nächster Tour: {o.pendingTruckName}</Txt>}
+    <Btn secondary disabled={busy} onPress={()=>onSwitch(o)}>Fahrzeug für nächste Tour wechseln</Btn>
+   </>}
   </Card>
   {!active&&!done&&<Card>
    {!o.choices.length?<Txt muted>{unavailable(o)}</Txt>:<><Txt style={styles.title}>Fahrzeug</Txt>{o.choices.map((t:any)=><Pressable key={t.id} accessibilityRole="button" accessibilityLabel={`${t.model}, ${t.id} auswählen`} accessibilityState={{selected:truckId===t.id,disabled:busy}} disabled={busy} onPress={()=>setTruckId(t.id)} style={[styles.vehicle,truckId===t.id&&{borderColor:C.accent}]}><Row style={{marginBottom:0}}><Txt>{t.model} · {n(t.capacity,1)} t</Txt><Txt style={{color:C.accent}}>{truckId===t.id?'✓':'○'}</Txt></Row><Txt muted style={styles.small}>{t.trips} Touren · {minutes(t.seconds)}</Txt></Pressable>)}<Btn disabled={busy||!selected} onPress={()=>onCommand(o.kind==='private'?'assignPrivate':o.crafted?'assignCrafted':'assign',{order:o.id,truck:selected.id})}>Auftrag starten</Btn></>}
    {o.status==='available'&&<Btn secondary disabled={busy} onPress={()=>onCommand('pin',{id:o.id})}>{o.pinned?'Freigeben':'Angebot halten'}</Btn>}
   </Card>}
   {!done&&<Card><Txt style={[styles.title,{marginBottom:12}]}>Prognose gesamt</Txt>{forecast&&<>
-   <Txt muted style={[styles.small,{marginBottom:12}]}>{forecast.model} · aktuelle Werte</Txt>
+   <Txt muted style={[styles.small,{marginBottom:12}]}>{forecast.model} · laufende Tour gespeichert, Folgetouren mit aktuellen Werten</Txt>
    {fact('Fracht',`${n(forecast.revenue,2)} M`)}{fact('Betriebskosten',`${n(forecast.cost,2)} M`)}{fact('Abschlussprämie',`${n(forecast.bonus,2)} M`)}{fact('Gewinn',`${n(forecast.totalProfit,2)} M`)}
   </>}{fact(forecast?'XP':'Basis-XP',n(forecast?.xp??o.baseXp,2))}{!!o.relationshipReward&&fact('Beziehung',`+${o.relationshipReward}`)}</Card>}
   {done&&reward?<Card><Txt style={[styles.title,{marginBottom:12}]}>Abschlussprämie</Txt>{fact('Münzen',`${n(reward.coins,2)} M`)}{Object.entries(reward.gears||{}).filter(([,amount])=>Number(amount)>0).map(([rarity,amount])=><View key={rarity}>{fact(`${data.catalog.rarities.find((r:any)=>r.id===rarity)?.label||rarity}-Zahnräder`,n(amount))}</View>)}{reward.companyItems>0&&fact(itemName('companyItems',2),n(reward.companyItems))}{reward.capacityModule&&fact('Kapazitätsmodul','1')}{reward.supplierContacts>0&&fact('Lieferantenkontakte',n(reward.supplierContacts))}{!reward.claimedAt?<Btn disabled={busy} onPress={()=>onCommand('claim',{id:o.id})}>Prämie abholen</Btn>:<Txt muted>Abgeholt</Txt>}</Card>:<Card><Txt style={[styles.title,{marginBottom:12}]}>Mögliche Beute</Txt>{o.possibleRewards.map((label:string)=><Txt key={label} muted style={{marginBottom:6}}>{label}</Txt>)}</Card>}
