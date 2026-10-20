@@ -1,3 +1,21 @@
+## Sammelpaket Flotte und Mehrfahrzeug-Beschaffung – veröffentlicht am 20.10.2026
+
+Release: `77c8e000ba4e35239b48e9c5b9aef9784741a668` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39442746187).
+
+- Typprüfung, alle 105 Tests und Android-Export bestanden.
+- Firebase-Deployment und Live-API-Prüfung erfolgreich; Android-OTA im bestehenden Kanal `preview` erfolgreich veröffentlicht.
+- Flottendetails mit freier Tourkilometer-Eingabe, individueller und gesamter Stundenleistung, tatsächlichen Flottenboni und Kosten.
+- Geschenköffnung mit durchlaufender Markierung, Verlangsamung bis zum tatsächlichen Servergewinn, Überspringen und reduzierter Bewegung.
+- Garagenkarten in Seltenheitsfarben mit Kapazität, Stufe, Rang und Tempo beladen/leer.
+- Sammlung mit richtigem Kartensymbol, ohne Zusatztext, Freigeschaltet/Gesperrt und Seltenheitsfiltern einschließlich Alle und Legendär.
+- Beschaffungsauswahl nur mit freien Fahrzeugen, Kapazität und effektivem Tempo.
+- Mehrfahrzeug-Beschaffung: gemeinsamer Tourenvorrat bzw. gemeinsame Reserve, individuelle automatische Freigabe, beide Abbrucharten und alte Einzelaufträge kompatibel.
+- Kompakter Startdialog mit gestrichelter Plus-Kachel, Max bei Touren und +10.000 bei Reserve. Erläuterungen unter Hinweise.
+- Keine neue APK erstellt, keine Spielstände zurückgesetzt. Physischer Gerätetest durch den Nutzer steht aus.
+- Frühere Vorbereitungshinweise beschreiben den Stand vor diesem Release.
+
+---
+
 # Veröffentlichung vom 20.10.2026
 
 Release: `ed597368074794f1535b8ce2a6d716f6519de0e1` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39419503174).
