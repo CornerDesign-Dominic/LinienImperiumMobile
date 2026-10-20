@@ -6,13 +6,13 @@ const EVENTS = [{
   id: 'large-project-own-overtime',
   title: 'Großprojekt mit eigenen Überstunden',
   description: 'Mit einer eigenen Flotte passiv liefern und normale Überstundenpunkte einsetzen.',
-  rarity: 'epic', unlimited: true, distance: EVENT_PROJECT_DISTANCE_KM,
+  rarity: 'legendary', unlimited: true, distance: EVENT_PROJECT_DISTANCE_KM,
 }];
 
 function eventViews(state, fleetOptions = []) {
   return EVENTS.map(event => {
     const saved=state.eventTests?.[event.id];
-    return {...event,status:'available',run:0,...saved,
+    return {...event,status:'available',run:0,...saved,rarity:event.rarity,
       project:saved?.project?{...saved.project,vehicles:saved.project.vehicles.filter(v=>v.cardId).map(v=>{
         const desired=fleetOptions.find(option=>option.index===saved.project.template)?.vehicles?.find(next=>next.slot===v.slot);
         return {...v,pendingCardId:desired?.cardId||null,pendingModel:desired?.model||null};

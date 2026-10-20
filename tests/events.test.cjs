@@ -58,7 +58,7 @@ function assignedFixture(){
 test('Unbounded event uses the saved fleet timings and settles offline without double counting or main-game rewards',()=>{
  const assigned=assignedFixture();
  const event=assigned.view.testEvents[0];
- assert.equal(event.rarity,'epic');assert.equal(event.unlimited,true);
+ assert.equal(event.rarity,'legendary');assert.equal(event.unlimited,true);
  assert.equal(event.project.vehicles.length,2);
  assert.equal(event.project.delivered,0);
  assert.ok(event.project.vehicles.every(vehicle=>Number.isFinite(vehicle.cycleMs)&&vehicle.cycleMs>0));

@@ -1,7 +1,7 @@
 import React from 'react';
 import {View,StyleSheet} from 'react-native';
 import {Bar,Btn,Card,Empty,Pill,Row,Txt,C,n,remaining,minutes} from './ui';
-import {TestEvent,epicStyle} from './Events';
+import {TestEvent,legendaryStyle} from './Events';
 
 export function EventProject({event,busy,clock,onFleet,onManage,onEnd}:{
  event?:TestEvent;busy:boolean;clock:number;
@@ -10,8 +10,8 @@ export function EventProject({event,busy,clock,onFleet,onManage,onEnd}:{
  if(!event)return <Empty>Event nicht verfügbar.</Empty>;
  const running=event.status==='running',project=event.project;
  return <>
-  <Card style={epicStyle}>
-   <Row><Txt style={{color:C.epic,fontWeight:'700'}}>EPISCH · EVENT</Txt><Pill>{running?'LÄUFT':'BEENDET'}</Pill></Row>
+  <Card style={legendaryStyle}>
+   <Row><Txt style={{color:C.legendary,fontWeight:'700'}}>LEGENDÄR · EVENT</Txt><Pill>{running?'LÄUFT':'BEENDET'}</Pill></Row>
    <Txt style={{fontSize:18,fontWeight:'700'}}>{event.title}</Txt>
    <Txt muted style={{marginTop:10}}>Unbegrenzter Projektumfang · {n(event.distance)} km je beladener Hinfahrt, anschließend leer zurück.</Txt>
    <Txt muted style={{marginTop:8}}>Testdurchlauf {event.run} · läuft bis zum manuellen Beenden.</Txt>
