@@ -723,5 +723,7 @@
   "Beschaffungskosten": "Procurement spending",
   "Beschaffung: hinterlegtes Guthaben": "Procurement: reserved funds",
   "Erfolgreiche Abholungen": "Successful collections",
-  "Hinterlegt: {0} M": "Reserved: {0} coins"
+  "Hinterlegt: {0} M": "Reserved: {0} coins",
+  "Freigeschaltet": "Unlocked",
+  "Fahrzeug einsetzen": "Assign vehicle"
 }
