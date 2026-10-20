@@ -32,7 +32,7 @@ export function CustomerDetail({data,id,busy,onSave}:any){
   <Card><Row><Txt style={styles.title}>Fähigkeiten</Txt>{editing&&<Pill gold>{Math.max(0,left)} {left===1?'Punkt':'Punkte'}</Pill>}</Row>
    {SKILLS.map(skill=>{const level=customer.skills[skill.kind]||0,extra=draft[skill.kind],next=level+extra;return <View key={skill.kind} style={styles.skill}>
     <Txt style={{fontWeight:'700',marginBottom:6}}>{skill.label}</Txt>
-    <Row style={{marginBottom:0,flexWrap:'nowrap'}}><View style={{flex:1,minWidth:0}}><Txt gold style={styles.small}>{skill.kind==='pay'?'Vergütung':'Chance'} +{n(next*.1,1)} %</Txt><Txt muted style={styles.small}>Stufe {level}{extra?` → ${next}`:''} / {skill.limit}</Txt></View>
+    <Row style={{marginBottom:0,flexWrap:'nowrap'}}><View style={{flex:1,minWidth:0}}><Txt gold style={styles.small}>{skill.kind==='pay'?'Vergütung':'Chance'} +{n(next*.1,1)} %</Txt>{editing&&next<skill.limit&&<Txt muted style={styles.small}>+0,1 % je Punkt</Txt>}<Txt muted style={styles.small}>Stufe {level}{extra?` → ${next}`:''} / {skill.limit}</Txt></View>
      {editing&&<View style={{flexDirection:'row',alignItems:'center',gap:6}}>
       {extra>0&&<Pressable accessibilityRole="button" accessibilityLabel={translate(`${skill.label} reduzieren`)} accessibilityState={{disabled:busy||!extra}} disabled={busy||!extra} onPress={()=>setDraft(d=>({...d,[skill.kind]:d[skill.kind]-1}))} style={[styles.plus,(busy||!extra)&&{opacity:.4}]}><Icon name="minus" size={18}/></Pressable>}
       {extra>0&&<Txt style={{fontSize:12,minWidth:18,textAlign:'center'}}>+{extra}</Txt>}
