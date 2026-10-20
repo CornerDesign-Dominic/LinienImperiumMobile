@@ -5,20 +5,21 @@ import {t as translate} from './i18n';
 import {Icon} from './Icon';
 import {C,displayFont,regionInks} from './theme';
 import {n} from './ui';
+import {regionIdentities} from './regionIdentities';
 
 // Presentation only: stable server region indices, customer IDs and progress stay intact.
-const regions=[
- {title:'Kronenlande',customer:'Königliches Handelskontor',image:require('../assets/art/regions/crownlands.jpg')},
- {title:'Weite Ebenen',customer:'Prärie-Handelsgesellschaft',image:require('../assets/art/regions/prairies.jpg')},
- {title:'Safranstraße',customer:'Bund der Karawanenhändler',image:require('../assets/art/regions/saffron-road.jpg')},
- {title:'Jadetal',customer:'Handelshaus der Jadebrücke',image:require('../assets/art/regions/jade-valley.jpg')},
- {title:'Nordmark',customer:'Nordlicht-Kontor',image:require('../assets/art/regions/northmark.jpg')},
+const images=[
+ require('../assets/art/regions/crownlands.jpg'),
+ require('../assets/art/regions/prairies.jpg'),
+ require('../assets/art/regions/saffron-road.jpg'),
+ require('../assets/art/regions/jade-valley.jpg'),
+ require('../assets/art/regions/northmark.jpg'),
 ];
 export function ExpeditionRegionCard({map,onOpen}:{map:any;onOpen:(region:number)=>void}){
- const theme=regions[map.index],title=theme?.title||map.name,customer=theme?.customer||map.customer.name;
+ const theme=regionIdentities[map.index],title=theme?.title||map.name,customer=theme?.customer||map.customer.name;
  return <Pressable accessibilityRole="button" accessibilityLabel={`${translate(title)}, ${translate(customer)}, ${n(map.progress)} %${map.open?'':`, ${translate('Gesperrt')}`}`} accessibilityState={{disabled:!map.open}} disabled={!map.open} onPress={()=>onOpen(map.index)} style={({pressed})=>[styles.card,{borderTopColor:regionInks[map.index%regionInks.length]},pressed&&{opacity:.85}]}>
   <View style={styles.scene}>
-   {theme&&<Image source={theme.image} resizeMode="cover" style={StyleSheet.absoluteFill} accessible={false} importantForAccessibility="no"/>}
+   {theme&&<Image source={images[map.index]} resizeMode="cover" style={StyleSheet.absoluteFill} accessible={false} importantForAccessibility="no"/>}
    {!map.open&&<View style={styles.lock}><Icon name="lock" size={16} color={C.onInk}/><Text style={styles.lockText}>Gesperrt</Text></View>}
    <View style={styles.caption}><Text numberOfLines={1} style={styles.title}>{title}</Text>{map.open&&<Icon name="arrow" size={17} color={C.onInk}/>}</View>
   </View>

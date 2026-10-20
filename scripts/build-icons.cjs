@@ -4,6 +4,7 @@
 const fs=require('node:fs'),path=require('node:path');
 const sharp=require(process.env.ICON_RENDERER_NODE_MODULES?path.join(process.env.ICON_RENDERER_NODE_MODULES,'sharp'):'sharp');
 const icons={
+ book:'<path d="M4 5h10a4 4 0 0 1 4 4v20a5 5 0 0 0-4-2H4zM18 9a4 4 0 0 1 4-4h7v22h-7a5 5 0 0 0-4 2M8 10h5M8 14h5M22 10h3M22 14h3M8 18h5"/>',
  home:'<path d="M3 14 16 4l13 10M6 12v16h20V12M13 28V18h6v10M3 29h26"/><path d="M9 15h2m10 0h2"/>',
  fleet:'<path d="M3 5h15v9H3zM18 8h6l4 4v2H18M8 18h13v9H8zM21 21h5l3 3v3h-8"/><circle cx="7" cy="15" r="2"/><circle cx="24" cy="15" r="2"/><circle cx="12" cy="28" r="2"/><circle cx="25" cy="28" r="2"/>',
  garage:'<path d="m3 12 13-8 13 8v17H3zM8 29V15h16v14M8 19h16M8 23h16M8 27h16M13 10h6"/>',
@@ -35,8 +36,11 @@ const icons={
  reward:'<path d="M4 13a12 10 0 0 1 24 0v15H4zM4 15h24M11 5v10m10-10v10M14 15v7h4v-7M4 24h10m4 0h10"/>',
 };
 (async()=>{const directory=path.resolve(__dirname,'../assets/icons');fs.mkdirSync(path.join(directory,'source'),{recursive:true});
+let rendered=0;
 for(const [name,body] of Object.entries(icons)){
+ if(process.env.ICON_FILTER&&name!==process.env.ICON_FILTER)continue;
+ rendered++;
  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="96" height="96"><g fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${body}</g></svg>`;
  fs.writeFileSync(path.join(directory,'source',name+'.svg'),svg+'\n');await sharp(Buffer.from(svg)).png().toFile(path.join(directory,name+'.png'));
 }
-console.log(`Rendered ${Object.keys(icons).length} original game icons.`);})().catch(error=>{console.error(error);process.exitCode=1});
+console.log(`Rendered ${rendered} original game icons.`);})().catch(error=>{console.error(error);process.exitCode=1});

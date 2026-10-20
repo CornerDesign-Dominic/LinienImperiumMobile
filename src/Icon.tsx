@@ -2,6 +2,7 @@ import React from 'react';
 import {Image,ImageStyle,StyleProp} from 'react-native';
 import {C} from './theme';
 const icons={
+ book:require('../assets/icons/book.png'),
  arrow:require('../assets/icons/arrow.png'),
  back:require('../assets/icons/back.png'),
  cards:require('../assets/icons/cards.png'),
@@ -51,3 +52,4 @@ export function stockIcon(id:string):IconName{
  if(id.startsWith('order:'))return 'orders';
  return ({capacityModules:'module',companyItems:'company',pickupHints:'document',supplierContacts:'customers',expeditionRefills:'expedition',overtimeRefills:'overtime',private:'orders',customer:'customers'} as Record<string,IconName>)[id]||'inventory';
 }
+
