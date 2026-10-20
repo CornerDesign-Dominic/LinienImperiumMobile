@@ -27,3 +27,12 @@ test('Catalog interpolation placeholders match and all game help sections have E
  for(const [key,value] of Object.entries(catalog))assert.deepEqual([...key.matchAll(/\{\d+\}/g)].map(m=>m[0]).sort(),[...value.matchAll(/\{\d+\}/g)].map(m=>m[0]).sort(),key);
  for(const key of ['dashboard','orders','special','fleet','dealer','hub','inventory','development','company','personnel','expeditions','statistics','customers'])assert.ok(help[key]?.length,key);
 });
+test('Procurement messages and help localize in English',()=>{
+ setLanguage('en');
+ assert.equal(t('Materialbeschaffung'),'Material procurement');
+ assert.equal(t('Beschaffung 3'),'Procurement 3');
+ assert.equal(t('Bis Reserve von 10.000 M'),'Until reserve of 10.000 coins');
+ assert.equal(t('Nach laufender Tour beenden'),'Finish after current trip');
+ assert.ok(localizedHelp('procurement',[]).some(row=>row[1].includes('8,000')));
+ setLanguage('de');
+});

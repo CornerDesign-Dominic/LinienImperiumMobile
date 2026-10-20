@@ -9,7 +9,7 @@ import {rarityColor} from './items';
 const deliveryProgress=(mission:any,done:boolean,clock:number)=>done||mission?.status==='completed'?100:mission?.status==='active'?Math.max(0,Math.min(100,(clock-mission.startedAt)/(mission.endsAt-mission.startedAt)*100)):0;
 function Progress({explored,delivered,showDelivery=false}:any){return <><Bar value={explored}/>{showDelivery&&<Bar value={delivered} gold/>}</>;}
 
-export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onMission,onFocusPlace,modalBlocked=false}:any){
+export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onMission,onFocusPlace,onProcurement,modalBlocked=false}:any){
  const [selected,setSelected]=useState<number|'endless'|null>(null),[chances,setChances]=useState(false);
  const focus=useRef<{offset:number|null;target:number|null;done:boolean}>({offset:null,target:null,done:false});
  const g=data.state,maps=data.expeditionMap;
@@ -37,6 +37,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
  const shipment=deliveryProgress(place?mission:final,place?done:r.finalClaimed,clock);
  return <View onLayout={e=>{focus.current.offset=e.nativeEvent.layout.y;tryFocus();}}>
   <AtlasHeading title={map.name} detail={map.customer.name}/>
+  <Card><Txt gold>Materialbeschaffung</Txt><Txt muted>{data.procurement?.sites[region]?.unlocked?'Region zu 100 % abgeschlossen. Beschaffung freigeschaltet.':'Alle sieben Orte erkunden und beliefern sowie die Endloslieferung abschließen und abholen.'}</Txt><Btn secondary onPress={onProcurement}>Zur Materialbeschaffung</Btn></Card>
   <View onLayout={e=>targetLayout('endless',e.nativeEvent.layout.y)}>
    <Pressable accessibilityRole="button" accessibilityLabel={translate('Endlosort öffnen')} onPress={()=>setSelected('endless')}>
     <Card style={[styles.endless,!endlessOpen&&styles.locked]}>
@@ -81,7 +82,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
         {!mission&&noTruck&&<Txt muted style={styles.small}>Kein freier LKW</Txt>}
        </>}
       </>:<>
-       <Txt muted style={{marginVertical:8}}>{map.customer.name}</Txt>
+       <Txt muted style={{marginVertical:8}}>{map.customer.name}</Txt><Txt muted>Erste Endloslieferung: Kunde und 1 Kapazitätsmodul. Bereits erhaltene Module werden nicht erneut vergeben.</Txt>
        {!endlessOpen?<Pill>Gesperrt</Pill>:<>
         {!final&&!r.finalClaimed&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'final',0)}>Kunde freischalten</Btn>}
         {final?.status==='active'&&<Txt gold>{remaining(final.endsAt,clock)}</Txt>}

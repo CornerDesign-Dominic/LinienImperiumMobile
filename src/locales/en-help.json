@@ -160,5 +160,27 @@
       "Abilities",
       "Payment: +0.1% freight payment per point, up to 100. Special chance: +0.1 percentage points per point, up to 25, on a base of 20% regional / 40% long-distance. Referral chance: +0.1 percentage points per point, up to 25, on a base of 4% / 6%. Preview with +/− and save together. Saved allocations are permanent."
     ]
+  ],
+  "procurement": [
+    [
+      "Unlock",
+      "Fully explore and supply all seven locations, then finish and claim the one-time endless delivery. Existing awarded modules are retained."
+    ],
+    [
+      "Trips and costs",
+      "A round trip takes ten minutes at 1 km/s. Region 1 costs 8,000 coins per trip, increasing by 4,000 per region. Speed applies; capacity, cost and pay bonuses do not."
+    ],
+    [
+      "Budget",
+      "Fixed trips are prepaid. Reserve mode pays each departure and ends permanently when the next trip would breach your reserve. New income never restarts an ended run."
+    ],
+    [
+      "Stopping",
+      "Finish after current trip keeps its reward. Cancel immediately loses that trip payment and reward. Unstarted prepaid trips are refunded."
+    ],
+    [
+      "Rewards",
+      "Every trip: 5 Common gears; independently 20% for 1 Uncommon gear, 0.3% for 1 Rare gear, 0.1% for 1 company upgrade item. All regions share the same loot. No XP, customer points or tonne-km rewards."
+    ]
   ]
 }

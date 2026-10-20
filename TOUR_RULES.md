@@ -24,3 +24,7 @@ Bestehende Flottentouren behalten Ladung, Endzeit und gespeicherte Abrechnung. B
 `tests/tour-updates.test.cjs` prüft unter anderem Wechsel vor/exakt/nach Ankunft, Reservierung und Abbruch, unzulässige Fahrzeuge, Kapazität und Tempo, eigene/Flotten-/Garagenboni, Geberwechsel, gleichzeitige Ankünfte, Platztausch, leere und ergänzte Flotten, Überstunden-Teilmengen, Prognose gegen echte Abrechnung, Offline gegen häufigen Sync, Event und Kundenauftrag parallel, Expeditionspläne sowie alte Spielstände und erneutes Laden.
 
 Die ursprünglichen Web-Regressionsprüfungen bleiben unverändert. Die mobilen Tests prüfen die tatsächlich auf dem Server verwendeten Tourregeln.
+
+## Beschaffung
+
+`procurement-runtime.js` hält jede gestartete Runde mit unveränderlicher Startzeit, Dauer, Ankunft und Preis fest. Nur Folgerunden lesen das Fahrzeugtempo erneut. Die Garage bleibt exklusiv; dieselbe Karte darf unabhängig in Flottenprojekten fahren. Vorausbezahltes Guthaben gehört dem Auftrag, nicht dem frei verfügbaren Konto. Reservefahrten bezahlen bei Abfahrt, enden bei Unterschreiten der Reserve dauerhaft und werden nicht von späteren Einnahmen reaktiviert. Offline-Abrechnung verarbeitet Beschaffungsankünfte chronologisch, bucht bis dahin fällige Transporteinnahmen und prüft erst dann Folgeabfahrten. Erfolgszähler und Loot entstehen nur nach vollständiger Runde; Abholung bewegt gespeicherten Loot einmalig in die Vorräte.

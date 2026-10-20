@@ -41,7 +41,7 @@ export type IconName=keyof typeof icons;
 export function Icon({name,size=24,color=C.text,style}:{name:IconName;size?:number;color?:string;style?:StyleProp<ImageStyle>}){
  return <Image source={icons[name]} accessible={false} importantForAccessibility="no" resizeMode="contain" style={[{width:size,height:size,tintColor:color,flexShrink:0},style]}/>;
 }
-export const screenIcons:Record<string,IconName>={home:'home',fleet:'fleet',garage:'garage',orders:'orders',projects:'projects',expeditions:'expedition',cards:'cards',company:'company',hub:'hub',inventory:'inventory',crafting:'crafting',customers:'customers',wholesaler:'wholesaler',statistics:'statistics',account:'settings',events:'events',dealer:'truck'};
+export const screenIcons:Record<string,IconName>={procurement:'crafting',home:'home',fleet:'fleet',garage:'garage',orders:'orders',projects:'projects',expeditions:'expedition',cards:'cards',company:'company',hub:'hub',inventory:'inventory',crafting:'crafting',customers:'customers',wholesaler:'wholesaler',statistics:'statistics',account:'settings',events:'events',dealer:'truck'};
 export function stockIcon(id:string):IconName{
  if(id.startsWith('gear:'))return 'gear';
  if(id.startsWith('shard:'))return 'shard';

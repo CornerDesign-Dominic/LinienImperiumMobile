@@ -69,3 +69,7 @@ Die Kartensammlung zeigt Kartenstufe, Geschwindigkeitsrang und aktuelle Kapazit�
 
 Fünf Regionskarten führen zu je sieben Ortskarten und einer Endloskarte. Kunde, Fortschritt und Sperren stehen direkt auf den Karten. Unter **Einstellungen → Testwerkzeuge** lassen sich zusätzlich Expeditionspunkte, Überstundenpunkte und XP hinzufügen. Test-XP verwendet die normalen Levelbelohnungen. Dieses Paket enthält auch die vorbereitete Wiederholung von Verbindungsfehlern und die kontrastreicheren Angebotskarten. Die Vorschläge für neue Startangebote bleiben unverändert offen. Details zur Prüfung stehen in [TEST_REPORT.md](TEST_REPORT.md).
 
+
+## Materialbeschaffung
+
+Nach vollständigem Abschluss einer Expeditionsregion wird ihre Beschaffungsstelle dauerhaft verfügbar. Garagenfahrzeuge holen für feste Münzpreise Materialien ab, wahlweise mit vorausbezahlter Tourenzahl oder bis zu einer Kontoreserve. Offlinefahrten, getrennte Beendigung nach Tour oder sofortiger Abbruch, Rückerstattung ungestarteter Touren, gemeinsame Lootabholung und regionale Erfolgszähler sind enthalten. Flotteneinsätze bleiben parallel möglich. Preise beginnen bei 8.000 Münzen je Runde; alle fünf Stellen nutzen vorerst denselben niedrigen Lootpool. Zugang über Home und Expedition; Regeln und Hilfe beschreiben die Details.

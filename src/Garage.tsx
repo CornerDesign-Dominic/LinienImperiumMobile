@@ -31,7 +31,7 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
       <Fact label="Betriebskosten" value={`${n(truck.costPerKm,2)} M/km`}/>
       <Fact label="Gefahren" value={`${n(truck.kmDriven)} km`}/>
       <Fact label="Aufträge" value={n(truck.ordersCompleted)}/>
-      <Fact label="Status" value={truck.free?'Bereit':'Im Einsatz'}/>
+      <Fact label="Status" value={truck.procurementId?'Materialbeschaffung':truck.free?'Bereit':'Im Einsatz'}/>
       {!!truck.busyUntil&&<><Bar value={truck.progress}/><Txt gold>{remaining(truck.busyUntil,clock)}</Txt></>}
       <Btn secondary disabled={busy||!truck.free} onPress={async()=>{const result=await onCommand('garageRemove',{id:truck.cardId});if(result&&!result.state.trucks.some((t:any)=>t.id===truck.id))setSelected(null);}}>Aus Garage nehmen</Btn>
      </>}

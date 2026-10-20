@@ -16,6 +16,12 @@ async function main(){
   const protectedState=await call('sync',{coins:1e15});assert.equal(protectedState.state.coins,51000);
   assert.equal(protectedState.expeditionMap.length,5);
   assert.equal(protectedState.expeditionMap[0].customer.id,'nordbau');
+  assert.deepEqual(protectedState.procurement.sites.map(s=>s.price),[8000,12000,16000,20000,24000]);
+  assert.ok(protectedState.procurement.sites.every(s=>!s.unlocked));
+  assert.equal(protectedState.procurement.completed,0);
+  await assert.rejects(()=>call('procurementStart',{region:0,truck:protectedState.state.trucks[0].id,mode:'count',amount:1}),/freigeschaltet/);
+  const emptyClaim=await call('procurementClaim');assert.equal(emptyClaim.state.coins,51000);
+  assert.equal(emptyClaim.procurement.pending.common,0);
   const expedition=await call('testGrant',{kind:'expedition',amount:100});assert.equal(expedition.state.expedition.points,150);
   const overtime=await call('testGrant',{kind:'overtime',amount:100});assert.equal(overtime.state.overtimePoints,200);
   const xpId=crypto.randomUUID();await call('testGrant',{kind:'xp',amount:100},xpId);
@@ -25,7 +31,7 @@ async function main(){
   const unauth=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{action:'sync'}})});
   assert.equal(unauth.status,401);
   await call('reset');
-  console.log('Live backend smoke test passed: guest auth, persistence, command deduplication, expedition map, test grants, level rewards and authentication checks.');
+  console.log('Live backend smoke test passed: guest auth, persistence, command deduplication, expedition map, test grants, level rewards, procurement prices/unlock guards/empty claims and authentication checks.');
  }finally{await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:auth.idToken})});}
 }
 main().catch(e=>{console.error(e.message);process.exitCode=1;});

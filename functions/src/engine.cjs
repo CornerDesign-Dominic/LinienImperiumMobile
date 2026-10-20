@@ -4,6 +4,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const itemNames = require('./item-names.json');
 const {eventViews, changeEvent, assignEventFleet, EVENT_PROJECT_DISTANCE_KM} = require('./events.cjs');
+const procurementRuntime = fs.readFileSync(path.join(__dirname, 'procurement-runtime.js'), 'utf8');
 const tourRuntime = fs.readFileSync(path.join(__dirname, 'tour-runtime.js'), 'utf8');
 const source = fs.readFileSync(path.join(__dirname, '../vendor/web-game.js'), 'utf8');
 const boundary = source.indexOf("  document.addEventListener('click'");
@@ -107,9 +108,9 @@ const bridge = `
     region.discoveryPoints[place]=(region.discoveryPoints[place]||0)+1;
     if(region.discoveryPoints[place]>=cost){
       region.discoveryPoints[place]=cost;region.discovered++;
-      if(region.discovered===7&&!region.moduleAwarded){
-        region.endlessUnlocked=true;region.moduleAwarded=true;game.inventory.capacityModules++;
-        addEvent(EXPEDITION_REGIONS[index]+': Endlosort freigelegt · 1 Kapazitätsmodul erhalten.');
+      if(region.discovered===7){
+        region.endlessUnlocked=true;
+        addEvent(EXPEDITION_REGIONS[index]+': Endlosort freigelegt.');
       }
       addEvent(EXPEDITION_REGIONS[index]+': Ort '+region.discovered+' entdeckt.');
     }
@@ -136,9 +137,20 @@ const bridge = `
     while(low<high){const mid=Math.floor((low+high)/2);if(eta(mid)<=order.project.deadlineAt)high=mid;else low=mid+1;}
     return low;
   }
+  const beforeProcurementClaimMission=claimExpeditionMission;
+  claimExpeditionMission=missionId=>{
+    const mission=game.expedition.missions.find(m=>m.id===missionId);
+    const ok=beforeProcurementClaimMission(missionId);
+    if(ok&&mission?.kind==='final'){
+      const region=game.expedition.regions[mission.region];
+      if(!region.moduleAwarded){region.moduleAwarded=true;game.inventory.capacityModules++;mission.reward+=' · 1 Kapazitätsmodul';}
+    }
+    return ok;
+  };
   ${tourRuntime}
+  ${procurementRuntime}
   globalThis.mobile = {
-    settleEventTours, refreshTourStarts, queueSingleVehicle,
+    settleEventTours, refreshTourStarts, queueSingleVehicle, settleProcurementTimeline, startProcurement, stopProcurement, claimProcurement,
     eventFleetOptions() {
       const order={distance:${EVENT_PROJECT_DISTANCE_KM},routeType:'single'};
       return [0,1,2].map(index=>({index,vehicles:projectFleetVehicles(index)?.map(vehicle=>({
@@ -283,11 +295,12 @@ const bridge = `
         cardLevelCosts: CHARACTER_LEVEL_COSTS, regionNames: EXPEDITION_REGIONS, craftedOrderItems:COMPANY_BALANCE.craftedOrderItems
       };
       const trucks = game.trucks.map(t => ({ ...t, free: free.has(t.id),
-        progress: (()=>{const order=game.orders.find(o=>o.status==='active' && o.truckId===t.id); if(order)return order.delivered/order.volume*100; const m=game.expedition.missions.find(m=>m.status==='active' && m.truckId===t.id); return m ? (m.transport ? m.transport.delivered/m.transport.volume*100 : Math.min(100,(now-m.startedAt)/(m.endsAt-m.startedAt)*100)) : 0;})(),
+        progress: (()=>{const procurement=procurementActive(t.id);if(procurement)return Math.min(100,(now-procurement.startedAt)/procurement.durationMs*100);const order=game.orders.find(o=>o.status==='active' && o.truckId===t.id); if(order)return order.delivered/order.volume*100; const m=game.expedition.missions.find(m=>m.status==='active' && m.truckId===t.id); return m ? (m.transport ? m.transport.delivered/m.transport.volume*100 : Math.min(100,(now-m.startedAt)/(m.endsAt-m.startedAt)*100)) : 0;})(),
         rarity: truckRarity(t), rankCost: rankGearCost(t), speed: truckSpeed(t),
         bonus: cardBonusStats(t), costPerKm: operatingCostPerKm(t),
         sale: saleBlockReason(t) ? null : saleQuote(t),
-        busyUntil: (() => { const o = game.orders.find(o => o.status === 'active' && o.truckId === t.id); if(o) return now + remainingOrderSeconds(o,t,now)*1000; return game.expedition.missions.find(m=>m.status==='active' && m.truckId===t.id)?.endsAt || null; })()
+        procurementId:procurementActive(t.id)?.id||null,
+        busyUntil: (() => { const procurement=procurementActive(t.id);if(procurement)return procurement.nextAt;const o = game.orders.find(o => o.status === 'active' && o.truckId === t.id); if(o) return now + remainingOrderSeconds(o,t,now)*1000; return game.expedition.missions.find(m=>m.status==='active' && m.truckId===t.id)?.endsAt || null; })()
       }));
       const orders = game.orders.map(o => {
         const project = Boolean(PROJECT_DEADLINES[o.kind]);
@@ -326,6 +339,7 @@ const bridge = `
           }) : []
         };
       });
+      const procurementHelp=['Materialbeschaffung',[['Freischaltung','Alle sieben Orte erkunden und beliefern; den einmaligen Endlosort-Transport abschließen und abholen. Dann ist die Region zu 100 % fertig.'],['Fahrten und Kosten','Eine Tour dauert bei 1 km/s zehn Minuten inklusive Rückweg. Preis je Tour: Region 1 8.000 M, danach je Region +4.000 M. Kapazität, Kosten- und Vergütungsboni wirken nicht.'],['Tourenzahl oder Reserve','Feste Touren werden vorausbezahlt. Bis Reserve bezahlt jede Tour einzeln und endet bei unzureichendem Guthaben dauerhaft. Kein automatischer Neustart.'],['Beenden','Nach laufender Tour beenden erhält die aktuelle Belohnung. Sofort abbrechen verliert den aktuellen Einsatz und Loot. Ungestartete vorausbezahlte Touren werden erstattet.'],['Belohnungen','Je Tour: 5 Common-Zahnräder garantiert, 20 % auf 1 Uncommon, 0,3 % auf 1 Rare, 0,1 % auf 1 Firmenausbau-Item. Unabhängige Chancen, in allen Regionen gleich. Keine XP, Beziehungen oder tkm-Belohnungen.']]];
       const cardVehicles = Object.fromEntries(EXPEDITION_CHARACTERS.map(card => {
         const owned = game.expedition.characters[card.id];
         const truck = game.trucks.find(t => t.cardId === card.id) || owned?.parkedTruck || createCardTruck(card);
@@ -334,7 +348,7 @@ const bridge = `
           loadedSpeed:truckSpeed(truck,truck.capacity), costPerKm:operatingCostPerKm(truck),
           rankCost:rankGearCost(truck), capacityLevel:truck.moduleCapacityLevel || 0, maxCapacityLevel:TRUCKS[card.vehicleTier].maxCapacityLevel}];
       }));
-      return {state: {...game,trucks,orders}, serverTime:now, catalog, cardVehicles,
+      return {state: {...game,trucks,orders}, serverTime:now, catalog, cardVehicles, procurement:procurementView(now),
         level:levelForXp(game.xp,game), expeditionCapacity:expeditionCapacity(),
         regeneration:{expeditionNextAt:game.expedition.points<expeditionCapacity()?game.expedition.lastRegenAt+EXPEDITION_REGEN_MS:null,overtimeNextAt:game.overtimePoints<game.overtimeCapacity?game.overtimeLastRegenAt+OVERTIME_REGEN_MS:null},
         templates:[0,1,2].map(i=>fleetTemplate(i)),
@@ -362,7 +376,7 @@ const bridge = `
         refreshCost:manualRefreshCost(), offers:offerLimit(), pinLimit:pinLimit(), hubLimit:hubCapacity(),
         hubInfo:{hourlyCapacity:hubHourlyCapacity(), upgradeContacts:hubUpgradeContactCost((hub()?.salesLevel||0)+1),upgradeItems:COMPANY_BALANCE.upgradeItems((hub()?.salesLevel||0)+1),upgradeCoins:COMPANY_BALANCE.upgradeCoins((hub()?.salesLevel||0)+1)},
         companyCosts:{offers:{coins:offerUpgradeCost(),items:COMPANY_BALANCE.upgradeItems((game.company.offerLevel||0)+1)},workshop:{coins:workshopUpgradeCost(),items:COMPANY_BALANCE.upgradeItems((game.company.workshopLevel||0)+1)},sales:{coins:salesUpgradeCost(),items:COMPANY_BALANCE.upgradeItems((game.company.salesLevel||0)+1)},transport:Object.fromEntries(['national','international'].map(c=>[c,Object.fromEntries(['premium','volume','range'].map(k=>[k,transportUpgradeCost(c,k)]))]))},
-        help:Object.fromEntries(['dashboard','orders','special','fleet','dealer','hub','inventory','development','company','personnel','expeditions','statistics','customers'].map(k=>{const help=pageHelp(k);return [k,[help[0],help[1].filter(([heading])=>heading!=='Werte im Code ändern')]];})),
+        help:{procurement:procurementHelp,...Object.fromEntries(['dashboard','orders','special','fleet','dealer','hub','inventory','development','company','personnel','expeditions','statistics','customers'].map(k=>{const help=pageHelp(k);return [k,[help[0],help[1].filter(([heading])=>heading!=='Werte im Code ändern')]];}))},
         message:mobileToast
       };
     }
@@ -391,7 +405,7 @@ function session(state, now=Date.now(), random=Math.random) {
   const api=context.mobile;
   if(state) api.state=JSON.parse(JSON.stringify(state));
   if(!Number.isSafeInteger(api.state.inventory.expeditionRefills)||api.state.inventory.expeditionRefills<0)api.state.inventory.expeditionRefills=0;
-  api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleTrips(now);api.settleFleetProjects(now);api.settleExpeditions(now);api.settleHub(now);api.settleEventTours(now);
+  api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleProcurementTimeline(now);
   api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);
   return api;
 }
@@ -412,6 +426,9 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const a=session(state,now,random);
   const before=JSON.stringify(a.state);
   const calls={
+    procurementStart:()=>a.startProcurement(num(p.region,4),id(p.truck),choice(p.mode,['count','reserve']),num(p.amount,p.mode==='count'?100000:1000000000)),
+    procurementStop:()=>a.stopProcurement(id(p.id),choice(p.immediate,[true,false])),
+    procurementClaim:()=>a.claimProcurement(),
     eventStart:()=>changeEvent(a.state,id(p.id),'start',num(p.run),now),
     eventEnd:()=>changeEvent(a.state,id(p.id),'end',num(p.run),now),
     eventFleet:()=>assignEventFleet(a.state,id(p.id),num(p.run),num(p.template,2),a.eventFleetOptions(),now),

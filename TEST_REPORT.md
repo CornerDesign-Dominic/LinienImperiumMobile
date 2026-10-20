@@ -363,3 +363,19 @@ Neue Größen/Entfernungen und Freigaberegeln für Startangebote sind noch nicht
 - validate: Typprüfung, 70 Node-Testeinträge und Androidexport bestanden. deploy: Firebase-Server und Regeln sowie Live-Smoke-Test bestanden. update: Android-Update auf preview erfolgreich veröffentlicht. APK-Erstellung planmäßig übersprungen; keine nativen Abhängigkeiten geändert.
 - Damit sind die zuvor als vorbereitet beschriebenen Sprach- und Vorratsänderungen veröffentlicht. Eventprojekt und Tourgrenzen-/Fahrzeugwechsel aus main bleiben vollständig erhalten; dazugehörige neue Anzeigen ebenfalls übersetzt.
 - Kein physischer Gerätetest durch Codex.
+
+## Materialbeschaffung — 20.10.2026
+
+Die vollständige Beschaffung wurde in die mobile Version integriert. `procurement-runtime.js` kapselt serverseitige Preise, Loot, Einsätze, hinterlegte Vorauszahlungen, Reserveprüfung und chronologische Offline-Abrechnung. Die mobile Oberfläche nutzt die bestehenden authentifizierten und deduplizierten Commands. Es gibt keine neue native Abhängigkeit.
+
+Prüfung:
+- TypeScript erfolgreich; 85 Tests erfolgreich, einschließlich 14 neuer Beschaffungsprüfungen und einer Übersetzungsprüfung. Der bestehende Test für das einmalige Kapazitätsmodul wurde auf den neu vereinbarten Zeitpunkt bei der Endloslieferung angepasst. Alle ursprünglichen Webregressionen unverändert erfolgreich.
+- Echte Command-Abfolge von Ortsentdeckung über sieben abgeholte Lieferungen bis zum abgeholten Endlosauftrag und Beschaffungsstart; alte vollständige Regionen werden automatisch erkannt, bereits vergebene Module bleiben erhalten.
+- Tour 7 von 10: Sofortabbruch verliert Tour 7 und erstattet 8–10; reguläres Beenden vollendet Tour 7 und erstattet 8–10. Beide Aktionen auch im Reservemodus geprüft.
+- Vorauszahlung, Geldmangel, ungültige Eingaben, doppelte Einsätze, reservierte Einzelauftragswechsel, Garagensperren, paralleler Flottenauftrag, gleichzeitige Reserveabfahrten ohne negatives Konto, regionale Preise und gleicher Lootpool geprüft.
+- Offline-Betrieb, erneutes Laden, mehrfaches Abholen, Start weiterer Beschaffungen mit unabgeholtem Loot, eingefrorene aktive Touren bei Upgrades sowie keine XP/Beziehungs-/tkm-Nebenbelohnungen geprüft. Einnahmen vor/nach Reserveende werden zeitlich korrekt behandelt.
+- Langzeitprüfung: 10.000 vollständige Offlinefahrten in ca. 84 ms abgerechnet; exakt 10.000 erfolgreiche Abholungen, keine verbleibenden Münzen bei passendem Budget.
+- Android-Export erfolgreich. Lokale React-Native-Web-Prüfung mit ausschließlich lokalem Testspielstand: Startseitenzugang, gesperrte Stellen, Fahrzeugwahl, Kosten-/Dauervorschau, Vorauszahlung, Beenden nach Tour, Abholung, Reservemodus und Sofortabbruch bedient. Bei 320, 390 und 430 px kein horizontaler Überlauf; keine JavaScript-Laufzeitfehler. Die Firebase-Testverbindung wurde vor der Veröffentlichung vollständig entfernt.
+- Der Deployment-Smoke-Test prüft zusätzlich die neuen Beschaffungspreise, fehlende Freischaltungen und wirkungslose leere Belohnungsabholung gegen das echte Backend.
+
+Ein Test auf einem physischen Android-Gerät ist durch diese Prüfungen nicht ersetzt. Prestige-Meilensteine, regionaler Zusatzloot und Monument-Events sind weiterhin spätere Erweiterungen.

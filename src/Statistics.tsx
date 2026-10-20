@@ -5,6 +5,9 @@ export function Statistics({state:g}:any){
  const rows=[
   ['Frachtumsatz',`${n(g.stats.grossRevenue,2)} M`],
   ['Betriebskosten',`${n(g.stats.operatingCosts,2)} M`],
+  ['Beschaffungskosten',`${n(g.procurement?.spent,2)} M`],
+  ['Beschaffung: hinterlegtes Guthaben',`${n((g.procurement?.runs||[]).reduce((sum:number,r:any)=>sum+r.escrow,0),2)} M`],
+  ['Erfolgreiche Abholungen',n(g.procurement?.completed)],
   ['Prämien',`${n(g.stats.contractBonusRevenue,2)} M`],
   ['Touren',n(g.stats.trips)],
   ['Aufträge',n(g.completed)],

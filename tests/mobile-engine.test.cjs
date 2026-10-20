@@ -121,8 +121,8 @@ test('Expedition map has five customer regions, seven places each and preserves 
  assert.equal(explored.view.expeditionMap[0].discovered,7);
  assert.equal(explored.view.expeditionMap[0].deliveries,0);
  assert.equal(explored.view.expeditionMap[0].finalClaimed,false);
- assert.equal(explored.state.inventory.capacityModules,1);
- assert.equal(execute(explored.state,'discover',{region:0},now,fixed).state.inventory.capacityModules,1);
+ assert.equal(explored.state.inventory.capacityModules,0);
+ assert.equal(execute(explored.state,'discover',{region:0},now,fixed).state.inventory.capacityModules,0);
  assert.equal(explored.view.expeditionMap[0].progress,100);
  assert.equal(explored.view.expeditionMap[1].open,true);
  assert.equal(explored.view.expeditionMap[2].open,false);
