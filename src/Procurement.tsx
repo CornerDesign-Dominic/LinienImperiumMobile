@@ -2,9 +2,16 @@ import React,{useEffect,useState} from 'react';
 import {View,TextInput,Modal,ScrollView,Pressable,StyleSheet} from 'react-native';
 import {Text} from './Language';
 import {t as translate} from './i18n';
-import {Icon} from './Icon';
-import {C,Txt,Card,Row,Btn,Bar,Pill,n,remaining} from './ui';
-import {itemName} from './items';
+import {Icon,stockIcon} from './Icon';
+import {regionIdentities} from './regionIdentities';
+import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining} from './ui';
+import {itemName,rarityColor} from './items';
+
+export const procurementHelpNotes=[
+ ['Beschaffung planen','Materialien einkaufen und mit Garagenfahrzeugen abholen. Teuer, dauerhaft und auch offline.'],
+ ['Mehrere Fahrzeuge','Alle gewählten Fahrzeuge teilen sich die Tourenzahl oder Reserve. Das nächste freie Fahrzeug übernimmt die nächste Tour. Ohne weitere Tour wird es automatisch frei. Reicht der gemeinsame Vorrat bis zur Reserve nicht für die nächste Tour, scheidet das Fahrzeug aus und startet später nicht automatisch neu.'],
+ ['Fahrzeuge im Einsatz','Flotteneinsätze bleiben parallel erlaubt. Andere Garageneinsätze sind während der Beschaffung gesperrt.'],
+];
 
 export function ProcurementNotice({data,onOpen}:any){
  const p=data.procurement;if(!p)return null;
@@ -16,6 +23,7 @@ export function ProcurementNotice({data,onOpen}:any){
 export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,modalBlocked=false}:any){
  const p=data.procurement,g=data.state;
  const [region,setRegion]=useState<number|null>(null),[truckIds,setTruckIds]=useState<string[]>([]),[mode,setMode]=useState('count'),[value,setValue]=useState('1'),[picker,setPicker]=useState(false);
+ const [dialog,setDialog]=useState<'book'|'sites'|'settings'|null>(null),[expanded,setExpanded]=useState<number[]>([]),[saveFailed,setSaveFailed]=useState(false);
  useEffect(()=>{
   if(!p)return;
   setTruckIds(ids=>{const next=ids.filter(id=>p.vehicles.some((v:any)=>v.id===id&&v.free));return next.length===ids.length?ids:next;});
@@ -26,10 +34,15 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
  const amount=/^\d+$/.test(value)?Number(value):NaN;
  const max=site?Math.min(100000,Math.floor(g.coins/site.price)):0;
  const valid=site?.unlocked&&selectedVehicles.length>0&&Number.isSafeInteger(amount)&&amount>=0&&(mode==='count'?amount>0&&amount<=max:amount<=1000000000&&g.coins-site.price>=amount);
- const pending=Object.values(p.pending).some((v:any)=>v>0);
+ const rewards=Object.entries(p.pending).filter(([,amount]:any)=>amount>0).map(([id,amount])=>({id,amount}));
+ const regionTitle=(index:number)=>regionIdentities[index]?.title||data.catalog.regionNames[index];
+ const visited=p.sites.filter((s:any)=>s.completed>0);
+ const rewardInfo=(id:string)=>{const rarity=data.catalog.rarities.find((r:any)=>r.id===id);return {name:rarity?`${rarity.label}-Zahnräder`:itemName(id,2),icon:stockIcon(rarity?`gear:${id}`:id),color:rarity?rarityColor(id):C.gold};};
+ const rewardTiles=(items:any[],amounts=false)=><View style={styles.rewards}>{items.map(item=>{const info=rewardInfo(item.id);return <View key={item.id} accessible accessibilityLabel={`${translate(info.name)}${amounts?`: ${n(item.amount)}`:''}`} style={styles.reward}><Icon name={info.icon} color={info.color} size={30}/>{amounts?<Txt style={styles.rewardAmount}>{n(item.amount)}</Txt>:<Text numberOfLines={2} style={styles.rewardName}>{info.name}</Text>}</View>;})}</View>;
+ const close=()=>{setDialog(null);setRegion(null);setPicker(false);setSaveFailed(false);};
  const runs=[...(p.groups||[]),...p.runs.filter((r:any)=>!r.groupId)];
  const active=runs.filter((r:any)=>r.status==='active');
- const open=(index:number)=>{setRegion(index);setTruckIds([]);setValue('1');setMode('count');setPicker(false);};
+ const open=(index:number)=>{setRegion(index);setTruckIds([]);setValue('1');setMode('count');setPicker(false);setSaveFailed(false);setDialog('settings');};
  const vehicleTile=(v:any,selected:boolean)=><Pressable key={v.id} accessibilityRole="button" accessibilityLabel={translate(v.model)+(selected?', '+translate('Entfernen'):'')} disabled={busy} onPress={()=>{if(selected)setTruckIds(ids=>ids.filter(id=>id!==v.id));else{setTruckIds(ids=>ids.includes(v.id)?ids:[...ids,v.id]);setPicker(false);}}} style={[styles.tile,selected&&{borderColor:C.accent,backgroundColor:C.greenWash}]}>
   <Icon name="truck" color={C.gold}/>{selected&&<Icon name="close" size={12} color={C.muted} style={{position:'absolute',top:5,right:5}}/>}<Text numberOfLines={2} style={{color:C.text,fontSize:12}}>{v.model}</Text><Txt style={styles.vehicleStat}>{n(v.capacity,1)} t</Txt><Txt muted style={styles.vehicleStat}>{n(v.speed,2)} km/s</Txt>
  </Pressable>;
@@ -39,11 +52,12 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
   ()=>onCommand(r.vehicleIds?'procurementGroupStop':'procurementStop',{id:r.id,immediate}));
 
  return <>
-  <Card><Row><Txt style={styles.heading}>Abholungsbuch</Txt><Pill>{n(p.completed)}</Pill></Row><Txt muted>Erfolgreiche Abholungen insgesamt</Txt></Card>
-  <Card><Txt style={styles.heading}>Gesammelte Belohnungen</Txt>{['common','uncommon','rare','companyItems'].map(key=><Row key={key}><Txt>{key==='companyItems'?itemName(key,2):translate(`${key==='common'?'Common':key==='uncommon'?'Uncommon':'Rare'}-Zahnräder`)}</Txt><Txt gold>{n(p.pending[key])}</Txt></Row>)}<Btn disabled={busy||!pending} onPress={()=>onCommand('procurementClaim')}>Alle Belohnungen abholen</Btn></Card>
+  <Pressable accessibilityRole="button" accessibilityLabel={translate('Abholungsbuch öffnen')} onPress={()=>setDialog('book')}><Card><Row style={{marginBottom:0,flexWrap:'nowrap'}}><Icon name="book" size={27} color={C.gold}/><Txt style={[styles.heading,{flex:1,marginBottom:0}]}>Abholungsbuch</Txt><Pill>{n(p.completed)}</Pill><Icon name="chevron" size={16}/></Row></Card></Pressable>
+  {rewards.length>0&&<Card><Txt style={styles.heading}>Belohnungen</Txt>{rewardTiles(rewards,true)}<Btn disabled={busy} onPress={()=>onCommand('procurementClaim')}>Einsammeln</Btn></Card>}
+  <Pressable accessibilityRole="button" accessibilityLabel={translate('Beschaffungsort wählen')} onPress={()=>setDialog('sites')}><Card><Row style={{marginBottom:4,flexWrap:'nowrap'}}><Icon name="expedition" size={25} color={C.gold}/><Txt style={[styles.heading,{flex:1,marginBottom:0}]}>Beschaffungsort wählen</Txt><Icon name="chevron" size={16}/></Row><Txt muted>Wähle, woher du Materialien beschaffen möchtest.</Txt></Card></Pressable>
   {active.length>0&&<Txt style={styles.heading}>Laufende Beschaffungen</Txt>}
   {active.map((r:any)=><Card key={r.id}>
-   <Row><Txt style={styles.heading}>{r.vehicleIds?translate('Beschaffung {0}').replace('{0}',String(r.region+1)):r.model}</Txt>{r.vehicleIds?<Pill>{r.vehicles.filter((v:any)=>v.status==='active').length} {r.vehicles.filter((v:any)=>v.status==='active').length===1?'Fahrzeug':'Fahrzeuge'}</Pill>:<Pill>{translate('Beschaffung {0}').replace('{0}',String(r.region+1))}</Pill>}</Row>
+   <Row><Txt style={styles.heading}>{r.vehicleIds?regionTitle(r.region):r.model}</Txt>{r.vehicleIds?<Pill>{r.vehicles.filter((v:any)=>v.status==='active').length} {r.vehicles.filter((v:any)=>v.status==='active').length===1?'Fahrzeug':'Fahrzeuge'}</Pill>:<Pill>{regionTitle(r.region)}</Pill>}</Row>
    <Txt muted>{r.mode==='count'?translate('{0} / {1} Touren abgeschlossen').replace('{0}',n(r.completed)).replace('{1}',n(r.requested)):translate('Bis Reserve von {0} M').replace('{0}',n(r.reserve))}</Txt>
    {r.mode==='count'&&<><Bar value={r.completed/r.requested*100}/><Txt muted>{translate('Hinterlegt: {0} M').replace('{0}',n(r.escrow))}</Txt></>}
    {(r.vehicles||[r]).filter((v:any)=>v.status==='active').map((v:any)=><View key={v.id} style={{marginTop:10}}>
@@ -55,19 +69,25 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
    {r.stopAfter?<Pill>{r.vehicleIds?'Endet nach laufenden Touren':'Endet nach laufender Tour'}</Pill>:<Btn secondary disabled={busy} onPress={()=>stop(r,false)}>{r.vehicleIds?'Nach laufenden Touren beenden':'Nach laufender Tour beenden'}</Btn>}
    <Btn secondary danger disabled={busy} onPress={()=>stop(r,true)}>Sofort abbrechen</Btn>
   </Card>)}
-  <Txt style={styles.heading}>Beschaffungsstellen</Txt>
-  {p.sites.map((s:any)=><Card key={s.region}><Row><Icon name={s.unlocked?'crafting':'lock'} color={C.gold}/><Txt style={[styles.heading,{flex:1}]}>{translate('Beschaffung {0}').replace('{0}',String(s.region+1))}</Txt><Pill>{s.unlocked?'Freigeschaltet':'Gesperrt'}</Pill></Row><Txt muted>{data.catalog.regionNames[s.region]}</Txt><Txt gold>{translate('{0} M je Tour').replace('{0}',n(s.price))}</Txt><Txt muted>{translate('{0} erfolgreiche Abholungen').replace('{0}',n(s.completed))}</Txt>{s.unlocked?<Btn disabled={busy} onPress={()=>open(s.region)}>Fahrzeug einsetzen</Btn>:<><Txt muted>{translate('Orte {0}/7 · Lieferungen {1}/7 · Endloslieferung {2}/1').replace('{0}',String(s.discovered)).replace('{1}',String(s.deliveries)).replace('{2}',String(Number(s.finalClaimed)))}</Txt><Btn secondary onPress={()=>onExpedition(s.region)}>Zur Expedition</Btn></>}</Card>)}
-  {runs.some((r:any)=>r.status==='finished')&&<><Txt style={styles.heading}>Beendete Beschaffungen</Txt>{runs.filter((r:any)=>r.status==='finished').map((r:any)=><Card key={r.id}><Txt>{r.vehicleIds?translate('Beschaffung {0}').replace('{0}',String(r.region+1)):r.model}</Txt><Txt muted>{translate('{0} erfolgreiche Abholungen').replace('{0}',n(r.completed))}</Txt><Txt muted>{r.reason==='reserve'?'Beendet: Reserve erreicht. Zum Fortsetzen neu starten.':r.reason==='cancelled'?'Sofort abgebrochen':r.reason==='completed'?'Alle Touren abgeschlossen':'Nach laufender Tour beendet'}</Txt></Card>)}</>}
-  <Card><Txt style={styles.heading}>Loot je Tour</Txt><Txt muted>5 Common-Zahnräder garantiert. Unabhängig: 20 % auf 1 Uncommon-Zahnrad, 0,3 % auf 1 Rare-Zahnrad, 0,1 % auf 1 Firmenausbau-Item. In allen Regionen gleich.</Txt><Txt muted>Keine Münzen, XP, Kundenpunkte oder zusätzlichen tkm-Belohnungen.</Txt></Card>
-  <Card><Txt style={styles.heading}>Hinweise</Txt>
-   <Txt muted>Materialien einkaufen und mit Garagenfahrzeugen abholen. Teuer, dauerhaft und auch offline.</Txt>
-   <Txt muted style={styles.note}>Alle gewählten Fahrzeuge teilen sich die Tourenzahl oder Reserve. Das nächste freie Fahrzeug übernimmt die nächste Tour. Ohne weitere Tour wird es automatisch frei.</Txt>
-   <Txt style={styles.note}>Feste Tourenzahl</Txt><Txt muted>Der Gesamtbetrag wird sofort hinterlegt. Ungestartete Touren werden beim Beenden erstattet.</Txt>
-   <Txt style={styles.note}>Bis Reserve</Txt><Txt muted>Jede Tour wird bei ihrem Start bezahlt. Reicht der gemeinsame Vorrat bis zur Reserve nicht für die nächste Tour, scheidet das Fahrzeug aus. Es startet später nicht automatisch neu.</Txt>
-   <Txt muted style={styles.note}>Flotteneinsätze bleiben parallel erlaubt. Andere Garageneinsätze sind während der Beschaffung gesperrt.</Txt>
-  </Card>
-  <Modal visible={region!==null&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setRegion(null)}>
-   <View style={styles.overlay}><View style={styles.modal}><Row><Txt style={styles.heading}>{translate('Beschaffung {0}').replace('{0}',String((region??0)+1))}</Txt><Btn icon="close" secondary onPress={()=>setRegion(null)}>Schließen</Btn></Row><ScrollView keyboardShouldPersistTaps="handled">
+  <Modal visible={dialog!==null&&!modalBlocked} transparent animationType="none" onRequestClose={()=>dialog==='settings'?setDialog('sites'):close()}>
+   <View style={styles.overlay}><View style={styles.modal}>
+    <Row style={{flexWrap:'nowrap'}}>{dialog==='settings'&&<Pressable accessibilityRole="button" accessibilityLabel={translate('Zur Ortsauswahl')} onPress={()=>{setSaveFailed(false);setDialog('sites');}} style={styles.back}><Icon name="back" size={21}/></Pressable>}<Txt style={[styles.heading,{flex:1,minWidth:0,marginBottom:0}]}>{dialog==='book'?'Abholungsbuch':dialog==='sites'?'Beschaffungsort wählen':'Beschaffung planen'}</Txt><Btn icon="close" secondary style={{marginTop:0}} onPress={close}>Schließen</Btn></Row>
+    <ScrollView key={dialog} keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:4}}>
+     {dialog==='book'&&<>
+      <Row><Txt muted>Erfolgreiche Abholungen insgesamt</Txt><Txt gold>{n(p.completed)}</Txt></Row>
+      {visited.length?visited.map((s:any)=><View key={s.region} style={styles.logRow}><Txt style={{flex:1}}>{regionTitle(s.region)}</Txt><Txt gold>{n(s.completed)}</Txt></View>):<Empty>Noch keine erfolgreichen Abholungen.</Empty>}
+      {runs.some((r:any)=>r.status==='finished')&&<><Txt style={styles.heading}>Beendete Beschaffungen</Txt>{runs.filter((r:any)=>r.status==='finished').map((r:any)=><Card key={r.id}><Txt>{regionTitle(r.region)}</Txt>{!r.vehicleIds&&<Txt muted>{r.model}</Txt>}<Txt muted>{translate('{0} erfolgreiche Abholungen').replace('{0}',n(r.completed))}</Txt><Txt muted>{r.reason==='reserve'?'Beendet: Reserve erreicht. Zum Fortsetzen neu starten.':r.reason==='cancelled'?'Sofort abgebrochen':r.reason==='completed'?'Alle Touren abgeschlossen':'Nach laufender Tour beendet'}</Txt></Card>)}</>}
+     </>}
+     {dialog==='sites'&&p.sites.map((s:any)=>{const shown=expanded.includes(s.region);return <Card key={s.region}>
+      <Pressable accessibilityRole="button" accessibilityLabel={translate('{0} als Beschaffungsort wählen').replace('{0}',translate(regionTitle(s.region)))} accessibilityState={{disabled:busy||!s.unlocked}} disabled={busy||!s.unlocked} onPress={()=>open(s.region)} style={styles.siteChoice}>
+       <Row style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={[styles.heading,{flex:1,marginBottom:0}]}>{regionTitle(s.region)}</Txt><Icon name={s.unlocked?'chevron':'lock'} size={18} color={C.gold}/></Row><Txt gold>{translate('{0} M je Tour').replace('{0}',n(s.price))}</Txt>
+      </Pressable>
+      {!s.unlocked&&<><Pill>Gesperrt</Pill><Txt muted style={{fontSize:12,marginTop:7}}>{translate('Orte {0}/7 · Lieferungen {1}/7 · Endloslieferung {2}/1').replace('{0}',String(s.discovered)).replace('{1}',String(s.deliveries)).replace('{2}',String(Number(s.finalClaimed)))}</Txt><Btn secondary onPress={()=>{close();onExpedition(s.region);}}>Zur Expedition</Btn></>}
+      <Pressable accessibilityRole="button" accessibilityLabel={translate('Belohnungen in {0}').replace('{0}',translate(regionTitle(s.region)))} accessibilityState={{expanded:shown}} aria-expanded={shown} onPress={()=>setExpanded(ids=>shown?ids.filter(i=>i!==s.region):[...ids,s.region])} style={styles.disclosure}><Txt>Belohnungen</Txt><Icon name="chevron" size={14} style={{transform:[{rotate:shown?'90deg':'0deg'}]}}/></Pressable>
+      {shown&&rewardTiles((s.loot||p.loot).filter((item:any)=>item.chance>0&&item.amount>0))}
+     </Card>;})}
+     {dialog==='settings'&&<>
+      <Txt muted>{site&&regionTitle(site.region)}</Txt>
     <View style={styles.grid}>
      {selectedVehicles.map((v:any)=>vehicleTile(v,true))}
      <Pressable accessibilityRole="button" accessibilityLabel={translate('Fahrzeug hinzufügen')} disabled={busy||!available.length} onPress={()=>setPicker(v=>!v)} style={[styles.tile,styles.addTile,(busy||!available.length)&&{opacity:.45}]}><Icon name="plus" size={26} color={C.muted}/></Pressable>
@@ -82,12 +102,17 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
     </View>
     <Txt muted>{translate('Verfügbar: {0} M').replace('{0}',n(g.coins))}</Txt>
     <Btn disabled={busy||!valid} onPress={async()=>{
+     setSaveFailed(false);
      const trucks=selectedVehicles.map((v:any)=>v.id);
      const next=await onCommand('procurementGroupStart',{region,trucks,mode,amount});
-     if(next?.procurement.groups.some((r:any)=>r.region===region&&trucks.every((id:string)=>r.vehicleIds.includes(id))))setRegion(null);
+     if(next?.procurement.groups.some((r:any)=>r.region===region&&r.status==='active'&&trucks.every((id:string)=>r.vehicleIds.includes(id))))close();
+     else setSaveFailed(true);
     }}>Beschaffung starten</Btn>
+    {saveFailed&&<Text accessibilityRole="alert" style={{color:C.red,marginTop:8}}>Beschaffung konnte nicht gestartet werden. Bitte Auswahl und Guthaben prüfen.</Text>}
+    </>}
    </ScrollView></View></View>
   </Modal>
  </>;
 }
-const styles=StyleSheet.create({heading:{fontSize:17,fontWeight:'700',marginBottom:8},input:{borderWidth:1,borderColor:C.line,borderRadius:5,padding:12,color:C.text,backgroundColor:C.raised,marginVertical:10},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:16},modal:{width:'100%',maxWidth:480,maxHeight:'88%',alignSelf:'center',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:12,padding:16},vehicleStat:{fontSize:11,lineHeight:15},note:{marginTop:10},amountRow:{flexDirection:'row',alignItems:'center',gap:8},addTile:{borderStyle:'dashed',alignItems:'center',justifyContent:'center',backgroundColor:'transparent'},grid:{flexDirection:'row',flexWrap:'wrap',gap:6,marginVertical:10},tile:{width:'31%',minHeight:100,borderWidth:1,borderColor:C.line,padding:8,borderRadius:5,gap:5}});
+const styles=StyleSheet.create({rewards:{flexDirection:'row',flexWrap:'wrap',gap:12,marginVertical:8},reward:{minWidth:50,maxWidth:92,alignItems:'center',justifyContent:'center',gap:5},rewardAmount:{fontWeight:'700',fontSize:15},rewardName:{color:C.text,fontSize:10,lineHeight:14,textAlign:'center'},logRow:{flexDirection:'row',alignItems:'center',gap:12,paddingVertical:12,borderBottomWidth:1,borderBottomColor:C.line,marginBottom:5},siteChoice:{minHeight:54,justifyContent:'center'},disclosure:{minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'space-between',borderTopWidth:1,borderTopColor:C.line,marginTop:10},back:{width:32,minHeight:44,alignItems:'center',justifyContent:'center'},heading:{fontSize:17,fontWeight:'700',marginBottom:8},input:{borderWidth:1,borderColor:C.line,borderRadius:5,padding:12,color:C.text,backgroundColor:C.raised,marginVertical:10},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:16},modal:{width:'100%',maxWidth:480,maxHeight:'88%',alignSelf:'center',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:12,padding:16},vehicleStat:{fontSize:11,lineHeight:15},amountRow:{flexDirection:'row',alignItems:'center',gap:8},addTile:{borderStyle:'dashed',alignItems:'center',justifyContent:'center',backgroundColor:'transparent'},grid:{flexDirection:'row',flexWrap:'wrap',gap:6,marginVertical:10},tile:{width:'31%',minHeight:100,borderWidth:1,borderColor:C.line,padding:8,borderRadius:5,gap:5}});
+
