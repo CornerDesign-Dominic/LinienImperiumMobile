@@ -5,6 +5,7 @@ const vm = require('node:vm');
 const itemNames = require('./item-names.json');
 const {eventViews, changeEvent, assignEventFleet, EVENT_PROJECT_DISTANCE_KM} = require('./events.cjs');
 const procurementRuntime = fs.readFileSync(path.join(__dirname, 'procurement-runtime.js'), 'utf8');
+const giftsRuntime = fs.readFileSync(path.join(__dirname, 'gifts-runtime.js'), 'utf8');
 const tourRuntime = fs.readFileSync(path.join(__dirname, 'tour-runtime.js'), 'utf8');
 const source = fs.readFileSync(path.join(__dirname, '../vendor/web-game.js'), 'utf8');
 const boundary = source.indexOf("  document.addEventListener('click'");
@@ -14,6 +15,7 @@ const EXPEDITION_TEST_DURATION_MS = 15000;
 const bridge = `
   const itemNames = ${JSON.stringify(itemNames)};
   const expeditionTestDuration = ${JSON.stringify(EXPEDITION_TEST_DURATION_MS)};
+  ${giftsRuntime}
   const originalNewGame=newGame;
   newGame=(...args)=>{const state=originalNewGame(...args);state.inventory.expeditionRefills=0;return state;};
   awardTransportXp=xp=>{
@@ -186,7 +188,7 @@ const bridge = `
       return true;
     },
     spendMaxOvertime(orderId){const amount=overtimeToDeadline(game.orders.find(o=>o.id===orderId));return amount>0?spendOvertime(orderId,amount):false;},
-    discoverExpeditionPlace, drawExpeditionJob, startExpeditionMission, claimExpeditionMission,
+    discoverExpeditionPlace, drawExpeditionJob, openRegionGift, startExpeditionMission, claimExpeditionMission,
     buyHub, toggleHubTruck, collectHub, startHubUpgrade, combinePickupHints, craftCustomerOrder,
     unlockDepartment, upgradeWorkshop, upgradeSales, upgradeOfferLimit, upgradeTransport,
     allocateCustomerBatch(customerId,points,base) {
@@ -283,6 +285,7 @@ const bridge = `
       const free = new Set(freeTrucks().map(t => t.id));
       const catalog = {
         cities: START_CITIES.map(({id, city, country, continent}) => ({id, city, country, continent})),
+        gifts:EXPEDITION_REGIONS.map((name,region)=>({region,name,cost:GIFT_OPEN_COINS,cards:regionVehiclePool(region).map(card=>({...card,chance:round2(card.chance*100)}))})),
         cards: EXPEDITION_CHARACTERS, rarities: RARITIES, models: TRUCKS,
         customers: CUSTOMERS, categories: CATEGORIES, departments: DEPARTMENTS,
         refillPoints:{expedition:50,overtime:OVERTIME_REFILL_POINTS},
@@ -361,7 +364,7 @@ const bridge = `
           progress:Array.from({length:7},(_,place)=>place<region.discovered?expeditionDiscoveryCost(index,place):(region.discoveryPoints?.[place]||0)).reduce((sum,v)=>sum+v,0)/Array.from({length:7},(_,place)=>expeditionDiscoveryCost(index,place)).reduce((sum,v)=>sum+v,0)*100,
           places:Array.from({length:7},(_,place)=>({index:place,discoveryCost:expeditionDiscoveryCost(index,place),invested:place<region.discovered?expeditionDiscoveryCost(index,place):(region.discoveryPoints?.[place]||0),durationMs:expeditionDuration(index,'delivery',place)})),
           finds:{cost:EXPEDITION_COST,
-            cards:EXPEDITION_CARD_CHANCES.map(chance=>{const card=EXPEDITION_CHARACTERS.find(c=>c.region===index&&c.rarity===chance.rarity);return {id:card.id,name:card.name,rarity:chance.rarity,chance:round2(chance.chance*100)};}),
+            cards:regionVehiclePool(index).map(card=>({id:card.id,name:card.name,rarity:card.rarity,chance:round2(card.chance*EXPEDITION_CARD_CHANCES.reduce((sum,item)=>sum+item.chance,0)*100)})),
             orders:EXPEDITION_JOB_WEIGHTS.map(weight=>({kind:weight.kind,name:weight.kind==='character'?itemNames.character[0]:weight.kind==='material'?itemNames.material[0]:weight.kind==='special'?'Sonderauftrag '+mobileProjectNames.special[index].slice('Großauftrag '.length):'Empfehlungsauftrag '+mobileProjectNames.referral[0].slice('Großprojekt '.length),chance:round2((1-EXPEDITION_CARD_CHANCES.reduce((sum,c)=>sum+c.chance,0))*weight.chance*100),...(weight.kind==='character'||weight.kind==='material'?{ranks:EXPEDITION_STAGE_WEIGHTS[index].flatMap((chance,i)=>chance>0?[{rank:i+1,chance:round2(chance*100)}]:[])}:{rarity:weight.kind==='special'?'rare':'epic'})}))
           },
           finalDurationMs:expeditionDuration(index,'final')
@@ -442,6 +445,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     buyTruck:()=>a.buyTruck(num(p.model,1)),rank:()=>a.upgradeTruckRarity(id(p.id)),capacity:()=>a.upgradeTruckCapacity(id(p.id)),sell:()=>a.sell(id(p.id)),
     assign:()=>a.assignOrder(id(p.order),id(p.truck)),assignPrivate:()=>a.assignPrivatePickup(id(p.order),id(p.truck)),assignCrafted:()=>a.assignCraftedOrder(id(p.order),id(p.truck)),
     projectStart:()=>a.startFleetProject(id(p.id),num(p.template,2)),overtime:()=>p.amount==='max'?a.spendMaxOvertime(id(p.id)):a.spendOvertime(id(p.id),num(p.amount)),refill:()=>a.useOvertimeRefill(),expeditionRefill:()=>a.useExpeditionRefill(),
+    giftOpen:()=>a.openRegionGift(num(p.region,4)),
     claimSingles:()=>a.claimSingleRewards(),
     claim:()=>a.claimOrderReward(id(p.id)),claimAll:()=>{for(const order of a.state.orders)a.applyOrderReward(order);},
     discover:()=>a.discoverExpeditionPlace(num(p.region,4)),draw:()=>a.drawExpeditionJob(num(p.region,4)),
@@ -489,6 +493,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   view.message=normalizeNames(view.message);
   for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(normalizeNames);
   for(const key of Object.keys(view.help)){const help=view.help[key];help[1]=help[1].map(([title,body])=>[normalizeNames(title),normalizeNames(body)]);}
+  view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>title==='Fundchancen je Auslosung'?[title,'<p>Je Gebiet gibt es fünf Fahrzeugkarten. Insgesamt 10 % Kartenchance pro Expedition. Die Fahrzeugchancen und Auftragschancen stehen am Endlosort unter ?. Geschenke im Großhändler enthalten denselben Fahrzeugpool und geben garantiert eine Karte. Doppelte Karten geben 1 Shard derselben Seltenheit.</p>']:[title,body]);
   view.help.inventory[1].unshift(['Auffüller','Pro Levelaufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 verteilbare Punkte. Beide Auffüller geben beim Benutzen 50 Punkte.']);
   for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[title,body.replace(/Je Aufstieg: sofort 50 Expeditionspunkte, ein speicherbares Refill-Paket für 50 Überstundenpunkte sowie 5 dauerhaft verteilbare Punkte/g,'Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller sowie 3 dauerhaft verteilbare Punkte').replace(/Pro Level-up erhältst du ein speicherbares Überstundenauffüller für (?:50|100) Punkte\./g,'Auffüller werden in den Vorräten aufbewahrt.')]);
   for(const mission of view.state.expedition.missions)mission.reward=normalizeNames(mission.reward);
@@ -496,6 +501,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const levelUps=view.state.pendingLevelUps.filter(level=>!knownLevels.has(level));
   if(levelUps.length)view.levelUps=levelUps;
   if(['assign','assignPrivate','assignCrafted'].includes(action)&&view.state.orders.find(o=>o.id===p.order)?.status==='active')view.message='Auftrag gestartet.';
+  if(action==='giftOpen'&&ok!==false)view.giftFind=ok;
   if(action==='claimSingles'&&ok!==false)view.claimSummary=ok;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;
   if(action==='customerBatch')view.customerBatchApplied=ok===true;

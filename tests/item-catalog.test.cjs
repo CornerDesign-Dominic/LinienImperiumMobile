@@ -58,3 +58,11 @@ test('Found jobs stack by kind and rank, queued projects appear, and running wor
  assert.equal(stock.find(i=>i.id===`job:${job.kind}:${job.tier}`).amount,1);
  assert.ok(!stock.some(i=>i.id.startsWith('mission:')));
 });
+
+test('Epic vehicle duplicates remain visible as Epic shards in inventory',()=>{
+ const game=initial();game.view.state.expedition.shards.epic=3;
+ const shard=stockItems(game.view).find(item=>item.id==='shard:epic');
+ assert.ok(shard);assert.equal(shard.amount,3);assert.equal(shard.name,'Epic-Shard');
+ assert.equal(shard.color,require('../src/palette.json').epic);
+ assert.equal(shard.use,'cards');assert.equal(shard.recipe,undefined);
+});

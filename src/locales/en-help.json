@@ -134,7 +134,7 @@
     ],
     [
       "Discovery chances",
-      "An endless expedition costs 5 points. Absolute chances: Common card 6%, Uncommon 3%, Rare 1%, vehicle card contract 18%, material contract 67.5%, special contract 4.05%, referral contract 0.45%. Duplicates yield 1 shard of their rarity. The question mark at each endless location shows its regional cards and contract rank chances."
+      "Each region contains five vehicle cards. An endless expedition has a 10% total card chance. Region 1: 6% Common, 3% Uncommon, 1% Rare. Regions 2–5: 6% Common, 3% Uncommon, 0.9% Rare, 0.1% Epic. Cards of the same rarity are equally likely. The question mark at each endless location shows individual chances. Gifts at the wholesaler use the same regional pool and guarantee one card: 60% Common, 30% Uncommon and 10% Rare in region 1; 60% Common, 30% Uncommon, 9% Rare and 1% Epic in regions 2–5. Duplicates yield one shard of the same rarity. Contract chances remain unchanged."
     ],
     [
       "Locations and bonuses",

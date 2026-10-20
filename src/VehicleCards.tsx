@@ -13,7 +13,7 @@ export function VehicleCards({data,onOpen}:any){
  const {state:g,catalog:c}=data;
  return <>
   <AtlasHeading title="Deine Sammlung" detail="Fahrzeugkarten und die Fähigkeiten deiner Flotte."/>
-  <Row style={{marginBottom:14}}>{c.rarities.slice(0,3).map((r:any)=><Pill key={r.id}>{r.label}: {n(g.expedition.shards[r.id])}</Pill>)}</Row>
+  <Row style={{marginBottom:14}}>{c.rarities.filter((rarity:any)=>c.cards.some((card:any)=>card.rarity===rarity.id)).map((r:any)=><Pill key={r.id}>{r.label}: {n(g.expedition.shards[r.id])}</Pill>)}</Row>
   <VehicleCardGrid data={data} cards={c.cards} onOpen={onOpen}/>
  </>;
 }

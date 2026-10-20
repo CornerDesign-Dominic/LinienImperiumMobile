@@ -17,7 +17,7 @@ export function stockItems(data:any):StockItem[]{
   material('pickupHints','Kasse des Stadthubs.','Für die Herstellung von Privatabholungen.'),
   material('supplierContacts','Privatabholungen.','Für den Ausbau des Stadthub-Vertriebs.','hub'),
   ...c.rarities.map((r:any)=>({id:`gear:${r.id}`,name:`${r.label}-Zahnrad`,amount:g.inventory.gears[r.id]||0,source:'Abschlussprämien aus Aufträgen.',description:'Verbessert den Geschwindigkeitsrang eines Fahrzeugs.',color:rarityColor(r.id)})),
-  ...c.rarities.slice(0,3).map((r:any)=>({id:`shard:${r.id}`,name:`${r.label}-Shard`,amount:g.expedition.shards[r.id]||0,source:'Materialaufträge, Fahrzeugkartenaufträge und doppelte Fahrzeugkarten.',description:'Für Kartenstufen und Fahrzeugboni.',recipe:recipeText(`shard:${r.id}`),craft:recipes.some((recipe:any)=>recipe.inputId===`shard:${r.id}`||recipe.outputId===`shard:${r.id}`),use:'cards',color:rarityColor(r.id)}))
+  ...c.rarities.filter((rarity:any)=>c.cards.some((card:any)=>card.rarity===rarity.id)).map((r:any)=>({id:`shard:${r.id}`,name:`${r.label}-Shard`,amount:g.expedition.shards[r.id]||0,source:'Materialaufträge, Fahrzeugkartenaufträge und doppelte Fahrzeugkarten.',description:'Für Kartenstufen und Fahrzeugboni.',recipe:recipeText(`shard:${r.id}`),craft:recipes.some((recipe:any)=>recipe.inputId===`shard:${r.id}`||recipe.outputId===`shard:${r.id}`),use:'cards',color:rarityColor(r.id)}))
  ];
  for(const kind of ['material','character'])for(const rank of [1,2,3]){
   const amount=g.expedition.jobs.filter((j:any)=>j.kind===kind&&([1,2,3].includes(j.tier)?j.tier:1)===rank).length;

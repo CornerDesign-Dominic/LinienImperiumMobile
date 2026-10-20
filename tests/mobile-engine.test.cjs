@@ -7,7 +7,7 @@ test('Guest starts without a city, then all five mobile sections receive server 
  const guest=execute(null,'sync',{},now,fixed);
  assert.equal(guest.state.startCity,null);
  const game=execute(guest.state,'start',{id:'hamburg'},now,fixed);
- assert.equal(game.state.coins,1000);assert.equal(game.view.state.trucks.length,1);assert.equal(game.view.state.orders.length,5);assert.equal(game.view.templates.length,3);assert.equal(game.view.catalog.cards.length,15);
+ assert.equal(game.state.coins,1000);assert.equal(game.view.state.trucks.length,1);assert.equal(game.view.state.orders.length,5);assert.equal(game.view.templates.length,3);assert.equal(game.view.catalog.cards.length,25);
  const offer=game.view.state.orders.find(x=>x.choices.length);
  const active=execute(game.state,'assign',{order:offer.id,truck:offer.choices[0].id},now,fixed);
  assert.equal(active.state.orders.find(x=>x.id===offer.id).status,'active');
@@ -639,10 +639,10 @@ test('Every expedition exposes its actual absolute find chances and conditional 
  const view=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed).view;
  const weights=[[100],[75,25],[50,50],[25,50,25],[10,45,45]];
  for(const map of view.expeditionMap){
-  const finds=map.finds;assert.equal(finds.cost,5);assert.equal(finds.cards.length,3);assert.equal(finds.orders.length,4);
+  const finds=map.finds;assert.equal(finds.cost,5);assert.equal(finds.cards.length,5);assert.equal(finds.orders.length,4);
   assert.ok(Math.abs([...finds.cards,...finds.orders].reduce((sum,f)=>sum+f.chance,0)-100)<1e-6);
   for(const card of finds.cards)assert.equal(view.catalog.cards.find(c=>c.id===card.id).region,map.index);
-  assert.deepEqual(finds.cards.map(c=>c.chance),[6,3,1]);
+  assert.deepEqual(finds.cards.map(c=>c.chance),map.index===0?[3,1.5,1,3,1.5]:[3,3,.9,3,.1]);
   assert.deepEqual(finds.orders.map(o=>o.chance),[18,67.5,4.05,.45]);
   for(const order of finds.orders.filter(o=>o.ranks))assert.deepEqual(order.ranks.map(r=>r.chance),weights[map.index]);
   assert.match(finds.orders.find(o=>o.kind==='special').name,/^Sonderauftrag /);
