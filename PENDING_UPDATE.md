@@ -1,3 +1,18 @@
+## Sammelpaket vom 20.10.2026 – veröffentlicht
+
+Release: `ed597368074794f1535b8ce2a6d716f6519de0e1` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39419503174).
+
+- Typprüfung, alle 92 Tests und Android-Export bestanden.
+- Firebase-Deployment und Live-API-Prüfung erfolgreich.
+- Android-Update erfolgreich im bestehenden Kanal `preview` veröffentlicht; keine neue APK erforderlich.
+- Enthalten: Stadthubstatus in der bestehenden Kachel, doppelten Firmenzugang entfernt, Events als Legendär, mittiges Einzelprämienmodal mit Itemkacheln, kompaktere Herstellung mit Beständen und Materialfarben, Kundenbonus je Punkt, Angebotscountdown auf Start, kürzere Auftragskacheltexte, getrennte Expeditionsprozente und Bonuslieferdauer.
+- Großhändler → Geschenke: fünf regionale Geschenke, je 10 normale Münzen für eine Karte, je fünf Fahrzeuge im gemeinsamen Geschenk-/Expeditionspool, insgesamt 25 Karten. Doppelte Karten geben passende Shards; Epic-Shards in Vorräten und Sammlung sichtbar.
+- Region 1: 2 Common / 2 Uncommon / 1 Rare; Region 2–5: 2 Common / 1 Uncommon / 1 Rare / 1 Epic. Vorläufige Chancen und Boni in docs/ui/region-gifts.md dokumentiert.
+- Keine echte Kaufabwicklung, keine Geschenkfunde oder Geschenkherstellung aktiviert. Expeditionslieferungen bleiben vorläufig bei 15 Sekunden.
+- Die vorherigen Vorbereitungshinweise dokumentieren den Stand vor diesem Release. Physischer Gerätetest durch den Nutzer steht aus.
+
+---
+
 ## Sprach- und Vorratspaket – veröffentlicht am 19.10.2026
 
 - Erfolgreich veröffentlicht: Release `0ba088d8fba9f4cb8e3dd1c28bbbb9b6dce8265e`, Workflow 39307392702. Typprüfung, 70 Tests, Androidexport, Firebase-Deployment/Live-Test und Android-OTA erfolgreich.
