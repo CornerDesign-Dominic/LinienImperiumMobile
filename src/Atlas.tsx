@@ -1,6 +1,6 @@
 import React from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
-import {Icon} from './Icon';
+import {Icon,IconName} from './Icon';
 import {Text} from './Language';
 import {t as translate} from './i18n';
 import {C,displayFont,regionInks} from './theme';
@@ -13,8 +13,8 @@ export function CompanySummary({company,city,onOpen}:{company:string;city:string
   <Icon name="chevron" size={17} color={C.brassLight}/>
  </Pressable>;
 }
-export function AtlasHeading({title,detail}:{title:string;detail?:string}){
- return <View style={a.heading}><Compass size={34} color={C.gold}/><View style={{flex:1,minWidth:0}}><Text style={a.atlasTitle}>{title}</Text>{detail&&<Text style={a.detail}>{detail}</Text>}</View></View>;
+export function AtlasHeading({title,detail,icon='expedition'}:{title:string;detail?:string;icon?:IconName}){
+ return <View style={a.heading}><Icon name={icon} size={34} color={C.gold}/><View style={{flex:1,minWidth:0}}><Text style={a.atlasTitle}>{title}</Text>{detail&&<Text style={a.detail}>{detail}</Text>}</View></View>;
 }
 export function RegionSeal({index,locked=false}:{index:number;locked?:boolean}){
  const color=locked?C.muted:regionInks[index%regionInks.length];

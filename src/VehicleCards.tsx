@@ -1,8 +1,8 @@
 import {Text} from './Language';
 import {t as translate} from './i18n';
-import React from 'react';
+import React,{useState} from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
-import {C,Txt,Row,Pill,n} from './ui';
+import {C,Txt,Row,Empty,n} from './ui';
 import {Icon} from './Icon';
 import {AtlasHeading} from './Atlas';
 import {displayFont} from './theme';
@@ -11,10 +11,23 @@ import {rarityColor} from './items';
 
 export function VehicleCards({data,onOpen}:any){
  const {state:g,catalog:c}=data;
+ const [rarity,setRarity]=useState('all');
+ const matching=c.cards.filter((card:any)=>rarity==='all'||card.rarity===rarity);
+ const unlocked=matching.filter((card:any)=>!!g.expedition.characters[card.id]);
+ const locked=matching.filter((card:any)=>!g.expedition.characters[card.id]);
+ const filters=[{id:'all',label:'Alle'},...c.rarities];
  return <>
-  <AtlasHeading title="Deine Sammlung" detail="Fahrzeugkarten und die Fähigkeiten deiner Flotte."/>
-  <Row style={{marginBottom:14}}>{c.rarities.filter((rarity:any)=>c.cards.some((card:any)=>card.rarity===rarity.id)).map((r:any)=><Pill key={r.id}>{r.label}: {n(g.expedition.shards[r.id])}</Pill>)}</Row>
-  <VehicleCardGrid data={data} cards={c.cards} onOpen={onOpen}/>
+  <AtlasHeading title="Deine Sammlung" icon="cards"/>
+  <Row style={{marginBottom:14}}>{filters.map((filter:any)=>{
+   const active=rarity===filter.id,color=filter.id==='all'?C.accent:rarityColor(filter.id);
+   return <Pressable key={filter.id} accessibilityRole="button" accessibilityLabel={translate(filter.label)} accessibilityState={{selected:active}} onPress={()=>setRarity(filter.id)} style={[styles.filter,{borderColor:color},active&&{backgroundColor:C.greenWash}]}>
+    <Txt style={[styles.filterLabel,{color}]}>{filter.label}{filter.id!=='all'?`: ${n(g.expedition.shards[filter.id]||0)}`:''}</Txt>
+    {active&&<Icon name="check" size={12} color={color}/>}
+   </Pressable>;
+  })}</Row>
+  {!!unlocked.length&&<><Txt style={styles.section}>Freigeschaltet · {n(unlocked.length)}</Txt><VehicleCardGrid data={data} cards={unlocked} onOpen={onOpen}/></>}
+  {!!locked.length&&<><Txt muted style={styles.section}>Gesperrt · {n(locked.length)}</Txt><VehicleCardGrid data={data} cards={locked} onOpen={onOpen}/></>}
+  {!matching.length&&<Empty>Keine Fahrzeugkarten dieser Seltenheit.</Empty>}
  </>;
 }
 export function VehicleCardGrid({data,cards,onOpen,statusForCard,disabled=false}:any){
@@ -36,6 +49,7 @@ export function VehicleCardGrid({data,cards,onOpen,statusForCard,disabled=false}
  </>;
 }
 const styles=StyleSheet.create({
+ filter:{minHeight:44,paddingHorizontal:9,paddingVertical:6,borderWidth:1,borderRadius:6,backgroundColor:C.panel,flexDirection:'row',alignItems:'center',gap:5},filterLabel:{fontSize:11,fontWeight:'700'},section:{fontSize:12,fontWeight:'700',marginTop:4,marginBottom:10},
  assignment:{minHeight:32,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:3,borderRadius:3,paddingHorizontal:2,marginTop:5},assigned:{backgroundColor:C.greenWash},assignmentText:{flexShrink:1,fontSize:10,lineHeight:13,textAlign:'center',color:C.accent,fontWeight:'600'},
  row:{flexDirection:'row',gap:9,marginBottom:10},card:{flex:1,minWidth:0,borderWidth:1,borderRadius:6,borderTopWidth:3,backgroundColor:C.panel,padding:7},
  level:{fontSize:11,fontWeight:'700',textAlign:'center',lineHeight:19,marginBottom:5},

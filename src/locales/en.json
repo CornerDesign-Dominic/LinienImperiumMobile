@@ -782,5 +782,7 @@
   "Die laufenden Touren verfallen. Ungestartete Touren werden erstattet.": "Current trips are forfeited. Trips not started will be refunded.",
   "Alle laufenden Touren enden mit ihrer Belohnung. Ungestartete Touren werden erstattet.": "All current trips finish with their rewards. Trips not started will be refunded.",
   "Endet nach laufenden Touren": "Stops after current trips",
-  "Nach laufenden Touren beenden": "Stop after current trips"
+  "Nach laufenden Touren beenden": "Stop after current trips",
+  "Alle": "All",
+  "Keine Fahrzeugkarten dieser Seltenheit.": "No vehicle cards of this rarity."
 }
