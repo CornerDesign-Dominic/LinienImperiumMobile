@@ -11,9 +11,12 @@ function procurementState() {
 }
 function procurementPrice(region) { return 8000 + 4000 * region; }
 function procurementActive(truckId) { return procurementState().runs.find(r=>r.status==='active'&&r.truckId===truckId); }
-function procurementDuration(truck) {
+function procurementSpeed(truck) {
   const fresh={...truck};delete fresh.bonusStats;
-  return Math.ceil(PROCUREMENT_BASE_MS / truckSpeed(fresh,0));
+  return truckSpeed(fresh,0);
+}
+function procurementDuration(truck) {
+  return Math.ceil(PROCUREMENT_BASE_MS / procurementSpeed(truck));
 }
 const beforeProcurementFreeTrucks=freeTrucks;
 freeTrucks=()=>beforeProcurementFreeTrucks().filter(t=>!procurementActive(t.id));
@@ -95,6 +98,6 @@ function procurementView(now) {
   return {...p,loot:PROCUREMENT_LOOT,baseDurationMs:PROCUREMENT_BASE_MS,
     sites:game.expedition.regions.map((r,region)=>({region,price:procurementPrice(region),unlocked:expeditionRegionCompleted(r),
       discovered:r.discovered,deliveries:r.deliveries.filter(Boolean).length,finalClaimed:r.finalClaimed,completed:p.byRegion[region]})),
-    vehicles:game.trucks.filter(t=>t.cardId).map(t=>({id:t.id,model:t.model,cardId:t.cardId,free:freeTrucks().some(f=>f.id===t.id),durationMs:procurementDuration(t)})),
+    vehicles:game.trucks.filter(t=>t.cardId).map(t=>({id:t.id,model:t.model,cardId:t.cardId,capacity:t.capacity,speed:procurementSpeed(t),free:freeTrucks().some(f=>f.id===t.id),durationMs:procurementDuration(t)})),
     runs:p.runs.map(r=>({...r,progress:r.status==='active'?Math.min(100,Math.max(0,(now-r.startedAt)/r.durationMs*100)):100}))};
 }

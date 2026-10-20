@@ -17,6 +17,7 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
  const p=data.procurement,g=data.state;
  const [region,setRegion]=useState<number|null>(null),[truckId,setTruckId]=useState<string|null>(null),[mode,setMode]=useState('count'),[value,setValue]=useState('1'),[picker,setPicker]=useState(false);
  if(!p)return <Card><Txt muted>Beschaffung wird geladen …</Txt></Card>;
+ const freeVehicles=p.vehicles.filter((v:any)=>v.free);
  const site=p.sites.find((s:any)=>s.region===region),vehicle=p.vehicles.find((v:any)=>v.id===truckId);
  const amount=/^\d+$/.test(value)?Number(value):NaN;
  const max=site?Math.min(100000,Math.floor(g.coins/site.price)):0;
@@ -38,8 +39,8 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
   <Modal visible={region!==null&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setRegion(null)}>
    <View style={styles.overlay}><View style={styles.modal}><Row><Txt style={styles.heading}>{translate('Beschaffung {0}').replace('{0}',String((region??0)+1))}</Txt><Btn icon="close" secondary onPress={()=>setRegion(null)}>Schließen</Btn></Row><ScrollView keyboardShouldPersistTaps="handled">
     <Btn secondary onPress={()=>setPicker(v=>!v)}>{vehicle?.model||'Garagenfahrzeug wählen'}</Btn>
-    {picker&&<View style={styles.grid}>{p.vehicles.map((v:any)=><Pressable key={v.id} accessibilityRole="button" disabled={busy||!v.free} onPress={()=>{setTruckId(v.id);setPicker(false);}} style={[styles.tile,!v.free&&{opacity:.45},truckId===v.id&&{borderColor:C.accent}]}><Icon name="truck" color={C.gold}/><Text numberOfLines={2} style={{color:C.text,fontSize:12}}>{v.model}</Text><Txt muted>{v.free?'Bereit':'Im Einsatz'}</Txt></Pressable>)}</View>}
-    {!p.vehicles.some((v:any)=>v.free)&&<Txt muted>Kein freies Garagenfahrzeug</Txt>}
+    {picker&&<View style={styles.grid}>{freeVehicles.map((v:any)=><Pressable key={v.id} accessibilityRole="button" disabled={busy||!v.free} onPress={()=>{setTruckId(v.id);setPicker(false);}} style={[styles.tile,truckId===v.id&&{borderColor:C.accent,backgroundColor:C.greenWash}]}><Icon name="truck" color={C.gold}/><Text numberOfLines={2} style={{color:C.text,fontSize:12}}>{v.model}</Text><Txt style={styles.vehicleStat}>{n(v.capacity,1)} t</Txt><Txt muted style={styles.vehicleStat}>{n(v.speed,2)} km/s</Txt></Pressable>)}</View>}
+    {!freeVehicles.length&&<Txt muted>Kein freies Garagenfahrzeug</Txt>}
     <Row><Btn secondary={mode!=='count'} onPress={()=>{setMode('count');setValue('1');}}>Feste Tourenzahl</Btn><Btn secondary={mode!=='reserve'} onPress={()=>{setMode('reserve');setValue('0');}}>Bis Reserve</Btn></Row>
     <Txt>{mode==='count'?'Anzahl Touren':'Kontoreserve in Münzen'}</Txt>
     <TextInput accessibilityLabel={translate(mode==='count'?'Anzahl Touren':'Kontoreserve in Münzen')} keyboardType="number-pad" value={value} onChangeText={setValue} style={styles.input}/>
@@ -51,4 +52,4 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
   </Modal>
  </>;
 }
-const styles=StyleSheet.create({heading:{fontSize:17,fontWeight:'700',marginBottom:8},input:{borderWidth:1,borderColor:C.line,borderRadius:5,padding:12,color:C.text,backgroundColor:C.raised,marginVertical:10},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:16},modal:{width:'100%',maxWidth:480,maxHeight:'88%',alignSelf:'center',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:12,padding:16},grid:{flexDirection:'row',flexWrap:'wrap',gap:6,marginVertical:10},tile:{width:'31%',minHeight:100,borderWidth:1,borderColor:C.line,padding:8,borderRadius:5,gap:5}});
+const styles=StyleSheet.create({heading:{fontSize:17,fontWeight:'700',marginBottom:8},input:{borderWidth:1,borderColor:C.line,borderRadius:5,padding:12,color:C.text,backgroundColor:C.raised,marginVertical:10},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:16},modal:{width:'100%',maxWidth:480,maxHeight:'88%',alignSelf:'center',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:12,padding:16},vehicleStat:{fontSize:11,lineHeight:15},grid:{flexDirection:'row',flexWrap:'wrap',gap:6,marginVertical:10},tile:{width:'31%',minHeight:100,borderWidth:1,borderColor:C.line,padding:8,borderRadius:5,gap:5}});
