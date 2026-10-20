@@ -6,13 +6,6 @@ import {Icon} from './Icon';
 import {C,Txt,Card,Row,Btn,Bar,Pill,n,remaining} from './ui';
 import {itemName} from './items';
 
-export function ProcurementNotice({data,onOpen}:any){
- const p=data.procurement;if(!p)return null;
- const active=p.runs.filter((r:any)=>r.status==='active').length;
- const pending=Object.values(p.pending).reduce((sum:number,v:any)=>sum+v,0);
- if(!active&&!pending)return null;
- return <Card><Row><Icon name="crafting" color={C.gold}/><Txt style={{fontWeight:'700',flex:1}}>Materialbeschaffung</Txt></Row><Txt muted>{translate('{0} Fahrzeuge unterwegs').replace('{0}',n(active))}</Txt><Btn secondary onPress={onOpen}>{pending?'Belohnungen abholen':'Beschaffung öffnen'}</Btn></Card>;
-}
 export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,modalBlocked=false}:any){
  const p=data.procurement,g=data.state;
  const [region,setRegion]=useState<number|null>(null),[truckIds,setTruckIds]=useState<string[]>([]),[mode,setMode]=useState('count'),[value,setValue]=useState('1'),[picker,setPicker]=useState(false);
