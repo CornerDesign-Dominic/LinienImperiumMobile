@@ -7,7 +7,11 @@ import {AtlasHeading,RegionSeal,atlasStyles} from './Atlas';
 import {displayFont,regionInks} from './theme';
 import {rarityColor} from './items';
 const deliveryProgress=(mission:any,done:boolean,clock:number)=>done||mission?.status==='completed'?100:mission?.status==='active'?Math.max(0,Math.min(100,(clock-mission.startedAt)/(mission.endsAt-mission.startedAt)*100)):0;
-function Progress({explored,delivered,showDelivery=false}:any){return <><Bar value={explored}/>{showDelivery&&<Bar value={delivered} gold/>}</>;}
+function Progress({explored,delivered,showDelivery=false}:any){return <>
+ <Row style={{marginTop:6,marginBottom:0}}><Txt muted style={styles.small}>Erkundung</Txt><Txt muted style={styles.small}>{n(explored)} %</Txt></Row>
+ <Bar value={explored}/>
+ {showDelivery&&<><Row style={{marginTop:3,marginBottom:0}}><Txt muted style={styles.small}>Bonuslieferung</Txt><Txt muted style={styles.small}>{n(delivered)} %</Txt></Row><Bar value={delivered} gold/></>}
+</>;}
 
 export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onMission,onFocusPlace,onProcurement,modalBlocked=false}:any){
  const [selected,setSelected]=useState<number|'endless'|null>(null),[chances,setChances]=useState(false);
@@ -41,7 +45,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
   <View onLayout={e=>targetLayout('endless',e.nativeEvent.layout.y)}>
    <Pressable accessibilityRole="button" accessibilityLabel={translate('Endlosort öffnen')} onPress={()=>setSelected('endless')}>
     <Card style={[styles.endless,!endlessOpen&&styles.locked]}>
-     <Row style={{marginBottom:2}}><Txt style={[styles.title,{flex:1}]}>∞ Endlosort</Txt><Txt muted>{n(map.progress)} %</Txt><View style={{width:44,height:44}}/></Row>
+     <Row style={{marginBottom:2}}><Txt style={[styles.title,{flex:1}]}>∞ Endlosort</Txt><View style={{width:44,height:44}}/></Row>
      <Txt muted style={styles.small}>{map.customer.name}</Txt>
      <Progress explored={map.progress} delivered={deliveryProgress(final,r.finalClaimed,clock)} showDelivery={endlessOpen}/>
      {!endlessOpen?<Pill>Gesperrt</Pill>:r.finalClaimed?<Txt muted style={styles.small}>Kunde freigeschaltet ✓</Txt>:final?.status==='active'?<Txt gold style={styles.small}>{remaining(final.endsAt,clock)}</Txt>:null}
@@ -53,7 +57,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
    const i=p.index,known=i<r.discovered,complete=r.deliveries[i],locked=i>r.discovered;
    const m=missions.find((m:any)=>m.kind==='delivery'&&m.place===i),value=p.invested/p.discoveryCost*100;
    return <View key={i} style={atlasStyles.journey} onLayout={e=>targetLayout(i,e.nativeEvent.layout.y)}><View style={atlasStyles.waypoint}/><Pressable accessibilityRole="button" accessibilityLabel={translate(`Ort ${i+1} öffnen`)} onPress={()=>setSelected(i)}>
-    <Card style={[styles.place,locked&&styles.locked]}><Row style={{marginBottom:4}}><Txt style={styles.title}>Ort {i+1}</Txt><Txt muted>{n(value)} %</Txt></Row>
+    <Card style={[styles.place,locked&&styles.locked]}><Row style={{marginBottom:4}}><Txt style={styles.title}>Ort {i+1}</Txt></Row>
      <Progress explored={value} delivered={deliveryProgress(m,complete,clock)} showDelivery={known}/>
      {locked?<Pill>Gesperrt</Pill>:complete?<Txt muted style={styles.small}>Abgeschlossen ✓</Txt>:m?.status==='active'?<Txt gold style={styles.small}>{remaining(m.endsAt,clock)}</Txt>:m?.status==='completed'?<Txt gold style={styles.small}>Bonus bereit</Txt>:null}
     </Card>
