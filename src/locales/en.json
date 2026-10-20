@@ -768,5 +768,19 @@
   "Leer": "Empty",
   "Überspringen": "Skip",
   "Wird geöffnet …": "Opening …",
-  "Geschenk konnte nicht geöffnet werden. Bitte erneut versuchen.": "The gift could not be opened. Please try again."
+  "Geschenk konnte nicht geöffnet werden. Bitte erneut versuchen.": "The gift could not be opened. Please try again.",
+  "Hinweise": "Notes",
+  "Max": "Max",
+  "+10.000": "+10,000",
+  "{0} Fahrzeug": "{0} vehicle",
+  "Alle gewählten Fahrzeuge teilen sich die Tourenzahl oder Reserve. Das nächste freie Fahrzeug übernimmt die nächste Tour. Ohne weitere Tour wird es automatisch frei.": "All selected vehicles share the trip count or reserve. The next available vehicle takes the next trip. With no further trip, it becomes available automatically.",
+  "Jede Tour wird bei ihrem Start bezahlt. Reicht der gemeinsame Vorrat bis zur Reserve nicht für die nächste Tour, scheidet das Fahrzeug aus. Es startet später nicht automatisch neu.": "Each trip is paid at departure. If the shared balance cannot pay for another trip without going below the reserve, that vehicle leaves the job. It does not restart automatically.",
+  "Ungültige Fahrzeugauswahl.": "Invalid vehicle selection.",
+  "Doppelte Fahrzeugauswahl.": "Duplicate vehicle selection.",
+  "Laufende Touren abbrechen?": "Cancel current trips?",
+  "Nach laufenden Touren beenden?": "Stop after current trips?",
+  "Die laufenden Touren verfallen. Ungestartete Touren werden erstattet.": "Current trips are forfeited. Trips not started will be refunded.",
+  "Alle laufenden Touren enden mit ihrer Belohnung. Ungestartete Touren werden erstattet.": "All current trips finish with their rewards. Trips not started will be refunded.",
+  "Endet nach laufenden Touren": "Stops after current trips",
+  "Nach laufenden Touren beenden": "Stop after current trips"
 }

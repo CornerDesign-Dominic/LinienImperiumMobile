@@ -152,7 +152,7 @@ const bridge = `
   ${tourRuntime}
   ${procurementRuntime}
   globalThis.mobile = {
-    settleEventTours, refreshTourStarts, queueSingleVehicle, settleProcurementTimeline, startProcurement, stopProcurement, claimProcurement,
+    settleEventTours, refreshTourStarts, queueSingleVehicle, settleProcurementTimeline, startProcurement, startProcurementGroup, stopProcurement, stopProcurementGroup, claimProcurement,
     eventFleetOptions() {
       const order={distance:${EVENT_PROJECT_DISTANCE_KM},routeType:'single'};
       return [0,1,2].map(index=>({index,vehicles:projectFleetVehicles(index)?.map(vehicle=>({
@@ -435,6 +435,13 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const a=session(state,now,random);
   const before=JSON.stringify(a.state);
   const calls={
+    procurementGroupStart:()=>{
+      if(!Array.isArray(p.trucks)||!p.trucks.length||p.trucks.length>10)throw Error('Ungültige Fahrzeugauswahl.');
+      const trucks=p.trucks.map(id);
+      if(new Set(trucks).size!==trucks.length)throw Error('Doppelte Fahrzeugauswahl.');
+      return a.startProcurementGroup(num(p.region,4),trucks,choice(p.mode,['count','reserve']),num(p.amount,p.mode==='count'?100000:1000000000));
+    },
+    procurementGroupStop:()=>a.stopProcurementGroup(id(p.id),choice(p.immediate,[true,false])),
     procurementStart:()=>a.startProcurement(num(p.region,4),id(p.truck),choice(p.mode,['count','reserve']),num(p.amount,p.mode==='count'?100000:1000000000)),
     procurementStop:()=>a.stopProcurement(id(p.id),choice(p.immediate,[true,false])),
     procurementClaim:()=>a.claimProcurement(),

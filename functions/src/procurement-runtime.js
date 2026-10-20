@@ -7,7 +7,9 @@ const PROCUREMENT_LOOT = [
   {id:'companyItems',amount:1,chance:.001}
 ];
 function procurementState() {
-  return game.procurement ||= {nextId:1,runs:[],completed:0,byRegion:Array(5).fill(0),pending:{common:0,uncommon:0,rare:0,companyItems:0},spent:0};
+  const state=game.procurement ||= {nextId:1,runs:[],completed:0,byRegion:Array(5).fill(0),pending:{common:0,uncommon:0,rare:0,companyItems:0},spent:0};
+  state.groups ||= [];state.nextGroupId ||= 1;
+  return state;
 }
 function procurementPrice(region) { return 8000 + 4000 * region; }
 function procurementActive(truckId) { return procurementState().runs.find(r=>r.status==='active'&&r.truckId===truckId); }
@@ -29,9 +31,11 @@ function endProcurement(run,reason,at) {
   if(run.status!=='active')return;
   if(run.escrow>0)game.coins=round2(game.coins+run.escrow);
   run.escrow=0;run.status='finished';run.reason=reason;run.finishedAt=at;
+  if(run.groupId)finishProcurementGroup(run.groupId,reason,at);
 }
 function beginProcurementTour(run,at) {
   const truck=truckById(run.truckId),p=procurementState();
+  if(run.groupId)return beginProcurementGroupTour(run,at);
   if(!truck){endProcurement(run,'vehicle',at);return false;}
   if(run.stopAfter){endProcurement(run,'stopped',at);return false;}
   if(run.mode==='count'){
@@ -56,10 +60,71 @@ function startProcurement(region,truckId,mode,amount) {
     escrow:mode==='count'?price*amount:0,started:0,completed:0,status:'active',stopAfter:false,createdAt:Date.now()};
   if(mode==='count')game.coins=round2(game.coins-run.escrow);
   // Keep only the latest finished run per truck; counters and rewards are permanent.
-  p.runs=p.runs.filter(old=>old.truckId!==truckId||old.status==='active');p.runs.push(run);
+  p.runs=p.runs.filter(old=>old.groupId||old.truckId!==truckId||old.status==='active');p.runs.push(run);
   beginProcurementTour(run,Date.now());
   mobileToast='Beschaffung gestartet.';return true;
 }
+
+function finishProcurementGroup(id,reason,at){
+ const p=procurementState(),group=p.groups.find(g=>g.id===id);
+ if(!group||group.status!=='active'||p.runs.some(r=>r.groupId===id&&r.status==='active'))return;
+ if(group.escrow>0)game.coins=round2(game.coins+group.escrow);
+ group.escrow=0;group.status='finished';group.finishedAt=at;group.reason=group.endReason||reason;
+}
+function beginProcurementGroupTour(run,at){
+ const p=procurementState(),group=p.groups.find(g=>g.id===run.groupId),truck=truckById(run.truckId);
+ if(!group||group.status!=='active'||!truck){endProcurement(run,'vehicle',at);return false;}
+ if(group.stopAfter||run.stopAfter){endProcurement(run,'stopped',at);return false;}
+ if(group.mode==='count'){
+  if(group.started>=group.requested){endProcurement(run,'completed',at);return false;}
+  group.escrow=round2(group.escrow-group.price);
+ }else{
+  if(game.coins-group.price<group.reserve){endProcurement(run,'reserve',at);return false;}
+  game.coins=round2(game.coins-group.price);
+ }
+ group.started++;run.started++;run.startedAt=at;
+ run.durationMs=procurementDuration(truck);run.nextAt=at+run.durationMs;
+ p.spent=round2(p.spent+group.price);
+ return true;
+}
+function startProcurementGroup(region,truckIds,mode,amount){
+ const p=procurementState(),r=game.expedition.regions[region];
+ if(!r||!expeditionRegionCompleted(r))throw Error('Beschaffung noch nicht freigeschaltet.');
+ const free=new Set(freeTrucks().map(t=>t.id));
+ const trucks=truckIds.map(id=>truckById(id));
+ if(trucks.some(t=>!t?.cardId||!game.expedition.characters[t.cardId]||!free.has(t.id)))throw Error('Fahrzeug für Beschaffung nicht verfügbar.');
+ const price=procurementPrice(region);
+ if(mode==='count'&&(!amount||game.coins<price*amount))throw Error('Nicht genügend Münzen für diese Tourenzahl.');
+ if(mode==='reserve'&&game.coins-price<amount)throw Error('Reserve lässt keine weitere Tour zu.');
+ const at=Date.now(),group={id:'G'+p.nextGroupId++,region,mode,price,requested:mode==='count'?amount:0,reserve:mode==='reserve'?amount:0,
+  escrow:mode==='count'?price*amount:0,started:0,completed:0,vehicleIds:[...truckIds],status:'active',stopAfter:false,createdAt:at};
+ if(mode==='count')game.coins=round2(game.coins-group.escrow);
+ p.groups.push(group);
+ // Retain active groups and the latest twenty finished groups.
+ const retained=new Set(p.groups.filter(g=>g.status==='active').concat(p.groups.filter(g=>g.status==='finished').slice(-20)).map(g=>g.id));
+ p.groups=p.groups.filter(g=>retained.has(g.id));
+ p.runs=p.runs.filter(run=>!run.groupId||retained.has(run.groupId));
+ const runs=trucks.map(truck=>({id:String(p.nextId++),groupId:group.id,region,truckId:truck.id,model:truck.model,mode,price,
+  requested:0,reserve:group.reserve,escrow:0,started:0,completed:0,status:'active',stopAfter:false,createdAt:at}));
+ p.runs.push(...runs);
+ for(const run of runs)beginProcurementTour(run,at);
+ mobileToast='Beschaffung gestartet.';return true;
+}
+function stopProcurementGroup(id,immediate){
+ const p=procurementState(),group=p.groups.find(g=>g.id===id&&g.status==='active');
+ if(!group)throw Error('Beschaffung ist bereits beendet.');
+ group.endReason=immediate?'cancelled':'stopped';
+ if(immediate){
+  for(const run of p.runs.filter(r=>r.groupId===id&&r.status==='active'))endProcurement(run,'cancelled',Date.now());
+  mobileToast='Tour abgebrochen. Ungestartete Touren erstattet.';
+ }else{
+  group.stopAfter=true;
+  for(const run of p.runs.filter(r=>r.groupId===id&&r.status==='active'))run.stopAfter=true;
+  mobileToast='Beschaffung endet nach der laufenden Tour.';
+ }
+ return true;
+}
+
 function stopProcurement(id,immediate) {
   const run=procurementState().runs.find(r=>r.id===id&&r.status==='active');
   if(!run)throw Error('Beschaffung ist bereits beendet.');
@@ -78,6 +143,7 @@ function claimProcurement() {
 function finishProcurementTour(run,at) {
   const p=procurementState();
   run.completed++;p.completed++;p.byRegion[run.region]++;
+  if(run.groupId){const group=p.groups.find(g=>g.id===run.groupId);if(group)group.completed++;}
   for(const loot of PROCUREMENT_LOOT)if(loot.chance===1||Math.random()<loot.chance)p.pending[loot.id]+=loot.amount;
   beginProcurementTour(run,at);
 }
@@ -96,6 +162,7 @@ function settleProcurementTimeline(now) {
 function procurementView(now) {
   const p=procurementState();
   return {...p,loot:PROCUREMENT_LOOT,baseDurationMs:PROCUREMENT_BASE_MS,
+    groups:p.groups.map(group=>({...group,vehicles:p.runs.filter(r=>r.groupId===group.id).map(r=>({...r,progress:r.status==='active'?Math.min(100,Math.max(0,(now-r.startedAt)/r.durationMs*100)):100}))})),
     sites:game.expedition.regions.map((r,region)=>({region,price:procurementPrice(region),unlocked:expeditionRegionCompleted(r),
       discovered:r.discovered,deliveries:r.deliveries.filter(Boolean).length,finalClaimed:r.finalClaimed,completed:p.byRegion[region]})),
     vehicles:game.trucks.filter(t=>t.cardId).map(t=>({id:t.id,model:t.model,cardId:t.cardId,capacity:t.capacity,speed:procurementSpeed(t),free:freeTrucks().some(f=>f.id===t.id),durationMs:procurementDuration(t)})),

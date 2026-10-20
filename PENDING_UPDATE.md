@@ -1,3 +1,13 @@
+## Mehrfahrzeug-Beschaffung – vorbereitet, noch nicht veröffentlicht
+
+- Gemeinsamer Tourenvorrat bzw. Reserve für mehrere ausgewählte Garagenfahrzeuge, individuelle automatische Freigabe.
+- Kompakter Startdialog mit Max / +10.000, gestrichelter Plus-Kachel; Erklärungen unter Hinweise.
+- Nur freie Fahrzeuge, Kapazität und effektives Tempo in der Auswahl.
+- 96 Rechen-/Backendtests bestanden; vollständiger App-Build und Gerätetest stehen aus.
+- Details: docs/ui/procurement-groups.md. Die zuvor vorbereiteten Flotten-, Geschenk- und Garagenänderungen bleiben im Paket.
+
+---
+
 ## Neues Sammelpaket – vorbereitet, noch nicht veröffentlicht
 
 - Flottendetails statt Hinweis „5 Plätze“: Kilometer frei wählbar, scrollbares Modal mit Fahrzeug-/Flottenleistung, Kosten und wirksamen Boni.
