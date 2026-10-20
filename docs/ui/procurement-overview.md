@@ -1,0 +1,13 @@
+# Kompakte Materialbeschaffung
+
+- Hauptseite: antippbares Abholungsbuch mit neuem Buchicon, Belohnungen nur bei positivem Bestand, genau eine Karte zur Ortsauswahl und die laufenden Beschaffungen.
+- Belohnungen werden je tatsächlich vorhandener Materialart als Icon mit Anzahl gezeigt. Bestände von 0 werden nicht erwähnt; bei leerer Sammlung entfällt die ganze Karte samt Einsammeln-Button. Die Gutschrift nutzt unverändert procurementClaim.
+- Abholungsbuch öffnet ein Modal mit Gesamtzahl und bisherigen Abholungen pro besuchtem Gebiet aus den echten Serverzählern. Keine erfundenen Zeitstempel oder einzelnen Fahrten. Bei leerem Buch gibt es einen Leerzustand. Beendete Beschaffungen und ihre Abschlussgründe sind ebenfalls dort erreichbar.
+- Ortsauswahl im Modal: alle fünf Gebiete mit Preis und Sperrstatus. Belohnungen je Gebiet sind nach unten aufklappbar; die Icons stammen aus der vom Server gelieferten Fundtabelle (nur mögliche Materialarten, ohne Chancen). Gesperrte Orte bleiben nicht wählbar und verlinken zur Expedition.
+- Auswahl eines freigeschalteten Gebiets ersetzt den Modalinhalt durch die bekannten Transporteinstellungen. Mehrere Fahrzeuge, gemeinsame Tourenzahl/Reserve, Max, +10.000, manuelle Eingaben und der Startbefehl bleiben erhalten. Zurück führt zur Ortsauswahl; Schließen beendet den Dialog. Ein Startfehler hält die Auswahl für eine Wiederholung offen.
+- Untere Loot-/Hinweiskarten entfallen auf der Hauptseite. Die vorhandene Hilfeseite enthält bereits Preise, Chancen, Bezahl-/Stoppregeln; die fehlenden allgemeinen Hinweise und Mehrfahrzeug-/Einsatzregeln wurden dorthin verschoben. Über ? erreichbar, auf Deutsch und Englisch.
+- Regionale Darstellungsnamen werden gemeinsam mit den vorbereiteten Expeditionskarten verwendet. Keine Änderung von Region-/Kundenkennungen, Fortschritt, Kosten, Lootchancen oder Transportlogik. Kein neues natives Modul.
+
+Geprüft: Typprüfung und 105 bestehende Tests erfolgreich, Androidexport erfolgreich. Offlineprüfung der tatsächlichen App mit dem unveränderten lokalen Spielserver bei 320/360/390/430 px: positive/fehlende Belohnungen, Abholungsbuch und Regionzähler, aufklappbare Belohnungen ohne Chancen, Gebietssperren, zweistufiger Dialog und Zurück, echter Claim mit anschließend ausgeblendeter Karte, Start mit zwei Fahrzeugen, gemeinsame Tourenzahl, Max-/Reserve-Eingaben, fehlgeschlagener Start mit erfolgreicher Wiederholung, Stoppen nach laufenden Touren, leeres Buch, Fragezeichen-Hilfe und englische Anzeige. Keine JavaScript-Fehler. Regionskarten nach Auslagerung ihrer gemeinsamen Namen erneut geprüft.
+
+Im bestehenden Entwurf vorbereitet, noch nicht veröffentlicht.

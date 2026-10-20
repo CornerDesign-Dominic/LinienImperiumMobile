@@ -3,8 +3,9 @@ import {Icon} from './Icon';
 import React,{useRef,useState} from 'react';
 import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,n,remaining} from './ui';
-import {AtlasHeading,RegionSeal,atlasStyles} from './Atlas';
-import {displayFont,regionInks} from './theme';
+import {AtlasHeading,atlasStyles} from './Atlas';
+import {ExpeditionRegionCard} from './ExpeditionRegionCard';
+import {displayFont} from './theme';
 import {rarityColor} from './items';
 const deliveryProgress=(mission:any,done:boolean,clock:number)=>done||mission?.status==='completed'?100:mission?.status==='active'?Math.max(0,Math.min(100,(clock-mission.startedAt)/(mission.endsAt-mission.startedAt)*100)):0;
 function Progress({explored,delivered,showDelivery=false}:any){return <>
@@ -18,14 +19,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
  const focus=useRef<{offset:number|null;target:number|null;done:boolean}>({offset:null,target:null,done:false});
  const g=data.state,maps=data.expeditionMap;
  const button=(label:string,action:string,payload:any,disabled=false)=><Btn disabled={busy||disabled} onPress={()=>onCommand(action,payload)}>{label}</Btn>;
- if(region===null)return <><AtlasHeading title="Reiseatlas" detail="Erschließe Regionen, entdecke Orte und gewinne Verbündete."/>{maps.map((map:any)=><Pressable key={map.index} accessibilityRole="button" accessibilityLabel={translate(`${map.name}, ${map.customer.name}${map.open?'':', Gesperrt'}`)} accessibilityState={{disabled:!map.open}} disabled={!map.open} onPress={()=>onSelectRegion(map.index)}>
-  <Card style={[styles.region,{borderTopColor:regionInks[map.index%regionInks.length]},!map.open&&styles.locked]}>
-   <Row style={{alignItems:'flex-start'}}><RegionSeal index={map.index} locked={!map.open}/><View style={{flex:1,minWidth:0}}><Txt gold style={styles.small}>EXPEDITIONSGEBIET</Txt><Txt style={styles.title}>{map.name}</Txt></View><Icon name="arrow" size={17} color={C.muted}/></Row>
-   <Row><Txt muted style={styles.small}>Erkundung</Txt><Txt muted>{n(map.progress)} %</Txt></Row>
-   <Row><Txt muted>{map.customer.name}</Txt>{!map.open&&<Pill>Gesperrt</Pill>}</Row>
-   <Bar value={map.progress}/><Row style={{marginBottom:0}}><Txt muted style={styles.small}>Orte {map.discovered}/7</Txt><Txt muted style={styles.small}>Boni {map.deliveries+Number(map.finalClaimed)}/8</Txt></Row>
-  </Card>
- </Pressable>)}</>;
+ if(region===null)return <><AtlasHeading title="Reiseatlas" detail="Erschließe Regionen, entdecke Orte und gewinne Verbündete."/>{maps.map((map:any)=><ExpeditionRegionCard key={map.index} map={map} onOpen={onSelectRegion}/>)}</>;
  const map=maps[region],r=g.expedition.regions[region],missions=g.expedition.missions.filter((m:any)=>m.region===region);
  const final=missions.find((m:any)=>m.kind==='final'),endlessOpen=r.discovered===7,noTruck=!g.trucks.some((t:any)=>t.free&&t.tier>=2);
  const firstUnfinished=r.deliveries.findIndex((done:boolean)=>!done),focusKey=firstUnfinished>=0?firstUnfinished:!r.finalClaimed?'endless':null;
@@ -102,4 +96,5 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
   </Modal>
  </View>;
 }
-const styles=StyleSheet.create({region:{backgroundColor:C.panel,borderColor:C.line,borderTopWidth:3},place:{backgroundColor:C.panel,borderColor:C.line},endless:{backgroundColor:C.greenWash,borderColor:C.accent},title:{fontFamily:displayFont,fontSize:19,lineHeight:25,fontWeight:'700'},section:{fontSize:14,fontWeight:'700',marginTop:18,marginBottom:8},small:{fontSize:12,lineHeight:18},locked:{backgroundColor:C.raised,borderStyle:'dashed'},question:{width:44,height:44,alignItems:'center',justifyContent:'center',borderWidth:1,borderColor:C.line,borderRadius:10},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:18},modal:{width:'100%',maxWidth:460,maxHeight:'85%',alignSelf:'center',borderWidth:1,borderColor:C.line,borderRadius:18,backgroundColor:C.panel,padding:16},chance:{paddingVertical:9,borderBottomWidth:1,borderColor:C.line}});
+const styles=StyleSheet.create({place:{backgroundColor:C.panel,borderColor:C.line},endless:{backgroundColor:C.greenWash,borderColor:C.accent},title:{fontFamily:displayFont,fontSize:19,lineHeight:25,fontWeight:'700'},section:{fontSize:14,fontWeight:'700',marginTop:18,marginBottom:8},small:{fontSize:12,lineHeight:18},locked:{backgroundColor:C.raised,borderStyle:'dashed'},question:{width:44,height:44,alignItems:'center',justifyContent:'center',borderWidth:1,borderColor:C.line,borderRadius:10},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:18},modal:{width:'100%',maxWidth:460,maxHeight:'85%',alignSelf:'center',borderWidth:1,borderColor:C.line,borderRadius:18,backgroundColor:C.panel,padding:16},chance:{paddingVertical:9,borderBottomWidth:1,borderColor:C.line}});
+
