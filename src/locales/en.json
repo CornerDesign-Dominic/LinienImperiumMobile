@@ -807,5 +807,8 @@
   "Beschaffung konnte nicht gestartet werden. Bitte Auswahl und Guthaben prüfen.": "Could not start procurement. Please check your selection and balance.",
   "Mehrere Fahrzeuge": "Multiple vehicles",
   "Alle gewählten Fahrzeuge teilen sich die Tourenzahl oder Reserve. Das nächste freie Fahrzeug übernimmt die nächste Tour. Ohne weitere Tour wird es automatisch frei. Reicht der gemeinsame Vorrat bis zur Reserve nicht für die nächste Tour, scheidet das Fahrzeug aus und startet später nicht automatisch neu.": "All selected vehicles share the trip count or reserve. The next available vehicle takes the next trip. When no further trip remains, it becomes available automatically. If another trip would breach the shared reserve, the vehicle leaves the run and does not restart automatically.",
-  "Fahrzeuge im Einsatz": "Vehicles in use"
+  "Fahrzeuge im Einsatz": "Vehicles in use",
+  "Keine freien Karten dieser Seltenheit.": "No available cards of this rarity.",
+  "Beladen {0} km/s": "Loaded {0} km/s",
+  "Leer {0} km/s": "Empty {0} km/s"
 }
