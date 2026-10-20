@@ -39,6 +39,8 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
  const done=place&&r.deliveries[selected as number],mission=place&&missions.find((m:any)=>m.kind==='delivery'&&m.place===selected);
  const explored=place?place.invested/place.discoveryCost*100:map.progress;
  const shipment=deliveryProgress(place?mission:final,place?done:r.finalClaimed,clock);
+ const bonusMission=place?mission:final;
+ const bonusDuration=bonusMission?Math.max(0,bonusMission.endsAt-bonusMission.startedAt):(place?place.durationMs:map.finalDurationMs);
  return <View onLayout={e=>{focus.current.offset=e.nativeEvent.layout.y;tryFocus();}}>
   <AtlasHeading title={map.name} detail={map.customer.name}/>
   <Card><Txt gold>Materialbeschaffung</Txt><Txt muted>{data.procurement?.sites[region]?.unlocked?'Region zu 100 % abgeschlossen. Beschaffung freigeschaltet.':'Alle sieben Orte erkunden und beliefern sowie die Endloslieferung abschließen und abholen.'}</Txt><Btn secondary onPress={onProcurement}>Zur Materialbeschaffung</Btn></Card>
@@ -76,12 +78,11 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
      </>:<>
       <Row style={{marginBottom:0}}><Txt muted style={styles.small}>Erkundung</Txt><Txt muted style={styles.small}>{n(explored)} %</Txt></Row>
       <Bar value={explored}/>
-      {(discovered||selected==='endless'&&endlessOpen)&&<><Row style={{marginTop:5,marginBottom:0}}><Txt muted style={styles.small}>Bonuslieferung</Txt><Txt muted style={styles.small}>{n(shipment)} %</Txt></Row><Bar value={shipment} gold/></>}
+      {(discovered||selected==='endless'&&endlessOpen)&&<><Row style={{marginTop:5,marginBottom:0}}><Txt muted style={styles.small}>Bonuslieferung</Txt><Txt muted style={styles.small}>{n(shipment)} %</Txt></Row><Bar value={shipment} gold/><Row style={{marginTop:4,marginBottom:6}}><Txt muted style={styles.small}>{bonusMission?.status==='active'?'Restzeit':'Dauer'}</Txt><Txt muted style={styles.small}>{bonusMission?.status==='active'?remaining(bonusMission.endsAt,clock):remaining(bonusDuration,0)}</Txt></Row></>}
       {place?<>
        {!discovered&&!next?<Pill>Gesperrt</Pill>:!discovered?button('Erkunden · 1 Punkt','discover',{region},g.expedition.points<1):done?<Txt muted>Abgeschlossen ✓</Txt>:<>
         <Txt muted style={styles.small}>Bonus: +1 Expeditionskapazität</Txt>
         {!mission&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'delivery',selected)}>Bonus liefern</Btn>}
-        {mission?.status==='active'&&<Txt gold style={{marginTop:8}}>{remaining(mission.endsAt,clock)}</Txt>}
         {mission?.status==='completed'&&!mission.claimedAt&&button('Bonus abholen','claimMission',{id:mission.id})}
         {!mission&&noTruck&&<Txt muted style={styles.small}>Kein freier LKW</Txt>}
        </>}
@@ -89,7 +90,6 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
        <Txt muted style={{marginVertical:8}}>{map.customer.name}</Txt><Txt muted>Erste Endloslieferung: Kunde und 1 Kapazitätsmodul. Bereits erhaltene Module werden nicht erneut vergeben.</Txt>
        {!endlessOpen?<Pill>Gesperrt</Pill>:<>
         {!final&&!r.finalClaimed&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'final',0)}>Kunde freischalten</Btn>}
-        {final?.status==='active'&&<Txt gold>{remaining(final.endsAt,clock)}</Txt>}
         {final?.status==='completed'&&!final.claimedAt&&button('Kunde freischalten','claimMission',{id:final.id})}
         {r.finalClaimed&&<Txt muted style={styles.small}>Kunde freigeschaltet ✓</Txt>}
         {button(`Expedition · ${map.finds.cost} Punkte`,'draw',{region},g.expedition.points<map.finds.cost)}
