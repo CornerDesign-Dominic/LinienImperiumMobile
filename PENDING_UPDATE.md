@@ -1,3 +1,13 @@
+## Neues Sammelpaket – vorbereitet, noch nicht veröffentlicht
+
+- Flottendetails statt Hinweis „5 Plätze“: Kilometer frei wählbar, scrollbares Modal mit Fahrzeug-/Flottenleistung, Kosten und wirksamen Boni.
+- Geschenköffnung mit durchlaufender, langsamer werdender Markierung bis zum echten Serverergebnis; Überspringen und reduzierte Bewegung berücksichtigt.
+- Garagenkarten in Seltenheitsfarben mit klareren Stufen, Rängen, Kapazitäten und Tempo leer/beladen.
+- 87 Backend-/Berechnungstests bestanden. Vollständiger App-Build und visuelle/physische Prüfung stehen aus.
+- Details: docs/ui/fleet-gift-garage.md.
+
+---
+
 ## Sammelpaket vom 20.10.2026 – veröffentlicht
 
 Release: `ed597368074794f1535b8ce2a6d716f6519de0e1` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39419503174).

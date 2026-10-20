@@ -355,6 +355,12 @@ const bridge = `
         level:levelForXp(game.xp,game), expeditionCapacity:expeditionCapacity(),
         regeneration:{expeditionNextAt:game.expedition.points<expeditionCapacity()?game.expedition.lastRegenAt+EXPEDITION_REGEN_MS:null,overtimeNextAt:game.overtimePoints<game.overtimeCapacity?game.overtimeLastRegenAt+OVERTIME_REGEN_MS:null},
         templates:[0,1,2].map(i=>fleetTemplate(i)),
+        fleetPreviews:[0,1,2].map(index=>(projectFleetVehicles(index)||[]).map(vehicle=>({
+          cardId:vehicle.cardId,model:vehicle.model,capacity:vehicle.capacity,
+          emptySpeed:truckSpeed(vehicle),loadedSpeed:truckSpeed(vehicle,vehicle.capacity),
+          costPerKm:operatingCostPerKm(vehicle),loadCostPerTonKm:LOAD_COST_PER_TON_KM,
+          freightPayPerTonKm:FREIGHT_PAY_PER_TON_KM,bonuses:{...vehicle.bonusStats}
+        }))),
         cardBonuses:Object.fromEntries(EXPEDITION_CHARACTERS.map(c=>[c.id,cardBonusValue(c)])),
         openRegions:EXPEDITION_REGIONS.map((_,i)=>expeditionRegionOpen(i)),
         expeditionMap:game.expedition.regions.map((region,index)=>({
