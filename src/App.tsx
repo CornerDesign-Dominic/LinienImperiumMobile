@@ -59,6 +59,14 @@ function Game(){
  useEffect(()=>{run();const interval=setInterval(()=>{if(AppState.currentState==='active')run();},30000);const listener=AppState.addEventListener('change',v=>{if(v==='active')run();});return()=>{clearInterval(interval);listener.remove();};},[run]);
  useEffect(()=>{const ends=[...(data?.procurement?.runs||[]).filter((r:any)=>r.status==='active').map((r:any)=>r.nextAt),...(data?.testEvents||[]).filter((event:TestEvent)=>event.status==='running').flatMap((event:TestEvent)=>event.project?.vehicles.map(vehicle=>vehicle.nextAt)||[]),...[data?.regeneration?.expeditionNextAt,data?.regeneration?.overtimeNextAt].filter((at:any)=>typeof at==='number'&&at>data.serverTime),...(data?.state.expedition.missions.filter((m:any)=>m.status==='active').map((m:any)=>m.endsAt)||[]),...(data?.state.orders.filter((o:any)=>o.isProject&&o.status==='active').flatMap((o:any)=>[o.project.deadlineAt,...(o.eta?[o.eta]:[]),...o.project.vehicles.filter((v:any)=>v.cargo>0&&v.nextAt>data.serverTime).map((v:any)=>v.nextAt)])||[]),...(data?.state.orders.filter((o:any)=>!o.isProject&&o.status==='active'&&o.runningEndsAt).map((o:any)=>o.runningEndsAt)||[])];if(!ends.length)return;const timer=setTimeout(()=>{if(AppState.currentState==='active')run();},Math.max(500,Math.min(...ends)-Date.now()-offset.current+150));return()=>clearTimeout(timer);},[data,run]);
  useEffect(()=>{const timer=setInterval(()=>setClock(Date.now()+offset.current),1000);return()=>clearInterval(timer);},[]);
+ // A refreshed offer can disappear while its detail page is open.
+ // Read the current view state here rather than capturing navigation in run().
+ useEffect(()=>{
+  if(screen!=='orderDetail'||!data||!orderId||data.state.orders.some((order:any)=>order.id===orderId&&!order.isProject))return;
+  setOrderId(null);setScreen('orders');
+  setTrail(previous=>{const overview=previous.lastIndexOf('orders');return overview>=0?previous.slice(0,overview):[];});
+  scroll.current?.scrollTo({y:0,animated:false});
+ },[data,screen,orderId]);
  useEffect(()=>{if(!message)return;const timer=setTimeout(()=>setMessage(''),5000);return()=>clearTimeout(timer);},[message]);
  const go=(next:string)=>{if(next==='expeditions'&&screen!=='expeditions')setRegion(null);if(screen!==next)setTrail(v=>[...v,screen]);setScreen(next);scroll.current?.scrollTo({y:0,animated:false});};
  const back=()=>{if(levelNotices.length){setLevelNotices(queue=>queue.slice(1));return true;}if(sheet){setSheet(null);return true;}if(screen==='expeditions'&&region!==null){setRegion(null);scroll.current?.scrollTo({y:0,animated:false});return true;}if(trail.length){if(screen==='cardDetail')scroll.current?.scrollTo({y:0,animated:false});setScreen(trail[trail.length-1]);setTrail(v=>v.slice(0,-1));return true;}if(screen!=='home'){setScreen('home');return true;}return false;};

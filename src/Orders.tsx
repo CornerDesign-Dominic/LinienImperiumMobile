@@ -108,7 +108,7 @@ function PossibleOrderRewards({labels}: {labels:string[]}){
 export function OrderDetail({data,id,busy,clock,onCommand,onBack,onSwitch}:any){
  const o=data.state.orders.find((o:any)=>o.id===id&&!o.isProject);
  const [truckId,setTruckId]=useState<string|null>(o?.choices[0]?.id||null);
- if(!o)return <Empty>Angebot nicht mehr verfügbar.<Btn secondary onPress={onBack}>Zur Übersicht</Btn></Empty>;
+ if(!o)return <Card><Txt muted>Angebot nicht mehr verfügbar.</Txt><Btn secondary onPress={onBack}>Zur Übersicht</Btn></Card>;
  const active=o.status==='active',done=o.status==='completed',selected=o.choices.find((t:any)=>t.id===truckId),forecast=active?o.forecast:selected||o.forecast;
  const truck=data.state.trucks.find((t:any)=>t.id===o.truckId);
  const fact=(label:string,value:string)=><Row><Txt muted>{label}</Txt><Txt style={{textAlign:'right'}}>{value}</Txt></Row>;
