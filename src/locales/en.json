@@ -819,5 +819,13 @@
   "Abhol-Buch": "Collection log",
   "Abhol-Buch öffnen": "Open collection log",
   "Ort wählen": "Choose location",
-  "Module frei": "Free module slots"
+  "Module frei": "Free module slots",
+  "Weitere Infos": "More info",
+  "Resttouren": "Trips remaining",
+  "XP gesamt": "Total XP",
+  "Gewinn gesamt": "Total profit",
+  "Auftragsertrag": "Contract revenue",
+  "Gewinn inklusive Abschlussprämie.": "Profit includes the completion bonus.",
+  "Laufende Tour gespeichert, Folgetouren mit aktuellen Werten. XP und Gewinn gelten für den gesamten Auftrag.": "Current trip retains its saved stats; upcoming trips use current values. XP and profit cover the entire contract.",
+  "Mögliche Belohnungen": "Possible rewards"
 }

@@ -1,6 +1,6 @@
 import {t as translate} from './i18n';
-import {Icon} from './Icon';
-import {itemName} from './items';
+import {Icon,IconName} from './Icon';
+import {itemName,rarityColor} from './items';
 import React,{useState} from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes} from './ui';
@@ -62,6 +62,49 @@ export function RunningOrders({data,clock,busy,onOpen,onClaim,onMission}:any){
  const missions=endlessMissions(data);
  return <>{missions.map((m:any)=><Pressable key={`mission-${m.id}`} accessibilityRole="button" accessibilityLabel={translate(`${expeditionName(m.lootKind)}, unterwegs, ${m.id}`)} onPress={()=>onMission(m)}><Card style={[styles.offer,{borderLeftColor:C.accent}]}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{expeditionName(m.lootKind)}</Txt><Txt gold style={styles.small}>{remaining(m.endsAt,clock)}</Txt></Row><Txt muted style={styles.small}>{data.catalog.regionNames[m.region]} · {data.state.trucks.find((t:any)=>t.id===m.truckId)?.model||'Fahrzeug'}</Txt><Bar value={(clock-m.startedAt)/(m.endsAt-m.startedAt)*100}/></Card></Pressable>)}{!!ready.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {ready.length}</Btn>}{active.map(tile)}{!active.length&&!missions.length&&<Empty>Keine Aufträge unterwegs.</Empty>}{!!ready.length&&<>{section('Prämien')}{ready.map(tile)}</>}</>;
 }
+
+function VehicleOrderQuote({quote:q,selected=false,onSelect,busy,active=false,relationship=0}:any){
+ const [expanded,setExpanded]=useState(false);
+ const metric=(label:string,value:string,profit=false)=><View style={styles.metric}><Txt muted style={styles.metricLabel}>{label}</Txt><Txt style={[styles.metricValue,profit&&{color:q.totalProfit<0?C.red:C.accent}]}>{value}</Txt></View>;
+ const facts=<>
+  <Row style={{marginBottom:7,flexWrap:'nowrap'}}><Txt style={{fontWeight:'700',flex:1}}>{q.model} · {n(q.capacity,1)} t</Txt>{onSelect&&<View style={{width:20}}>{selected&&<Icon name="check" size={18} color={C.accent}/>}</View>}</Row>
+  <View style={styles.metrics}>
+   {metric(active?'Resttouren':'Touren',n(q.trips+(active?1:0)))}
+   {metric(active?'Restzeit':'Dauer',minutes(q.seconds))}
+   {metric(active?'XP gesamt':'XP',n(q.xp,2))}
+   {metric(active?'Gewinn gesamt':'Gewinn',`${n(q.totalProfit,2)} M`,true)}
+  </View>
+ </>;
+ const fact=(label:string,value:string)=><Row style={{marginBottom:5}}><Txt muted style={styles.small}>{label}</Txt><Txt style={styles.small}>{value}</Txt></Row>;
+ return <View style={[styles.vehicle,selected&&{borderColor:C.accent,backgroundColor:C.greenWash}]}>
+  {onSelect?<Pressable accessibilityRole="button" accessibilityLabel={translate(`${q.model}, ${q.id} auswählen`)} accessibilityState={{selected,disabled:busy}} disabled={busy} onPress={onSelect}>{facts}</Pressable>:facts}
+  <Pressable accessibilityRole="button" accessibilityLabel={translate(expanded?'Weniger Infos':'Weitere Infos')} accessibilityState={{expanded}} onPress={()=>setExpanded(value=>!value)} style={styles.quoteDisclosure}><Txt style={styles.metricLabel}>{expanded?'Weniger Infos':'Weitere Infos'}</Txt><Icon name="chevron" size={13} style={{transform:[{rotate:expanded?'90deg':'0deg'}]}}/></Pressable>
+  {expanded&&<View style={styles.quoteDetails}>
+   {fact('Auftragsertrag',`${n(q.revenue,2)} M`)}
+   {fact('Betriebskosten',`${n(q.cost,2)} M`)}
+   {fact('Abschlussprämie',`${n(q.bonus,2)} M`)}
+   {!!relationship&&fact('Beziehung',`+${relationship}`)}
+   <Txt muted style={styles.metricLabel}>Gewinn inklusive Abschlussprämie.</Txt>
+   {active&&<Txt muted style={styles.metricLabel}>Laufende Tour gespeichert, Folgetouren mit aktuellen Werten. XP und Gewinn gelten für den gesamten Auftrag.</Txt>}
+  </View>}
+ </View>;
+}
+function PossibleOrderRewards({labels}: {labels:string[]}){
+ const appearance=(label:string):{icon:IconName;color:string}=>{
+  if(label.includes('Common-Zahnräder'))return {icon:'gear',color:rarityColor('common')};
+  if(label.includes('Uncommon-Zahnräder'))return {icon:'gear',color:rarityColor('uncommon')};
+  if(label.includes('Rare-Zahnräder'))return {icon:'gear',color:rarityColor('rare')};
+  if(label.includes('Lieferantenkontakte'))return {icon:'customers',color:C.gold};
+  if(label.includes('Firmenausbau-Items'))return {icon:'company',color:C.gold};
+  if(label.includes('Sonderauftrag'))return {icon:'projects',color:rarityColor('rare')};
+  return {icon:'reward',color:C.gold};
+ };
+ return <Card><Txt style={[styles.title,{marginBottom:8}]}>Mögliche Belohnungen</Txt><View style={styles.possibleRewards}>{labels.map(label=>{
+  const {icon,color}=appearance(label);
+  return <View key={label} accessible accessibilityLabel={translate(label)} style={[styles.possibleItem,{borderColor:color}]}><Icon name={icon} color={color} size={25}/><Txt style={styles.possibleLabel}>{label}</Txt></View>;
+ })}</View></Card>;
+}
+
 export function OrderDetail({data,id,busy,clock,onCommand,onBack,onSwitch}:any){
  const o=data.state.orders.find((o:any)=>o.id===id&&!o.isProject);
  const [truckId,setTruckId]=useState<string|null>(o?.choices[0]?.id||null);
@@ -77,15 +120,13 @@ export function OrderDetail({data,id,busy,clock,onCommand,onBack,onSwitch}:any){
     <Btn secondary disabled={busy} onPress={()=>onSwitch(o)}>Fahrzeug für nächste Tour wechseln</Btn>
    </>}
   </Card>
+  {!done&&<PossibleOrderRewards labels={o.possibleRewards||[]}/>}
   {!active&&!done&&<Card>
-   {!o.choices.length?<Txt muted>{unavailable(o)}</Txt>:<><Txt style={styles.title}>Fahrzeug</Txt>{o.choices.map((t:any)=><Pressable key={t.id} accessibilityRole="button" accessibilityLabel={translate(`${t.model}, ${t.id} auswählen`)} accessibilityState={{selected:truckId===t.id,disabled:busy}} disabled={busy} onPress={()=>setTruckId(t.id)} style={[styles.vehicle,truckId===t.id&&{borderColor:C.accent}]}><Row style={{marginBottom:0}}><Txt>{t.model} · {n(t.capacity,1)} t</Txt><View style={{width:22}}>{truckId===t.id&&<Icon name="check" size={20} color={C.accent}/>}</View></Row><Txt muted style={styles.small}>{t.trips} Touren · {minutes(t.seconds)}</Txt></Pressable>)}<Btn disabled={busy||!selected} onPress={()=>onCommand(o.kind==='private'?'assignPrivate':o.crafted?'assignCrafted':'assign',{order:o.id,truck:selected.id})}>Auftrag starten</Btn></>}
+   {!o.choices.length?<Txt muted>{unavailable(o)}</Txt>:<><Txt style={styles.title}>Fahrzeug</Txt>{o.choices.map((t:any)=><VehicleOrderQuote key={t.id} quote={t} selected={truckId===t.id} busy={busy} relationship={o.relationshipReward} onSelect={()=>setTruckId(t.id)}/>)}<Btn disabled={busy||!selected} onPress={()=>onCommand(o.kind==='private'?'assignPrivate':o.crafted?'assignCrafted':'assign',{order:o.id,truck:selected.id})}>Auftrag starten</Btn></>}
    {o.status==='available'&&<Btn secondary disabled={busy} onPress={()=>onCommand('pin',{id:o.id})}>{o.pinned?'Freigeben':'Angebot halten'}</Btn>}
   </Card>}
-  {!done&&<Card><Txt style={[styles.title,{marginBottom:12}]}>Prognose gesamt</Txt>{forecast&&<>
-   <Txt muted style={[styles.small,{marginBottom:12}]}>{forecast.model} · laufende Tour gespeichert, Folgetouren mit aktuellen Werten</Txt>
-   {fact('Fracht',`${n(forecast.revenue,2)} M`)}{fact('Betriebskosten',`${n(forecast.cost,2)} M`)}{fact('Abschlussprämie',`${n(forecast.bonus,2)} M`)}{fact('Gewinn',`${n(forecast.totalProfit,2)} M`)}
-  </>}{fact(forecast?'XP':'Basis-XP',n(forecast?.xp??o.baseXp,2))}{!!o.relationshipReward&&fact('Beziehung',`+${o.relationshipReward}`)}</Card>}
-  {done&&reward?<Card><Txt style={[styles.title,{marginBottom:12}]}>Abschlussprämie</Txt>{fact('Münzen',`${n(reward.coins,2)} M`)}{Object.entries(reward.gears||{}).filter(([,amount])=>Number(amount)>0).map(([rarity,amount])=><View key={rarity}>{fact(`${data.catalog.rarities.find((r:any)=>r.id===rarity)?.label||rarity}-Zahnräder`,n(amount))}</View>)}{reward.companyItems>0&&fact(itemName('companyItems',2),n(reward.companyItems))}{reward.capacityModule&&fact('Kapazitätsmodul','1')}{reward.supplierContacts>0&&fact('Lieferantenkontakte',n(reward.supplierContacts))}{!reward.claimedAt?<Btn disabled={busy} onPress={()=>onCommand('claim',{id:o.id})}>Prämie abholen</Btn>:<Txt muted>Abgeholt</Txt>}</Card>:<Card><Txt style={[styles.title,{marginBottom:12}]}>Mögliche Beute</Txt>{o.possibleRewards.map((label:string)=><Txt key={label} muted style={{marginBottom:6}}>{label}</Txt>)}</Card>}
+  {active&&forecast&&<Card><Txt style={styles.title}>Fahrzeug</Txt><VehicleOrderQuote quote={{...forecast,seconds:Math.max(0,((o.runningEndsAt||clock)-clock)/1000)}} active relationship={o.relationshipReward}/></Card>}
+  {done&&reward?<Card><Txt style={[styles.title,{marginBottom:12}]}>Abschlussprämie</Txt>{fact('Münzen',`${n(reward.coins,2)} M`)}{Object.entries(reward.gears||{}).filter(([,amount])=>Number(amount)>0).map(([rarity,amount])=><View key={rarity}>{fact(`${data.catalog.rarities.find((r:any)=>r.id===rarity)?.label||rarity}-Zahnräder`,n(amount))}</View>)}{reward.companyItems>0&&fact(itemName('companyItems',2),n(reward.companyItems))}{reward.capacityModule&&fact('Kapazitätsmodul','1')}{reward.supplierContacts>0&&fact('Lieferantenkontakte',n(reward.supplierContacts))}{!reward.claimedAt?<Btn disabled={busy} onPress={()=>onCommand('claim',{id:o.id})}>Prämie abholen</Btn>:<Txt muted>Abgeholt</Txt>}</Card>:null}
  </>;
 }
-const styles=StyleSheet.create({title:{fontSize:15,fontWeight:'700'},small:{fontSize:12,lineHeight:18},section:{fontSize:13,fontWeight:'700',color:C.muted,marginTop:10,marginBottom:9},offer:{padding:12,backgroundColor:C.panel,borderColor:C.line,borderLeftWidth:3,marginBottom:9},saved:{padding:12,backgroundColor:C.panel,borderColor:C.line},running:{padding:12,backgroundColor:C.greenWash,borderColor:C.accent},refresh:{flexDirection:'row',alignItems:'center',gap:10,marginBottom:8},vehicle:{padding:11,borderWidth:1,borderColor:C.line,borderRadius:10,marginTop:10}});
+const styles=StyleSheet.create({metrics:{flexDirection:'row',flexWrap:'wrap',gap:6},metric:{width:'48%',minWidth:0},metricLabel:{fontSize:10,lineHeight:15},metricValue:{fontSize:12,lineHeight:18,fontWeight:'700'},quoteDisclosure:{minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'space-between',borderTopWidth:1,borderTopColor:C.line,marginTop:8},quoteDetails:{paddingTop:5},possibleRewards:{flexDirection:'row',flexWrap:'wrap',gap:6},possibleItem:{width:'31%',minWidth:0,alignItems:'center',backgroundColor:C.raised,borderWidth:1,borderRadius:8,padding:6,gap:4},possibleLabel:{fontSize:10,lineHeight:14,textAlign:'center'},title:{fontSize:15,fontWeight:'700'},small:{fontSize:12,lineHeight:18},section:{fontSize:13,fontWeight:'700',color:C.muted,marginTop:10,marginBottom:9},offer:{padding:12,backgroundColor:C.panel,borderColor:C.line,borderLeftWidth:3,marginBottom:9},saved:{padding:12,backgroundColor:C.panel,borderColor:C.line},running:{padding:12,backgroundColor:C.greenWash,borderColor:C.accent},refresh:{flexDirection:'row',alignItems:'center',gap:10,marginBottom:8},vehicle:{padding:11,borderWidth:1,borderColor:C.line,borderRadius:10,marginTop:10}});
