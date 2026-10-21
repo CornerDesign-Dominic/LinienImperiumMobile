@@ -7,6 +7,7 @@ import {Icon} from './Icon';
 import {AtlasHeading} from './Atlas';
 import {displayFont} from './theme';
 import {rarityColor} from './items';
+import {VehicleFacts} from './VehicleFacts';
 
 
 export function VehicleCards({data,onOpen}:any){
@@ -25,23 +26,23 @@ export function VehicleCards({data,onOpen}:any){
     {active&&<Icon name="check" size={12} color={color}/>}
    </Pressable>;
   })}</Row>
-  {!!unlocked.length&&<><Txt style={styles.section}>Freigeschaltet · {n(unlocked.length)}</Txt><VehicleCardGrid data={data} cards={unlocked} onOpen={onOpen}/></>}
-  {!!locked.length&&<><Txt muted style={styles.section}>Gesperrt · {n(locked.length)}</Txt><VehicleCardGrid data={data} cards={locked} onOpen={onOpen}/></>}
+  {!!unlocked.length&&<><Txt style={styles.section}>Freigeschaltet · {n(unlocked.length)}</Txt><VehicleCardGrid data={data} cards={unlocked} onOpen={onOpen} showDetails/></>}
+  {!!locked.length&&<><Txt muted style={styles.section}>Gesperrt · {n(locked.length)}</Txt><VehicleCardGrid data={data} cards={locked} onOpen={onOpen} showDetails/></>}
   {!matching.length&&<Empty>Keine Fahrzeugkarten dieser Seltenheit.</Empty>}
  </>;
 }
-export function VehicleCardGrid({data,cards,onOpen,statusForCard,disabled=false}:any){
+export function VehicleCardGrid({data,cards,onOpen,statusForCard,disabled=false,showDetails=false}:any){
  const {state:g,catalog:c}=data;
  const vehicle=(card:any)=>data.cardVehicles?.[card.id]||{capacity:c.models[card.vehicleTier].capacity,rank:{total:0,label:'Common',level:0}};
  const rows=Array.from({length:Math.ceil(cards.length/3)},(_,i)=>cards.slice(i*3,i*3+3));
  return <>
   {rows.map((row:any[],i:number)=><View key={i} style={styles.row}>{row.map(item=>{
    const owned=g.expedition.characters[item.id],stats=vehicle(item),status=statusForCard?.(item.id);
+   const freeModules=Math.max(0,(stats.maxCapacityLevel??c.models[item.vehicleTier].maxCapacityLevel)-(stats.capacityLevel||0));
    return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={translate(`${item.name}, ${owned?`Stufe ${owned.level}`:'Nicht entdeckt'}, Geschwindigkeitsrang ${stats.rank.total}, ${n(stats.capacity,1)} Tonnen${status?.label?`, ${status.label}`:''}`)} accessibilityState={{disabled,selected:!!status?.selected}} disabled={disabled} onPress={()=>onOpen(item.id)} style={({pressed})=>[styles.card,{borderColor:rarityColor(item.rarity)},!owned&&{backgroundColor:C.raised,borderStyle:'dashed'},status?.selected&&{backgroundColor:C.greenWash},(pressed||disabled)&&{opacity:.7}]}>
     <Txt style={styles.level}>{owned?`Stufe ${owned.level}`:'Stufe —'}</Txt>
     <View style={styles.artwork}><Icon name="truck" size={32} color={rarityColor(item.rarity)}/><Text numberOfLines={3} ellipsizeMode="tail" style={styles.name}>{item.name.replace(/([a-zäöü])([A-ZÄÖÜ])/g,'$1\u00ad$2').replace(/Versorgungswagen/g,'Versorgungs\u00adwagen').replace(/Expeditionsträger/g,'Expeditions\u00adträger').replace(/Schrottsammler/g,'Schrott\u00adsammler')}</Text></View>
-    <Txt style={styles.rank}>Rang {stats.rank.total}</Txt>
-    <Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt>
+    {showDetails?<View style={{marginTop:8}}><VehicleFacts capacity={stats.capacity} rank={stats.rank.total} loadedSpeed={stats.loadedSpeed} emptySpeed={stats.speed} color={rarityColor(item.rarity)} freeModules={freeModules} compact/></View>:<><Txt style={styles.rank}>Rang {stats.rank.total}</Txt><Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt></>}
     {statusForCard&&<View style={[styles.assignment,status?.label&&styles.assigned]}>{status?.label&&<Icon name="check" size={11} color={C.accent}/>}<Text numberOfLines={2} style={styles.assignmentText}>{status?.label||'Verfügbar'}</Text></View>}
    </Pressable>;
   })}{row.length<3&&Array.from({length:3-row.length},(_,j)=><View key={`space-${j}`} style={[styles.card,{opacity:0}]}/>)}</View>)}

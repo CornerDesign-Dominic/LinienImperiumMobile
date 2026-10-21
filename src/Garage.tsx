@@ -4,6 +4,7 @@ import React,{useState} from 'react';
 import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {Icon} from './Icon';
 import {rarityColor} from './items';
+import {VehicleFacts} from './VehicleFacts';
 import {C,Txt,Row,Btn,Bar,n,remaining} from './ui';
 
 export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
@@ -22,13 +23,7 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
   return <Pressable accessibilityRole="button" accessibilityLabel={translate(`Garagenplatz ${index+1}: ${t.model}`)} onPress={()=>setSelected(t.id)} style={[styles.tile,{borderColor:color,backgroundColor:wash}]}>
    <View style={styles.tileHeader}><Icon name="truck" size={28} color={color}/><Txt style={[styles.level,{color}]}>Stufe {g.expedition.characters[t.cardId]?.level||1}</Txt></View>
    <Text numberOfLines={2} style={styles.name}>{t.model}</Text>
-   <Txt style={styles.capacity}>{n(t.capacity,1)} t</Txt>
-   <View style={styles.fact}><Txt muted style={styles.small}>Rang</Txt><Txt style={styles.value}>{t.rarity.total} / 50</Txt></View>
-   <View style={[styles.speed,{borderTopColor:color}]}>
-    <Txt muted style={styles.speedLabel}>Tempo · km/s</Txt>
-    <View style={styles.fact}><Txt muted style={styles.small}>Beladen</Txt><Txt style={styles.value}>{n(stats?.loadedSpeed,2)}</Txt></View>
-    <View style={styles.fact}><Txt muted style={styles.small}>Leer</Txt><Txt style={styles.value}>{n(stats?.speed??t.speed,2)}</Txt></View>
-   </View>
+   <VehicleFacts capacity={t.capacity} rank={t.rarity.total} loadedSpeed={stats?.loadedSpeed} emptySpeed={stats?.speed??t.speed} color={color}/>
   </Pressable>;
  };
  return <>
