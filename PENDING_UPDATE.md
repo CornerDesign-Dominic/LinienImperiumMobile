@@ -1,3 +1,23 @@
+## Sammelpaket Level, Stadthub und kompakte Oberflächen – veröffentlicht am 21.10.2026
+
+Release: `ec894f2a4e41985144476137301eea4d89d9baa5` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39654991142).
+
+- Der gesamte vorbereitete Stand ist veröffentlicht.
+- Spielerlevel linear: 100 × aktuelles Level XP. Einmalige Übernahme erhält Level und anteiligen Fortschritt ohne zusätzliche Level-Belohnungen.
+- Stadthub ab Level 5; alle fünf Level ein weiterer Fahrzeug-Kaufplatz und „+1 Stadthub Fahrzeug“ im Glückwunsch-Modal. Vorhandener Stadthub und Fahrzeuge bleiben erhalten.
+- Verlinkungs-Card zur Materialbeschaffung aus einzelnen Expeditionsregionen entfernt.
+- Abhol-Buch ohne Zahl auf der Menü-Card; Modal mit Gesamtzahl und Zahlen je Gebiet, ohne einzelne Durchgänge.
+- Ortsauswahl: Titel „Ort wählen“, mögliche Beute als kleine Item-Cards.
+- Garage und Sammlung mit gemeinsamer Darstellung von Kapazität, abgesetzter Rang-/Geschwindigkeitsgruppe und km/s an den Werten; Sammlung zusätzlich freie Modulplätze.
+- Alle Modal-Schließen-Buttons zeigen nur X mit zugänglicher Beschriftung.
+- Einzelauftragsdetails: Fahrzeugprognosen mit Touren, Dauer, XP und Gewinn, aufklappbare Ertrags-/Kostendetails; mögliche Belohnungen oben mit Icons. Separate Prognose-Card entfernt.
+- Beim Verschwinden eines geöffneten Angebots nach Aktualisierung automatische Rückkehr zur Übersicht; überlappende Rückfallanzeige korrigiert.
+- Typprüfung, alle 113 Tests (0 Fehler), Android-Export, Firebase-Deployment und Live-API-Test erfolgreich.
+- Android-OTA im Kanal preview erfolgreich veröffentlicht. Keine neue APK erforderlich.
+- Physischer Gerätetest durch den Nutzer steht aus. Frühere Vorbereitungshinweise in diesem Dokument und UI-Notizen sind mit diesem Release erledigt.
+
+---
+
 ## Lineare Spielerlevel und Stadthub-Plätze – vorbereitet, noch nicht veröffentlicht
 
 - Nächstes Spielerlevel: immer 100 × aktuelles Level XP; keine quadratische Steigerung ab Level 25.
