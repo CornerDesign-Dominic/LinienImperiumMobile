@@ -45,7 +45,7 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
   ()=>onCommand(r.vehicleIds?'procurementGroupStop':'procurementStop',{id:r.id,immediate}));
 
  return <>
-  <Pressable accessibilityRole="button" accessibilityLabel={translate('Abholungsbuch öffnen')} onPress={()=>setDialog('book')}><Card><Row style={{marginBottom:0,flexWrap:'nowrap'}}><Icon name="book" size={27} color={C.gold}/><Txt style={[styles.heading,{flex:1,marginBottom:0}]}>Abholungsbuch</Txt><Pill>{n(p.completed)}</Pill><Icon name="chevron" size={16}/></Row></Card></Pressable>
+  <Pressable accessibilityRole="button" accessibilityLabel={translate('Abhol-Buch öffnen')} onPress={()=>setDialog('book')}><Card><Row style={{marginBottom:0,flexWrap:'nowrap'}}><Icon name="book" size={27} color={C.gold}/><Txt style={[styles.heading,{flex:1,marginBottom:0}]}>Abhol-Buch</Txt><Icon name="chevron" size={16}/></Row></Card></Pressable>
   {rewards.length>0&&<Card><Txt style={styles.heading}>Belohnungen</Txt>{rewardTiles(rewards,true)}<Btn disabled={busy} onPress={()=>onCommand('procurementClaim')}>Einsammeln</Btn></Card>}
   <Pressable accessibilityRole="button" accessibilityLabel={translate('Beschaffungsort wählen')} onPress={()=>setDialog('sites')}><Card><Row style={{marginBottom:4,flexWrap:'nowrap'}}><Icon name="expedition" size={25} color={C.gold}/><Txt style={[styles.heading,{flex:1,marginBottom:0}]}>Beschaffungsort wählen</Txt><Icon name="chevron" size={16}/></Row><Txt muted>Wähle, woher du Materialien beschaffen möchtest.</Txt></Card></Pressable>
   {active.length>0&&<Txt style={styles.heading}>Laufende Beschaffungen</Txt>}
@@ -64,12 +64,11 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
   </Card>)}
   <Modal visible={dialog!==null&&!modalBlocked} transparent animationType="none" onRequestClose={()=>dialog==='settings'?setDialog('sites'):close()}>
    <View style={styles.overlay}><View style={styles.modal}>
-    <Row style={{flexWrap:'nowrap'}}>{dialog==='settings'&&<Pressable accessibilityRole="button" accessibilityLabel={translate('Zur Ortsauswahl')} onPress={()=>{setSaveFailed(false);setDialog('sites');}} style={styles.back}><Icon name="back" size={21}/></Pressable>}<Txt style={[styles.heading,{flex:1,minWidth:0,marginBottom:0}]}>{dialog==='book'?'Abholungsbuch':dialog==='sites'?'Beschaffungsort wählen':'Beschaffung planen'}</Txt><Btn icon="close" secondary style={{marginTop:0}} onPress={close}>Schließen</Btn></Row>
+    <Row style={{flexWrap:'nowrap'}}>{dialog==='settings'&&<Pressable accessibilityRole="button" accessibilityLabel={translate('Zur Ortsauswahl')} onPress={()=>{setSaveFailed(false);setDialog('sites');}} style={styles.back}><Icon name="back" size={21}/></Pressable>}<Txt style={[styles.heading,{flex:1,minWidth:0,marginBottom:0}]}>{dialog==='book'?'Abhol-Buch':dialog==='sites'?'Beschaffungsort wählen':'Beschaffung planen'}</Txt><Btn icon="close" secondary style={{marginTop:0}} onPress={close}>Schließen</Btn></Row>
     <ScrollView key={dialog} keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:4}}>
      {dialog==='book'&&<>
       <Row><Txt muted>Erfolgreiche Abholungen insgesamt</Txt><Txt gold>{n(p.completed)}</Txt></Row>
       {visited.length?visited.map((s:any)=><View key={s.region} style={styles.logRow}><Txt style={{flex:1}}>{regionTitle(s.region)}</Txt><Txt gold>{n(s.completed)}</Txt></View>):<Empty>Noch keine erfolgreichen Abholungen.</Empty>}
-      {runs.some((r:any)=>r.status==='finished')&&<><Txt style={styles.heading}>Beendete Beschaffungen</Txt>{runs.filter((r:any)=>r.status==='finished').map((r:any)=><Card key={r.id}><Txt>{regionTitle(r.region)}</Txt>{!r.vehicleIds&&<Txt muted>{r.model}</Txt>}<Txt muted>{translate('{0} erfolgreiche Abholungen').replace('{0}',n(r.completed))}</Txt><Txt muted>{r.reason==='reserve'?'Beendet: Reserve erreicht. Zum Fortsetzen neu starten.':r.reason==='cancelled'?'Sofort abgebrochen':r.reason==='completed'?'Alle Touren abgeschlossen':'Nach laufender Tour beendet'}</Txt></Card>)}</>}
      </>}
      {dialog==='sites'&&p.sites.map((s:any)=>{const shown=expanded.includes(s.region);return <Card key={s.region} style={!s.unlocked&&styles.lockedSite}>
       <Pressable accessibilityRole="button" accessibilityLabel={translate('{0} als Beschaffungsort wählen').replace('{0}',translate(regionTitle(s.region)))} accessibilityState={{disabled:busy||!s.unlocked}} disabled={busy||!s.unlocked} onPress={()=>open(s.region)} style={[styles.siteChoice,!s.unlocked&&{minHeight:0}]}>
