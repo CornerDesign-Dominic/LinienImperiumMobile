@@ -14,7 +14,7 @@ function Progress({explored,delivered,showDelivery=false}:any){return <>
  {showDelivery&&<><Row style={{marginTop:3,marginBottom:0}}><Txt muted style={styles.small}>Bonuslieferung</Txt><Txt muted style={styles.small}>{n(delivered)} %</Txt></Row><Bar value={delivered} gold/></>}
 </>;}
 
-export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onMission,onFocusPlace,onProcurement,modalBlocked=false}:any){
+export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onMission,onFocusPlace,modalBlocked=false}:any){
  const [selected,setSelected]=useState<number|'endless'|null>(null),[chances,setChances]=useState(false);
  const focus=useRef<{offset:number|null;target:number|null;done:boolean}>({offset:null,target:null,done:false});
  const g=data.state,maps=data.expeditionMap;
@@ -37,7 +37,6 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
  const bonusDuration=bonusMission?Math.max(0,bonusMission.endsAt-bonusMission.startedAt):(place?place.durationMs:map.finalDurationMs);
  return <View onLayout={e=>{focus.current.offset=e.nativeEvent.layout.y;tryFocus();}}>
   <AtlasHeading title={map.name} detail={map.customer.name}/>
-  <Card><Txt gold>Materialbeschaffung</Txt><Txt muted>{data.procurement?.sites[region]?.unlocked?'Region zu 100 % abgeschlossen. Beschaffung freigeschaltet.':'Alle sieben Orte erkunden und beliefern sowie die Endloslieferung abschließen und abholen.'}</Txt><Btn secondary onPress={onProcurement}>Zur Materialbeschaffung</Btn></Card>
   <View onLayout={e=>targetLayout('endless',e.nativeEvent.layout.y)}>
    <Pressable accessibilityRole="button" accessibilityLabel={translate('Endlosort öffnen')} onPress={()=>setSelected('endless')}>
     <Card style={[styles.endless,!endlessOpen&&styles.locked]}>
