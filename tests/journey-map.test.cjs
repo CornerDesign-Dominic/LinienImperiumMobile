@@ -15,6 +15,7 @@ function render(region,discovered,opened=[],regions=[],width=390,height=620){
   if(id==='./i18n')return {t:x=>x};if(id==='./Icon')return {Icon:'Icon'};
   if(id==='./theme')return {C:{},displayFont:'serif'};
   if(id==='./regionIdentities')return {regionIdentities:Array.from({length:5},()=>({title:'Region'}))};
+  if(id.endsWith('.png'))return {uri:id,width:887,height:1774};
   if(id==='./regionRoutes')return {regionRoutes};if(id==='./journeyLayout')return layout;throw Error(id);
  });
  return ExpeditionJourney({map:{index:region},maps:Array.from({length:5},(_,i)=>({open:i<=region+1})),state:{discovered,deliveries:Array(7).fill(false),finalClaimed:false},missions:[],accountId:'test',onPlace:p=>opened.push(p),onRegion:r=>regions.push(r)});
@@ -51,7 +52,8 @@ test('Region arrows respect locks and boundaries; saved positions clamp after re
  const maps=[{open:true},{open:true},{open:false}];
  assert.equal(layout.adjacentJourneyRegion(maps,0,-1),null);assert.equal(layout.adjacentJourneyRegion(maps,0,1),1);assert.equal(layout.adjacentJourneyRegion(maps,1,1),null);assert.equal(layout.adjacentJourneyRegion(maps,2,1),null);
  const regions=[],tree=render(0,7,[],regions),arrows=elements(tree,'Pressable').filter(n=>n.props.testID?.endsWith('-region'));
- arrows[0].props.onPress();arrows[1].props.onPress();assert.deepEqual(regions,[1]);assert.equal(arrows[0].props.disabled,true);
+ assert.deepEqual(arrows.map(a=>a.props.testID),['next-region']);arrows[0].props.onPress();assert.deepEqual(regions,[1]);
+ const finalArrows=elements(render(4,7),'Pressable').filter(n=>n.props.testID?.endsWith('-region'));assert.deepEqual(finalArrows.map(a=>a.props.testID),['previous-region']);
  const g=layout.journeyGeometry(390,620,regionRoutes[0].places,7),saved=.32;
  assert.equal(layout.journeyOffset(g,390,0,saved),saved*g.worldWidth);
  const resized=layout.journeyGeometry(430,720,regionRoutes[0].places,7);assert.equal(layout.journeyOffset(resized,430,0,saved),saved*resized.worldWidth);
