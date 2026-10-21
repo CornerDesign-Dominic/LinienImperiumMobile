@@ -1,33 +1,32 @@
 import {t as translate} from './i18n';
 import {Icon} from './Icon';
-import React,{useRef,useState} from 'react';
+import React,{useState} from 'react';
 import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
-import {C,Txt,Card,Row,Btn,Bar,Pill,n,remaining} from './ui';
-import {AtlasHeading,atlasStyles} from './Atlas';
+import {C,Txt,Row,Btn,Bar,Pill,n,remaining} from './ui';
+import {AtlasHeading} from './Atlas';
 import {ExpeditionRegionCard} from './ExpeditionRegionCard';
 import {displayFont} from './theme';
 import {rarityColor} from './items';
+import {ExpeditionJourney} from './ExpeditionJourney';
+import {regionIdentities} from './regionIdentities';
+import {regionRoutes} from './regionRoutes';
 const deliveryProgress=(mission:any,done:boolean,clock:number)=>done||mission?.status==='completed'?100:mission?.status==='active'?Math.max(0,Math.min(100,(clock-mission.startedAt)/(mission.endsAt-mission.startedAt)*100)):0;
-function Progress({explored,delivered,showDelivery=false}:any){return <>
- <Row style={{marginTop:6,marginBottom:0}}><Txt muted style={styles.small}>Erkundung</Txt><Txt muted style={styles.small}>{n(explored)} %</Txt></Row>
- <Bar value={explored}/>
- {showDelivery&&<><Row style={{marginTop:3,marginBottom:0}}><Txt muted style={styles.small}>Bonuslieferung</Txt><Txt muted style={styles.small}>{n(delivered)} %</Txt></Row><Bar value={delivered} gold/></>}
-</>;}
-
-export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onMission,onFocusPlace,modalBlocked=false}:any){
+export function Expeditions(props:any){
+ const {data,region,onSelectRegion}=props;
+ if(region===null)return <><AtlasHeading title="Reiseatlas" detail="Erschließe Regionen, entdecke Orte und gewinne Verbündete."/>{data.expeditionMap.map((map:any)=><ExpeditionRegionCard key={map.index} map={map} onOpen={onSelectRegion}/>)}</>;
+ if(!data.expeditionMap[region]?.open||!regionRoutes[region])return null;
+ return <OpenedExpedition key={region} {...props}/>;
+}
+function OpenedExpedition({data,region,onSelectRegion,busy,clock,onCommand,onMission,accountId,modalBlocked=false}:any){
  const [selected,setSelected]=useState<number|'endless'|null>(null),[chances,setChances]=useState(false);
- const focus=useRef<{offset:number|null;target:number|null;done:boolean}>({offset:null,target:null,done:false});
  const g=data.state,maps=data.expeditionMap;
  const button=(label:string,action:string,payload:any,disabled=false)=><Btn disabled={busy||disabled} onPress={()=>onCommand(action,payload)}>{label}</Btn>;
- if(region===null)return <><AtlasHeading title="Reiseatlas" detail="Erschließe Regionen, entdecke Orte und gewinne Verbündete."/>{maps.map((map:any)=><ExpeditionRegionCard key={map.index} map={map} onOpen={onSelectRegion}/>)}</>;
- const map=maps[region],r=g.expedition.regions[region],missions=g.expedition.missions.filter((m:any)=>m.region===region);
+
+ const map=maps[region],identity=regionIdentities[region],route=regionRoutes[region],r=g.expedition.regions[region],missions=g.expedition.missions.filter((m:any)=>m.region===region);
  const final=missions.find((m:any)=>m.kind==='final'),endlessOpen=r.discovered===7,noTruck=!g.trucks.some((t:any)=>t.free&&t.tier>=2);
- const firstUnfinished=r.deliveries.findIndex((done:boolean)=>!done),focusKey=firstUnfinished>=0?firstUnfinished:!r.finalClaimed?'endless':null;
- const tryFocus=()=>{const f=focus.current;if(!f.done&&focusKey!==null&&f.offset!==null&&f.target!==null){f.done=true;onFocusPlace?.(Math.max(0,f.offset+f.target-10));}};
- const targetLayout=(key:number|'endless',y:number)=>{if(key===focusKey){focus.current.target=y;tryFocus();}};
  const close=()=>chances?setChances(false):setSelected(null);
  const info=(event?:any)=>{event?.stopPropagation();setChances(true);};
- const question=(positioned=false)=> <Pressable accessibilityRole="button" accessibilityLabel={translate(`Fundchancen ${map.name}`)} onPress={info} style={[styles.question,positioned&&{position:'absolute',top:16,right:16}]}><Icon name="help" size={23} color={C.accent}/></Pressable>;
+ const question=(positioned=false)=> <Pressable accessibilityRole="button" accessibilityLabel={translate(`Fundchancen ${identity.title}`)} onPress={info} style={[styles.question,positioned&&{position:'absolute',top:16,right:16}]}><Icon name="help" size={23} color={C.accent}/></Pressable>;
  const place=typeof selected==='number'?map.places[selected]:null;
  const discovered=place&&Number(selected)<r.discovered,next=place&&selected===r.discovered;
  const done=place&&r.deliveries[selected as number],mission=place&&missions.find((m:any)=>m.kind==='delivery'&&m.place===selected);
@@ -35,32 +34,12 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
  const shipment=deliveryProgress(place?mission:final,place?done:r.finalClaimed,clock);
  const bonusMission=place?mission:final;
  const bonusDuration=bonusMission?Math.max(0,bonusMission.endsAt-bonusMission.startedAt):(place?place.durationMs:map.finalDurationMs);
- return <View onLayout={e=>{focus.current.offset=e.nativeEvent.layout.y;tryFocus();}}>
-  <AtlasHeading title={map.name} detail={map.customer.name}/>
-  <View onLayout={e=>targetLayout('endless',e.nativeEvent.layout.y)}>
-   <Pressable accessibilityRole="button" accessibilityLabel={translate('Endlosort öffnen')} onPress={()=>setSelected('endless')}>
-    <Card style={[styles.endless,!endlessOpen&&styles.locked]}>
-     <Row style={{marginBottom:2}}><Txt style={[styles.title,{flex:1}]}>∞ Endlosort</Txt><View style={{width:44,height:44}}/></Row>
-     <Txt muted style={styles.small}>{map.customer.name}</Txt>
-     <Progress explored={map.progress} delivered={deliveryProgress(final,r.finalClaimed,clock)} showDelivery={endlessOpen}/>
-     {!endlessOpen?<Pill>Gesperrt</Pill>:r.finalClaimed?<Txt muted style={styles.small}>Kunde freigeschaltet ✓</Txt>:final?.status==='active'?<Txt gold style={styles.small}>{remaining(final.endsAt,clock)}</Txt>:null}
-    </Card>
-   </Pressable>
-   {question(true)}
-  </View>
-  {[...map.places].reverse().map((p:any)=>{
-   const i=p.index,known=i<r.discovered,complete=r.deliveries[i],locked=i>r.discovered;
-   const m=missions.find((m:any)=>m.kind==='delivery'&&m.place===i),value=p.invested/p.discoveryCost*100;
-   return <View key={i} style={atlasStyles.journey} onLayout={e=>targetLayout(i,e.nativeEvent.layout.y)}><View style={atlasStyles.waypoint}/><Pressable accessibilityRole="button" accessibilityLabel={translate(`Ort ${i+1} öffnen`)} onPress={()=>setSelected(i)}>
-    <Card style={[styles.place,locked&&styles.locked]}><Row style={{marginBottom:4}}><Txt style={styles.title}>Ort {i+1}</Txt></Row>
-     <Progress explored={value} delivered={deliveryProgress(m,complete,clock)} showDelivery={known}/>
-     {locked?<Pill>Gesperrt</Pill>:complete?<Txt muted style={styles.small}>Abgeschlossen ✓</Txt>:m?.status==='active'?<Txt gold style={styles.small}>{remaining(m.endsAt,clock)}</Txt>:m?.status==='completed'?<Txt gold style={styles.small}>Bonus bereit</Txt>:null}
-    </Card>
-   </Pressable></View>;
-  })}
-  <Modal visible={(selected!==null||chances)&&!modalBlocked} transparent animationType="none" onRequestClose={close}>
+ const permitted=selected==='endless'?endlessOpen:typeof selected==='number'&&selected<=r.discovered;
+ return <View style={{flex:1}}>
+  <ExpeditionJourney map={map} maps={maps} state={r} missions={missions} accountId={accountId} onRegion={onSelectRegion} onPlace={setSelected}/>
+  <Modal visible={((selected!==null&&permitted)||chances)&&!modalBlocked} transparent animationType="none" onRequestClose={close}>
    <View style={styles.overlay}><View style={styles.modal}>
-    <Row style={{flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{chances?`Fundchancen · ${map.name}`:place?`Ort ${Number(selected)+1}`:'∞ Endlosort'}</Txt><Btn icon="close" iconOnly secondary style={{marginTop:0}} onPress={close}>Schließen</Btn></Row>
+    <Row style={{flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{chances?`Fundchancen · ${identity.title}`:place?route.places[Number(selected)].name:route.places[7].name}</Txt><Btn icon="close" iconOnly secondary style={{marginTop:0}} onPress={close}>Schließen</Btn></Row>
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:4}}>
      {chances?<>
       <Txt muted style={styles.small}>Je Expedition · {map.finds.cost} Punkte</Txt>
@@ -80,7 +59,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
         {!mission&&noTruck&&<Txt muted style={styles.small}>Kein freier LKW</Txt>}
        </>}
       </>:<>
-       <Txt muted style={{marginVertical:8}}>{map.customer.name}</Txt><Txt muted>Erste Endloslieferung: Kunde und 1 Kapazitätsmodul. Bereits erhaltene Module werden nicht erneut vergeben.</Txt>
+       <Txt muted style={{marginVertical:8}}>{identity.customer}</Txt><Txt muted>Erste Endloslieferung: Kunde und 1 Kapazitätsmodul. Bereits erhaltene Module werden nicht erneut vergeben.</Txt>
        {!endlessOpen?<Pill>Gesperrt</Pill>:<>
         {!final&&!r.finalClaimed&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'final',0)}>Kunde freischalten</Btn>}
         {final?.status==='completed'&&!final.claimedAt&&button('Kunde freischalten','claimMission',{id:final.id})}
