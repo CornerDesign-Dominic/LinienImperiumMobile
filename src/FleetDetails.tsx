@@ -12,7 +12,7 @@ export function FleetDetails({data,template,visible,onClose,modalBlocked=false}:
  const estimate=estimateFleet(data.fleetPreviews?.[template]||[],distance);
  return <Modal visible={visible&&!modalBlocked} transparent animationType="none" onRequestClose={onClose}>
   <SafeAreaView edges={['top','bottom']} style={styles.overlay}><View style={styles.modal}>
-   <Row style={{flexWrap:'nowrap'}}><Txt style={styles.title}>Flottendetails</Txt><Btn icon="close" secondary style={{marginTop:0}} onPress={onClose}>Schließen</Btn></Row>
+   <Row style={{flexWrap:'nowrap'}}><Txt style={styles.title}>Flottendetails</Txt><Btn icon="close" iconOnly secondary style={{marginTop:0}} onPress={onClose}>Schließen</Btn></Row>
    <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:8}}>
     <Row><Txt muted>Flotte {template+1}</Txt><Txt muted style={styles.small}>Beispieltour</Txt></Row>
     <View style={styles.inputRow}><TextInput accessibilityLabel={translate('Tourlänge in Kilometern')} keyboardType="decimal-pad" maxLength={8} value={distanceText} onChangeText={setDistanceText} style={styles.input}/><Txt muted>km</Txt></View>

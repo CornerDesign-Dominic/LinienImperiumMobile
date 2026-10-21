@@ -14,7 +14,7 @@ export function HubVehicles({data,busy,clock,onCommand,onSell,modalBlocked=false
   {!vehicles.length&&<Empty>Keine Stadttransporter</Empty>}
   <Modal visible={!!truck&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setSelected(null)}>
    <View style={styles.overlay}><View style={styles.detail}>
-    <Row style={{flexWrap:'nowrap'}}><Txt style={{fontSize:17,fontWeight:'700',flex:1}}>{truck?.model}</Txt><Btn icon="close" secondary onPress={()=>setSelected(null)}>Schließen</Btn></Row>
+    <Row style={{flexWrap:'nowrap'}}><Txt style={{fontSize:17,fontWeight:'700',flex:1}}>{truck?.model}</Txt><Btn icon="close" iconOnly secondary onPress={()=>setSelected(null)}>Schließen</Btn></Row>
     {truck&&<ScrollView keyboardShouldPersistTaps="handled">
      {fact('Kapazität',`${n(truck.capacity,1)} t`)}
      {fact('Geschwindigkeitsrang',`${truck.rarity.label} ${truck.rarity.level}`)}

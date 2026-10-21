@@ -64,7 +64,7 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
   </Card>)}
   <Modal visible={dialog!==null&&!modalBlocked} transparent animationType="none" onRequestClose={()=>dialog==='settings'?setDialog('sites'):close()}>
    <View style={styles.overlay}><View style={styles.modal}>
-    <Row style={{flexWrap:'nowrap'}}>{dialog==='settings'&&<Pressable accessibilityRole="button" accessibilityLabel={translate('Zur Ortsauswahl')} onPress={()=>{setSaveFailed(false);setDialog('sites');}} style={styles.back}><Icon name="back" size={21}/></Pressable>}<Txt style={[styles.heading,{flex:1,minWidth:0,marginBottom:0}]}>{dialog==='book'?'Abhol-Buch':dialog==='sites'?'Ort wählen':'Beschaffung planen'}</Txt><Btn icon="close" secondary style={{marginTop:0}} onPress={close}>Schließen</Btn></Row>
+    <Row style={{flexWrap:'nowrap'}}>{dialog==='settings'&&<Pressable accessibilityRole="button" accessibilityLabel={translate('Zur Ortsauswahl')} onPress={()=>{setSaveFailed(false);setDialog('sites');}} style={styles.back}><Icon name="back" size={21}/></Pressable>}<Txt style={[styles.heading,{flex:1,minWidth:0,marginBottom:0}]}>{dialog==='book'?'Abhol-Buch':dialog==='sites'?'Ort wählen':'Beschaffung planen'}</Txt><Btn icon="close" iconOnly secondary style={{marginTop:0}} onPress={close}>Schließen</Btn></Row>
     <ScrollView key={dialog} keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:4}}>
      {dialog==='book'&&<>
       <Row><Txt muted>Erfolgreiche Abholungen insgesamt</Txt><Txt gold>{n(p.completed)}</Txt></Row>

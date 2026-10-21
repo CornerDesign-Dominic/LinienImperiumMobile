@@ -32,7 +32,7 @@ export function LevelUpNotice({level,onClose}:{level:number|undefined;onClose:()
   <Txt style={s.reward}>+1 {itemName('overtimeRefills')}</Txt>
   <Txt style={s.reward}>+3 Punkte zum Verteilen</Txt>
   {!!level&&level%5===0&&<Txt style={s.reward}>+1 Stadthub Fahrzeug</Txt>}
-  <Btn icon="close" secondary onPress={onClose}>Schließen</Btn>
+  <Btn icon="close" iconOnly secondary onPress={onClose}>Schließen</Btn>
  </SafeAreaView></View></Modal>;
 }
 const s=StyleSheet.create({title:{fontSize:16,fontWeight:'700'},area:{paddingVertical:10,borderBottomWidth:1,borderColor:C.line},values:{flexDirection:'row',alignItems:'center',gap:8},value:{width:42,alignItems:'center'},caption:{fontSize:10},controls:{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',gap:6},step:{minWidth:44,minHeight:44,borderRadius:10,borderWidth:1,borderColor:C.line,alignItems:'center',justifyContent:'center'},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},modal:{width:'100%',maxWidth:440,borderRadius:20,padding:20,backgroundColor:C.panel,borderWidth:1,borderColor:C.accent},congrats:{fontSize:19,fontWeight:'700',textAlign:'center'},level:{fontSize:26,fontWeight:'700',textAlign:'center',color:C.accent,marginTop:8,marginBottom:18,lineHeight:32},reward:{fontSize:13,lineHeight:21,marginBottom:8}});

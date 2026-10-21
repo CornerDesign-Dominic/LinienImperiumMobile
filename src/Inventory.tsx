@@ -22,7 +22,7 @@ export function Inventory({data,busy,onNavigate,onUseRefill,modalBlocked=false}:
   </Pressable>)}{Array.from({length:3-row.length},(_,i)=><View key={`empty-${i}`} style={{flex:1}}/>)}</View>)}
   <Modal visible={!!item&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setSelected(null)}>
    <View style={styles.overlay}><SafeAreaView edges={['bottom']} style={styles.detail}>
-    <Row><Txt style={styles.title}>{item?.name}</Txt><Btn icon="close" secondary onPress={()=>setSelected(null)}>Schließen</Btn></Row>
+    <Row><Txt style={styles.title}>{item?.name}</Txt><Btn icon="close" iconOnly secondary onPress={()=>setSelected(null)}>Schließen</Btn></Row>
     {item&&<ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:12}}>
      <Pill>{n(item.amount)} vorhanden</Pill>
      <Txt style={{marginTop:16}}>{item.description}</Txt>

@@ -30,7 +30,7 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
   {Array.from({length:5},(_,row)=><View key={row} style={styles.row}>{[0,1].map(col=><React.Fragment key={col}>{tile(regular[row*2+col],row*2+col)}</React.Fragment>)}</View>)}
   <Modal transparent visible={(!!truck||adding)&&!modalBlocked} animationType="none" onRequestClose={()=>{setSelected(null);setAdding(false);}}>
    <View style={styles.overlay}><View style={styles.detail}>
-    <Row style={{flexWrap:'nowrap'}}><Txt style={styles.title}>{adding?'Fahrzeug wählen':truck?.model}</Txt><Btn icon="close" secondary onPress={()=>{setSelected(null);setAdding(false);}}>Schließen</Btn></Row>
+    <Row style={{flexWrap:'nowrap'}}><Txt style={styles.title}>{adding?'Fahrzeug wählen':truck?.model}</Txt><Btn icon="close" iconOnly secondary onPress={()=>{setSelected(null);setAdding(false);}}>Schließen</Btn></Row>
     {adding&&<View style={styles.filters}>{filters.map((filter:any)=>{
      const active=rarity===filter.id,color=filter.id==='all'?C.accent:rarityColor(filter.id);
      return <Pressable key={filter.id} accessibilityRole="button" accessibilityLabel={translate(filter.label)} accessibilityState={{selected:active}} onPress={()=>setRarity(filter.id)} style={[styles.filter,{borderColor:color},active&&{backgroundColor:C.greenWash}]}>

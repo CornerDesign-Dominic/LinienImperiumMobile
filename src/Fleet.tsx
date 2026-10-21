@@ -43,7 +43,7 @@ export function Fleet({data,busy,template,onTemplate,onCommand,onCollection,moda
   <Btn secondary onPress={onCollection}>Sammlung & Kartenlevel</Btn>
   <Modal visible={choosingSeat!==null&&!modalBlocked} transparent animationType="none" onRequestClose={close}>
    <SafeAreaView edges={['top','bottom']} style={styles.overlay}><View style={styles.sheet}>
-    <Row style={{flexWrap:'nowrap'}}><Txt style={styles.title}>{picking?'Fahrzeugkarte wählen':selected?.name}</Txt><Btn icon="close" secondary style={{marginTop:0}} onPress={close}>Schließen</Btn></Row>
+    <Row style={{flexWrap:'nowrap'}}><Txt style={styles.title}>{picking?'Fahrzeugkarte wählen':selected?.name}</Txt><Btn icon="close" iconOnly secondary style={{marginTop:0}} onPress={close}>Schließen</Btn></Row>
     <Txt muted style={{marginBottom:8}}>Flotte {template+1} · Platz {(choosingSeat??0)+1}</Txt>
     {saveFailed&&<Txt accessibilityRole="alert" style={{color:C.red,marginBottom:8}}>Änderung konnte nicht gespeichert werden. Bitte erneut versuchen.</Txt>}
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:4}}>

@@ -60,7 +60,7 @@ export function Expeditions({data,region,onSelectRegion,busy,clock,onCommand,onM
   })}
   <Modal visible={(selected!==null||chances)&&!modalBlocked} transparent animationType="none" onRequestClose={close}>
    <View style={styles.overlay}><View style={styles.modal}>
-    <Row style={{flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{chances?`Fundchancen · ${map.name}`:place?`Ort ${Number(selected)+1}`:'∞ Endlosort'}</Txt><Btn icon="close" secondary style={{marginTop:0}} onPress={close}>Schließen</Btn></Row>
+    <Row style={{flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{chances?`Fundchancen · ${map.name}`:place?`Ort ${Number(selected)+1}`:'∞ Endlosort'}</Txt><Btn icon="close" iconOnly secondary style={{marginTop:0}} onPress={close}>Schließen</Btn></Row>
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:4}}>
      {chances?<>
       <Txt muted style={styles.small}>Je Expedition · {map.finds.cost} Punkte</Txt>

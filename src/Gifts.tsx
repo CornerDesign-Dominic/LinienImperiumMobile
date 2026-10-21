@@ -66,7 +66,7 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
   </Pressable>)}
   <Modal visible={!!gift&&!modalBlocked} transparent animationType="none" onRequestClose={close}>
    <View style={styles.overlay}><View style={styles.modal}>
-    <Row style={{flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{card?'Geschenk geöffnet':'Geschenk'}</Txt><Btn icon={opening?'chevron':'close'} secondary disabled={opening&&!canSkip} style={{marginTop:0}} onPress={close}>{opening?'Überspringen':'Schließen'}</Btn></Row>
+    <Row style={{flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{card?'Geschenk geöffnet':'Geschenk'}</Txt><Btn icon={opening?'chevron':'close'} iconOnly={!opening} secondary disabled={opening&&!canSkip} style={{marginTop:0}} onPress={close}>{opening?'Überspringen':'Schließen'}</Btn></Row>
     {gift&&<>
      <Row><Txt muted>{gift.name}</Txt><Pill>1 Fahrzeugkarte</Pill></Row>
      <ScrollView ref={list} style={{flexShrink:1,flexGrow:0}} contentContainerStyle={{paddingBottom:4}}>
