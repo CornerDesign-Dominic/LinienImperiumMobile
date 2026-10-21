@@ -1,3 +1,17 @@
+## Lineare Spielerlevel und Stadthub-Plätze – vorbereitet, noch nicht veröffentlicht
+
+- Nächstes Spielerlevel: immer 100 × aktuelles Level XP; keine quadratische Steigerung ab Level 25.
+- Einmalige Mobile-Migration erhält aktuelles Level und prozentualen XP-Fortschritt (auf 0,01 XP gerundet), rechnet die gespeicherte XP-Zahl auf die neue Kurve um und entfernt alte Level-Floors. Keine nachträglichen Level-Belohnungen; vorhandene Auffüller und offene Punkte bleiben bestehen.
+- Stadthub ab Level 5; ein Kaufplatz pro fünf Spielerlevel. Server prüft Freischaltung und Fahrzeuglimit. Kauf kostet weiterhin Münzen.
+- Bereits vorhandener Stadthub und gekaufte Fahrzeuge bleiben erhalten. Bestandsschutz erlaubt keine zusätzlichen Käufe über das neue Level-Limit.
+- Nächster Fahrzeugplatz wird in Stadthub und Händler angezeigt.
+- Glückwunsch-Modal zeigt bei Level 5, 10, 15 usw. zusätzlich „+1 Stadthub Fahrzeug“. Kein kostenloses Fahrzeug wird vergeben.
+- Bestehende Level-Belohnungen bleiben 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 verteilbare Punkte.
+- Deutsche und englische UI sowie Spielhilfe angepasst; neuere main-Änderungen enthalten.
+- 103 lokale Backend-, Mathe- und Regressionstests bestanden, darunter 6 neue Progressionstests. Nach abschließender Hilfeänderung 6 Progressionstests erneut bestanden. Kein vollständiger TypeScript-/Android-Build und kein Gerätetest in diesem Vorbereitungsschritt.
+
+---
+
 ## Garagenfilter und kompakte Beschaffung – veröffentlicht
 
 Release: `ee77464ad9b3ac087c66cd56b0b928f5249b4948` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39524521835).

@@ -628,7 +628,7 @@ test('All expedition cards can start regional and long-distance orders while gar
   const blocked=execute(active.state,'assign',{order:other.id,truck:truck.id},now,fixed);
   assert.equal(blocked.state.orders.find(o=>o.id===other.id).status,'available');
  }
- let city=initial;city.state.coins=100000;city=execute(city.state,'buyHub',{},now,fixed);city=execute(city.state,'buyTruck',{model:0},now,fixed);
+ let city=structuredClone(initial);city.state.xp=1000;city.state.coins=100000;city=execute(city.state,'buyHub',{},now,fixed);city=execute(city.state,'buyTruck',{model:0},now,fixed);
  const bought=city.state.trucks.find(t=>!t.cardId);city=execute(city.state,'hubTruck',{id:bought.id},now,fixed);
  for(const o of city.state.orders)o.category='international';
  const views=execute(city.state,'sync',{},now,fixed).view.state.orders;

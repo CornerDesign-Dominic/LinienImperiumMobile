@@ -2,7 +2,7 @@
   "dashboard": [
     [
       "Player level",
-      "Delivered tonnes grant XP: tonnes × paid directions × (1 + active card XP bonuses / 100). Dual Way pays both directions. The next level requires 100 × level XP up to level 24, then 4 × level² XP. Each level grants one expedition refill, one overtime refill and 3 points to increase your maximum reserves. Each allocated point also adds 1 point to that reserve."
+      "Delivered tonnes grant XP: tonnes × paid directions × (1 + active card XP bonuses / 100). Dual Way counts both directions. Every next level requires 100 × current level XP. Each level grants one expedition refill, one overtime refill and 3 allocation points. From level 5, every five levels unlocks an additional city hub vehicle slot for coin purchases."
     ],
     [
       "Coins",
@@ -58,7 +58,7 @@
   "dealer": [
     [
       "City vehicles",
-      "Sprinter: 4,000 M, 1 t. 3.5-tonne truck: 20,000 M, 1.5 t. Open the city hub first. City vehicle limit = max(1, floor(player level × 0.75))."
+      "Sprinter: 4,000 M, 1 t. 3.5-tonne truck: 20,000 M, 1.5 t. City hub unlocks at level 5. Every five levels unlocks one more vehicle slot. Existing vehicles are kept."
     ],
     [
       "Operation",
@@ -66,6 +66,10 @@
     ]
   ],
   "hub": [
+    [
+      "Unlock",
+      "City hub unlocks at level 5. Every five levels unlocks another vehicle slot. Vehicles are still purchased with coins. Existing city vehicles are kept."
+    ],
     [
       "Hourly cycle",
       "Opening is free. A cycle lasts 60 minutes: 45 minutes of trips and 15 minutes of rest. Trips cover 12 km loaded and 12 km empty. Hourly capacity sums floor(2700 seconds / trip duration) × capacity for each vehicle."

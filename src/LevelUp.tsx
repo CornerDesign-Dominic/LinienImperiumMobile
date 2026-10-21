@@ -31,6 +31,7 @@ export function LevelUpNotice({level,onClose}:{level:number|undefined;onClose:()
   <Txt style={s.reward}>+1 {itemName('expeditionRefills')}</Txt>
   <Txt style={s.reward}>+1 {itemName('overtimeRefills')}</Txt>
   <Txt style={s.reward}>+3 Punkte zum Verteilen</Txt>
+  {!!level&&level%5===0&&<Txt style={s.reward}>+1 Stadthub Fahrzeug</Txt>}
   <Btn icon="close" secondary onPress={onClose}>Schließen</Btn>
  </SafeAreaView></View></Modal>;
 }
