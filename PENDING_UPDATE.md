@@ -1,3 +1,19 @@
+## Garagenfilter und kompakte Beschaffung – veröffentlicht
+
+Release: `ee77464ad9b3ac087c66cd56b0b928f5249b4948` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39524521835).
+
+- Der gesamte vorbereitete Stand von `batch/mobile-adjustments` ist veröffentlicht; einschließlich der aktuellen Änderungen von main.
+- Startseite: doppelte obere Materialbeschaffungs-Card entfernt; Zahl und Belohnungssymbol auf der verbleibenden Menü-Card.
+- Gesperrte Beschaffungsorte im Auswahlmodal kompakter, mit weiter erreichbaren Expeditionen und Belohnungen.
+- Garage: Seltenheitsfilter Alle/Common/Uncommon/Rare/Epic/Legendär; kompakte Fahrzeugzeilen mit Kapazität, Stufe, Geschwindigkeitsrang und Tempo beladen/leer; Deutsch und Englisch.
+- Typprüfung, alle 105 Tests (0 Fehler) und Android-Export bestanden.
+- Firebase-Deployment und Live-API-Prüfung erfolgreich.
+- Android-OTA auf Kanal `preview` erfolgreich veröffentlicht (Published).
+- Keine neue APK erforderlich. Physischer Gerätetest durch den Nutzer steht aus.
+- Frühere Hinweise „vorbereitet/nicht veröffentlicht“, auch in den einzelnen UI-Notizen, sind historische Beschreibungen und mit diesem Release erledigt.
+
+---
+
 ## Sammelpaket Flotte und Mehrfahrzeug-Beschaffung – veröffentlicht am 20.10.2026
 
 Release: `77c8e000ba4e35239b48e9c5b9aef9784741a668` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39442746187).
