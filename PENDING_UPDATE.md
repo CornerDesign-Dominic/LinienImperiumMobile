@@ -3,6 +3,7 @@
 Sammelbranch: `batch/company-improvements` · vorbereitet am 22.10.2026.
 
 - „Deine Sammlung“ samt Icon entfernt; vorhandener Seitentitel bleibt.
+- Kartenstufe als römische Zahl I–X über dem Bild; bisherige Stufenzeile darunter entfernt. Gesperrte Karten zeigen einen Gedankenstrich. Gemeinsame Darstellung in Sammlung und Flottenauswahl.
 - Kompaktes Seltenheitsdropdown mit allen Seltenheiten und Splitterbeständen.
 - Freigeschaltete und gesperrte Karten unabhängig auf-/zuklappbar, jeweils mit gefilterter Anzahl; freigeschaltet zunächst offen, gesperrt geschlossen.
 - Deutsch/Englisch, bestehende Kartenansichten und Werte beibehalten.

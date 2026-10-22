@@ -10,6 +10,7 @@ import {VehicleFacts} from './VehicleFacts';
 import {VehicleArt} from './VehicleArt';
 import {VehicleName} from './VehicleName';
 
+const ROMAN_LEVELS=['','I','II','III','IV','V','VI','VII','VIII','IX','X'];
 
 export function VehicleCards({data,onOpen}:any){
  const {state:g,catalog:c}=data;
@@ -58,7 +59,7 @@ export function VehicleCardGrid({data,cards,onOpen,statusForCard,disabled=false,
    const owned=g.expedition.characters[item.id],stats=vehicle(item),status=statusForCard?.(item.id);
    const freeModules=Math.max(0,(stats.maxCapacityLevel??c.models[item.vehicleTier].maxCapacityLevel)-(stats.capacityLevel||0));
    return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={translate(`${item.name}, ${owned?`Stufe ${owned.level}`:'Nicht entdeckt'}, Geschwindigkeitsrang ${stats.rank.total}, ${n(stats.capacity,1)} Tonnen${status?.label?`, ${status.label}`:''}`)} accessibilityState={{disabled,selected:!!status?.selected}} disabled={disabled} onPress={()=>onOpen(item.id)} style={({pressed})=>[styles.card,{borderColor:rarityColor(item.rarity)},!owned&&{backgroundColor:C.raised,borderStyle:'dashed'},status?.selected&&{backgroundColor:C.greenWash},(pressed||disabled)&&{opacity:.7}]}>
-    <VehicleArt card={item} level={owned?.level}/><VehicleName name={item.name} numberOfLines={3} style={styles.name}/><Txt style={styles.level}>{owned?`Stufe ${owned.level}`:'Stufe —'}</Txt>
+    <Text accessibilityLabel={translate(owned?`Stufe ${owned.level}`:'Nicht entdeckt')} style={styles.level}>{owned?ROMAN_LEVELS[owned.level]||String(owned.level):'—'}</Text><VehicleArt card={item}/><VehicleName name={item.name} numberOfLines={3} style={styles.name}/>
     {showDetails?<View style={{marginTop:8}}><VehicleFacts capacity={stats.capacity} rank={stats.rank.total} loadedSpeed={stats.loadedSpeed} emptySpeed={stats.speed} color={rarityColor(item.rarity)} freeModules={freeModules} compact/></View>:<><Txt style={styles.rank}>Rang {stats.rank.total}</Txt><Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt></>}
     {statusForCard&&<View style={[styles.assignment,status?.label&&styles.assigned]}>{status?.label&&<Icon name="check" size={11} color={C.accent}/>}<Text numberOfLines={2} style={styles.assignmentText}>{status?.label||'Verfügbar'}</Text></View>}
    </Pressable>;
@@ -71,7 +72,7 @@ const styles=StyleSheet.create({
  sectionToggle:{minHeight:48,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:10,marginBottom:6},section:{fontSize:13,fontWeight:'700',flexShrink:1},emptyGroup:{fontSize:12,marginBottom:16},
  assignment:{minHeight:32,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:3,borderRadius:3,paddingHorizontal:2,marginTop:5},assigned:{backgroundColor:C.greenWash},assignmentText:{flexShrink:1,fontSize:10,lineHeight:13,textAlign:'center',color:C.accent,fontWeight:'600'},
  row:{flexDirection:'row',gap:9,marginBottom:10},card:{flex:1,minWidth:0,borderWidth:1,borderRadius:6,borderTopWidth:3,backgroundColor:C.panel,padding:7},
- level:{fontSize:11,fontWeight:'700',textAlign:'center',lineHeight:19,marginBottom:5},
+ level:{fontFamily:displayFont,fontSize:18,fontWeight:'700',color:C.gold,textAlign:'center',lineHeight:24,marginBottom:5},
  artwork:{width:'100%',aspectRatio:1,minHeight:0,backgroundColor:C.raised,borderColor:C.line,borderWidth:1,borderRadius:7,alignItems:'center',justifyContent:'center',padding:4},
  name:{width:'100%',flexShrink:1,fontFamily:displayFont,fontSize:11,lineHeight:14,minHeight:42,textAlign:'center',color:C.text,marginTop:6},rank:{fontSize:11,lineHeight:18,textAlign:'center',marginTop:7,color:C.muted},capacity:{fontSize:13,lineHeight:20,fontWeight:'700',textAlign:'center'},
 });
