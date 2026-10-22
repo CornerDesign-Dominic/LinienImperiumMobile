@@ -1,3 +1,13 @@
+## Fahrzeugbilder: große Anzeige geprüft und Skalierung angepasst – gesammelt
+
+- Alle 25 Fahrzeugbilder besitzen 1024 × 1024 Pixel. Original visuell geprüft; für die bestehende Detailansicht voraussichtlich ausreichend. Keine Bilder neu erstellt oder verändert.
+- Bildmontage erst nach echter Layoutmessung; große Android-Ansicht mit explizitem Skalierungsmodus statt automatischer Softwareverkleinerung.
+- Typprüfung, 13 relevante Tests, Browserdarstellung mit dreifacher Pixeldichte und Android-Export erfolgreich.
+- Ursache auf dem tatsächlichen Android-Gerät nicht abschließend gemessen; native Schärfe nach Veröffentlichung am Handy prüfen.
+- Details: `docs/ui/vehicle-art-sharpness.md`. Nicht veröffentlicht.
+
+---
+
 ## Kartendetails: gemeinsames Verbesserungsmodal – gesammelt, nicht veröffentlicht
 
 - Ein Button „Verbessern“ ganz unten öffnet die gemeinsame Verbesserung für Kartenstufe, Kapazität und Geschwindigkeitsrang.
