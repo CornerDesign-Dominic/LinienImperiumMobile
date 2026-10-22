@@ -3,9 +3,9 @@ import React,{useState} from 'react';
 import {View,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n} from './ui';
 import {Text} from './Language';
-import {rankNumeral} from './collectionStats';
+import {averageCardSpeed,rankNumeral} from './collectionStats';
 import {displayFont} from './theme';
-import {itemName} from './items';
+import {itemName,rarityColor} from './items';
 import {VehicleArt} from './VehicleArt';
 import {BONUS,bonusValue,bonusSentence,pointBonus} from './cardBonus';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
@@ -18,6 +18,7 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
  const shards=g.expedition.shards[card.rarity]||0,level=own?.level||0,needed=c.cardLevelCosts[level-1]||0;
  const modules=stats.capacityLevel||0,maxModules=stats.maxCapacityLevel??c.models[card.vehicleTier].maxCapacityLevel;
  const maxRank=stats.rank.total>=50;
+ const averageSpeed=averageCardSpeed(stats.loadedSpeed,stats.speed),rankColor=rarityColor(stats.rank.id);
  return <>
   <Card>
    <Text accessibilityLabel={translate(own?`Stufe ${level}`:'Nicht entdeckt')} style={styles.cardLevel}>{own?rankNumeral(level):'—'}</Text>
@@ -37,12 +38,15 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
    {pointBonus(card)&&<Txt muted style={{fontSize:11,marginTop:12}}>Wirkt nur in der Garage</Txt>}
    {pointBonus(card)&&<Txt muted style={{fontSize:11,marginTop:5}}>{card.stat==='expeditionRegen'?'Verkürzt die Wartezeit pro Expeditionspunkt.':'Erhöht nur das Maximum. Vorhandene Punkte bleiben beim Entfernen erhalten.'}</Txt>}
   </ExpeditionPlaceModal>
+  <Card>
+   <Row style={{flexWrap:'nowrap',marginBottom:14}}><Txt style={[styles.title,{flex:1}]}>Geschwindigkeit</Txt><View accessible accessibilityLabel={`${translate('Geschwindigkeitsrang')}: ${translate(stats.rank.label)} ${stats.rank.level}, ${stats.rank.total} / 50`} style={styles.speedRank}><Text style={{color:rankColor,fontSize:20,lineHeight:24}}>★</Text><Text style={{color:rankColor,fontFamily:displayFont,fontSize:18,fontWeight:'700'}}>{rankNumeral(stats.rank.level)}</Text></View></Row>
+   <Fact label="Leer" value={`${n(stats.speed,2)} km/s`}/>
+   <Fact label="Beladen" value={`${n(stats.loadedSpeed,2)} km/s`}/>
+   <Fact label="Durchschnitt" value={averageSpeed===undefined?'—':`${n(averageSpeed,2)} km/s`}/>
+  </Card>
   <Card><Txt style={[styles.title,{marginBottom:14}]}>Fahrzeugdaten</Txt>
    <Fact label="Einsatz" value="Regional- und Fernverkehr"/>
-   <Fact label="Tempo leer" value={`${n(stats.speed,2)} km/s`}/>
-   <Fact label="Tempo beladen" value={`${n(stats.loadedSpeed,2)} km/s`}/>
    <Fact label="Betriebskosten" value={`${n(stats.costPerKm,2)} M/km`}/>
-   <Fact label="Geschwindigkeitsrang" value={`${stats.rank.label} · ${stats.rank.level} ★`}/>
   </Card>
   {own?<>
    <Card><Row><Txt style={styles.title}>Kartenstufe</Txt><Pill>{level} / 10</Pill></Row>
@@ -58,4 +62,4 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
   {card.description&&<Card><Txt muted style={{fontSize:13,lineHeight:21}}>{card.description}</Txt></Card>}
  </>;
 }
-const styles=StyleSheet.create({artwork:{width:180,height:180,alignSelf:'center',backgroundColor:C.raised,borderWidth:1,borderRadius:12,alignItems:'center',justifyContent:'center'},name:{fontFamily:displayFont,fontSize:22,lineHeight:26,fontWeight:'700',textAlign:'center',marginTop:14},cardLevel:{fontFamily:displayFont,fontSize:22,lineHeight:28,fontWeight:'700',color:C.gold,textAlign:'center',marginBottom:10},title:{fontSize:14,fontWeight:'700'},fact:{flexWrap:'nowrap',marginBottom:10},bonus:{backgroundColor:C.greenWash,borderColor:C.accent},bonusLevel:{minHeight:38,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,paddingHorizontal:8,paddingVertical:7,borderBottomWidth:1,borderColor:C.line},currentBonusLevel:{backgroundColor:C.greenWash,borderRadius:4},value:{fontSize:18,lineHeight:25,fontWeight:'700'}});
+const styles=StyleSheet.create({speedRank:{flexDirection:'row',alignItems:'center',gap:5,flexShrink:0},artwork:{width:180,height:180,alignSelf:'center',backgroundColor:C.raised,borderWidth:1,borderRadius:12,alignItems:'center',justifyContent:'center'},name:{fontFamily:displayFont,fontSize:22,lineHeight:26,fontWeight:'700',textAlign:'center',marginTop:14},cardLevel:{fontFamily:displayFont,fontSize:22,lineHeight:28,fontWeight:'700',color:C.gold,textAlign:'center',marginBottom:10},title:{fontSize:14,fontWeight:'700'},fact:{flexWrap:'nowrap',marginBottom:10},bonus:{backgroundColor:C.greenWash,borderColor:C.accent},bonusLevel:{minHeight:38,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,paddingHorizontal:8,paddingVertical:7,borderBottomWidth:1,borderColor:C.line},currentBonusLevel:{backgroundColor:C.greenWash,borderRadius:4},value:{fontSize:18,lineHeight:25,fontWeight:'700'}});

@@ -1,3 +1,12 @@
+## Kartendetails: eigene Geschwindigkeitscard – gesammelt, nicht veröffentlicht
+
+- Direkt unter der Bonus-Card: Geschwindigkeit mit Leer, Beladen und Durchschnitt.
+- Rechts oben farbiger Stern mit römischem Geschwindigkeitsrang.
+- Durchschnitt intern drei, Anzeige maximal zwei Nachkommastellen; keine doppelten Tempo-/Rangzeilen in Fahrzeugdaten.
+- Typprüfung und sieben relevante Tests erfolgreich. Weiterhin nur im Sammelbranch.
+
+---
+
 ## Kartendetails: Bonussatz und Stufenmodal – gesammelt, nicht veröffentlicht
 
 - Bonus-Card mit kurzem Satz für aktuellen Bonus und Wirkungsbereich.
