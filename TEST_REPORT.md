@@ -1,3 +1,19 @@
+## Stadthub-Fahrzeuge, Fahrzeugteile und Fundkisten – veröffentlicht am 22.10.2026
+
+Release: `6823306861d2dc217f0c52408d4a3bb970f0ba3e` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39786609414).
+
+- Vorbereiteter Sammelstand veröffentlicht: Stadttransporter für 25.000 Münzen direkt im Stadthub, 2 t, maximal 20 Fahrzeuge bis Level 100.
+- Eigener Laderaum-/Antriebsausbau mit Fahrzeugteilen, je zehn Stufen. Vorhandene Fahrzeuge und Ausbauten werden übernommen.
+- Drei Fundkisten pro UTC-Tag, mindestens 30 Minuten Abstand; jeweils 10–20 Teile.
+- Stündlicher Einkauf: einmal 50 % Teilechance; keine Funde bei voller Kasse. Teile mit Hub-Erträgen abholen.
+- Fahrzeugteile in Vorräten sichtbar, deutsche und englische Oberfläche/Spielhilfe aktualisiert.
+- Kompaktere Auftragsprognosen mit Bezeichnung und Wert nebeneinander enthalten; aktuelle main-Kartenansichten erhalten.
+- Typprüfung, alle 127 Tests (0 Fehler), Android-Export, Firebase-Deployment und Live-API-Prüfung erfolgreich.
+- EAS Android-OTA im Kanal preview erfolgreich veröffentlicht (Published). Keine neue APK erforderlich.
+- Physischer Gerätetest durch den Nutzer steht aus. Frühere Vorbereitungshinweise in diesem Dokument und docs/ui/hub-vehicle-parts.md sind mit diesem Release erledigt.
+
+---
+
 ## Stadthub-Fahrzeuge und Fahrzeugteile – vorbereitet, noch nicht veröffentlicht
 
 - Ein Stadttransporter-Modell, direkter Kauf im Stadthub: 25.000 Münzen, 2 t, bisheriges Grundtempo. Alte Händlerlinks führen zum Stadthub; alter Kaufbefehl gesperrt.
