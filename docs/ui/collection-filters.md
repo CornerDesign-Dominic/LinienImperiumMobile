@@ -43,3 +43,7 @@ Deutsch/Englisch ergänzt. TypeScript und sieben Übersetzungs-/Präzisionstests
 ## Eigene Geschwindigkeitscard
 
 Direkt unter der Bonus-Card steht eine Card „Geschwindigkeit“: Leer, Beladen und Durchschnitt in km/s. Rechts oben zeigt ein Stern mit römischer Rangstufe den Geschwindigkeitsrang in dessen Rangfarbe. Zugängliche Beschriftung nennt zusätzlich Rangfarbe/-name, Teilstufe und Gesamtrang. Durchschnitt verwendet die gemeinsame Berechnung mit drei Nachkommastellen; sichtbare Tempowerte haben maximal zwei Nachkommastellen. Die bisherigen Tempo-/Rangzeilen in Fahrzeugdaten entfallen, damit die Werte nicht doppelt stehen. Betriebskosten und Einsatz verbleiben dort; der spätere Geschwindigkeitsausbau bleibt bedienbar. Deutsch/Englisch. Typprüfung und sieben vorhandene Präzisions-/Übersetzungstests erfolgreich. Nicht veröffentlicht.
+
+## Kapazitätscard unter Geschwindigkeit
+
+Kapazität steht direkt unter der Geschwindigkeitscard, vor Fahrzeugdaten und Kartenstufenausbau. Sichtbar bleiben die aktuelle Kapazität in t sowie eingesetzte Module/Modullimit. Entfernt sind der Kapazitätserweiterungsbutton, der verfügbare Modulbestand und der Erklärungstext zur Wirkung der Module. Kapazitätsdaten sind auch als Vorschau für nicht besessene Karten sichtbar. Die tatsächliche Ausbau-/Bestandslogik bleibt unverändert. Typprüfung erfolgreich. Nicht veröffentlicht.

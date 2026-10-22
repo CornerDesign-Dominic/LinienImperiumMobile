@@ -1,3 +1,12 @@
+## Kartendetails: Kapazität verschoben und vereinfacht – gesammelt, nicht veröffentlicht
+
+- Kapazitätscard direkt unter der Geschwindigkeit.
+- Aktuelle Kapazität und eingesetzte Module/Limit bleiben sichtbar.
+- Erweiterungsbutton, verfügbarer Modulbestand und Erklärung der Modulwirkung entfernt.
+- Typprüfung erfolgreich; weiterhin nur im Sammelbranch.
+
+---
+
 ## Kartendetails: eigene Geschwindigkeitscard – gesammelt, nicht veröffentlicht
 
 - Direkt unter der Bonus-Card: Geschwindigkeit mit Leer, Beladen und Durchschnitt.

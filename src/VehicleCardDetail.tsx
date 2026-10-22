@@ -5,7 +5,7 @@ import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n} from './ui';
 import {Text} from './Language';
 import {averageCardSpeed,rankNumeral} from './collectionStats';
 import {displayFont} from './theme';
-import {itemName,rarityColor} from './items';
+import {rarityColor} from './items';
 import {VehicleArt} from './VehicleArt';
 import {BONUS,bonusValue,bonusSentence,pointBonus} from './cardBonus';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
@@ -44,6 +44,7 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
    <Fact label="Beladen" value={`${n(stats.loadedSpeed,2)} km/s`}/>
    <Fact label="Durchschnitt" value={averageSpeed===undefined?'—':`${n(averageSpeed,2)} km/s`}/>
   </Card>
+  <Card><Row><Txt style={styles.title}>Kapazität</Txt><Txt style={styles.value}>{n(stats.capacity,1)} t</Txt></Row><Fact label="Module" value={`${modules} / ${maxModules}`}/></Card>
   <Card><Txt style={[styles.title,{marginBottom:14}]}>Fahrzeugdaten</Txt>
    <Fact label="Einsatz" value="Regional- und Fernverkehr"/>
    <Fact label="Betriebskosten" value={`${n(stats.costPerKm,2)} M/km`}/>
@@ -51,9 +52,6 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
   {own?<>
    <Card><Row><Txt style={styles.title}>Kartenstufe</Txt><Pill>{level} / 10</Pill></Row>
     {level<10?<><Bar value={own.progress/needed*100}/><Fact label="Fortschritt" value={`${n(own.progress)} / ${n(needed)}`}/><Fact label={`${rarity.label}-Shards`} value={`${n(shards)} vorhanden`}/><Btn disabled={busy||!shards} onPress={()=>onUpgrade(id)}>Shards einsetzen</Btn></>:<Txt muted>Maximum erreicht</Txt>}
-   </Card>
-   <Card><Row><Txt style={styles.title}>Kapazität</Txt><Txt style={styles.value}>{n(stats.capacity,1)} t</Txt></Row><Fact label="Module" value={`${modules} / ${maxModules}`}/><Txt muted style={{fontSize:11,marginBottom:10}}>Je Modul +5 % der Grundkapazität.</Txt>
-    {modules<maxModules?<><Fact label={itemName('capacityModules',2)} value={`${n(g.inventory.capacityModules)} vorhanden`}/><Btn secondary disabled={busy||!g.inventory.capacityModules} onPress={()=>onVehicleUpgrade(id,'capacity')}>+{n(stats.capacityStep??0.5,2)} t · 1 {itemName('capacityModules')}</Btn></>:<Txt muted>Maximum erreicht</Txt>}
    </Card>
    <Card><Row><Txt style={[styles.title,{flex:1}]}>Geschwindigkeitsrang</Txt><Pill>{stats.rank.total} / 50</Pill></Row>
     {maxRank?<Txt muted>Maximum erreicht</Txt>:<><Fact label={`${stats.rank.label}-Zahnräder`} value={`${n(g.inventory.gears[stats.rank.id])} / ${n(stats.rankCost)}`}/><Btn secondary disabled={busy||g.inventory.gears[stats.rank.id]<stats.rankCost} onPress={()=>onVehicleUpgrade(id,'rank')}>Rang erhöhen</Btn></>}
