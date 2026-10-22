@@ -1,3 +1,13 @@
+## Kartensammlung: drei kompakte Iconwerte – gesammelt, nicht veröffentlicht
+
+- Nur Kapazität (Kiste), Geschwindigkeitsrang (Stern und farbige römische Rangstufe) und Durchschnittstempo (Stoppuhr) unter dem Kartennamen.
+- Durchschnitt = (beladen + leer) / 2, numerisch auf drei Nachkommastellen; Anzeige mit maximal zwei Nachkommastellen in km/s.
+- Freie Module und getrennte Tempoangaben aus der Sammlung entfernt; Garage, Details und Tourberechnungen unverändert.
+- Typprüfung, sieben relevante Tests und mobile Browserprüfung bei 320/390/430 px erfolgreich.
+- Sammelbranch `batch/company-improvements`; weiterhin keine Veröffentlichung vor ausdrücklichem Go.
+
+---
+
 ## Kartensammlung: Dropdown und klappbare Abschnitte – gesammelt, nicht veröffentlicht
 
 Sammelbranch: `batch/company-improvements` · vorbereitet am 22.10.2026.

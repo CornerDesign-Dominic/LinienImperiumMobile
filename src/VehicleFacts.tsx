@@ -1,6 +1,11 @@
 import React from 'react';
 import {View,StyleSheet} from 'react-native';
 import {C,Txt,n} from './ui';
+import {Icon} from './Icon';
+import {Text} from './Language';
+import {t} from './i18n';
+import {rarityColor} from './items';
+import {averageCardSpeed,rankNumeral} from './collectionStats';
 
 // The same order and grouping in the garage and the collection.
 export function VehicleFacts({capacity,rank,loadedSpeed,emptySpeed,color=C.line,freeModules,compact=false}:{
@@ -23,3 +28,16 @@ const s=StyleSheet.create({
  compact:{fontSize:10,lineHeight:15},
  speed:{marginTop:10,paddingTop:8,borderTopWidth:1},
 });
+
+
+// Collection-only compact values. Garage and detail views retain their full facts.
+export function CollectionFacts({capacity,rank,loadedSpeed,emptySpeed}:{capacity:number;rank:{id?:string;label?:string;level:number;total:number};loadedSpeed?:number;emptySpeed?:number}){
+ const average=averageCardSpeed(loadedSpeed,emptySpeed),rankColor=rarityColor(rank.id||['common','uncommon','rare','epic','legendary'][Math.min(4,Math.floor(rank.total/10))]);
+ const row=(label:string,icon:React.ReactNode,value:React.ReactNode)=><View accessible accessibilityLabel={label} style={collectionStyles.row}>{icon}{value}</View>;
+ return <View style={collectionStyles.facts}>
+  {row(`${t('Kapazität')}: ${n(capacity,1)} t`,<Icon name="orders" size={15} color={C.muted}/>,<Txt style={collectionStyles.value}>{n(capacity,1)} t</Txt>)}
+  {row(`${t('Geschwindigkeitsrang')}: ${t(rank.label||rank.id||'Common')} ${rank.level}, ${rank.total} / 50`,<Text style={[collectionStyles.star,{color:rankColor}]}>★</Text>,<Text style={[collectionStyles.value,{color:rankColor}]}>{rankNumeral(rank.level)}</Text>)}
+  {row(`${t('Durchschnittsgeschwindigkeit')}: ${average===undefined?'—':n(average,2)+' km/s'}`,<Icon name="timer" size={15} color={C.muted}/>,<Txt style={collectionStyles.value}>{average===undefined?'—':`${n(average,2)} km/s`}</Txt>)}
+ </View>;
+}
+const collectionStyles=StyleSheet.create({facts:{marginTop:8,gap:4},row:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:3,minHeight:20},value:{fontSize:10,lineHeight:15,fontWeight:'600',flexShrink:1,textAlign:'right'},star:{fontSize:18,lineHeight:20,width:15,textAlign:'center'}});

@@ -12,3 +12,12 @@ Vorbereitet am 22.10.2026 im Sammelbranch `batch/company-improvements`. Nicht ve
 - Deutsche und englische Beschriftung.
 
 Prüfung: TypeScript und 15 vorhandene Übersetzungs-/Transportkartentests erfolgreich. React-Native-Web bei 320/390/430 px geprüft: Dropdownwechsel, automatische Schließung, passende Gruppenzahlen, beide Klappsteuerungen, Zustandserhalt beim Filtern, leerer Legendärfilter und Öffnen einer Karte. Kein horizontaler Überlauf und keine Laufzeitfehler. Englische Filter- und Gruppenanzeige geprüft. Kein physischer Android-Gerätetest und keine Veröffentlichung.
+
+## Kompakte Kartenwerte
+
+- In der Sammlung bleiben unten genau drei Werte: Kistenicon mit Kapazität in t, farbiger Stern mit römischer Geschwindigkeitsrangstufe sowie Stoppuhr mit Durchschnittstempo in km/s.
+- Rangfarbe und Rangstufe stammen aus dem Geschwindigkeitsausbau, unabhängig von der Seltenheit der Fahrzeugkarte. Rangstufe null wird als Gedankenstrich gezeigt, I–X als römische Zahl.
+- Durchschnitt = (beladenes Tempo + leeres Tempo) / 2. `averageCardSpeed` liefert einen numerischen Wert mit drei Nachkommastellen. Erst die Anzeige formatiert ihn lokalisiert mit maximal zwei Nachkommastellen. Fehlende Werte ergeben einen Gedankenstrich.
+- Freie Module, numerischer Gesamtrang und getrennte Tempozeilen entfallen in der Sammlung. Garage und Fahrzeugdetails behalten ihre bisherigen Werte; bestehende Tourberechnungen bleiben erhalten.
+- Zugängliche Beschriftungen benennen alle drei Werte weiterhin ausdrücklich. Deutsch/Englisch ergänzt.
+- Prüfung: TypeScript, sieben Mathe-/Rang-/Übersetzungstests und React-Native-Web bei 320/390/430 px erfolgreich. Drei Werte und römische Rangstufen sichtbar; keine entfernten Detailtexte, kein seitlicher Überlauf, keine Laufzeitfehler. Kein physischer Gerätetest und keine Veröffentlichung.

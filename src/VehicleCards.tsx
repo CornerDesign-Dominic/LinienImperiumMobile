@@ -6,7 +6,7 @@ import {C,Txt,Empty,n} from './ui';
 import {Icon} from './Icon';
 import {displayFont} from './theme';
 import {rarityColor} from './items';
-import {VehicleFacts} from './VehicleFacts';
+import {CollectionFacts} from './VehicleFacts';
 import {VehicleArt} from './VehicleArt';
 import {VehicleName} from './VehicleName';
 
@@ -57,10 +57,9 @@ export function VehicleCardGrid({data,cards,onOpen,statusForCard,disabled=false,
  return <>
   {rows.map((row:any[],i:number)=><View key={i} style={styles.row}>{row.map(item=>{
    const owned=g.expedition.characters[item.id],stats=vehicle(item),status=statusForCard?.(item.id);
-   const freeModules=Math.max(0,(stats.maxCapacityLevel??c.models[item.vehicleTier].maxCapacityLevel)-(stats.capacityLevel||0));
    return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={translate(`${item.name}, ${owned?`Stufe ${owned.level}`:'Nicht entdeckt'}, Geschwindigkeitsrang ${stats.rank.total}, ${n(stats.capacity,1)} Tonnen${status?.label?`, ${status.label}`:''}`)} accessibilityState={{disabled,selected:!!status?.selected}} disabled={disabled} onPress={()=>onOpen(item.id)} style={({pressed})=>[styles.card,{borderColor:rarityColor(item.rarity)},!owned&&{backgroundColor:C.raised,borderStyle:'dashed'},status?.selected&&{backgroundColor:C.greenWash},(pressed||disabled)&&{opacity:.7}]}>
     <Text accessibilityLabel={translate(owned?`Stufe ${owned.level}`:'Nicht entdeckt')} style={styles.level}>{owned?ROMAN_LEVELS[owned.level]||String(owned.level):'—'}</Text><VehicleArt card={item}/><VehicleName name={item.name} numberOfLines={3} style={styles.name}/>
-    {showDetails?<View style={{marginTop:8}}><VehicleFacts capacity={stats.capacity} rank={stats.rank.total} loadedSpeed={stats.loadedSpeed} emptySpeed={stats.speed} color={rarityColor(item.rarity)} freeModules={freeModules} compact/></View>:<><Txt style={styles.rank}>Rang {stats.rank.total}</Txt><Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt></>}
+    {showDetails?<CollectionFacts capacity={stats.capacity} rank={stats.rank} loadedSpeed={stats.loadedSpeed} emptySpeed={stats.speed}/>:<><Txt style={styles.rank}>Rang {stats.rank.total}</Txt><Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt></>}
     {statusForCard&&<View style={[styles.assignment,status?.label&&styles.assigned]}>{status?.label&&<Icon name="check" size={11} color={C.accent}/>}<Text numberOfLines={2} style={styles.assignmentText}>{status?.label||'Verfügbar'}</Text></View>}
    </Pressable>;
   })}{row.length<3&&Array.from({length:3-row.length},(_,j)=><View key={`space-${j}`} style={[styles.card,{opacity:0}]}/>)}</View>)}
