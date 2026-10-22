@@ -1,6 +1,7 @@
 import {t as translate} from './i18n';
 import {Icon,IconName} from './Icon';
 import {itemName,rarityColor} from './items';
+import {VehicleArt} from './VehicleArt';
 import React,{useState} from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes} from './ui';
@@ -63,11 +64,11 @@ export function RunningOrders({data,clock,busy,onOpen,onClaim,onMission}:any){
  return <>{missions.map((m:any)=><Pressable key={`mission-${m.id}`} accessibilityRole="button" accessibilityLabel={translate(`${expeditionName(m.lootKind)}, unterwegs, ${m.id}`)} onPress={()=>onMission(m)}><Card style={[styles.offer,{borderLeftColor:C.accent}]}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{expeditionName(m.lootKind)}</Txt><Txt gold style={styles.small}>{remaining(m.endsAt,clock)}</Txt></Row><Txt muted style={styles.small}>{data.catalog.regionNames[m.region]} · {data.state.trucks.find((t:any)=>t.id===m.truckId)?.model||'Fahrzeug'}</Txt><Bar value={(clock-m.startedAt)/(m.endsAt-m.startedAt)*100}/></Card></Pressable>)}{!!ready.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {ready.length}</Btn>}{active.map(tile)}{!active.length&&!missions.length&&<Empty>Keine Aufträge unterwegs.</Empty>}{!!ready.length&&<>{section('Prämien')}{ready.map(tile)}</>}</>;
 }
 
-function VehicleOrderQuote({quote:q,selected=false,onSelect,busy,active=false,relationship=0}:any){
+function VehicleOrderQuote({quote:q,selected=false,onSelect,busy,active=false,relationship=0,card}:any){
  const [expanded,setExpanded]=useState(false);
  const metric=(label:string,value:string,profit=false)=><View style={styles.metric}><Txt muted style={styles.metricLabel}>{label}</Txt><Txt style={[styles.metricValue,profit&&{color:q.totalProfit<0?C.red:C.accent}]}>{value}</Txt></View>;
  const facts=<>
-  <Row style={{marginBottom:7,flexWrap:'nowrap'}}><Txt style={{fontWeight:'700',flex:1}}>{q.model} · {n(q.capacity,1)} t</Txt>{onSelect&&<View style={{width:20}}>{selected&&<Icon name="check" size={18} color={C.accent}/>}</View>}</Row>
+  <Row style={{marginBottom:7,flexWrap:'nowrap'}}>{card&&<VehicleArt card={card} style={{width:48}}/>}<Txt style={{fontWeight:'700',flex:1}}>{q.model} · {n(q.capacity,1)} t</Txt>{onSelect&&<View style={{width:20}}>{selected&&<Icon name="check" size={18} color={C.accent}/>}</View>}</Row>
   <View style={styles.metrics}>
    {metric(active?'Resttouren':'Touren',n(q.trips+(active?1:0)))}
    {metric(active?'Restzeit':'Dauer',minutes(q.seconds))}
@@ -122,10 +123,10 @@ export function OrderDetail({data,id,busy,clock,onCommand,onBack,onSwitch}:any){
   </Card>
   {!done&&<PossibleOrderRewards labels={o.possibleRewards||[]}/>}
   {!active&&!done&&<Card>
-   {!o.choices.length?<Txt muted>{unavailable(o)}</Txt>:<><Txt style={styles.title}>Fahrzeug</Txt>{o.choices.map((t:any)=><VehicleOrderQuote key={t.id} quote={t} selected={truckId===t.id} busy={busy} relationship={o.relationshipReward} onSelect={()=>setTruckId(t.id)}/>)}<Btn disabled={busy||!selected} onPress={()=>onCommand(o.kind==='private'?'assignPrivate':o.crafted?'assignCrafted':'assign',{order:o.id,truck:selected.id})}>Auftrag starten</Btn></>}
+   {!o.choices.length?<Txt muted>{unavailable(o)}</Txt>:<><Txt style={styles.title}>Fahrzeug</Txt>{o.choices.map((t:any)=><VehicleOrderQuote key={t.id} quote={t} card={data.catalog.cards.find((card:any)=>card.id===(t.cardId||data.state.trucks.find((truck:any)=>truck.id===t.id)?.cardId))} selected={truckId===t.id} busy={busy} relationship={o.relationshipReward} onSelect={()=>setTruckId(t.id)}/>)}<Btn disabled={busy||!selected} onPress={()=>onCommand(o.kind==='private'?'assignPrivate':o.crafted?'assignCrafted':'assign',{order:o.id,truck:selected.id})}>Auftrag starten</Btn></>}
    {o.status==='available'&&<Btn secondary disabled={busy} onPress={()=>onCommand('pin',{id:o.id})}>{o.pinned?'Freigeben':'Angebot halten'}</Btn>}
   </Card>}
-  {active&&forecast&&<Card><Txt style={styles.title}>Fahrzeug</Txt><VehicleOrderQuote quote={{...forecast,seconds:Math.max(0,((o.runningEndsAt||clock)-clock)/1000)}} active relationship={o.relationshipReward}/></Card>}
+  {active&&forecast&&<Card><Txt style={styles.title}>Fahrzeug</Txt><VehicleOrderQuote card={data.catalog.cards.find((card:any)=>card.id===truck?.cardId)} quote={{...forecast,seconds:Math.max(0,((o.runningEndsAt||clock)-clock)/1000)}} active relationship={o.relationshipReward}/></Card>}
   {done&&reward?<Card><Txt style={[styles.title,{marginBottom:12}]}>Abschlussprämie</Txt>{fact('Münzen',`${n(reward.coins,2)} M`)}{Object.entries(reward.gears||{}).filter(([,amount])=>Number(amount)>0).map(([rarity,amount])=><View key={rarity}>{fact(`${data.catalog.rarities.find((r:any)=>r.id===rarity)?.label||rarity}-Zahnräder`,n(amount))}</View>)}{reward.companyItems>0&&fact(itemName('companyItems',2),n(reward.companyItems))}{reward.capacityModule&&fact('Kapazitätsmodul','1')}{reward.supplierContacts>0&&fact('Lieferantenkontakte',n(reward.supplierContacts))}{!reward.claimedAt?<Btn disabled={busy} onPress={()=>onCommand('claim',{id:o.id})}>Prämie abholen</Btn>:<Txt muted>Abgeholt</Txt>}</Card>:null}
  </>;
 }

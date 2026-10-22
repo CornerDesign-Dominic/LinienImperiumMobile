@@ -9,6 +9,7 @@ import {displayFont} from './theme';
 import {rarityColor} from './items';
 import {VehicleFacts} from './VehicleFacts';
 import {VehicleArt} from './VehicleArt';
+import {VehicleName} from './VehicleName';
 
 
 export function VehicleCards({data,onOpen}:any){
@@ -41,8 +42,7 @@ export function VehicleCardGrid({data,cards,onOpen,statusForCard,disabled=false,
    const owned=g.expedition.characters[item.id],stats=vehicle(item),status=statusForCard?.(item.id);
    const freeModules=Math.max(0,(stats.maxCapacityLevel??c.models[item.vehicleTier].maxCapacityLevel)-(stats.capacityLevel||0));
    return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={translate(`${item.name}, ${owned?`Stufe ${owned.level}`:'Nicht entdeckt'}, Geschwindigkeitsrang ${stats.rank.total}, ${n(stats.capacity,1)} Tonnen${status?.label?`, ${status.label}`:''}`)} accessibilityState={{disabled,selected:!!status?.selected}} disabled={disabled} onPress={()=>onOpen(item.id)} style={({pressed})=>[styles.card,{borderColor:rarityColor(item.rarity)},!owned&&{backgroundColor:C.raised,borderStyle:'dashed'},status?.selected&&{backgroundColor:C.greenWash},(pressed||disabled)&&{opacity:.7}]}>
-    <Txt style={styles.level}>{owned?`Stufe ${owned.level}`:'Stufe —'}</Txt>
-    <VehicleArt card={item}/><Text numberOfLines={3} ellipsizeMode="tail" style={styles.name}>{item.name.replace(/-/g,'-\u00ad')}</Text>
+    <VehicleArt card={item} level={owned?.level}/><VehicleName name={item.name} numberOfLines={3} style={styles.name}/><Txt style={styles.level}>{owned?`Stufe ${owned.level}`:'Stufe —'}</Txt>
     {showDetails?<View style={{marginTop:8}}><VehicleFacts capacity={stats.capacity} rank={stats.rank.total} loadedSpeed={stats.loadedSpeed} emptySpeed={stats.speed} color={rarityColor(item.rarity)} freeModules={freeModules} compact/></View>:<><Txt style={styles.rank}>Rang {stats.rank.total}</Txt><Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt></>}
     {statusForCard&&<View style={[styles.assignment,status?.label&&styles.assigned]}>{status?.label&&<Icon name="check" size={11} color={C.accent}/>}<Text numberOfLines={2} style={styles.assignmentText}>{status?.label||'Verfügbar'}</Text></View>}
    </Pressable>;

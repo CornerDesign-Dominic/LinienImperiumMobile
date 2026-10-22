@@ -6,6 +6,7 @@ import {Icon} from './Icon';
 import {rarityColor} from './items';
 import {VehicleFacts} from './VehicleFacts';
 import {VehicleArt} from './VehicleArt';
+import {VehicleName} from './VehicleName';
 import {bonusText} from './cardBonus';
 import {C,Txt,Row,Btn,Bar,n,remaining} from './ui';
 
@@ -20,11 +21,9 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
  const tile=(t:any,index:number)=>{
   if(!t)return <Pressable accessibilityRole="button" accessibilityLabel={translate(`Garagenplatz ${index+1} hinzufügen`)} disabled={busy} onPress={()=>{setRarity('all');setAdding(true);}} style={[styles.tile,styles.empty]}><Icon name="plus" size={28} color={C.muted}/></Pressable>;
   const card=c.cards.find((item:any)=>item.id===t.cardId),color=rarityColor(card?.rarity);
-  const wash=({common:C.panel,uncommon:C.greenWash,rare:C.blueWash,epic:C.purpleWash,legendary:C.goldWash} as Record<string,string>)[card?.rarity]||C.panel;
   const stats=data.cardVehicles[t.cardId];
-  return <Pressable accessibilityRole="button" accessibilityLabel={translate(`Garagenplatz ${index+1}: ${t.model}`)} onPress={()=>setSelected(t.id)} style={[styles.tile,{borderColor:color,backgroundColor:wash}]}>
-   <View style={styles.tileHeader}><Icon name="truck" size={28} color={color}/><Txt style={[styles.level,{color}]}>Stufe {g.expedition.characters[t.cardId]?.level||1}</Txt></View>
-   <VehicleArt card={card} style={{marginBottom:8}}/><Text numberOfLines={2} style={styles.name}>{t.model}</Text>
+  return <Pressable accessibilityRole="button" accessibilityLabel={translate(`Garagenplatz ${index+1}: ${t.model}`)} onPress={()=>setSelected(t.id)} style={styles.tile}>
+   <VehicleArt card={card} level={g.expedition.characters[t.cardId]?.level||1} style={{marginBottom:8}}/><VehicleName name={t.model} numberOfLines={3} style={styles.name}/>
    <VehicleFacts capacity={t.capacity} rank={t.rarity.total} loadedSpeed={stats?.loadedSpeed} emptySpeed={stats?.speed??t.speed} color={color}/>
   </Pressable>;
  };
@@ -52,7 +51,7 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
        <Icon name="plus" size={16} color={C.accent}/>
       </Pressable>;
      }):<Txt muted>{available.length?'Keine freien Karten dieser Seltenheit.':'Keine freien Karten'}</Txt>:truck&&<>
-      <VehicleArt card={c.cards.find((card:any)=>card.id===truck.cardId)} style={{maxWidth:280,alignSelf:'center',marginBottom:12}}/>
+      <VehicleArt card={c.cards.find((card:any)=>card.id===truck.cardId)} level={g.expedition.characters[truck.cardId]?.level} style={{maxWidth:280,alignSelf:'center',marginBottom:12}}/>
       <Txt gold style={{fontSize:12,marginBottom:12}}>{bonusText(c.cards.find((card:any)=>card.id===truck.cardId),data.cardBonuses[truck.cardId])}</Txt>
       <Fact label="Kapazität" value={`${n(truck.capacity,1)} t`}/>
       <Fact label="Stufe" value={g.expedition.characters[truck.cardId]?.level||1}/>
@@ -75,8 +74,8 @@ function Fact({label,value}:any){return <Row style={{flexWrap:'nowrap'}}><Txt mu
 const styles=StyleSheet.create({
  filters:{flexDirection:'row',flexWrap:'wrap',gap:6,marginBottom:12},filter:{minHeight:44,paddingHorizontal:9,paddingVertical:6,borderWidth:1,borderRadius:6,backgroundColor:C.panel,flexDirection:'row',alignItems:'center',gap:5},filterLabel:{fontSize:11,fontWeight:'700'},
  choice:{flexDirection:'row',alignItems:'center',gap:9,padding:10,marginBottom:8,borderWidth:1,borderLeftWidth:3,borderColor:C.line,borderRadius:7,backgroundColor:C.raised},choiceInfo:{flex:1,minWidth:0},choiceHeader:{flexDirection:'row',alignItems:'baseline',gap:6},choiceName:{flex:1,color:C.text,fontSize:14,lineHeight:18,fontWeight:'700'},choiceCapacity:{fontSize:13,fontWeight:'700'},choiceMeta:{fontSize:11,lineHeight:17},choiceSpeeds:{flexDirection:'row',flexWrap:'wrap',columnGap:10},
- row:{flexDirection:'row',gap:10,marginBottom:10},tile:{flex:1,minWidth:0,minHeight:220,padding:12,borderWidth:1,borderColor:C.line,borderRadius:14,backgroundColor:C.panel,justifyContent:'flex-start',borderTopWidth:3},
+ row:{flexDirection:'row',gap:10,marginBottom:10},tile:{flex:1,minWidth:0,minHeight:220,padding:12,borderWidth:1,borderColor:C.line,borderRadius:14,backgroundColor:C.panel,justifyContent:'flex-start',borderTopWidth:1},
  tileHeader:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:4,marginBottom:9},level:{fontSize:10,fontWeight:'700'},fact:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:4},value:{fontSize:12,fontWeight:'600'},speed:{borderTopWidth:1,paddingTop:6,marginTop:7},speedLabel:{fontSize:10,lineHeight:15,marginBottom:3},
- name:{color:C.text,fontWeight:'700',fontSize:14,lineHeight:19,marginBottom:7,minHeight:38},capacity:{fontSize:18,fontWeight:'700',marginBottom:4},small:{fontSize:11,lineHeight:18},empty:{borderStyle:'dashed',backgroundColor:'transparent',alignItems:'center',justifyContent:'center'},plus:{fontSize:30,lineHeight:38,color:C.muted},
+ name:{color:C.text,fontWeight:'700',fontSize:13,lineHeight:18,marginBottom:7,minHeight:54},capacity:{fontSize:18,fontWeight:'700',marginBottom:4},small:{fontSize:11,lineHeight:18},empty:{borderStyle:'dashed',backgroundColor:'transparent',alignItems:'center',justifyContent:'center'},plus:{fontSize:30,lineHeight:38,color:C.muted},
  overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:18},detail:{width:'100%',maxWidth:480,maxHeight:'85%',alignSelf:'center',backgroundColor:C.panel,borderColor:C.line,borderWidth:1,borderRadius:18,padding:16},title:{fontSize:17,fontWeight:'700',flex:1}
 });

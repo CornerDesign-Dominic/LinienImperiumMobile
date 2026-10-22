@@ -2,6 +2,7 @@ import React,{useEffect,useState} from 'react';
 import {View,TextInput,Modal,ScrollView,Pressable,StyleSheet} from 'react-native';
 import {Text} from './Language';
 import {t as translate} from './i18n';
+import {VehicleArt} from './VehicleArt';
 import {Icon,stockIcon} from './Icon';
 import {regionIdentities} from './regionIdentities';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining} from './ui';
@@ -37,7 +38,7 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
  const active=runs.filter((r:any)=>r.status==='active');
  const open=(index:number)=>{setRegion(index);setTruckIds([]);setValue('1');setMode('count');setPicker(false);setSaveFailed(false);setDialog('settings');};
  const vehicleTile=(v:any,selected:boolean)=><Pressable key={v.id} accessibilityRole="button" accessibilityLabel={translate(v.model)+(selected?', '+translate('Entfernen'):'')} disabled={busy} onPress={()=>{if(selected)setTruckIds(ids=>ids.filter(id=>id!==v.id));else{setTruckIds(ids=>ids.includes(v.id)?ids:[...ids,v.id]);setPicker(false);}}} style={[styles.tile,selected&&{borderColor:C.accent,backgroundColor:C.greenWash}]}>
-  <Icon name="truck" color={C.gold}/>{selected&&<Icon name="close" size={12} color={C.muted} style={{position:'absolute',top:5,right:5}}/>}<Text numberOfLines={2} style={{color:C.text,fontSize:12}}>{v.model}</Text><Txt style={styles.vehicleStat}>{n(v.capacity,1)} t</Txt><Txt muted style={styles.vehicleStat}>{n(v.speed,2)} km/s</Txt>
+  <VehicleArt card={data.catalog.cards.find((card:any)=>card.id===v.cardId)||data.catalog.cards.find((card:any)=>card.id===g.trucks.find((truck:any)=>truck.id===v.id)?.cardId)} style={{width:52}}/>{selected&&<Icon name="close" size={12} color={C.muted} style={{position:'absolute',top:5,right:5}}/>}<Text numberOfLines={2} style={{color:C.text,fontSize:12}}>{v.model}</Text><Txt style={styles.vehicleStat}>{n(v.capacity,1)} t</Txt><Txt muted style={styles.vehicleStat}>{n(v.speed,2)} km/s</Txt>
  </Pressable>;
  const stop=(r:any,immediate:boolean)=>confirm(
   immediate?(r.vehicleIds?'Laufende Touren abbrechen?':'Laufende Tour abbrechen?'):(r.vehicleIds?'Nach laufenden Touren beenden?':'Nach laufender Tour beenden?'),

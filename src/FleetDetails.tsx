@@ -4,6 +4,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {t as translate} from './i18n';
 import {C,Txt,Card,Row,Btn,Empty,n,remaining} from './ui';
 import {estimateFleet} from './fleetEstimate';
+import {VehicleArt} from './VehicleArt';
 import {rarityColor} from './items';
 function Fact({label,value}:any){return <Row style={{marginBottom:5,flexWrap:'nowrap'}}><Txt muted style={{fontSize:12,flex:1}}>{label}</Txt><Txt style={{fontSize:12,fontWeight:'600'}}>{value}</Txt></Row>;}
 export function FleetDetails({data,template,visible,onClose,modalBlocked=false}:any){
@@ -31,7 +32,7 @@ export function FleetDetails({data,template,visible,onClose,modalBlocked=false}:
      {estimate.vehicles.map(vehicle=>{
       const card=data.catalog.cards.find((item:any)=>item.id===vehicle.cardId);
       return <Card key={vehicle.cardId} style={{padding:12,borderColor:rarityColor(card?.rarity)}}>
-       <Txt style={[styles.section,{color:rarityColor(card?.rarity)}]}>{vehicle.model}</Txt>
+       <Row style={{flexWrap:'nowrap'}}><VehicleArt card={card} style={{width:52}}/><Txt style={[styles.section,{flex:1,marginBottom:0}]}>{vehicle.model}</Txt></Row>
        <Fact label="Kapazität" value={n(vehicle.capacity,1)+' t'}/>
        <Fact label="Gefahren / 1 h" value={n(vehicle.km,1)+' km'}/>
        <Fact label="Tourendauer" value={remaining(vehicle.seconds*1000,0)}/>

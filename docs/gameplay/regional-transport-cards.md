@@ -64,3 +64,9 @@ Die gemeinsame `VehicleArt`-Komponente zeigt alle Motive in Sammlung, Kartendeta
 * Echte React-Native-Web-Komponenten bei 320/360/390/430 px geprüft (vollständige Bildserie zusätzlich bei 320/390/430 px): Sammlung und alle 25 Bilddetails ohne horizontalen Überlauf, danach Garage und Flotte geöffnet, englische Kartendarstellung geprüft. Keine JavaScript-Laufzeitfehler. Die lokale Prüfansicht verwendet synthetische Testdaten und wird nicht in die App eingebaut.
 
 Vollständiger Stand zur Veröffentlichung über die bestehende Android-Vorschau-Pipeline. Native Abhängigkeiten und Laufzeitversion bleiben unverändert.
+
+### Einheitlicher Seltenheitsrahmen
+
+`VehicleArt` zeichnet den Rahmen mit React-Native-Views und Text direkt in der Oberfläche; es gibt keine Rahmen-Bilddateien. Alle Porträts bleiben quadratisch. Eisen, Grün, Blau/Silber, Violett und Gold kennzeichnen Common bis Legendary. Eine bis fünf Rauten und unterschiedliche Eckfassungen unterscheiden die Stufen zusätzlich zur Farbe. Unter 110 px bleibt die Kennzeichnung kompakt; größere Porträts tragen außerdem Seltenheitsname und optional Kartenstufe. Die Levelangabe auf kleinen Sammlungskarten bleibt außerhalb des Porträts.
+
+Die gemeinsame Darstellung gilt für Garage, Sammlung, Flottenliste und -details, Fahrzeugauswahl, Fundübersicht, Beschaffung und die Fahrzeugangaben in Auftragsdetails. Garagenkarten behalten einen neutralen Hintergrund. `VehicleName` übersetzt vor dem Einfügen bedingter Trennstellen für lange Fahrzeugnamen.
