@@ -1,3 +1,11 @@
+## Kartendetails: Kartenstufen-Erweiterungscard entfernt – gesammelt
+
+- Alte separate Card zum Erweitern der Kartenstufe inklusive Fortschritt, Shardbestand und Button entfernt.
+- Stufe über dem Bild und Bonus-Stufenübersicht bleiben erhalten.
+- Typprüfung erfolgreich. Nicht veröffentlicht.
+
+---
+
 ## Kartendetails: separate Geschwindigkeitsrang-Card entfernt – gesammelt
 
 - Alte Geschwindigkeitsrang-Card mit Ausbauanzeige entfernt.

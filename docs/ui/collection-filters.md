@@ -51,3 +51,7 @@ Kapazität steht direkt unter der Geschwindigkeitscard, vor Fahrzeugdaten und Ka
 ## Separate Rangcard entfernt
 
 Die alte alleinstehende Geschwindigkeitsrang-Card einschließlich Zahnradbedarf und Rang-erhöhen-Button ist aus der Kartendetailansicht entfernt. Der Geschwindigkeitsrang bleibt als farbiger Stern mit römischer Rangstufe rechts oben in der Geschwindigkeitscard sichtbar. Keine Änderung an Rangwerten oder serverseitiger Ausbaulogik. Typprüfung erfolgreich. Nicht veröffentlicht.
+
+## Separate Kartenstufenerweiterung entfernt
+
+Die alte Kartenstufen-Card mit Fortschrittsbalken, Shardbestand und „Shards einsetzen“-Button ist aus den Kartendetails entfernt. Die römische Kartenstufe über dem Bild und das Bonusmodal mit Stufenübersicht bleiben erhalten. Der Entdeckungshinweis bei nicht besessenen Karten bleibt bestehen. Keine Änderung an gespeicherten Stufen, Shards oder serverseitigen Aufwertungen. Typprüfung erfolgreich. Nicht veröffentlicht.
