@@ -5,6 +5,8 @@ const vm = require('node:vm');
 const itemNames = require('./item-names.json');
 const {eventViews, changeEvent, assignEventFleet, EVENT_PROJECT_DISTANCE_KM} = require('./events.cjs');
 const procurementRuntime = fs.readFileSync(path.join(__dirname, 'procurement-runtime.js'), 'utf8');
+const transportCards = require('./transport-cards.json');
+const transportRuntime = fs.readFileSync(path.join(__dirname, 'transport-runtime.js'), 'utf8');
 const giftsRuntime = fs.readFileSync(path.join(__dirname, 'gifts-runtime.js'), 'utf8');
 const tourRuntime = fs.readFileSync(path.join(__dirname, 'tour-runtime.js'), 'utf8');
 const progressionRuntime = fs.readFileSync(path.join(__dirname, 'progression-runtime.js'), 'utf8');
@@ -17,6 +19,7 @@ const EXPEDITION_TEST_DURATION_MS = 15000;
 const bridge = `
   const itemNames = ${JSON.stringify(itemNames)};
   const expeditionTestDuration = ${JSON.stringify(EXPEDITION_TEST_DURATION_MS)};
+  const transportCards = ${JSON.stringify(transportCards)};
   ${giftsRuntime}
   ${progressionRuntime}
   const originalNewGame=newGame;
@@ -155,6 +158,7 @@ const bridge = `
   ${tourRuntime}
   ${procurementRuntime}
   ${hubVehiclesRuntime}
+  ${transportRuntime}
   globalThis.mobile = {
     settleEventTours, refreshTourStarts, queueSingleVehicle, settleProcurementTimeline, startProcurement, startProcurementGroup, stopProcurement, stopProcurementGroup, claimProcurement,
     eventFleetOptions() {
@@ -165,6 +169,7 @@ const bridge = `
       }))||null}));
     },
     get state() { return game; }, set state(value) { game = value; },
+    migrateTransportCards, capturePointClocks, reconcilePointClocks,
     migrateHubVehicles, buyHubVehicle, upgradeHubVehicle, openHubCrate,
     migrateLinearProgression, newGame, save, loadGame, shortenTestMissions, normalizeQueuedReferrals, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
     autoRefreshOrders, regenerateExpedition, regenerateOvertime,
@@ -259,7 +264,7 @@ const bridge = `
     grantTestResource(kind, amount) {
       if (kind === 'xp') awardTransportXp(amount);
       else if (kind === 'expedition') { game.expedition.points += amount; if(game.expedition.points>=expeditionCapacity())game.expedition.lastRegenAt = Date.now(); }
-      else { game.overtimePoints += amount; if(game.overtimePoints>=game.overtimeCapacity)game.overtimeLastRegenAt = Date.now(); }
+      else { game.overtimePoints += amount; if(game.overtimePoints>=overtimeCapacity())game.overtimeLastRegenAt = Date.now(); }
       const label = kind === 'xp' ? 'XP' : kind === 'expedition' ? 'Expeditionspunkte' : 'Überstundenpunkte';
       addEvent('Test: +' + amount + ' ' + label + '.');
       mobileToast = '+' + amount + ' ' + label;
@@ -355,11 +360,11 @@ const bridge = `
         // Collection data intentionally excludes assignment, hub and trip state.
         return [card.id, {capacity:truck.capacity, rank:truckRarity(truck), speed:truckSpeed(truck),
           loadedSpeed:truckSpeed(truck,truck.capacity), costPerKm:operatingCostPerKm(truck),
-          rankCost:rankGearCost(truck), capacityLevel:truck.moduleCapacityLevel || 0, maxCapacityLevel:TRUCKS[card.vehicleTier].maxCapacityLevel}];
+          rankCost:rankGearCost(truck), capacityLevel:truck.moduleCapacityLevel || 0, maxCapacityLevel:Math.max(card.maxCapacityLevel,truck.moduleCapacityLevel||0), capacityStep:round2(card.baseCapacity*card.capacityStepPercent/100)}];
       }));
-      return {state: {...game,trucks,orders}, serverTime:now, catalog, cardVehicles, procurement:procurementView(now),
+      return {state: {...game,trucks,orders,overtimeCapacity:overtimeCapacity()}, serverTime:now, catalog, cardVehicles, procurement:procurementView(now),
         level:levelForXp(game.xp,game), expeditionCapacity:expeditionCapacity(),
-        regeneration:{expeditionNextAt:game.expedition.points<expeditionCapacity()?game.expedition.lastRegenAt+EXPEDITION_REGEN_MS:null,overtimeNextAt:game.overtimePoints<game.overtimeCapacity?game.overtimeLastRegenAt+OVERTIME_REGEN_MS:null},
+        regeneration:{expeditionNextAt:game.expedition.points<expeditionCapacity()?game.expedition.lastRegenAt+expeditionInterval():null,expeditionIntervalMs:expeditionInterval(),overtimeNextAt:game.overtimePoints<overtimeCapacity()?game.overtimeLastRegenAt+OVERTIME_REGEN_MS:null},
         templates:[0,1,2].map(i=>fleetTemplate(i)),
         fleetPreviews:[0,1,2].map(index=>(projectFleetVehicles(index)||[]).map(vehicle=>({
           cardId:vehicle.cardId,model:vehicle.model,capacity:vehicle.capacity,
@@ -405,7 +410,7 @@ const refillGuard='  const OVERTIME_REFILL_POINTS = 100;';
 if(source.split(refillGuard).length!==2)throw Error('Refill constant boundary changed');
 const expeditionRegenGuard='  const EXPEDITION_REGEN_MS = 20 * 60 * 1000;';
 if(source.split(expeditionRegenGuard).length!==2)throw Error('Expedition regeneration boundary changed');
-const compiled = new vm.Script(source.slice(0,boundary).replace(overtimeGuard,mobileGuard).replace(refillGuard,'  const OVERTIME_REFILL_POINTS = 50;').replace(expeditionRegenGuard,'  const EXPEDITION_REGEN_MS = 10 * 60 * 1000;') + bridge, {filename:'web-engine.cjs'});
+const compiled = new vm.Script(source.slice(0,boundary).replaceAll('game.overtimePoints >= game.overtimeCapacity','game.overtimePoints >= overtimeCapacity()').replace(overtimeGuard,mobileGuard).replace(refillGuard,'  const OVERTIME_REFILL_POINTS = 50;').replace(expeditionRegenGuard,'  const EXPEDITION_REGEN_MS = 10 * 60 * 1000;') + bridge, {filename:'web-engine.cjs'});
 function session(state, now=Date.now(), random=Math.random) {
   const storage = new Map();
   const elements = new Map();
@@ -419,7 +424,7 @@ function session(state, now=Date.now(), random=Math.random) {
   compiled.runInContext(context,{timeout:2000});
   const api=context.mobile;
   if(state) api.state=JSON.parse(JSON.stringify(state));
-  api.migrateLinearProgression();api.migrateHubVehicles();
+  api.migrateLinearProgression();api.migrateHubVehicles();api.migrateTransportCards();
   if(!Number.isSafeInteger(api.state.inventory.expeditionRefills)||api.state.inventory.expeditionRefills<0)api.state.inventory.expeditionRefills=0;
   api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleProcurementTimeline(now);
   api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);
@@ -504,7 +509,9 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   if(!a.state.startCity&&!['sync','start','foundCompany','reset'].includes(action))throw Error('Bitte zuerst deine Firma gründen.');
   const oldOrders = new Set(a.state.orders.map(o=>o.id));
   const oldJobs = new Set(a.state.expedition.jobs.map(j=>j.id));
+  const clocks=a.capturePointClocks(now);
   const ok=calls[action]();
+  a.reconcilePointClocks(clocks,now);
   if(action==='mission')a.shortenTestMissions();
   a.refreshTourStarts(now);
   const view=a.view();
@@ -516,6 +523,8 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   for(const key of Object.keys(view.help)){const help=view.help[key];help[1]=help[1].map(([title,body])=>[normalizeNames(title),normalizeNames(body)]);}
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>title==='Fundchancen je Auslosung'?[title,'<p>Je Gebiet gibt es fünf Fahrzeugkarten. Insgesamt 10 % Kartenchance pro Expedition. Die Fahrzeugchancen und Auftragschancen stehen am Endlosort unter ?. Geschenke im Großhändler enthalten denselben Fahrzeugpool und geben garantiert eine Karte. Doppelte Karten geben 1 Shard derselben Seltenheit.</p>']:[title,body]);
   view.help.dashboard[1]=view.help.dashboard[1].map(([title,body])=>[title,title==='Spielerlevel'?'<p>Transportierte Tonnen geben XP: gelieferte Tonnen × bezahlte Richtungen × (1 + aktive Karten-XP-Boni / 100). Bei Dual Way zählen beide Richtungen. Jeder nächste Aufstieg benötigt 100 × aktuelles Level XP. Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 dauerhaft verteilbare Punkte. Ab Level 5 wird alle fünf Level ein weiterer Stadthub-Fahrzeugplatz freigeschaltet, maximal 20 bei Level 100.</p>':body]);
+  view.help.personnel[1]=[['Fahrzeugkarten','25 regionale Landtransporter: zwei Common, eine Uncommon, eine Rare und eine Epic pro Region. Jede Karte hat eigene Grundkapazität und Grundgeschwindigkeit sowie genau einen Bonus. Die Staffel bis Stufe 10 steht im Kartendetail.'],['Wirkungsbereiche','Eigenboni unterstützen nur das Fahrzeug. Flottenboni unterstützen alle Fahrzeuge derselben Flotte einschließlich des Bonusgebers. Garagenboni gelten, solange die Karte in der Garage eingesetzt ist, auch während Einzelaufträgen und Beschaffung. Gleiche Transportboni verschiedener Karten addieren sich. Laufende Touren behalten ihre Werte bis zur nächsten Abfahrt.'],['Punkteboni','Königliche Postkutsche: mehr Überstundenmaximum. Oasenkarawane: mehr Expeditionsmaximum. Jeweils +5/10/15/20/25/30/40/50/60/70 Punkte. Jade-Kundschaftergespann: Expeditionsintervall um 10/20/30/40/50/60/75/90/105/120 Sekunden kürzer. Nur in der Garage aktiv. Das Einsetzen füllt keine Punkte auf. Überschuss bleibt nach dem Entfernen erhalten; Regeneration pausiert bis unter das Maximum. Timerwechsel erhalten den anteiligen Fortschritt.']];
+  view.help.fleet[1]=view.help.fleet[1].map(([title,body])=>[title,title==='Tempo und Ausbauten'?'Tempo = individuelles Basistempo × (1 + 0,005 × Rangstufen) × (1 + Tempoboni / 100) × (1 − 0,01 × Ladung in t). Je Kapazitätsmodul +5 % der Grundkapazität, zehn Ausbaustufen. Bereits investierte Module und Ränge bleiben erhalten.':title==='Einsetzen und Herausnehmen'?'Kartenbesitz, Ausbau und Statistik bleiben beim Herausnehmen erhalten. Laufende Einzelaufträge, Expeditionen, Beschaffung und reservierte Ersatzfahrzeuge verhindern das Herausnehmen. Laufende Touren behalten ihre Werte; die nächste Abfahrt übernimmt Änderungen.':body]);
   view.help.dealer[1]=[['Stadttransporter','Kauf und Ausbau erfolgen direkt im Stadthub. Ein Modell für 25.000 Münzen, 2 t Startkapazität.']];
   view.help.dealer[1]=view.help.dealer[1].map(([title,body])=>[title,body.replace('max(1, abrunden(Spielerlevel × 0,75))','abrunden(Spielerlevel / 5)').replace('Vor dem Kauf muss der Stadthub eröffnet sein.','Der Stadthub wird ab Level 5 eröffnet. Alle fünf Level wird ein weiterer Fahrzeugplatz freigeschaltet. Bestehende Fahrzeuge bleiben erhalten.')]);
   view.help.hub[1].unshift(['Freischaltung','Stadthub ab Level 5. Alle fünf Level ein Platz, maximal 20 bei Level 100. Ein Stadttransporter kostet 25.000 Münzen und startet mit 2 t. Fahrzeugteile verbessern Kapazität und Antrieb in je zehn Stufen. Drei Fundkisten täglich, mindestens 30 Minuten Abstand; Tageswechsel um 00:00 UTC. Beim stündlichen Einkauf: einmal 50 % Chance auf ein Fahrzeugteil, keine Funde bei voller Kasse. Teile aus Einkäufen mit den Erträgen abholen.']);

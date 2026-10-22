@@ -1,22 +1,10 @@
-// Mobile vehicle pools: preserve every existing card ID and add two per region.
-EXPEDITION_CHARACTERS.push(
- {id:'r1_common_2',name:'Landkurier',rarity:'common',region:0,scope:'self',stat:'pay',vehicleTier:2},
- {id:'r1_uncommon_2',name:'Hafen-Transporter',rarity:'uncommon',region:0,scope:'single',stat:'xp',vehicleTier:3},
- {id:'r2_common_2',name:'Frischekurier',rarity:'common',region:1,scope:'self',stat:'cost',vehicleTier:3},
- {id:'r2_epic',name:'Kühlkonvoi',rarity:'epic',region:1,scope:'fleet',stat:'pay',vehicleTier:5},
- {id:'r3_common_2',name:'Werkstoffwagen',rarity:'common',region:2,scope:'self',stat:'cost',vehicleTier:3},
- {id:'r3_epic',name:'Schwerlast-Bergung',rarity:'epic',region:2,scope:'fleet',stat:'speed',vehicleTier:6},
- {id:'r4_common_2',name:'Passkurier',rarity:'common',region:3,scope:'self',stat:'speed',vehicleTier:3},
- {id:'r4_epic',name:'Alpen-Konvoi',rarity:'epic',region:3,scope:'fleet',stat:'cost',vehicleTier:6},
- {id:'r5_common_2',name:'Marktfrachter',rarity:'common',region:4,scope:'self',stat:'pay',vehicleTier:4},
- {id:'r5_epic',name:'Europa-Express',rarity:'epic',region:4,scope:'fleet',stat:'xp',vehicleTier:6}
-);
-CARD_BONUS_SCALING.epic={base:8,step:2};
+// Regional cards keep all 25 stable ownership IDs.
+EXPEDITION_CHARACTERS.splice(0,EXPEDITION_CHARACTERS.length,...transportCards);
 const GIFT_OPEN_COINS=10;
 // Keep the total expedition card chance at 10%; gifts always award one card.
 function regionVehiclePool(region){
  const cards=EXPEDITION_CHARACTERS.filter(card=>card.region===region);
- const weights=region===0?{common:.6,uncommon:.3,rare:.1}:{common:.6,uncommon:.3,rare:.09,epic:.01};
+ const weights={common:.6,uncommon:.3,rare:.09,epic:.01};
  return cards.map(card=>({
   ...card,
   chance:weights[card.rarity]/cards.filter(other=>other.rarity===card.rarity).length

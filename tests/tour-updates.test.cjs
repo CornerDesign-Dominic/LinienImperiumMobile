@@ -13,7 +13,7 @@ function setup(ids=['navigator']){
  }
  r.state.inventory.gears={common:10000,uncommon:10000,rare:10000,epic:10000,legendary:10000};
  r.state.inventory.capacityModules=100;
- r.state.expedition.shards={common:10000,uncommon:10000,rare:10000};
+ r.state.expedition.shards={common:10000,uncommon:10000,rare:10000,epic:10000};
  r.state.overtimePoints=1000;
  return r;
 }
@@ -53,19 +53,19 @@ test('Single: capacity increases never reload an active tour and only affect the
  assert.equal(order(changed).tripCargo,old.cargo);
  assert.equal(viewOrder(changed).tripEndsAt,old.endsAt);
  const next=cmd(changed.state,'sync',{},old.endsAt);
- assert.equal(order(next).tripCargo,old.cargo+.5);
+ assert.equal(order(next).tripCargo,Math.round(old.cargo*1.05*100)/100);
  assert.equal(order(next).delivered,old.cargo);
 });
 
-test('Single: own cost and garage pay bonuses freeze the old tour and update future accounting',()=>{
- const start=single(['navigator','r3_uncommon']),old=JSON.parse(JSON.stringify(order(start).tripSnapshot));
+test('Single: own cost and garage cost bonuses freeze the old tour and update future accounting',()=>{
+ const start=single(['navigator','r3_epic']),old=JSON.parse(JSON.stringify(order(start).tripSnapshot));
  let changed=cmd(start.state,'cardUpgrade',{id:'navigator'},T+1000);
- changed=cmd(changed.state,'cardUpgrade',{id:'r3_uncommon'},T+1000);
+ changed=cmd(changed.state,'cardUpgrade',{id:'r3_epic'},T+1000);
  assert.deepEqual(order(changed).tripSnapshot,old);
  const next=cmd(changed.state,'sync',{},old.endsAt);
  assert.equal(next.state.stats.grossRevenue,old.accounting.revenue);
  assert.equal(next.state.stats.operatingCosts,old.accounting.cost);
- assert.ok(order(next).tripSnapshot.accounting.revenue>old.accounting.revenue);
+ assert.equal(order(next).tripSnapshot.accounting.revenue,old.accounting.revenue);
  assert.ok(order(next).tripSnapshot.accounting.cost<old.accounting.cost);
 });
 
@@ -91,7 +91,7 @@ test('Single: replacement is reserved, cannot run another order or leave the gar
 
 test('Single: pending changes can be cancelled and a final tour never launches a reserved replacement',()=>{
  for(const finish of [false,true]){
-  const start=single(['navigator','r1_rare'],finish?4:40),replacement=start.state.trucks.find(t=>t.cardId==='r1_rare');
+  const start=single(['navigator','r1_rare'],finish?2:40),replacement=start.state.trucks.find(t=>t.cardId==='r1_rare');
   let queued=cmd(start.state,'singleVehicle',{order:'TEST',truck:replacement.id});
   if(!finish){queued=cmd(queued.state,'singleVehicle',{order:'TEST',truck:order(start).truckId});assert.equal(order(queued).pendingTruckId,undefined);}
   const next=cmd(queued.state,'sync',{},order(start).tripSnapshot.endsAt);
@@ -114,14 +114,14 @@ test('Single: rejects unowned, busy and nonexistent assignments without changing
 });
 
 test('Fleet: an upgrade changes the ETA immediately, not the current load, deadline or nextAt',()=>{
- const start=fleet(),original=JSON.parse(JSON.stringify(activeVehicles(start)));
+ const start=fleet(['navigator']),original=JSON.parse(JSON.stringify(activeVehicles(start)));
  const upgraded=cmd(start.state,'cardCapacity',{id:'navigator'},T+1000);
  assert.deepEqual(activeVehicles(upgraded),original);
  assert.equal(order(upgraded).project.deadlineAt,order(start).project.deadlineAt);
  assert.ok(viewOrder(upgraded).eta<viewOrder(start).eta);
  const at=original.find(v=>v.cardId==='navigator').nextAt;
  const next=cmd(upgraded.state,'sync',{},at);
- assert.equal(activeVehicles(next).find(v=>v.cardId==='navigator').capacity,4.5);
+ assert.equal(activeVehicles(next).find(v=>v.cardId==='navigator').capacity,2.1);
 });
 
 test('Fleet: replacement drains the old tour and waits if the desired card is still in another slot',()=>{
@@ -163,8 +163,8 @@ test('Fleet: an added slot starts a new tour without restarting existing vehicle
  assert.equal(activeVehicles(added).find(v=>v.cardId==='r1_rare').tripStartedAt,T+1000);
 });
 
-test('Fleet: pay, cost, XP and speed donor upgrades update only newly started receiver tours',()=>{
- for(const donor of ['forscherin','r2_rare','pionierin','r1_rare']){
+test('Fleet: pay, cost and speed donor upgrades update only newly started receiver tours',()=>{
+ for(const donor of ['forscherin','r2_rare','pionierin']){
   const start=fleet(['navigator',donor]),old=JSON.parse(JSON.stringify(activeVehicles(start)));
   const changed=cmd(start.state,'cardUpgrade',{id:donor},T+1000);
   assert.deepEqual(activeVehicles(changed),old);
@@ -172,8 +172,7 @@ test('Fleet: pay, cost, XP and speed donor upgrades update only newly started re
   const next=cmd(changed.state,'sync',{},at),fresh=activeVehicles(next).find(v=>v.cardId==='navigator');
   if(donor==='forscherin')assert.ok(fresh.tripAccounting.revenue>receiver.tripAccounting.revenue);
   if(donor==='r2_rare')assert.ok(fresh.tripAccounting.cost<receiver.tripAccounting.cost);
-  if(donor==='pionierin')assert.ok(fresh.tripAccounting.xp>receiver.tripAccounting.xp);
-  if(donor==='r1_rare')assert.ok(fresh.nextAt-at<receiver.nextAt-T);
+  if(donor==='pionierin')assert.ok(fresh.nextAt-at<receiver.nextAt-T);
  }
 });
 
@@ -225,9 +224,9 @@ test('Event and customer project sharing a template both change at their own tou
  assert.equal(r.view.testEvents[0].project.vehicles[0].cargo,eventBefore.cargo);
  const end=Math.max(eventBefore.nextAt,projectBefore.nextAt);
  const next=cmd(r.state,'sync',{},end);
- assert.equal(activeVehicles(next)[0].capacity,4.5);
- assert.equal(next.view.testEvents[0].project.vehicles[0].capacity,4.5);
- assert.ok(next.view.testEvents[0].project.delivered>=4);
+ assert.equal(activeVehicles(next)[0].capacity,2.1);
+ assert.equal(next.view.testEvents[0].project.vehicles[0].capacity,2.1);
+ assert.ok(next.view.testEvents[0].project.delivered>=2);
 });
 
 test('Event: long offline periods and template replacement preserve earned progress and avoid duplicated cards',()=>{
@@ -254,10 +253,10 @@ test('Transport expedition: capacity upgrade preserves the current tour but chan
  const changed=cmd(r.state,'cardCapacity',{id:'navigator'},T+1);
  const fresh=changed.state.expedition.missions.at(-1);
  assert.deepEqual(fresh.transport.tours[0],current);
- assert.equal(fresh.transport.tours[1].cargo,4.5);
+ assert.equal(fresh.transport.tours[1].cargo,2.1);
  const first=cmd(changed.state,'sync',{},current.endsAt);
  assert.equal(first.state.expedition.missions.at(-1).transport.delivered,current.cargo);
- assert.equal(first.state.expedition.missions.at(-1).transport.tours[1].cargo,4.5);
+ assert.equal(first.state.expedition.missions.at(-1).transport.tours[1].cargo,2.1);
 });
 
 test('Fleet: simultaneous arrivals activate a replacement donor before any of the next tours start',()=>{
@@ -268,17 +267,18 @@ test('Fleet: simultaneous arrivals activate a replacement donor before any of th
  const next=cmd(queued.state,'sync',{},at);
  const receiver=activeVehicles(next).find(v=>v.cardId==='navigator');
  assert.equal(receiver.bonusStats.pay,0);
- assert.equal(receiver.bonusStats.cost,6,'Own 1% plus the new donor 5%');
+ assert.equal(receiver.bonusStats.cost,7,'Own 3% plus the new donor 4%');
  assert.equal(receiver.tripStartedAt,at);
  assert.equal(next.state.stats.trips,2);
 });
 
-test('Single: XP bonus upgrades apply after the boundary and do not rewrite XP of a running tour',()=>{
+test('Single: garage cost upgrades apply after the boundary and leave XP unaffected',()=>{
  const start=single(['navigator','r5_uncommon']),old=order(start).tripSnapshot;
  const improved=cmd(start.state,'cardUpgrade',{id:'r5_uncommon'},T+1000);
  const next=cmd(improved.state,'sync',{},old.endsAt);
  assert.equal(next.state.xp,old.accounting.xp);
- assert.ok(order(next).tripSnapshot.accounting.xp>old.accounting.xp);
+ assert.equal(order(next).tripSnapshot.accounting.xp,old.accounting.xp);
+ assert.ok(order(next).tripSnapshot.accounting.cost<old.accounting.cost);
 });
 
 test('Fleet: legacy snapshots without slot ids migrate without duplicating a card in sparse templates',()=>{
@@ -296,8 +296,8 @@ test('Fleet: legacy snapshots without slot ids migrate without duplicating a car
 });
 
 test('Single: total forecast and completion use frozen plus updated economics exactly once',()=>{
- const start=single(['navigator','r3_uncommon'],8);
- const improved=cmd(start.state,'cardUpgrade',{id:'r3_uncommon'},T+1000);
+ const start=single(['navigator','r3_epic'],8);
+ const improved=cmd(start.state,'cardUpgrade',{id:'r3_epic'},T+1000);
  const forecast=viewOrder(improved).forecast,eta=viewOrder(improved).runningEndsAt;
  const end=cmd(improved.state,'sync',{},eta);
  assert.equal(order(end).status,'completed');

@@ -12,7 +12,7 @@ function cooldown(at:number|null|undefined,now:number){
 export function TokenHeader({data,clock,onInventory}:any){
  const token=(name:string,value:number,capacity:number,next:number|null|undefined,color:string)=><>
   <Text style={s.label}>{name} <Text style={{color,fontWeight:'700'}}>{n(value)}/{n(capacity)}</Text></Text>
-  <Text accessibilityLabel={translate(`${name} Regeneration`)} style={s.timer}>{cooldown(next,clock)}</Text>
+  <Text accessibilityLabel={translate(`${name} Regeneration`)} style={s.timer}>{next===null&&value>capacity?'Pausiert':cooldown(next,clock)}</Text>
  </>;
  return <View style={s.row}>
   <View style={s.token}>{token('Expedition',data?.state.expedition.points||0,data?.expeditionCapacity||50,data?.regeneration?.expeditionNextAt,C.brassLight)}</View>

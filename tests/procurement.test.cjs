@@ -5,7 +5,7 @@ const now=1800000000000,random=()=>.5;
 const cmd=(state,action='sync',payload={},at=now,rng=random)=>execute(state,action,payload,at,rng);
 function setup(){
  const out=cmd(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'});
- const state=out.state;state.coins=1000000;delete state.procurement;
+ const state=out.state;state.expedition.characters.r4_common_2={level:1,progress:0};state.trucks[0].cardId='r4_common_2';state.trucks[0].model='Tee-Maultiergespann';state.coins=1000000;delete state.procurement;
  Object.assign(state.expedition.regions[0],{discovered:7,deliveries:Array(7).fill(true),endlessUnlocked:true,moduleAwarded:true,finalClaimed:true,customerUnlocked:true});
  return {state,truck:state.trucks[0].id};
 }
@@ -82,9 +82,9 @@ test('Garage exclusivity rejects duplicate procurement, orders, expedition, pend
  assert.equal(out.view.state.trucks[0].free,false);assert.equal(out.view.state.trucks[0].procurementId,'1');
  assert.throws(()=>start(out.state,truck),/verfügbar/);
  const offer=out.state.orders[0];out=cmd(out.state,'assign',{order:offer.id,truck});assert.equal(out.state.orders.find(o=>o.id===offer.id).status,'available');
- out=cmd(out.state,'garageRemove',{id:'navigator'});assert.equal(out.state.trucks.length,1);
+ out=cmd(out.state,'garageRemove',{id:'r4_common_2'});assert.equal(out.state.trucks.length,1);
  out=cmd(out.state,'mission',{region:0,kind:'final',truck,place:0});assert.equal(out.state.expedition.missions.length,0);
- out=cmd(out.state,'seat',{id:'navigator',template:0,seat:0});assert.equal(out.state.expedition.seats[0],'navigator');
+ out=cmd(out.state,'seat',{id:'r4_common_2',template:0,seat:0});assert.equal(out.state.expedition.seats[0],'r4_common_2');
  // Normal fleet projects use liveCardTruck independently of garage free flags.
  const queued={id:'P-test',kind:'special',category:'national',customer:'nordbau',status:'queued',distance:120,volume:400,baseVolume:400,delivered:0,routeType:'single',completionReward:null};
  out.state.orders.push(queued);out=cmd(out.state,'projectStart',{id:queued.id,template:0});assert.equal(out.state.orders.find(o=>o.id===queued.id).status,'active');
@@ -97,10 +97,10 @@ test('Current tour freezes speed; rank and donor changes only affect the followi
  out.state.trucks[0].capacity=99;out.state.company.workshopLevel=50;
  out=cmd(out.state,'sync',{},end);assert.equal(out.state.procurement.runs[0].durationMs,Math.ceil(600000/1.005));assert.equal(out.state.procurement.runs[0].price,8000);
  const pending=out.state.procurement.pending.common;assert.equal(pending,5);
- const max=setup();max.state.expedition.characters.r2_common={level:10};max.state.expedition.characters.r1_uncommon={level:10};
- max.state.trucks=[{id:'fast',cardId:'r2_common',tier:2,model:'Versorgungswagen',capacity:99,rarityLevel:50},{id:'donor',cardId:'r1_uncommon',tier:3,model:'Rallye-Transporter',capacity:8.5,rarityLevel:0}];
- const view=cmd(max.state).view.procurement;assert.equal(view.vehicles.find(v=>v.id==='fast').durationMs,408511);
- const fast=view.vehicles.find(v=>v.id==='fast');assert.equal(fast.capacity,99);assert.equal(fast.speed,1.46875);assert.equal(fast.durationMs,Math.ceil(600000/fast.speed));
+ const max=setup();max.state.expedition.characters.r4_common_2={level:10};max.state.expedition.characters.r1_rare={level:10};
+ max.state.trucks=[{id:'fast',cardId:'r4_common_2',transportVersion:1,tier:2,model:'Tee-Maultiergespann',capacity:99,rarityLevel:50},{id:'donor',cardId:'r1_rare',transportVersion:1,tier:3,model:'Silberhirsch-Gespann',capacity:8.5,rarityLevel:0}];
+ const view=cmd(max.state).view.procurement;assert.equal(view.vehicles.find(v=>v.id==='fast').durationMs,444445);
+ const fast=view.vehicles.find(v=>v.id==='fast');assert.equal(fast.capacity,99);assert.equal(fast.speed,1.35);assert.equal(fast.durationMs,Math.ceil(600000/fast.speed));
  assert.equal(out.view.procurement.vehicles.find(v=>v.id===truck).free,false);
 });
 test('Loot rolls are independent, no module/shard/XP side rewards, and budget inputs reject invalid values',()=>{
@@ -115,7 +115,7 @@ test('Income after reserve exhaustion cannot fund earlier tours; early income ca
  for(const early of [true,false]){
   const {state,truck}=setup();state.coins=8000;
   state.expedition.characters.r2_common={level:1};
-  state.trucks.push({id:'income',cardId:'r2_common',tier:2,model:'income',capacity:100,rarityLevel:0,kmDriven:0,toursCompleted:0,ordersCompleted:0});
+  state.trucks.push({id:'income',cardId:'r4_common_2',transportVersion:1,tier:2,model:'income',capacity:100,rarityLevel:0,kmDriven:0,toursCompleted:0,ordersCompleted:0});
   const order=state.orders[0];Object.assign(order,{distance:early?200:600,volume:100,baseVolume:100,routeType:'single'});
   // Give loaded speed a positive value for this synthetic high-volume income trip.
   state.trucks[1].capacity=50;order.volume=order.baseVolume=50;
@@ -145,7 +145,7 @@ test('Simultaneous reserve departures share funds without going negative; all re
  const {state,truck}=setup();state.coins=24000;
  state.expedition.characters.r2_common={level:1};state.trucks.push({id:'second',cardId:'r2_common',tier:2,model:'second',capacity:4,rarityLevel:0});
  // Remove the own speed bonus to force a simultaneous boundary for this fixture.
- state.trucks[1].cardId='r3_common';state.expedition.characters.r3_common={level:1};
+ state.trucks[1].cardId='r4_common_2';state.expedition.characters.r4_common_2={level:1};
  let out=start(state,truck,'reserve',0);out=cmd(out.state,'procurementStart',{region:0,truck:'second',mode:'reserve',amount:0});
  assert.equal(out.state.coins,8000);out=cmd(out.state,'sync',{},now+1200000);assert.equal(out.state.coins,0);assert.equal(out.state.procurement.completed,3);
  const second=setup();Object.assign(second.state.expedition.regions[4],second.state.expedition.regions[0]);

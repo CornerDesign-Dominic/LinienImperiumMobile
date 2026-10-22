@@ -2,11 +2,11 @@ import {t as translate} from './i18n';
 import React from 'react';
 import {View,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n} from './ui';
-import {Icon} from './Icon';
+import {regionIdentities} from './regionIdentities';
 import {displayFont} from './theme';
 import {itemName,rarityColor} from './items';
-const BONUS:Record<string,string>={speed:'Tempo',cost:'Kostenersparnis',pay:'Frachtvergütung',xp:'Spieler-XP'};
-const SCOPE:Record<string,string>={self:'Dieses Fahrzeug',single:'Eigene Einzelaufträge',fleet:'Alle Fahrzeuge im Großauftrag',garage:'Alle Fahrzeuge in der Garage'};
+import {VehicleArt} from './VehicleArt';
+import {BONUS,SCOPE,bonusValue,pointBonus} from './cardBonus';
 function Fact({label,value}:any){return <Row style={styles.fact}><Txt muted style={{flex:1,fontSize:12}}>{label}</Txt><Txt style={{fontSize:13,fontWeight:'600',textAlign:'right'}}>{value}</Txt></Row>;}
 export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any){
  const {state:g,catalog:c}=data,card=c.cards.find((item:any)=>item.id===id);
@@ -17,12 +17,16 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
  const maxRank=stats.rank.total>=50;
  return <>
   <Card>
-   <Row style={{marginBottom:14}}><Txt style={{color:rarityColor(card.rarity),fontSize:11,fontWeight:'700'}}>{rarity.label}</Txt><Txt muted style={{fontSize:11}}>Region {card.region+1}</Txt></Row>
-   <View accessibilityLabel={translate('Fahrzeugsymbol')} style={[styles.artwork,{borderColor:rarityColor(card.rarity)}]}><Icon name="truck" size={88} color={rarityColor(card.rarity)}/></View>
+   <Row style={{marginBottom:14}}><Txt style={{color:rarityColor(card.rarity),fontSize:11,fontWeight:'700'}}>{rarity.label}</Txt><Txt muted style={{fontSize:11}}>{regionIdentities[card.region]?.title}</Txt></Row>
+   <VehicleArt card={card} style={{maxWidth:360,alignSelf:'center',borderWidth:1,borderColor:rarityColor(card.rarity)}}/>
    <Txt style={styles.name}>{card.name}</Txt>
    <View style={styles.badges}><Pill>{own?`Stufe ${level}`:'Nicht entdeckt'}</Pill><Txt muted style={{fontSize:12}}>{n(stats.capacity,1)} t · Rang {stats.rank.total}</Txt></View>
   </Card>
-  <Card style={styles.bonus}><Row style={{marginBottom:3}}><Txt style={styles.title}>{BONUS[card.stat]}</Txt><Txt style={styles.bonusValue}>+{n(data.cardBonuses[id],1)} %</Txt></Row><Txt muted style={{fontSize:12}}>{SCOPE[card.scope]}</Txt></Card>
+  <Card style={styles.bonus}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{BONUS[card.stat]}</Txt><Txt style={styles.bonusValue}>{bonusValue(card,data.cardBonuses[id])}</Txt></Row><Txt muted style={{fontSize:12}}>{pointBonus(card)?'Wirkt nur in der Garage':SCOPE[card.scope]}</Txt>
+   {card.scope==='garage'&&<Txt muted style={{fontSize:11,marginTop:6}}>{g.trucks.some((t:any)=>t.cardId===id)?'Garagenbonus aktiv':'Garagenbonus inaktiv'}</Txt>}
+   <Fact label="Stufe 10" value={bonusValue(card,card.bonusLevels[9])}/>
+   {pointBonus(card)&&<Txt muted style={{fontSize:11,marginTop:5}}>{card.stat==='expeditionRegen'?'Verkürzt die Wartezeit pro Expeditionspunkt.':'Erhöht nur das Maximum. Vorhandene Punkte bleiben beim Entfernen erhalten.'}</Txt>}
+  </Card>
   <Card><Txt style={[styles.title,{marginBottom:14}]}>Fahrzeugdaten</Txt>
    <Fact label="Einsatz" value="Regional- und Fernverkehr"/>
    <Fact label="Tempo leer" value={`${n(stats.speed,2)} km/s`}/>
@@ -34,8 +38,8 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
    <Card><Row><Txt style={styles.title}>Kartenstufe</Txt><Pill>{level} / 10</Pill></Row>
     {level<10?<><Bar value={own.progress/needed*100}/><Fact label="Fortschritt" value={`${n(own.progress)} / ${n(needed)}`}/><Fact label={`${rarity.label}-Shards`} value={`${n(shards)} vorhanden`}/><Btn disabled={busy||!shards} onPress={()=>onUpgrade(id)}>Shards einsetzen</Btn></>:<Txt muted>Maximum erreicht</Txt>}
    </Card>
-   <Card><Row><Txt style={styles.title}>Kapazität</Txt><Txt style={styles.value}>{n(stats.capacity,1)} t</Txt></Row><Fact label="Module" value={`${modules} / ${maxModules}`}/>
-    {modules<maxModules?<><Fact label={itemName('capacityModules',2)} value={`${n(g.inventory.capacityModules)} vorhanden`}/><Btn secondary disabled={busy||!g.inventory.capacityModules} onPress={()=>onVehicleUpgrade(id,'capacity')}>+0,5 t · 1 {itemName('capacityModules')}</Btn></>:<Txt muted>Maximum erreicht</Txt>}
+   <Card><Row><Txt style={styles.title}>Kapazität</Txt><Txt style={styles.value}>{n(stats.capacity,1)} t</Txt></Row><Fact label="Module" value={`${modules} / ${maxModules}`}/><Txt muted style={{fontSize:11,marginBottom:10}}>Je Modul +5 % der Grundkapazität.</Txt>
+    {modules<maxModules?<><Fact label={itemName('capacityModules',2)} value={`${n(g.inventory.capacityModules)} vorhanden`}/><Btn secondary disabled={busy||!g.inventory.capacityModules} onPress={()=>onVehicleUpgrade(id,'capacity')}>+{n(stats.capacityStep??0.5,2)} t · 1 {itemName('capacityModules')}</Btn></>:<Txt muted>Maximum erreicht</Txt>}
    </Card>
    <Card><Row><Txt style={[styles.title,{flex:1}]}>Geschwindigkeitsrang</Txt><Pill>{stats.rank.total} / 50</Pill></Row>
     {maxRank?<Txt muted>Maximum erreicht</Txt>:<><Fact label={`${stats.rank.label}-Zahnräder`} value={`${n(g.inventory.gears[stats.rank.id])} / ${n(stats.rankCost)}`}/><Btn secondary disabled={busy||g.inventory.gears[stats.rank.id]<stats.rankCost} onPress={()=>onVehicleUpgrade(id,'rank')}>Rang erhöhen</Btn></>}

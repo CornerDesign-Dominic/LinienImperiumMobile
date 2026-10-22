@@ -8,6 +8,7 @@ import {AtlasHeading} from './Atlas';
 import {displayFont} from './theme';
 import {rarityColor} from './items';
 import {VehicleFacts} from './VehicleFacts';
+import {VehicleArt} from './VehicleArt';
 
 
 export function VehicleCards({data,onOpen}:any){
@@ -41,7 +42,7 @@ export function VehicleCardGrid({data,cards,onOpen,statusForCard,disabled=false,
    const freeModules=Math.max(0,(stats.maxCapacityLevel??c.models[item.vehicleTier].maxCapacityLevel)-(stats.capacityLevel||0));
    return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={translate(`${item.name}, ${owned?`Stufe ${owned.level}`:'Nicht entdeckt'}, Geschwindigkeitsrang ${stats.rank.total}, ${n(stats.capacity,1)} Tonnen${status?.label?`, ${status.label}`:''}`)} accessibilityState={{disabled,selected:!!status?.selected}} disabled={disabled} onPress={()=>onOpen(item.id)} style={({pressed})=>[styles.card,{borderColor:rarityColor(item.rarity)},!owned&&{backgroundColor:C.raised,borderStyle:'dashed'},status?.selected&&{backgroundColor:C.greenWash},(pressed||disabled)&&{opacity:.7}]}>
     <Txt style={styles.level}>{owned?`Stufe ${owned.level}`:'Stufe —'}</Txt>
-    <View style={styles.artwork}><Icon name="truck" size={32} color={rarityColor(item.rarity)}/><Text numberOfLines={3} ellipsizeMode="tail" style={styles.name}>{item.name.replace(/([a-zäöü])([A-ZÄÖÜ])/g,'$1\u00ad$2').replace(/Versorgungswagen/g,'Versorgungs\u00adwagen').replace(/Expeditionsträger/g,'Expeditions\u00adträger').replace(/Schrottsammler/g,'Schrott\u00adsammler')}</Text></View>
+    <VehicleArt card={item}/><Text numberOfLines={3} ellipsizeMode="tail" style={styles.name}>{item.name.replace(/-/g,'-\u00ad')}</Text>
     {showDetails?<View style={{marginTop:8}}><VehicleFacts capacity={stats.capacity} rank={stats.rank.total} loadedSpeed={stats.loadedSpeed} emptySpeed={stats.speed} color={rarityColor(item.rarity)} freeModules={freeModules} compact/></View>:<><Txt style={styles.rank}>Rang {stats.rank.total}</Txt><Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt></>}
     {statusForCard&&<View style={[styles.assignment,status?.label&&styles.assigned]}>{status?.label&&<Icon name="check" size={11} color={C.accent}/>}<Text numberOfLines={2} style={styles.assignmentText}>{status?.label||'Verfügbar'}</Text></View>}
    </Pressable>;
@@ -54,6 +55,6 @@ const styles=StyleSheet.create({
  assignment:{minHeight:32,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:3,borderRadius:3,paddingHorizontal:2,marginTop:5},assigned:{backgroundColor:C.greenWash},assignmentText:{flexShrink:1,fontSize:10,lineHeight:13,textAlign:'center',color:C.accent,fontWeight:'600'},
  row:{flexDirection:'row',gap:9,marginBottom:10},card:{flex:1,minWidth:0,borderWidth:1,borderRadius:6,borderTopWidth:3,backgroundColor:C.panel,padding:7},
  level:{fontSize:11,fontWeight:'700',textAlign:'center',lineHeight:19,marginBottom:5},
- artwork:{width:'100%',aspectRatio:1,minHeight:90,backgroundColor:C.raised,borderColor:C.line,borderWidth:1,borderRadius:7,alignItems:'center',justifyContent:'center',padding:4},
- name:{width:'100%',flexShrink:1,fontFamily:displayFont,fontSize:11,lineHeight:14,textAlign:'center',color:C.text,marginTop:6},rank:{fontSize:11,lineHeight:18,textAlign:'center',marginTop:7,color:C.muted},capacity:{fontSize:13,lineHeight:20,fontWeight:'700',textAlign:'center'},
+ artwork:{width:'100%',aspectRatio:1,minHeight:0,backgroundColor:C.raised,borderColor:C.line,borderWidth:1,borderRadius:7,alignItems:'center',justifyContent:'center',padding:4},
+ name:{width:'100%',flexShrink:1,fontFamily:displayFont,fontSize:11,lineHeight:14,minHeight:42,textAlign:'center',color:C.text,marginTop:6},rank:{fontSize:11,lineHeight:18,textAlign:'center',marginTop:7,color:C.muted},capacity:{fontSize:13,lineHeight:20,fontWeight:'700',textAlign:'center'},
 });
