@@ -130,3 +130,33 @@ test('Every card has a unique square artwork file and a static native asset regi
   assert.ok(source.includes("'"+card.artKey+"':require("),card.id);
  }
 });
+
+test('Collection upgrade previews match actual capacity and rank upgrades without changing resources',()=>{
+ for(const id of ['navigator','r1_rare','r5_epic']){
+  let r=equip(setup(),id,2);
+  r.state.inventory.capacityModules=2;r.state.inventory.gears.common=100000;
+  r=cmd(r.state);
+  const preview=r.view.cardVehicles[id].upgradePreview;
+  assert.equal(r.state.inventory.capacityModules,2);
+  const capacity=cmd(r.state,'cardCapacity',{id});
+  assert.equal(capacity.view.cardVehicles[id].capacity,preview.capacity);
+  const ranked=cmd(r.state,'cardRank',{id});
+  assert.deepEqual(ranked.view.cardVehicles[id].rank,preview.rank.rank);
+  assert.equal(ranked.view.cardVehicles[id].speed,preview.rank.speed);
+  assert.equal(ranked.view.cardVehicles[id].loadedSpeed,preview.rank.loadedSpeed);
+ }
+});
+test('Collection previews cover rank rarity transitions, parked cards and capped upgrades',()=>{
+ let r=equip(setup(),'navigator',2);
+ const truck=r.state.trucks.find(t=>t.cardId==='navigator');truck.rarityLevel=9;
+ r.state.inventory.gears.common=100000;
+ r=cmd(r.state,'garageRemove',{id:'navigator'});
+ const next=r.view.cardVehicles.navigator.upgradePreview.rank;
+ assert.equal(next.rank.id,'uncommon');assert.equal(next.rank.level,0);
+ const upgraded=cmd(r.state,'cardRank',{id:'navigator'});
+ assert.deepEqual(upgraded.view.cardVehicles.navigator.rank,next.rank);
+ const parked=upgraded.state.expedition.characters.navigator.parkedTruck;
+ parked.rarityLevel=50;parked.moduleCapacityLevel=10;
+ const maxed=cmd(upgraded.state);
+ assert.deepEqual(maxed.view.cardVehicles.navigator.upgradePreview,{capacity:null,rank:null});
+});

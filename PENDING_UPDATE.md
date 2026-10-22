@@ -1,3 +1,15 @@
+## Kartendetails: gemeinsames Verbesserungsmodal – gesammelt, nicht veröffentlicht
+
+- Ein Button „Verbessern“ ganz unten öffnet die gemeinsame Verbesserung für Kartenstufe, Kapazität und Geschwindigkeitsrang.
+- Je Bereich Vorher/Nachher, Materialkosten, eigener Bestand, Fehlmenge und bewusste Upgrade-Aktion; aktuelle Höchststufen und unzureichende Vorräte sperren den jeweiligen Ausbau.
+- Splitterfortschritt wird angerechnet. Werte/Bestände aktualisieren sich nach Erfolg im geöffneten Modal. Fehlerhinweis und Schutz vor Doppelbetätigung enthalten.
+- Servervorschauen für Kapazität und Tempo verwenden die tatsächlichen Spielfunktionen; vorhandene Befehle und Kosten unverändert.
+- Deutsch/Englisch. Typprüfung, alle 174 Tests, Browserbedienung bei 320/390/430 px und Android-Export erfolgreich.
+- Details: `docs/ui/vehicle-upgrade-modal.md`. Kein physischer Gerätetest.
+- Sammelbranch `batch/company-improvements`; keine Veröffentlichung vor ausdrücklichem Go.
+
+---
+
 ## Kartendetails: Kartenstufen-Erweiterungscard entfernt – gesammelt
 
 - Alte separate Card zum Erweitern der Kartenstufe inklusive Fortschritt, Shardbestand und Button entfernt.

@@ -9,9 +9,10 @@ import {rarityColor} from './items';
 import {VehicleArt} from './VehicleArt';
 import {BONUS,bonusValue,bonusSentence,pointBonus} from './cardBonus';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
+import {VehicleUpgradeModal} from './VehicleUpgradeModal';
 function Fact({label,value}:any){return <Row style={styles.fact}><Txt muted style={{flex:1,fontSize:12}}>{label}</Txt><Txt style={{fontSize:13,fontWeight:'600',textAlign:'right'}}>{value}</Txt></Row>;}
-export function VehicleCardDetail({data,id}:any){
- const [bonusOpen,setBonusOpen]=useState(false);
+export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any){
+ const [bonusOpen,setBonusOpen]=useState(false),[upgradeOpen,setUpgradeOpen]=useState(false);
  const {state:g,catalog:c}=data,card=c.cards.find((item:any)=>item.id===id);
  if(!card)return <Empty>Fahrzeugkarte nicht verfügbar.</Empty>;
  const own=g.expedition.characters[id],stats=data.cardVehicles[id];
@@ -50,6 +51,8 @@ export function VehicleCardDetail({data,id}:any){
   </Card>
   {!own&&<Card><Txt muted>Auf Expeditionen in Region {card.region+1} entdecken.</Txt></Card>}
   {card.description&&<Card><Txt muted style={{fontSize:13,lineHeight:21}}>{card.description}</Txt></Card>}
+  <Btn disabled={busy||!own} onPress={()=>setUpgradeOpen(true)}>Verbessern</Btn>
+  <VehicleUpgradeModal data={data} id={id} visible={upgradeOpen} busy={busy} onClose={()=>setUpgradeOpen(false)} onUpgrade={onUpgrade} onVehicleUpgrade={onVehicleUpgrade}/>
  </>;
 }
 const styles=StyleSheet.create({speedRank:{flexDirection:'row',alignItems:'center',gap:5,flexShrink:0},artwork:{width:180,height:180,alignSelf:'center',backgroundColor:C.raised,borderWidth:1,borderRadius:12,alignItems:'center',justifyContent:'center'},name:{fontFamily:displayFont,fontSize:22,lineHeight:26,fontWeight:'700',textAlign:'center',marginTop:14},cardLevel:{fontFamily:displayFont,fontSize:22,lineHeight:28,fontWeight:'700',color:C.gold,textAlign:'center',marginBottom:10},title:{fontSize:14,fontWeight:'700'},fact:{flexWrap:'nowrap',marginBottom:10},bonus:{backgroundColor:C.greenWash,borderColor:C.accent},bonusLevel:{minHeight:38,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,paddingHorizontal:8,paddingVertical:7,borderBottomWidth:1,borderColor:C.line},currentBonusLevel:{backgroundColor:C.greenWash,borderRadius:4},value:{fontSize:18,lineHeight:25,fontWeight:'700'}});
