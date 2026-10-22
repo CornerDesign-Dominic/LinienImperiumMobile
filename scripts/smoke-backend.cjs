@@ -15,6 +15,11 @@ async function main(){
   assert.equal(once.state.coins,51000);assert.equal(twice.state.coins,51000);
   const protectedState=await call('sync',{coins:1e15});assert.equal(protectedState.state.coins,51000);
   assert.equal(protectedState.expeditionMap.length,5);
+  assert.equal(protectedState.catalog.cards.length,25);
+  assert.ok(protectedState.catalog.cards.every(card=>typeof card.artKey==='string'&&card.artKey.length>0));
+  assert.equal(protectedState.catalog.cards.find(card=>card.id==='navigator').name,'Eselkarren');
+  assert.equal(protectedState.cardVehicles.navigator.capacity,2);
+  assert.deepEqual(protectedState.catalog.cards.find(card=>card.id==='r3_uncommon').bonusLevels,[5,10,15,20,25,30,40,50,60,70]);
   assert.equal(protectedState.expeditionMap[0].customer.id,'nordbau');
   assert.deepEqual(protectedState.procurement.sites.map(s=>s.price),[8000,12000,16000,20000,24000]);
   assert.ok(protectedState.procurement.sites.every(s=>!s.unlocked));

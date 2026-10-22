@@ -49,7 +49,7 @@
       5.67,
       6.0
     ],
-    "artKey": null
+    "artKey": "market-team"
   },
   {
     "id": "r1_uncommon",
@@ -75,7 +75,7 @@
       60,
       70
     ],
-    "artKey": null
+    "artKey": "royal-mail-coach"
   },
   {
     "id": "r1_rare",
@@ -101,7 +101,7 @@
       7.56,
       8.0
     ],
-    "artKey": null
+    "artKey": "silver-stag-team"
   },
   {
     "id": "r1_uncommon_2",
@@ -153,7 +153,7 @@
       5.67,
       6.0
     ],
-    "artKey": null
+    "artKey": "settler-wagon"
   },
   {
     "id": "r2_common_2",
@@ -179,7 +179,7 @@
       5.67,
       6.0
     ],
-    "artKey": null
+    "artKey": "ox-freight-wagon"
   },
   {
     "id": "disponent",
@@ -205,7 +205,7 @@
       11.33,
       12.0
     ],
-    "artKey": null
+    "artKey": "prairie-freight-train"
   },
   {
     "id": "r2_rare",
@@ -231,7 +231,7 @@
       7.56,
       8.0
     ],
-    "artKey": null
+    "artKey": "pioneer-lead-wagon"
   },
   {
     "id": "r2_epic",
@@ -257,7 +257,7 @@
       15.11,
       16.0
     ],
-    "artKey": null
+    "artKey": "thunder-bison-team"
   },
   {
     "id": "r3_common",
@@ -283,7 +283,7 @@
       5.67,
       6.0
     ],
-    "artKey": null
+    "artKey": "pack-donkey-train"
   },
   {
     "id": "r3_common_2",
@@ -309,7 +309,7 @@
       5.67,
       6.0
     ],
-    "artKey": null
+    "artKey": "desert-camel"
   },
   {
     "id": "r3_uncommon",
@@ -335,7 +335,7 @@
       60,
       70
     ],
-    "artKey": null
+    "artKey": "oasis-caravan"
   },
   {
     "id": "forscherin",
@@ -361,7 +361,7 @@
       7.56,
       8.0
     ],
-    "artKey": null
+    "artKey": "silver-caravan"
   },
   {
     "id": "r3_epic",
@@ -387,7 +387,7 @@
       15.11,
       16.0
     ],
-    "artKey": null
+    "artKey": "dune-runner-caravan"
   },
   {
     "id": "r4_common",
@@ -413,7 +413,7 @@
       5.67,
       6.0
     ],
-    "artKey": null
+    "artKey": "bamboo-handcart"
   },
   {
     "id": "r4_common_2",
@@ -439,7 +439,7 @@
       5.67,
       6.0
     ],
-    "artKey": null
+    "artKey": "tea-mule-team"
   },
   {
     "id": "r4_uncommon",
@@ -465,7 +465,7 @@
       11.33,
       12.0
     ],
-    "artKey": null
+    "artKey": "terrace-ox-wagon"
   },
   {
     "id": "logistiker",
@@ -491,7 +491,7 @@
       105,
       120
     ],
-    "artKey": null
+    "artKey": "jade-scout-team"
   },
   {
     "id": "r4_epic",
@@ -543,7 +543,7 @@
       5.67,
       6.0
     ],
-    "artKey": null
+    "artKey": "fisher-dog-sled"
   },
   {
     "id": "r5_common_2",
@@ -569,7 +569,7 @@
       5.67,
       6.0
     ],
-    "artKey": null
+    "artKey": "reindeer-freight-sled"
   },
   {
     "id": "r5_uncommon",
@@ -595,7 +595,7 @@
       3.78,
       4.0
     ],
-    "artKey": null
+    "artKey": "northern-freight-team"
   },
   {
     "id": "pionierin",
@@ -621,7 +621,7 @@
       7.56,
       8.0
     ],
-    "artKey": null
+    "artKey": "white-stag-sled"
   },
   {
     "id": "r5_epic",
@@ -647,6 +647,6 @@
       15.11,
       16.0
     ],
-    "artKey": null
+    "artKey": "snow-leopard-express"
   }
 ]

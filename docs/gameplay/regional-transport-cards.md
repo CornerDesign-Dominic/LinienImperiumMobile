@@ -1,4 +1,4 @@
-# Regionale Transporterkarten und drei Bildmuster
+# Regionale Transporterkarten mit vollständigen Bildern
 
 25 Landtransporter ersetzen die bisherigen generischen LKW-Namen. Keine Flug- oder Wasserfahrzeuge, Elefanten bleiben für spätere legendäre Karten reserviert. Die 25 Besitz-IDs bleiben stabil. Kronenlande erhält nun ebenfalls eine Epic-Karte; die bisherige ID `r1_uncommon_2` wird dafür weiterverwendet. Vorhandener Kartenbesitz und Kartenlevel bleiben erhalten, vorhandene Shards bleiben in ihren bisherigen Seltenheitspools.
 
@@ -47,18 +47,20 @@ Jede Karte besitzt genau einen Bonus. Eigenboni gelten für das Fahrzeug, Flotte
 | Nordmark | `pionierin` | Weißhirsch-Schlitten | rare | 6 | 120 | fleet | speed | 4.0 → 8.0 |
 | Nordmark | `r5_epic` | Schneeleoparden-Express | epic | 3 | 150 | garage | speed | 8.0 → 16.0 |
 
-## Bildmuster
+## Bilder
 
-Drei mit dem eingebauten ImageGen-Werkzeug erzeugte quadratische Muster: Eselkarren, Königliches Löwengespann und Kaiserliches Pandagespann. Malerischer Realismus, natürliche Tierproportionen, regionaler Hintergrund, sichtbare Materialien und klar lesbare Gespanne. Kein Text und kein eingebrannter Kartenrahmen. Originale Erzeugungsprompts: `assets/art/vehicles/prompts.json`. Appbilder: optimierte JPEGs mit 1024 × 1024 Pixeln unter `assets/art/vehicles/` (zusammen rund 1,1 MB).
+Alle 25 Karten haben ein eigenes quadratisches Bild. Die drei ursprünglichen Muster bleiben erhalten; die weiteren 22 Motive folgen derselben malerisch-realistischen Bildsprache mit regionalen Landschaften, natürlichen Materialien und deutlich prestigeträchtigerer Ausstattung für Epic-Karten. Keine Flug- oder Wasserfahrzeuge und keine Elefanten.
 
-Eine gemeinsame `VehicleArt`-Komponente zeigt die Muster in Sammlung, Kartendetail, Garage, Flotte und Geschenkpool. Die übrigen 22 Karten behalten bis zur Stilfreigabe das neutrale Fahrzeugsymbol. Werte, Kartenname und Seltenheitsrahmen liegen außerhalb des Bildes.
+Erstellung: eingebautes ImageGen-Werkzeug, je Motiv ein eigener Aufruf. Bei Siedlerwagen und Oasenkarawane wurden kleine generierte Signaturen per gezielter Bildbearbeitung entfernt. Vollständige Prompts: `assets/art/vehicles/prompts.json` und `assets/art/vehicles/regional-prompts.json`. Alle optimierten Appbilder liegen unter `assets/art/vehicles/`, 1024 × 1024 Pixel, RGB-JPEG. Die Übersicht und alle einzelnen Dateilinks stehen in `assets/art/vehicles/README.md`.
+
+Die gemeinsame `VehicleArt`-Komponente zeigt alle Motive in Sammlung, Kartendetail, Garage, Flotte und Geschenkpool. Namen, Werte und Seltenheitsrahmen bleiben außerhalb der Bilddateien. Die Bilder verändern keine Kapazitäten, Geschwindigkeiten, Bonuswerte oder Besitzkennungen.
 
 ## Prüfung
 
 * Typprüfung erfolgreich.
-* 137 Tests erfolgreich, darunter zehn neue Tests für die individuellen Werte, Bonusstaffeln, Inaktivität in Sammlung/Flotte, Punktetrennung, Übermaximum, Offline-Pause, Timerwechsel, Auffüller und Migration.
+* 138 Tests erfolgreich, darunter zehn neue Tests für die individuellen Werte, Bonusstaffeln, Inaktivität in Sammlung/Flotte, Punktetrennung, Übermaximum, Offline-Pause, Timerwechsel, Auffüller und Migration.
 * Bestehende Tour-, Flotten-, Event-, Beschaffungs- und Webregressionstests auf die neuen Kartenkonfigurationen angepasst, weiterhin mit Prüfung unveränderter laufender Touren und korrekter Folgefahrten.
 * Android-Export erfolgreich. Kein Android-Gerätetest.
-* Echte React-Native-Web-Komponenten bei 320/360/390/430 px geprüft: Sammlung und alle drei Bilddetails ohne horizontalen Überlauf, danach Garage und Flotte geöffnet, englische Kartendarstellung geprüft. Keine JavaScript-Laufzeitfehler. Die lokale Prüfansicht verwendet synthetische Testdaten und wird nicht in die App eingebaut.
+* Echte React-Native-Web-Komponenten bei 320/360/390/430 px geprüft (vollständige Bildserie zusätzlich bei 320/390/430 px): Sammlung und alle 25 Bilddetails ohne horizontalen Überlauf, danach Garage und Flotte geöffnet, englische Kartendarstellung geprüft. Keine JavaScript-Laufzeitfehler. Die lokale Prüfansicht verwendet synthetische Testdaten und wird nicht in die App eingebaut.
 
-Die Musterbilder sind zur Stilprüfung bestimmt; die restlichen Bilder werden erst danach erstellt. Noch kein Deploy.
+Vollständiger Stand zur Veröffentlichung über die bestehende Android-Vorschau-Pipeline. Native Abhängigkeiten und Laufzeitversion bleiben unverändert.

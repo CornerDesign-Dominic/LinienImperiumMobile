@@ -1,4 +1,5 @@
 const {test}=require('node:test');
+const fs=require('node:fs'),path=require('node:path');
 const assert=require('node:assert/strict');
 const {execute}=require('../functions/src/engine.cjs');
 const cards=require('../functions/src/transport-cards.json');
@@ -20,7 +21,7 @@ test('All 25 regional vehicles have independent capacity/speed and a single esca
  assert.equal(r.view.cardVehicles.navigator.speed,.75);
  assert.equal(r.view.cardVehicles.r1_uncommon_2.speed,1.55);
  assert.equal(r.view.cardVehicles.r4_epic.speed,.5);
- assert.ok(cards.filter(c=>c.artKey).length===3);
+ assert.ok(cards.filter(c=>c.artKey).length===25);
 });
 test('Both point-capacity cards have the agreed nonlinear levels and affect different point types without granting stock',()=>{
  for(let level=1;level<=10;level++){
@@ -119,4 +120,13 @@ test('Garage-wide transport effects include non-card city vehicles and exclude f
  r=cmd(r.state);assert.equal(r.view.state.trucks.find(t=>t.id==='CITY').bonus.speed,16);
  r=cmd(r.state,'seat',{id:'navigator',template:0,seat:0});
  assert.equal(r.view.fleetPreviews[0][0].bonuses.speed,0);
+});
+
+test('Every card has a unique square artwork file and a static native asset registration',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../src/VehicleArt.tsx'),'utf8');
+ assert.equal(new Set(cards.map(c=>c.artKey)).size,25);
+ for(const card of cards){
+  assert.ok(fs.existsSync(path.join(__dirname,'../assets/art/vehicles',card.artKey+'.jpg')),card.id);
+  assert.ok(source.includes("'"+card.artKey+"':require("),card.id);
+ }
 });
