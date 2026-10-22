@@ -32,36 +32,44 @@ const artwork:Record<string,any>={
  'snow-leopard-express':require('../assets/art/vehicles/snow-leopard-express.jpg'),
 
 };
-// All decoration is native UI geometry; no frame bitmaps or extra assets.
-const frames:Record<string,{base:string;edge:string;light:string;label:string;tier:number}>={
- common:{base:'#575950',edge:'#303A36',light:'#B9B8A6',label:'Common',tier:1},
- uncommon:{base:'#31613D',edge:'#183E29',light:'#B9D0A0',label:'Uncommon',tier:2},
- rare:{base:'#245C88',edge:'#17374D',light:'#D3E0E4',label:'Rare',tier:3},
- epic:{base:'#713780',edge:'#36213E',light:'#E0BCDF',label:'Epic',tier:4},
- legendary:{base:'#A57824',edge:'#543B17',light:'#F4DEA0',label:'Legendary',tier:5},
+// Shared native faceted setting: no frame images, rarity icons or footer bars.
+const frames:Record<string,{light:string;metal:string;shade:string;label:string}>={
+ common:{light:'#C9C5B7',metal:'#73776E',shade:'#454C43',label:'Common'},
+ uncommon:{light:'#C6D6A5',metal:'#527B58',shade:'#315B3E',label:'Uncommon'},
+ rare:{light:'#D2E4EE',metal:'#4C86AD',shade:'#315F82',label:'Rare'},
+ epic:{light:'#E3CCED',metal:'#9068A6',shade:'#654273',label:'Epic'},
+ legendary:{light:'#F4DEA0',metal:'#B88D3D',shade:'#82601F',label:'Legendary'},
 };
 type Props={card?:{artKey?:string;name?:string;rarity?:string};level?:number;style?:StyleProp<ViewStyle>};
+// Intersect a square with a larger rotated square to clip an octagon on native
+// and web alike. Counter-rotate the contents so the artwork stays upright.
+function FacetCrop({size,inset=0,children}: {size:number;inset?:number;children:React.ReactNode}){
+ const diagonal=Math.SQRT2*size*.9,offset=(size-diagonal)/2;
+ return <View style={{position:'absolute',left:inset,top:inset,width:size,height:size,overflow:'hidden'}}>
+  <View style={{position:'absolute',width:diagonal,height:diagonal,left:offset,top:offset,overflow:'hidden',transform:[{rotate:'45deg'}]}}>
+   <View style={{position:'absolute',width:size,height:size,left:-offset,top:-offset,transform:[{rotate:'-45deg'}]}}>{children}</View>
+  </View>
+ </View>;
+}
 export function VehicleArt({card,level,style}:Props){
  const [width,setWidth]=useState(80);
  const source=artwork[card?.artKey||''],frame=frames[card?.rarity||'common']||frames.common;
- const compact=width<110,unit=Math.max(1,Math.min(3,width/65));
- const rim=compact?4:7,rail=compact?8:19,corner=compact?8:15;
- return <View accessible accessibilityRole="image" accessibilityLabel={`${t(card?.name||'Fahrzeug')} · ${t(frame.label)}${level?` · ${t('Stufe')} ${level}`:''}`} onLayout={event=>setWidth(event.nativeEvent.layout.width)} style={[styles.art,style,{padding:rim,paddingBottom:rail+rim,backgroundColor:frame.base,borderColor:frame.edge,borderWidth:2,borderRadius:frame.tier>=4?12:frame.tier===3?7:4}]}>
-  <View style={[styles.window,{borderColor:frame.light,borderWidth:Math.max(1,unit*.6)}]}>
-   {source?<Image accessible={false} source={source} resizeMode="cover" style={styles.image}/>:<Icon name="truck" size={24} color={rarityColor(card?.rarity||'common')}/>}
-  </View>
-  <View pointerEvents="none" style={[StyleSheet.absoluteFill,{borderWidth:1,borderTopColor:frame.light,borderLeftColor:frame.light,borderRightColor:frame.edge,borderBottomColor:frame.edge,borderRadius:frame.tier>=4?10:3}]} />
-  {frame.tier>=2&&[0,1,2,3].map(i=><View pointerEvents="none" key={i} style={{position:'absolute',width:corner,height:corner,...(i<2?{top:1}:{bottom:rail+1}),...(i%2?{right:1}:{left:1}),borderColor:frame.light,borderTopWidth:i<2?unit:0,borderBottomWidth:i>=2?unit:0,borderLeftWidth:i%2?0:unit,borderRightWidth:i%2?unit:0,backgroundColor:frame.tier>=4?frame.base:'transparent',borderRadius:frame.tier>=4?3:0}}/>)}
-  <View pointerEvents="none" style={[styles.rail,{height:rail,bottom:1,gap:compact?3:5}]}>
-   {Array.from({length:frame.tier},(_,i)=><View key={i} style={{width:compact?3:5,height:compact?3:5,backgroundColor:frame.light,transform:[{rotate:'45deg'}]}}/>)}
-   {!compact&&<Text maxFontSizeMultiplier={1.2} style={[styles.rarity,{color:frame.light}]}>{t(frame.label)}</Text>}
-  </View>
-  {!!level&&!compact&&<View style={[styles.level,{backgroundColor:frame.edge,borderColor:frame.light}]}><Text maxFontSizeMultiplier={1.2} style={styles.levelText}>{t('Stufe')} {level}</Text></View>}
+ const compact=width<110,precious=card?.rarity==='epic'||card?.rarity==='legendary';
+ // No heavy dark outline: the metal itself forms the fine, coloured edge.
+ const rim=Math.max(2,Math.min(6,width*.035))+(precious&&!compact?1:0);
+ const inner=Math.max(1,width-2*rim);
+ return <View accessible accessibilityRole="image" accessibilityLabel={`${t(card?.name||'Fahrzeug')} · ${t(frame.label)}${level?` · ${t('Stufe')} ${level}`:''}`} onLayout={event=>setWidth(event.nativeEvent.layout.width)} style={[styles.art,style]}>
+  <FacetCrop size={width}>
+   <View style={[StyleSheet.absoluteFill,{backgroundColor:frame.metal,backgroundImage:`linear-gradient(135deg, ${frame.light} 0%, ${frame.metal} 27%, ${frame.shade} 55%, ${frame.metal} 85%, ${frame.light} 100%)`}]}/>
+   <FacetCrop size={inner} inset={rim}>
+    <View style={styles.window}>{source?<Image accessible={false} source={source} resizeMode="cover" style={styles.image}/>:<Icon name="truck" size={24} color={rarityColor(card?.rarity||'common')}/>}</View>
+   </FacetCrop>
+   {!!level&&!compact&&<View style={[styles.level,{top:rim+5,right:rim+5,backgroundColor:frame.shade,borderColor:frame.light}]}><Text maxFontSizeMultiplier={1.2} style={styles.levelText}>{t('Stufe')} {level}</Text></View>}
+  </FacetCrop>
  </View>;
 }
 const styles=StyleSheet.create({
- art:{width:'100%',aspectRatio:1,flexShrink:0,alignItems:'center',justifyContent:'center'},
- window:{width:'100%',flex:1,overflow:'hidden',backgroundColor:C.raised,alignItems:'center',justifyContent:'center',borderRadius:2},image:{width:'100%',height:'100%'},
- rail:{position:'absolute',left:3,right:3,flexDirection:'row',alignItems:'center',justifyContent:'center'},rarity:{fontSize:9,fontWeight:'700',letterSpacing:.5},
- level:{position:'absolute',right:9,top:9,borderWidth:1,borderRadius:3,paddingHorizontal:5,paddingVertical:2},levelText:{color:'#F4EBD8',fontSize:10,fontWeight:'700'},
+ art:{width:'100%',aspectRatio:1,flexShrink:0},
+ window:{width:'100%',height:'100%',overflow:'hidden',backgroundColor:C.raised,alignItems:'center',justifyContent:'center'},image:{width:'100%',height:'100%'},
+ level:{position:'absolute',borderWidth:StyleSheet.hairlineWidth,borderRadius:3,paddingHorizontal:5,paddingVertical:2},levelText:{color:'#F4EBD8',fontSize:10,fontWeight:'700'},
 });
