@@ -1,3 +1,11 @@
+## Sammlung: engere Kartenabstände – gesammelt, nicht veröffentlicht
+
+- Abstand zwischen Sammlungskarten horizontal von 9 auf 4,5 und vertikal von 10 auf 5 Einheiten halbiert.
+- Drei Spalten bleiben erhalten; Karten und quadratische Bilder werden automatisch breiter.
+- Flottenauswahl unverändert. Typprüfung erfolgreich. Weiterhin nur im Sammelbranch.
+
+---
+
 ## Seitenabstand halbiert – gesammelt, nicht veröffentlicht
 
 - Gemeinsamer seitlicher Seitenrand im Inhaltsbereich von 18 auf 9 Einheiten halbiert.

@@ -25,3 +25,7 @@ Prüfung: TypeScript und 15 vorhandene Übersetzungs-/Transportkartentests erfol
 ## Betriebskosten ergänzt
 
 Auf Wunsch zusätzlich eine vierte kompakte Zeile: Münzicon mit Betriebskosten in M/km (maximal zwei Nachkommastellen). Quelle ist der bestehende serverseitige Fahrzeugwert `costPerKm`, einschließlich der dort berücksichtigten Boni. Kein eigener Pauschalwert und keine Änderung der Kostenberechnung. Fehlende Werte zeigen einen Gedankenstrich; null wird als 0 M/km angezeigt. Deutsche/englische zugängliche Beschriftung verwendet den vorhandenen Begriff Betriebskosten/Operating costs. Typprüfung erfolgreich. Nicht veröffentlicht.
+
+## Engeres Sammlungsraster
+
+Abstand zwischen den drei Sammlungsspalten von 9 auf 4,5 Einheiten halbiert; Abstand zwischen Kartenreihen von 10 auf 5 Einheiten halbiert. Die Karten behalten flex:1 und nutzen die gewonnene Breite automatisch, einschließlich proportional größerer quadratischer Bilder. Zusammen mit den halbierten Seitenrändern wird das Raster breiter und dichter. Nur das Sammlungsraster mit Detailwerten erhält diese Abstände; die Flottenauswahl behält ihr bisheriges Raster. Typprüfung erfolgreich, keine Veröffentlichung.
