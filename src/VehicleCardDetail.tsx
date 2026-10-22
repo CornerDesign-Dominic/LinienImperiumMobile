@@ -2,9 +2,10 @@ import {t as translate} from './i18n';
 import React from 'react';
 import {View,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n} from './ui';
-import {regionIdentities} from './regionIdentities';
+import {Text} from './Language';
+import {rankNumeral} from './collectionStats';
 import {displayFont} from './theme';
-import {itemName,rarityColor} from './items';
+import {itemName} from './items';
 import {VehicleArt} from './VehicleArt';
 import {BONUS,SCOPE,bonusValue,pointBonus} from './cardBonus';
 function Fact({label,value}:any){return <Row style={styles.fact}><Txt muted style={{flex:1,fontSize:12}}>{label}</Txt><Txt style={{fontSize:13,fontWeight:'600',textAlign:'right'}}>{value}</Txt></Row>;}
@@ -17,10 +18,9 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
  const maxRank=stats.rank.total>=50;
  return <>
   <Card>
-   <Row style={{marginBottom:14}}><Txt style={{color:rarityColor(card.rarity),fontSize:11,fontWeight:'700'}}>{rarity.label}</Txt><Txt muted style={{fontSize:11}}>{regionIdentities[card.region]?.title}</Txt></Row>
-   <VehicleArt card={card} level={level} style={{maxWidth:360,alignSelf:'center'}}/>
+   <Text accessibilityLabel={translate(own?`Stufe ${level}`:'Nicht entdeckt')} style={styles.cardLevel}>{own?rankNumeral(level):'—'}</Text>
+   <VehicleArt card={card} style={{maxWidth:360,alignSelf:'center'}}/>
    <Txt style={styles.name}>{card.name}</Txt>
-   <View style={styles.badges}><Pill>{own?`Stufe ${level}`:'Nicht entdeckt'}</Pill><Txt muted style={{fontSize:12}}>{n(stats.capacity,1)} t · Rang {stats.rank.total}</Txt></View>
   </Card>
   <Card style={styles.bonus}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{BONUS[card.stat]}</Txt><Txt style={styles.bonusValue}>{bonusValue(card,data.cardBonuses[id])}</Txt></Row><Txt muted style={{fontSize:12}}>{pointBonus(card)?'Wirkt nur in der Garage':SCOPE[card.scope]}</Txt>
    {card.scope==='garage'&&<Txt muted style={{fontSize:11,marginTop:6}}>{g.trucks.some((t:any)=>t.cardId===id)?'Garagenbonus aktiv':'Garagenbonus inaktiv'}</Txt>}
@@ -48,4 +48,4 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
   {card.description&&<Card><Txt muted style={{fontSize:13,lineHeight:21}}>{card.description}</Txt></Card>}
  </>;
 }
-const styles=StyleSheet.create({artwork:{width:180,height:180,alignSelf:'center',backgroundColor:C.raised,borderWidth:1,borderRadius:12,alignItems:'center',justifyContent:'center'},name:{fontFamily:displayFont,fontSize:22,lineHeight:26,fontWeight:'700',textAlign:'center',marginTop:14},badges:{flexDirection:'row',alignItems:'center',justifyContent:'center',flexWrap:'wrap',gap:10,marginTop:9},title:{fontSize:14,fontWeight:'700'},fact:{flexWrap:'nowrap',marginBottom:10},bonus:{backgroundColor:C.greenWash,borderColor:C.accent},bonusValue:{fontSize:20,lineHeight:26,fontWeight:'700',color:C.accent},value:{fontSize:18,lineHeight:25,fontWeight:'700'}});
+const styles=StyleSheet.create({artwork:{width:180,height:180,alignSelf:'center',backgroundColor:C.raised,borderWidth:1,borderRadius:12,alignItems:'center',justifyContent:'center'},name:{fontFamily:displayFont,fontSize:22,lineHeight:26,fontWeight:'700',textAlign:'center',marginTop:14},cardLevel:{fontFamily:displayFont,fontSize:22,lineHeight:28,fontWeight:'700',color:C.gold,textAlign:'center',marginBottom:10},title:{fontSize:14,fontWeight:'700'},fact:{flexWrap:'nowrap',marginBottom:10},bonus:{backgroundColor:C.greenWash,borderColor:C.accent},bonusValue:{fontSize:20,lineHeight:26,fontWeight:'700',color:C.accent},value:{fontSize:18,lineHeight:25,fontWeight:'700'}});

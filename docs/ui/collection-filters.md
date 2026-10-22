@@ -29,3 +29,7 @@ Auf Wunsch zusätzlich eine vierte kompakte Zeile: Münzicon mit Betriebskosten 
 ## Engeres Sammlungsraster
 
 Abstand zwischen den drei Sammlungsspalten von 9 auf 4,5 Einheiten halbiert; Abstand zwischen Kartenreihen von 10 auf 5 Einheiten halbiert. Die Karten behalten flex:1 und nutzen die gewonnene Breite automatisch, einschließlich proportional größerer quadratischer Bilder. Zusammen mit den halbierten Seitenrändern wird das Raster breiter und dichter. Nur das Sammlungsraster mit Detailwerten erhält diese Abstände; die Flottenauswahl behält ihr bisheriges Raster. Typprüfung erfolgreich, keine Veröffentlichung.
+
+## Ruhiger Kopfbereich der Kartendetails
+
+In der aus der Sammlung geöffneten Fahrzeugkarte entfallen Seltenheitsname und Herkunft über dem Bild. Stattdessen steht mittig ausschließlich die Kartenstufe als römische Zahl I–X (gesperrt: Gedankenstrich). Das Stufenbadge im Bild und die bisherige Stufen-/Kapazitäts-/Rangzeile unter dem Namen sind entfernt. Fahrzeugname, Facettenrahmen sowie nachfolgende Bonus-, Daten- und Ausbauabschnitte bleiben erhalten. Typprüfung erfolgreich. Nicht veröffentlicht.

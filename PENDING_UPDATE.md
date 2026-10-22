@@ -1,3 +1,12 @@
+## Kartendetails: Kopfbereich vereinfacht – gesammelt, nicht veröffentlicht
+
+- Seltenheitsname und Herkunft über dem Bild entfernt; mittig steht nur die römische Kartenstufe.
+- Stufenbadge im Bild und Stufen-/Kapazitäts-/Rangzeile unter dem Namen entfernt.
+- Nachfolgende Bonus-, Daten- und Ausbauabschnitte unverändert. Typprüfung erfolgreich.
+- Weiterhin im Sammelbranch, keine Veröffentlichung.
+
+---
+
 ## Sammlung: engere Kartenabstände – gesammelt, nicht veröffentlicht
 
 - Abstand zwischen Sammlungskarten horizontal von 9 auf 4,5 und vertikal von 10 auf 5 Einheiten halbiert.
