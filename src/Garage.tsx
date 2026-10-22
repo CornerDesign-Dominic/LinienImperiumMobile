@@ -4,9 +4,8 @@ import React,{useState} from 'react';
 import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {Icon} from './Icon';
 import {rarityColor} from './items';
-import {VehicleFacts} from './VehicleFacts';
+import {VehicleCardTile} from './VehicleCards';
 import {VehicleArt} from './VehicleArt';
-import {VehicleName} from './VehicleName';
 import {bonusText} from './cardBonus';
 import {C,Txt,Row,Btn,Bar,n,remaining} from './ui';
 
@@ -20,15 +19,12 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
  const filters=[{id:'all',label:'Alle'},...c.rarities];
  const tile=(t:any,index:number)=>{
   if(!t)return <Pressable accessibilityRole="button" accessibilityLabel={translate(`Garagenplatz ${index+1} hinzufügen`)} disabled={busy} onPress={()=>{setRarity('all');setAdding(true);}} style={[styles.tile,styles.empty]}><Icon name="plus" size={28} color={C.muted}/></Pressable>;
-  const card=c.cards.find((item:any)=>item.id===t.cardId),color=rarityColor(card?.rarity);
+  const card=c.cards.find((item:any)=>item.id===t.cardId);
   const stats=data.cardVehicles[t.cardId];
-  return <Pressable accessibilityRole="button" accessibilityLabel={translate(`Garagenplatz ${index+1}: ${t.model}`)} onPress={()=>setSelected(t.id)} style={styles.tile}>
-   <VehicleArt card={card} level={g.expedition.characters[t.cardId]?.level||1} style={{marginBottom:8}}/><VehicleName name={t.model} numberOfLines={3} style={styles.name}/>
-   <VehicleFacts capacity={t.capacity} rank={t.rarity.total} loadedSpeed={stats?.loadedSpeed} emptySpeed={stats?.speed??t.speed} color={color}/>
-  </Pressable>;
+  return <VehicleCardTile data={data} card={card} stats={{...stats,capacity:t.capacity,speed:stats?.speed??t.speed,costPerKm:stats?.costPerKm??t.costPerKm}} showDetails onPress={()=>setSelected(t.id)}/>;
  };
  return <>
-  {Array.from({length:5},(_,row)=><View key={row} style={styles.row}>{[0,1].map(col=><React.Fragment key={col}>{tile(regular[row*2+col],row*2+col)}</React.Fragment>)}</View>)}
+  {Array.from({length:4},(_,row)=><View key={row} style={styles.row}>{[0,1,2].map(col=>{const index=row*3+col;return <React.Fragment key={col}>{index<10?tile(regular[index],index):<View style={{flex:1,minWidth:0}}/>}</React.Fragment>;})}</View>)}
   <Modal transparent visible={(!!truck||adding)&&!modalBlocked} animationType="none" onRequestClose={()=>{setSelected(null);setAdding(false);}}>
    <View style={styles.overlay}><View style={styles.detail}>
     <Row style={{flexWrap:'nowrap'}}><Txt style={styles.title}>{adding?'Fahrzeug wählen':truck?.model}</Txt><Btn icon="close" iconOnly secondary onPress={()=>{setSelected(null);setAdding(false);}}>Schließen</Btn></Row>
@@ -74,7 +70,7 @@ function Fact({label,value}:any){return <Row style={{flexWrap:'nowrap'}}><Txt mu
 const styles=StyleSheet.create({
  filters:{flexDirection:'row',flexWrap:'wrap',gap:6,marginBottom:12},filter:{minHeight:44,paddingHorizontal:9,paddingVertical:6,borderWidth:1,borderRadius:6,backgroundColor:C.panel,flexDirection:'row',alignItems:'center',gap:5},filterLabel:{fontSize:11,fontWeight:'700'},
  choice:{flexDirection:'row',alignItems:'center',gap:9,padding:10,marginBottom:8,borderWidth:1,borderLeftWidth:3,borderColor:C.line,borderRadius:7,backgroundColor:C.raised},choiceInfo:{flex:1,minWidth:0},choiceHeader:{flexDirection:'row',alignItems:'baseline',gap:6},choiceName:{flex:1,color:C.text,fontSize:14,lineHeight:18,fontWeight:'700'},choiceCapacity:{fontSize:13,fontWeight:'700'},choiceMeta:{fontSize:11,lineHeight:17},choiceSpeeds:{flexDirection:'row',flexWrap:'wrap',columnGap:10},
- row:{flexDirection:'row',gap:10,marginBottom:10},tile:{flex:1,minWidth:0,minHeight:220,padding:12,borderWidth:1,borderColor:C.line,borderRadius:14,backgroundColor:C.panel,justifyContent:'flex-start',borderTopWidth:1},
+ row:{flexDirection:'row',gap:4.5,marginBottom:5},tile:{flex:1,minWidth:0,minHeight:200,padding:7,borderWidth:1,borderColor:C.line,borderRadius:6,backgroundColor:C.panel,justifyContent:'flex-start'},
  tileHeader:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:4,marginBottom:9},level:{fontSize:10,fontWeight:'700'},fact:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:4},value:{fontSize:12,fontWeight:'600'},speed:{borderTopWidth:1,paddingTop:6,marginTop:7},speedLabel:{fontSize:10,lineHeight:15,marginBottom:3},
  name:{color:C.text,fontWeight:'700',fontSize:13,lineHeight:18,marginBottom:7,minHeight:54},capacity:{fontSize:18,fontWeight:'700',marginBottom:4},small:{fontSize:11,lineHeight:18},empty:{borderStyle:'dashed',backgroundColor:'transparent',alignItems:'center',justifyContent:'center'},plus:{fontSize:30,lineHeight:38,color:C.muted},
  overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:18},detail:{width:'100%',maxWidth:480,maxHeight:'85%',alignSelf:'center',backgroundColor:C.panel,borderColor:C.line,borderWidth:1,borderRadius:18,padding:16},title:{fontSize:17,fontWeight:'700',flex:1}

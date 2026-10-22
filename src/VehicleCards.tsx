@@ -9,6 +9,7 @@ import {rarityColor} from './items';
 import {CollectionFacts} from './VehicleFacts';
 import {VehicleArt} from './VehicleArt';
 import {VehicleName} from './VehicleName';
+import {averageCardSpeed} from './collectionStats';
 
 const ROMAN_LEVELS=['','I','II','III','IV','V','VI','VII','VIII','IX','X'];
 
@@ -50,21 +51,28 @@ export function VehicleCards({data,onOpen}:any){
  </>;
 }
 
+export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,showDetails=false,accessibilityLabel}:any){
+ const owned=data.state.expedition.characters[card.id];
+ const average=averageCardSpeed(stats.loadedSpeed,stats.speed);
+ const label=accessibilityLabel||[
+  translate(card.name),translate(owned?`Stufe ${owned.level}`:'Nicht entdeckt'),`${n(stats.capacity,1)} t`,
+  showDetails?`${translate('Durchschnittsgeschwindigkeit')}: ${average===undefined?'—':n(average,2)+' km/s'}, ${translate('Betriebskosten')}: ${stats.costPerKm===undefined?'—':n(stats.costPerKm,2)+' M/km'}`:`${translate('Geschwindigkeitsrang')}: ${stats.rank.total}`,
+  status?.label?translate(status.label):''
+ ].filter(Boolean).join(', ');
+ return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{disabled,selected:!!status?.selected}} disabled={disabled} onPress={onPress} style={({pressed})=>[styles.card,{borderColor:rarityColor(card.rarity)},!owned&&{backgroundColor:C.raised,borderStyle:'dashed'},status?.selected&&{backgroundColor:C.greenWash},(pressed||disabled)&&{opacity:.7}]}>
+  <Text accessibilityLabel={translate(owned?`Stufe ${owned.level}`:'Nicht entdeckt')} style={styles.level}>{owned?ROMAN_LEVELS[owned.level]||String(owned.level):'—'}</Text><VehicleArt card={card}/><VehicleName name={card.name} numberOfLines={3} style={styles.name}/>
+  {showDetails?<CollectionFacts capacity={stats.capacity} loadedSpeed={stats.loadedSpeed} emptySpeed={stats.speed} costPerKm={stats.costPerKm}/>:<><Txt style={styles.rank}>Rang {stats.rank.total}</Txt><Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt></>}
+  {status&&<View style={[styles.assignment,status?.label&&styles.assigned]}>{status?.label&&<Icon name="check" size={11} color={C.accent}/>}<Text numberOfLines={2} style={styles.assignmentText}>{status?.label||'Verfügbar'}</Text></View>}
+ </Pressable>;
+}
 export function VehicleCardGrid({data,cards,onOpen,statusForCard,disabled=false,showDetails=false}:any){
- const {state:g,catalog:c}=data;
+ const c=data.catalog;
  const vehicle=(card:any)=>data.cardVehicles?.[card.id]||{capacity:c.models[card.vehicleTier].capacity,rank:{total:0,label:'Common',level:0}};
  const rows=Array.from({length:Math.ceil(cards.length/3)},(_,i)=>cards.slice(i*3,i*3+3));
- return <>
-  {rows.map((row:any[],i:number)=><View key={i} style={[styles.row,showDetails&&styles.collectionRow]}>{row.map(item=>{
-   const owned=g.expedition.characters[item.id],stats=vehicle(item),status=statusForCard?.(item.id);
-   return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={translate(`${item.name}, ${owned?`Stufe ${owned.level}`:'Nicht entdeckt'}, Geschwindigkeitsrang ${stats.rank.total}, ${n(stats.capacity,1)} Tonnen${status?.label?`, ${status.label}`:''}`)} accessibilityState={{disabled,selected:!!status?.selected}} disabled={disabled} onPress={()=>onOpen(item.id)} style={({pressed})=>[styles.card,{borderColor:rarityColor(item.rarity)},!owned&&{backgroundColor:C.raised,borderStyle:'dashed'},status?.selected&&{backgroundColor:C.greenWash},(pressed||disabled)&&{opacity:.7}]}>
-    <Text accessibilityLabel={translate(owned?`Stufe ${owned.level}`:'Nicht entdeckt')} style={styles.level}>{owned?ROMAN_LEVELS[owned.level]||String(owned.level):'—'}</Text><VehicleArt card={item}/><VehicleName name={item.name} numberOfLines={3} style={styles.name}/>
-    {showDetails?<CollectionFacts capacity={stats.capacity} rank={stats.rank} loadedSpeed={stats.loadedSpeed} emptySpeed={stats.speed} costPerKm={stats.costPerKm}/>:<><Txt style={styles.rank}>Rang {stats.rank.total}</Txt><Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt></>}
-    {statusForCard&&<View style={[styles.assignment,status?.label&&styles.assigned]}>{status?.label&&<Icon name="check" size={11} color={C.accent}/>}<Text numberOfLines={2} style={styles.assignmentText}>{status?.label||'Verfügbar'}</Text></View>}
-   </Pressable>;
-  })}{row.length<3&&Array.from({length:3-row.length},(_,j)=><View key={`space-${j}`} style={[styles.card,{opacity:0}]}/>)}</View>)}
-
- </>;
+ return <>{rows.map((row:any[],i:number)=><View key={i} style={[styles.row,showDetails&&styles.collectionRow]}>
+  {row.map(card=><VehicleCardTile key={card.id} data={data} card={card} stats={vehicle(card)} onPress={()=>onOpen(card.id)} status={statusForCard?statusForCard(card.id)||{}:undefined} disabled={disabled} showDetails={showDetails}/>)}
+  {row.length<3&&Array.from({length:3-row.length},(_,j)=><View key={`space-${j}`} style={[styles.card,{opacity:0}]}/>)}
+ </View>)}</>;
 }
 const styles=StyleSheet.create({
  filterBox:{marginBottom:8,borderWidth:1,borderColor:C.line,borderRadius:6,backgroundColor:C.panel,overflow:'hidden'},filterTrigger:{minHeight:48,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:10,paddingHorizontal:12,paddingVertical:8},selectedFilter:{flexDirection:'row',alignItems:'center',gap:10,flexShrink:1},filterLabel:{fontSize:13,fontWeight:'700',flexShrink:1},filterOptions:{borderTopWidth:1,borderColor:C.line},filterOption:{minHeight:44,flexDirection:'row',alignItems:'center',gap:10,paddingHorizontal:12,paddingVertical:9},shards:{flexDirection:'row',alignItems:'center',gap:5},

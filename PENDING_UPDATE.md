@@ -1,3 +1,16 @@
+## Neues Sammelpaket: einheitliche Garage-/Sammlungskarten – nicht veröffentlicht
+
+Nach der erfolgreichen Veröffentlichung des vorherigen Pakets neu gesammelt am 22.10.2026:
+
+- Geschwindigkeitsrang aus den Sammlungskarten entfernt. Nur Kapazität, Durchschnittstempo und Betriebskosten mit Icons bleiben.
+- Garage nutzt dieselbe Kartenkomponente, römische Stufen und das enge Dreispaltenraster wie die Sammlung.
+- Zehn Garagenplätze, Fahrzeugauswahl, Detailöffnung und Herausnehmen unverändert funktionsfähig. Flottenauswahl behält ihre bisherige Kurzansicht.
+- Typprüfung, alle 174 Tests, Browserbedienung bei 320/390/430 px und Android-Export erfolgreich; Deutsch/Englisch geprüft.
+- Details: `docs/ui/shared-garage-collection-cards.md`. Kein physischer Gerätetest.
+- Nur im Sammelbranch `batch/company-improvements`; erst nach erneutem ausdrücklichem Go veröffentlichen.
+
+---
+
 ## Gesamtpaket Firma und Fahrzeugkarten – veröffentlicht am 22.10.2026
 
 Release: `d4ed991e73f4718deb243f39527c18700f0ccab9` · [Erfolgreicher Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39844041479).
