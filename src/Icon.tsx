@@ -50,6 +50,6 @@ export function stockIcon(id:string):IconName{
  if(id.startsWith('project:'))return 'projects';
  if(id.startsWith('job:'))return id.includes('character')?'cards':'orders';
  if(id.startsWith('order:'))return 'orders';
- return ({capacityModules:'module',companyItems:'company',pickupHints:'document',supplierContacts:'customers',expeditionRefills:'expedition',overtimeRefills:'overtime',private:'orders',customer:'customers'} as Record<string,IconName>)[id]||'inventory';
+ return ({hubVehicleParts:'crafting',capacityModules:'module',companyItems:'company',pickupHints:'document',supplierContacts:'customers',expeditionRefills:'expedition',overtimeRefills:'overtime',private:'orders',customer:'customers'} as Record<string,IconName>)[id]||'inventory';
 }
 

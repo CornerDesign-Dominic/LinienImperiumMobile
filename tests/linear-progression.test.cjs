@@ -29,24 +29,24 @@ test('Hub opening and vehicle purchases are server-gated at 5, 10, 15 independen
  for(const level of [1,4]){
   const s=at(level),r=execute(s,'buyHub',{},now,random);
   assert.equal(r.state.hubs.length,0);assert.equal(r.view.hubLimit,0);assert.equal(r.view.hubInfo.unlocked,false);assert.equal(r.view.hubInfo.nextVehicleLevel,5);
-  const buy=execute(s,'buyTruck',{model:0},now,random);assert.equal(buy.state.trucks.length,s.trucks.length);assert.equal(buy.state.coins,s.coins);
+  const buy=execute(s,'hubVehicleBuy',{},now,random);assert.equal(buy.state.trucks.length,s.trucks.length);assert.equal(buy.state.coins,s.coins);
  }
  let state=at(5);let r=execute(state,'buyHub',{},now,random);assert.equal(r.state.hubs.length,1);assert.equal(r.view.hubLimit,1);
- r=execute(r.state,'buyTruck',{model:0},now,random);assert.equal(r.state.trucks.filter(t=>!t.cardId).length,1);
- const coins=r.state.coins;r=execute(r.state,'buyTruck',{model:1},now,random);assert.equal(r.state.coins,coins);assert.equal(r.state.trucks.filter(t=>!t.cardId).length,1);
+ r=execute(r.state,'hubVehicleBuy',{},now,random);assert.equal(r.state.trucks.filter(t=>!t.cardId).length,1);
+ const coins=r.state.coins;r=execute(r.state,'hubVehicleBuy',{},now,random);assert.equal(r.state.coins,coins);assert.equal(r.state.trucks.filter(t=>!t.cardId).length,1);
  r.state.xp=50*9*8;assert.equal(sync(r.state).view.hubLimit,1);
  for(const level of [10,15]){
   r.state.xp=50*level*(level-1);r=sync(r.state);assert.equal(r.view.hubLimit,level/5);assert.equal(r.view.hubInfo.nextVehicleLevel,level+5);
-  r=execute(r.state,'buyTruck',{model:1},now,random);assert.equal(r.state.trucks.filter(t=>!t.cardId).length,level/5);
+  r=execute(r.state,'hubVehicleBuy',{},now,random);assert.equal(r.state.trucks.filter(t=>!t.cardId).length,level/5);
  }
 });
 test('Previously bought hub vehicles and an existing low-level hub stay usable without extra purchases',()=>{
  let r=execute(at(15),'buyHub',{},now,random);
- for(let i=0;i<3;i++)r=execute(r.state,'buyTruck',{model:0},now,random);
+ for(let i=0;i<3;i++)r=execute(r.state,'hubVehicleBuy',{},now,random);
  r.state.xp=0;delete r.state.linearProgressionVersion;
  const ids=r.state.trucks.map(t=>t.id);const coins=r.state.coins;r=sync(r.state);
  assert.deepEqual(r.state.trucks.map(t=>t.id),ids);assert.equal(r.view.hubInfo.unlocked,true);assert.equal(r.view.hubLimit,3);assert.equal(r.view.hubInfo.nextVehicleLevel,20);
- r=execute(r.state,'buyTruck',{model:0},now,random);assert.equal(r.state.coins,coins);assert.equal(r.state.trucks.filter(t=>!t.cardId).length,3);
+ r=execute(r.state,'hubVehicleBuy',{},now,random);assert.equal(r.state.coins,coins);assert.equal(r.state.trucks.filter(t=>!t.cardId).length,3);
 });
 test('Crossing several levels queues each real reward once, including each fifth-level milestone',()=>{
  const s=at(4,390);let r=execute(s,'testGrant',{kind:'xp',amount:1000},now,random);

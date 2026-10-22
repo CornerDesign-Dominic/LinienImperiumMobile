@@ -120,3 +120,29 @@ test('Callable receipt retry returns the same gift without charging or granting 
  assert.ok(saved.expedition.characters.r2_epic);
  assert.equal(records.get('players/test').revision,1);
 });
+
+test('Callable receipt retry preserves the crate find without spending a second daily opening',async()=>{
+ const base=initial();base.state.xp=1000;const records=new Map([['players/test',{snapshot:gzipSync(JSON.stringify(base.state))}]]);
+ const ref=p=>({path:p,collection:name=>({doc:id=>ref(p+'/'+name+'/'+id)})});
+ const db={doc:ref,runTransaction:async work=>work({
+  get:async r=>({exists:records.has(r.path),data:()=>records.get(r.path)}),
+  set:(r,value)=>records.set(r.path,value)
+ })};
+ const fakeRequire=name=>{
+  if(name==='firebase-functions/v2/https')return {onCall:(_options,handler)=>handler,HttpsError:class extends Error{}};
+  if(name==='firebase-admin/app')return {initializeApp(){}};
+  if(name==='firebase-admin/firestore')return {getFirestore:()=>db,Timestamp:{fromMillis:value=>value}};
+  if(name==='./engine.cjs')return {execute:(state,action,payload)=>execute(state,action,payload,now,()=>.999)};
+  if(name==='node:zlib')return {gzipSync,gunzipSync};
+  throw Error(name);
+ };
+ const context=vm.createContext({exports:{},require:fakeRequire,console,Date,Buffer});
+ vm.runInContext(fs.readFileSync(path.join(__dirname,'../functions/src/index.cjs'),'utf8'),context);
+ const request={auth:{uid:'test'},data:{action:'hubCrate',payload:{},requestId:'test-hub-crate-request-0001'}};
+ const first=await context.exports.game(request);
+ const second=await context.exports.game(request);
+ assert.equal(first.hubCrateParts,20);assert.equal(second.hubCrateParts,20);
+ const saved=JSON.parse(gunzipSync(records.get('players/test').snapshot).toString());
+ assert.equal(saved.coins,base.state.coins);assert.equal(saved.inventory.hubVehicleParts,20);assert.equal(saved.hubCrates.opened,1);
+ assert.equal(records.get('players/test').revision,1);
+});

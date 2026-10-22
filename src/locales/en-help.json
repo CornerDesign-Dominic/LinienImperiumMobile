@@ -2,7 +2,7 @@
   "dashboard": [
     [
       "Player level",
-      "Delivered tonnes grant XP: tonnes × paid directions × (1 + active card XP bonuses / 100). Dual Way counts both directions. Every next level requires 100 × current level XP. Each level grants one expedition refill, one overtime refill and 3 allocation points. From level 5, every five levels unlocks an additional city hub vehicle slot for coin purchases."
+      "Delivered tonnes grant XP: tonnes × paid directions × (1 + active card XP bonuses / 100). Dual Way counts both directions. Every next level requires 100 × current level XP. Each level grants one expedition refill, one overtime refill and 3 allocation points. From level 5, every five levels unlocks a city hub vehicle slot, up to 20 at level 100."
     ],
     [
       "Coins",
@@ -57,18 +57,14 @@
   ],
   "dealer": [
     [
-      "City vehicles",
-      "Sprinter: 4,000 M, 1 t. 3.5-tonne truck: 20,000 M, 1.5 t. City hub unlocks at level 5. Every five levels unlocks one more vehicle slot. Existing vehicles are kept."
-    ],
-    [
-      "Operation",
-      "Base empty costs: Sprinter 0.20 M/km, 3.5-tonne truck 0.50 M/km, reduced by workshop upgrades. They use the general speed formula and support capacity modules and gears. Find regional and long-distance vehicles through expeditions."
+      "City transporter",
+      "Buy and upgrade the single transporter model directly in the city hub: 25,000 coins, starting capacity 2 t."
     ]
   ],
   "hub": [
     [
-      "Unlock",
-      "City hub unlocks at level 5. Every five levels unlocks another vehicle slot. Vehicles are still purchased with coins. Existing city vehicles are kept."
+      "City hub and vehicle parts",
+      "City hub unlocks at level 5, with one slot per five levels up to 20 at level 100. A transporter costs 25,000 coins and starts with 2 t. Upgrade cargo and drive in ten stages each with vehicle parts. Open three found crates daily, at least 30 minutes apart, resetting at 00:00 UTC. Each hourly purchase has one 50% chance for one vehicle part; no finds while the cashbox is full. Collect purchase parts with earnings."
     ],
     [
       "Hourly cycle",
@@ -99,6 +95,10 @@
     [
       "Gear loot",
       "Per 100 tkm: Common 40% for 1 and another 20% for 2 gears. Per 1,000 tkm: Uncommon 18% for 1 and another 7% for 2. Customer contracts: Rare 8% for 1. Partial blocks scale proportionally. Fleet contracts can also yield Epic and Legendary gears."
+    ],
+    [
+      "Vehicle parts",
+      "Found crates grant 10–20 vehicle parts. Purchase finds are collected with city hub earnings. Upgrade cargo and drive in ten stages each; stage N costs 14 × N parts and 2,500 × N coins."
     ]
   ],
   "development": [

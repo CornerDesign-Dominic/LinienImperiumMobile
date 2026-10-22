@@ -8,6 +8,7 @@ const procurementRuntime = fs.readFileSync(path.join(__dirname, 'procurement-run
 const giftsRuntime = fs.readFileSync(path.join(__dirname, 'gifts-runtime.js'), 'utf8');
 const tourRuntime = fs.readFileSync(path.join(__dirname, 'tour-runtime.js'), 'utf8');
 const progressionRuntime = fs.readFileSync(path.join(__dirname, 'progression-runtime.js'), 'utf8');
+const hubVehiclesRuntime = fs.readFileSync(path.join(__dirname, 'hub-vehicles-runtime.js'), 'utf8');
 const source = fs.readFileSync(path.join(__dirname, '../vendor/web-game.js'), 'utf8');
 const boundary = source.indexOf("  document.addEventListener('click'");
 if (boundary < 0) throw Error('Web engine boundary missing');
@@ -19,7 +20,7 @@ const bridge = `
   ${giftsRuntime}
   ${progressionRuntime}
   const originalNewGame=newGame;
-  newGame=(...args)=>{const state=originalNewGame(...args);state.inventory.expeditionRefills=0;state.linearProgressionVersion=1;return state;};
+  newGame=(...args)=>{const state=originalNewGame(...args);state.inventory.expeditionRefills=0;state.linearProgressionVersion=1;state.hubSystemVersion=1;state.inventory.hubVehicleParts=0;state.hubCrates={day:Math.floor(Date.now()/86400000),opened:0,lastOpenedAt:null};return state;};
   awardTransportXp=xp=>{
     const before=levelForXp(game.xp,game).level;
     game.xp=round2(game.xp+xp);
@@ -153,6 +154,7 @@ const bridge = `
   };
   ${tourRuntime}
   ${procurementRuntime}
+  ${hubVehiclesRuntime}
   globalThis.mobile = {
     settleEventTours, refreshTourStarts, queueSingleVehicle, settleProcurementTimeline, startProcurement, startProcurementGroup, stopProcurement, stopProcurementGroup, claimProcurement,
     eventFleetOptions() {
@@ -163,6 +165,7 @@ const bridge = `
       }))||null}));
     },
     get state() { return game; }, set state(value) { game = value; },
+    migrateHubVehicles, buyHubVehicle, upgradeHubVehicle, openHubCrate,
     migrateLinearProgression, newGame, save, loadGame, shortenTestMissions, normalizeQueuedReferrals, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
     autoRefreshOrders, regenerateExpedition, regenerateOvertime,
     chooseStartCity, addCardToGarage, removeCardFromGarage, assignCharacterSeat,
@@ -301,6 +304,7 @@ const bridge = `
       };
       const trucks = game.trucks.map(t => ({ ...t, free: free.has(t.id),
         progress: (()=>{const procurement=procurementActive(t.id);if(procurement)return Math.min(100,(now-procurement.startedAt)/procurement.durationMs*100);const order=game.orders.find(o=>o.status==='active' && o.truckId===t.id); if(order)return order.delivered/order.volume*100; const m=game.expedition.missions.find(m=>m.status==='active' && m.truckId===t.id); return m ? (m.transport ? m.transport.delivered/m.transport.volume*100 : Math.min(100,(now-m.startedAt)/(m.endsAt-m.startedAt)*100)) : 0;})(),
+        hubUpgrades:isCityVehicle(t)?{capacity:hubVehicleQuote(t,'capacity'),speed:hubVehicleQuote(t,'speed')}:null,
         rarity: truckRarity(t), rankCost: rankGearCost(t), speed: truckSpeed(t),
         bonus: cardBonusStats(t), costPerKm: operatingCostPerKm(t),
         sale: saleBlockReason(t) ? null : saleQuote(t),
@@ -385,7 +389,7 @@ const bridge = `
         discoveryCosts:game.expedition.regions.map((r,i)=>expeditionDiscoveryCost(i,r.discovered)),
         customers:CUSTOMERS.filter(c=>customerUnlocked(c.id)).map(c=>({...c,level:customerLevel(game.customerTrust[c.id]||0),next:customerNext(game.customerTrust[c.id]||0),points:availableCustomerSkillPoints(c.id),skills:customerSkillLevels(c.id)})),
         refreshCost:manualRefreshCost(), offers:offerLimit(), pinLimit:pinLimit(), hubLimit:hubCapacity(),
-        hubInfo:{unlocked:hubUnlocked(),nextVehicleLevel:nextHubVehicleLevel(),hourlyCapacity:hubHourlyCapacity(), upgradeContacts:hubUpgradeContactCost((hub()?.salesLevel||0)+1),upgradeItems:COMPANY_BALANCE.upgradeItems((hub()?.salesLevel||0)+1),upgradeCoins:COMPANY_BALANCE.upgradeCoins((hub()?.salesLevel||0)+1)},
+        hubInfo:{vehiclePrice:HUB_VEHICLE_PRICE,vehicleMax:HUB_VEHICLE_MAX,crates:hubCrateView(now),unlocked:hubUnlocked(),nextVehicleLevel:nextHubVehicleLevel(),hourlyCapacity:hubHourlyCapacity(), upgradeContacts:hubUpgradeContactCost((hub()?.salesLevel||0)+1),upgradeItems:COMPANY_BALANCE.upgradeItems((hub()?.salesLevel||0)+1),upgradeCoins:COMPANY_BALANCE.upgradeCoins((hub()?.salesLevel||0)+1)},
         companyCosts:{offers:{coins:offerUpgradeCost(),items:COMPANY_BALANCE.upgradeItems((game.company.offerLevel||0)+1)},workshop:{coins:workshopUpgradeCost(),items:COMPANY_BALANCE.upgradeItems((game.company.workshopLevel||0)+1)},sales:{coins:salesUpgradeCost(),items:COMPANY_BALANCE.upgradeItems((game.company.salesLevel||0)+1)},transport:Object.fromEntries(['national','international'].map(c=>[c,Object.fromEntries(['premium','volume','range'].map(k=>[k,transportUpgradeCost(c,k)]))]))},
         help:{procurement:procurementHelp,...Object.fromEntries(['dashboard','orders','special','fleet','dealer','hub','inventory','development','company','personnel','expeditions','statistics','customers'].map(k=>{const help=pageHelp(k);return [k,[help[0],help[1].filter(([heading])=>heading!=='Werte im Code ändern')]];}))},
         message:mobileToast
@@ -415,7 +419,7 @@ function session(state, now=Date.now(), random=Math.random) {
   compiled.runInContext(context,{timeout:2000});
   const api=context.mobile;
   if(state) api.state=JSON.parse(JSON.stringify(state));
-  api.migrateLinearProgression();
+  api.migrateLinearProgression();api.migrateHubVehicles();
   if(!Number.isSafeInteger(api.state.inventory.expeditionRefills)||api.state.inventory.expeditionRefills<0)api.state.inventory.expeditionRefills=0;
   api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleProcurementTimeline(now);
   api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);
@@ -467,6 +471,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     discover:()=>a.discoverExpeditionPlace(num(p.region,4)),draw:()=>a.drawExpeditionJob(num(p.region,4)),
     mission:()=>a.startExpeditionMission(num(p.region,4),choice(p.kind,['delivery','final','endless']),id(p.truck),num(p.place)),
     claimMission:()=>a.claimExpeditionMission(num(p.id)),
+    hubVehicleBuy:()=>a.buyHubVehicle(),hubVehicleUpgrade:()=>a.upgradeHubVehicle(id(p.id),choice(p.kind,['capacity','speed'])),hubCrate:()=>a.openHubCrate(),
     buyHub:()=>a.buyHub(),hubTruck:()=>a.toggleHubTruck(id(p.id)),hubCollect:()=>a.collectHub(),hubUpgrade:()=>a.startHubUpgrade(),
     pickupCraft:()=>a.combinePickupHints(),customerCraft:()=>a.craftCustomerOrder(),
     department:()=>a.unlockDepartment(choice(p.id,['dispatch','workshop','sales'])),
@@ -510,9 +515,10 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(normalizeNames);
   for(const key of Object.keys(view.help)){const help=view.help[key];help[1]=help[1].map(([title,body])=>[normalizeNames(title),normalizeNames(body)]);}
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>title==='Fundchancen je Auslosung'?[title,'<p>Je Gebiet gibt es fünf Fahrzeugkarten. Insgesamt 10 % Kartenchance pro Expedition. Die Fahrzeugchancen und Auftragschancen stehen am Endlosort unter ?. Geschenke im Großhändler enthalten denselben Fahrzeugpool und geben garantiert eine Karte. Doppelte Karten geben 1 Shard derselben Seltenheit.</p>']:[title,body]);
-  view.help.dashboard[1]=view.help.dashboard[1].map(([title,body])=>[title,title==='Spielerlevel'?'<p>Transportierte Tonnen geben XP: gelieferte Tonnen × bezahlte Richtungen × (1 + aktive Karten-XP-Boni / 100). Bei Dual Way zählen beide Richtungen. Jeder nächste Aufstieg benötigt 100 × aktuelles Level XP. Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 dauerhaft verteilbare Punkte. Ab Level 5 wird alle fünf Level ein zusätzlicher Stadthub-Fahrzeugplatz zum Kauf mit Münzen freigeschaltet.</p>':body]);
+  view.help.dashboard[1]=view.help.dashboard[1].map(([title,body])=>[title,title==='Spielerlevel'?'<p>Transportierte Tonnen geben XP: gelieferte Tonnen × bezahlte Richtungen × (1 + aktive Karten-XP-Boni / 100). Bei Dual Way zählen beide Richtungen. Jeder nächste Aufstieg benötigt 100 × aktuelles Level XP. Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 dauerhaft verteilbare Punkte. Ab Level 5 wird alle fünf Level ein weiterer Stadthub-Fahrzeugplatz freigeschaltet, maximal 20 bei Level 100.</p>':body]);
+  view.help.dealer[1]=[['Stadttransporter','Kauf und Ausbau erfolgen direkt im Stadthub. Ein Modell für 25.000 Münzen, 2 t Startkapazität.']];
   view.help.dealer[1]=view.help.dealer[1].map(([title,body])=>[title,body.replace('max(1, abrunden(Spielerlevel × 0,75))','abrunden(Spielerlevel / 5)').replace('Vor dem Kauf muss der Stadthub eröffnet sein.','Der Stadthub wird ab Level 5 eröffnet. Alle fünf Level wird ein weiterer Fahrzeugplatz freigeschaltet. Bestehende Fahrzeuge bleiben erhalten.')]);
-  view.help.hub[1].unshift(['Freischaltung','Stadthub ab Level 5. Alle fünf Level wird ein zusätzlicher Fahrzeugplatz freigeschaltet. Fahrzeuge werden weiterhin mit Münzen gekauft. Bestehende Stadttransporter bleiben erhalten.']);
+  view.help.hub[1].unshift(['Freischaltung','Stadthub ab Level 5. Alle fünf Level ein Platz, maximal 20 bei Level 100. Ein Stadttransporter kostet 25.000 Münzen und startet mit 2 t. Fahrzeugteile verbessern Kapazität und Antrieb in je zehn Stufen. Drei Fundkisten täglich, mindestens 30 Minuten Abstand; Tageswechsel um 00:00 UTC. Beim stündlichen Einkauf: einmal 50 % Chance auf ein Fahrzeugteil, keine Funde bei voller Kasse. Teile aus Einkäufen mit den Erträgen abholen.']);
   view.help.inventory[1].unshift(['Auffüller','Pro Levelaufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 verteilbare Punkte. Beide Auffüller geben beim Benutzen 50 Punkte.']);
   for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[title,body.replace(/Je Aufstieg: sofort 50 Expeditionspunkte, ein speicherbares Refill-Paket für 50 Überstundenpunkte sowie 5 dauerhaft verteilbare Punkte/g,'Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller sowie 3 dauerhaft verteilbare Punkte').replace(/Pro Level-up erhältst du ein speicherbares Überstundenauffüller für (?:50|100) Punkte\./g,'Auffüller werden in den Vorräten aufbewahrt.')]);
   for(const mission of view.state.expedition.missions)mission.reward=normalizeNames(mission.reward);
@@ -520,6 +526,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const levelUps=view.state.pendingLevelUps.filter(level=>!knownLevels.has(level));
   if(levelUps.length)view.levelUps=levelUps;
   if(['assign','assignPrivate','assignCrafted'].includes(action)&&view.state.orders.find(o=>o.id===p.order)?.status==='active')view.message='Auftrag gestartet.';
+  if(action==='hubCrate'&&ok!==false)view.hubCrateParts=ok;
   if(action==='giftOpen'&&ok!==false)view.giftFind=ok;
   if(action==='claimSingles'&&ok!==false)view.claimSummary=ok;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;
