@@ -1,3 +1,12 @@
+## Seitenabstand halbiert – gesammelt, nicht veröffentlicht
+
+- Gemeinsamer seitlicher Seitenrand im Inhaltsbereich von 18 auf 9 Einheiten halbiert.
+- Expeditionsübersicht und bildschirmfüllende Expeditionskarte behalten ihre bisherigen Abstände. Andere Sonderlayouts und Innenabstände bleiben erhalten.
+- Typprüfung erfolgreich. Details: `docs/ui/page-side-spacing.md`.
+- Sammelbranch `batch/company-improvements`; keine Veröffentlichung vor ausdrücklichem Go.
+
+---
+
 ## Kartensammlung: Betriebskosten ergänzt – gesammelt, nicht veröffentlicht
 
 - Vierte kompakte Angabe unter den bisherigen drei Werten: Münzicon und Betriebskosten in M/km.
