@@ -964,5 +964,17 @@
   "Splitter": "Shards",
   "Noch keine Karten dieser Seltenheit freigeschaltet.": "No cards of this rarity unlocked yet.",
   "Alle Karten dieser Auswahl freigeschaltet.": "All cards in this selection are unlocked.",
-  "Durchschnittsgeschwindigkeit": "Average speed"
+  "Durchschnittsgeschwindigkeit": "Average speed",
+  "Bonus je Kartenstufe": "Bonus by card level",
+  "Vorschau für Stufe 1": "Preview for level 1",
+  "dieses Fahrzeugs": "of this vehicle",
+  "aller Fahrzeuge im Großauftrag": "of all vehicles on the fleet contract",
+  "aller Fahrzeuge in der Garage": "of all vehicles in the garage",
+  "Erhöht die Geschwindigkeit {0} um {1} %.": "Increases the speed {0} by {1}%.",
+  "Senkt die Betriebskosten {0} um {1} %.": "Reduces the operating costs {0} by {1}%.",
+  "Erhöht die Frachtvergütung {0} um {1} %.": "Increases the freight pay {0} by {1}%.",
+  "Erhöht die Spieler-XP {0} um {1} %.": "Increases the player XP {0} by {1}%.",
+  "Erhöht das Überstundenmaximum um {0} Punkte.": "Increases the overtime capacity by {0} points.",
+  "Erhöht das Expeditionsmaximum um {0} Punkte.": "Increases the expedition capacity by {0} points.",
+  "Verkürzt die Wartezeit pro Expeditionspunkt um {0} Sek.": "Reduces the wait per expedition point by {0} sec."
 }

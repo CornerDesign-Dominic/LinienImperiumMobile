@@ -33,3 +33,9 @@ Abstand zwischen den drei Sammlungsspalten von 9 auf 4,5 Einheiten halbiert; Abs
 ## Ruhiger Kopfbereich der Kartendetails
 
 In der aus der Sammlung geöffneten Fahrzeugkarte entfallen Seltenheitsname und Herkunft über dem Bild. Stattdessen steht mittig ausschließlich die Kartenstufe als römische Zahl I–X (gesperrt: Gedankenstrich). Das Stufenbadge im Bild und die bisherige Stufen-/Kapazitäts-/Rangzeile unter dem Namen sind entfernt. Fahrzeugname, Facettenrahmen sowie nachfolgende Bonus-, Daten- und Ausbauabschnitte bleiben erhalten. Typprüfung erfolgreich. Nicht veröffentlicht.
+
+## Bonussatz und Stufentabelle
+
+Die zweite Card der Fahrzeugdetails enthält einen kurzen Satz aus Bonusart, Wirkungsbereich und aktuellem Wert, etwa „Erhöht die Geschwindigkeit aller Fahrzeuge in der Garage um 4 %.“ Ein Fragezeichen oben rechts öffnet ein schließbares Modal mit allen zehn Stufen und deren tatsächlichen `bonusLevels`-Werten. Die eigene aktuelle Stufe ist hervorgehoben. Werte werden mit bis zu zwei Dezimalstellen angezeigt, damit beispielsweise 3,33 % und 3,67 % unterscheidbar sind. Prozent-, Kapazitätspunkt- und Regenerationsboni verwenden passende Einheiten und Formulierungen. Garagenaktivität bleibt sichtbar; nicht besessene Karten erhalten einen Stufe-1-Vorschauhinweis. Zusätzliche Wirkungsregeln für Punktboni stehen im Modal. Keine Änderung der Bonusberechnung.
+
+Deutsch/Englisch ergänzt. TypeScript und sieben Übersetzungs-/Präzisionstests erfolgreich. Mobile Browserprüfung bei 320/390/430 px: kurze Kosten-/Temposätze, Fragezeichen, zehn exakte Stufenwerte, Öffnen/Schließen und englische Darstellung erfolgreich, ohne Laufzeitfehler oder seitlichen Überlauf. Kein physischer Gerätetest, keine Veröffentlichung.

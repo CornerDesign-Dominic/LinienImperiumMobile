@@ -1,3 +1,13 @@
+## Kartendetails: Bonussatz und Stufenmodal – gesammelt, nicht veröffentlicht
+
+- Bonus-Card mit kurzem Satz für aktuellen Bonus und Wirkungsbereich.
+- Fragezeichen oben rechts öffnet Stufe-1-bis-10-Übersicht mit exakten Bonuswerten und markierter aktueller Stufe.
+- Garagenaktivität sichtbar; Vorschauhinweis bei nicht besessenen Karten. Deutsch/Englisch.
+- Typprüfung, sieben relevante Tests und mobile Browserprüfung bei 320/390/430 px erfolgreich.
+- Im Sammelbranch `batch/company-improvements`, keine Veröffentlichung.
+
+---
+
 ## Kartendetails: Kopfbereich vereinfacht – gesammelt, nicht veröffentlicht
 
 - Seltenheitsname und Herkunft über dem Bild entfernt; mittig steht nur die römische Kartenstufe.
