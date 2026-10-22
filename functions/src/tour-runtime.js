@@ -268,53 +268,44 @@ settleExpeditions=(now=Date.now())=>{
   return originalSettleExpeditions(now);
 };
 
-function eventTourSnapshot(project, v, members, at) {
-  const fresh = tourVehicle(liveCardTruck(v.cardId), 'fleet', members);
-  const order = {distance:project.distance,routeType:'single',project,delivered:project.delivered};
-  const cycleMs = Math.max(1,Math.ceil(tourSeconds(order,fresh,fresh.capacity)*1000));
-  const accounting = tourAccounting(order,fresh,fresh.capacity);
-  return {...fresh,slot:v.slot,cargo:fresh.capacity,tripCargo:fresh.capacity,cycleMs,
-    tripStartedAt:at,nextAt:at+cycleMs,tripAccounting:accounting,
-    tourConfig:JSON.stringify([fresh.cardId,fresh.capacity,fresh.rarityLevel,fresh.bonusStats,cycleMs,accounting])};
+function eventTourSnapshot(project,v,members,at) {
+ const fresh=tourVehicle(liveCardTruck(v.cardId),'fleet',members),order={distance:project.distance,routeType:'single',project,delivered:project.delivered};
+ const cycleMs=Math.max(1,Math.ceil(tourSeconds(order,fresh,fresh.capacity)*1000)),accounting=tourAccounting(order,fresh,fresh.capacity);
+ return {...fresh,slot:v.slot,cargo:fresh.capacity,tripCargo:fresh.capacity,cycleMs,tripStartedAt:at,nextAt:at+cycleMs,
+  arrivalAt:at+Math.ceil(tripSeconds(order,fresh,fresh.capacity)*1000),deliveredTrip:false,tripAccounting:accounting,
+  tourConfig:JSON.stringify([fresh.cardId,fresh.capacity,fresh.rarityLevel,fresh.bonusStats,cycleMs,accounting])};
 }
-function startIdleEventTours(project, at) {
-  const members = refreshFleetMembers(project);
-  for (const v of members) if (!v.cargo) Object.assign(v,eventTourSnapshot(project,v,members,at));
+function migrateEventTours(p){
+ if(p.tourVersion===2)return;
+ p.tourVersion=2;
+ p.vehicles.forEach((v,i)=>Object.assign(v,{slot:v.slot??i,cargo:v.capacity,tripCargo:v.capacity,tripStartedAt:v.nextAt-v.cycleMs,
+  arrivalAt:v.nextAt-v.cycleMs+Math.ceil(tripSeconds({distance:p.distance,routeType:'single'},v,v.capacity)*1000),deliveredTrip:false}));
 }
-function settleEventTours(now = Date.now()) {
-  for (const event of Object.values(game.eventTests || {})) {
-    const p = event.project;
-    if (event.status !== 'running' || !p) continue;
-    // Upgrade the old arithmetic representation without touching earned totals.
-    if (!p.tourVersion) {
-      p.tourVersion = 1;
-      p.vehicles.forEach((v,i)=>Object.assign(v,{slot:v.slot??i,cargo:v.capacity,tripCargo:v.capacity,tripStartedAt:v.nextAt-v.cycleMs}));
-    }
-    while (true) {
-      const members=p.vehicles.filter(v=>v.cardId),desired=fleetTemplate(p.template)||[];
-      const stable=members.length===desired.filter(Boolean).length && members.every(v=>v.cargo>0&&desired[v.slot]===v.cardId&&
-        v.tourConfig===eventTourSnapshot(p,v,members,v.tripStartedAt).tourConfig);
-      if (stable) {
-        // Once all current tours use the live configuration, arbitrary offline
-        // periods can be settled in O(fleet size), preserving each separate clock.
-        for (const v of members) {
-          const count=Math.max(0,Math.floor((now-v.nextAt)/v.cycleMs)+1);
-          if (!count) continue;
-          p.delivered+=count*v.cargo;p.tonKm+=count*v.cargo*p.distance;p.km+=count*p.distance*2;p.tours+=count;
-          v.nextAt+=count*v.cycleMs;v.tripStartedAt=v.nextAt-v.cycleMs;
-        }
-        break;
-      }
-      const v=p.vehicles.filter(v=>v.cargo>0).sort((a,b)=>a.nextAt-b.nextAt||a.slot-b.slot)[0];
-      if (!v || v.nextAt>now) break;
-      const at=v.nextAt;
-      for(const arrived of p.vehicles.filter(item=>item.cargo>0&&item.nextAt===at)){
-        p.delivered+=arrived.cargo;p.tonKm+=arrived.cargo*p.distance;p.km+=p.distance*2;p.tours++;
-        arrived.cargo=0;arrived.nextAt=null;
-      }
-      startIdleEventTours(p,at);
-    }
+function startIdleEventTours(project,at){const members=refreshFleetMembers(project);for(const v of members)if(!v.cargo)Object.assign(v,eventTourSnapshot(project,v,members,at));}
+function settleEventTours(now=Date.now()){
+ for(const event of Object.values(game.eventTests||{})){
+  const p=event.project;if(event.status!=='running'||!p)continue;
+  const until=Math.min(now,event.endsAt??Infinity);migrateEventTours(p);
+  const deliver=(v,count=1)=>{p.delivered+=count*v.cargo;p.tonKm+=count*v.cargo*p.distance;};
+  while(true){
+   const members=p.vehicles.filter(v=>v.cardId),desired=fleetTemplate(p.template)||[];
+   const stable=members.length===desired.filter(Boolean).length&&members.every(v=>v.cargo>0&&desired[v.slot]===v.cardId&&v.tourConfig===eventTourSnapshot(p,v,members,v.tripStartedAt).tourConfig);
+   if(stable){
+    for(const v of members){
+     const count=Math.max(0,Math.floor((until-v.nextAt)/v.cycleMs)+1);
+     const arrivals=count+(v.arrivalAt+count*v.cycleMs<=until?1:0)-(v.deliveredTrip?1:0);
+     if(arrivals>0)deliver(v,arrivals);
+     p.km+=count*p.distance*2;p.tours+=count;
+     v.nextAt+=count*v.cycleMs;v.arrivalAt+=count*v.cycleMs;v.tripStartedAt=v.nextAt-v.cycleMs;v.deliveredTrip=v.arrivalAt<=until;
+    }break;
+   }
+   const at=Math.min(...members.filter(v=>v.cargo>0).map(v=>v.deliveredTrip?v.nextAt:v.arrivalAt));
+   if(!Number.isFinite(at)||at>until)break;
+   for(const v of members.filter(v=>v.cargo>0&&!v.deliveredTrip&&v.arrivalAt<=at)){deliver(v);v.deliveredTrip=true;}
+   for(const v of members.filter(v=>v.cargo>0&&v.nextAt<=at)){p.km+=p.distance*2;p.tours++;v.cargo=0;v.nextAt=null;}
+   if(at<until||at<(event.endsAt??Infinity))startIdleEventTours(p,at);
   }
+ }
 }
 function refreshTourStarts(now = Date.now()) {
   for (const order of game.orders) if (order.status==='active') {
@@ -324,7 +315,7 @@ function refreshTourStarts(now = Date.now()) {
   for(const mission of game.expedition.missions)if(mission.status==='active'&&mission.transport)refreshMissionPlan(mission);
   for (const event of Object.values(game.eventTests||{})) if(event.status==='running'&&event.project) {
     const p=event.project;
-    if(!p.tourVersion){p.tourVersion=1;p.vehicles.forEach((v,i)=>Object.assign(v,{slot:v.slot??i,cargo:v.capacity,tripCargo:v.capacity,tripStartedAt:v.nextAt-v.cycleMs}));}
+    migrateEventTours(p);
     startIdleEventTours(p,now);
   }
 }

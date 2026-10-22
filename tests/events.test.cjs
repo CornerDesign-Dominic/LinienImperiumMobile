@@ -65,7 +65,7 @@ test('Unbounded event uses the saved fleet timings and settles offline without d
  const at=now+3*86400000;
  const result=execute(assigned.state,'sync',{},at,fixed);
  const project=result.state.eventTests[id].project;
- const expectedTons=event.project.vehicles.reduce((sum,v)=>sum+Math.floor((at-now)/v.cycleMs)*v.capacity,0);
+ const expectedTons=event.project.vehicles.reduce((sum,v)=>sum+(Math.floor((at-now)/v.cycleMs)+(at>=v.arrivalAt+Math.floor((at-now)/v.cycleMs)*v.cycleMs?1:0))*v.capacity,0);
  const expectedTours=event.project.vehicles.reduce((sum,v)=>sum+Math.floor((at-now)/v.cycleMs),0);
  assert.equal(project.delivered,expectedTons);
  assert.equal(project.tours,expectedTours);

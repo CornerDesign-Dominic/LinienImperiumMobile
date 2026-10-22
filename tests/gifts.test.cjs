@@ -105,6 +105,7 @@ test('Callable receipt retry returns the same gift without charging or granting 
   if(name==='firebase-admin/app')return {initializeApp(){}};
   if(name==='firebase-admin/firestore')return {getFirestore:()=>db,Timestamp:{fromMillis:value=>value}};
   if(name==='./engine.cjs')return {execute:(state,action,payload)=>execute(state,action,payload,now,()=>.999)};
+  if(name==='./event-store.cjs')return require('../functions/src/event-store.cjs');
   if(name==='node:zlib')return {gzipSync,gunzipSync};
   throw Error(name);
  };
@@ -133,6 +134,7 @@ test('Callable receipt retry preserves the crate find without spending a second 
   if(name==='firebase-admin/app')return {initializeApp(){}};
   if(name==='firebase-admin/firestore')return {getFirestore:()=>db,Timestamp:{fromMillis:value=>value}};
   if(name==='./engine.cjs')return {execute:(state,action,payload)=>execute(state,action,payload,now,()=>.999)};
+  if(name==='./event-store.cjs')return require('../functions/src/event-store.cjs');
   if(name==='node:zlib')return {gzipSync,gunzipSync};
   throw Error(name);
  };
