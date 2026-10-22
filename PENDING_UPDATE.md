@@ -1,6 +1,8 @@
-## Gesamtpaket Firma und Fahrzeugkarten – zur Veröffentlichung freigegeben am 22.10.2026
+## Gesamtpaket Firma und Fahrzeugkarten – veröffentlicht am 22.10.2026
 
-Der gesamte Sammelstand `batch/company-improvements` wird auf ausdrücklichen Wunsch veröffentlicht. Mit dem aktuellen Hauptstand einschließlich der Expeditionsschilder konfliktfrei zusammengeführt. Die nachfolgenden Abschnitte „gesammelt/nicht veröffentlicht“ beschreiben historische Vorbereitungsschritte dieses Pakets; maßgeblich ist dieser oberste Releaseeintrag.
+Release: `d4ed991e73f4718deb243f39527c18700f0ccab9` · [Erfolgreicher Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39844041479).
+
+Der gesamte Sammelstand `batch/company-improvements` ist auf ausdrücklichen Wunsch veröffentlicht. Mit dem aktuellen Hauptstand einschließlich der Expeditionsschilder konfliktfrei zusammengeführt. Die nachfolgenden Abschnitte „gesammelt/nicht veröffentlicht“ beschreiben historische Vorbereitungsschritte dieses Pakets; maßgeblich ist dieser oberste Releaseeintrag.
 
 Enthalten:
 - Kompakte Firmenverbesserungen mit Regional-/Fernverkehr-Reitern, Vorher/Nachher und Kaufmodal.
@@ -10,7 +12,7 @@ Enthalten:
 - Technische Bildskalierungsanpassung für die große Fahrzeugansicht; unveränderte 1024-Pixel-Originale. Android-Schärfe nach Veröffentlichung am Gerät prüfen.
 - Aktuelle Event-Erweiterung und Expeditionsschilder vollständig erhalten.
 
-Gesamtprüfung vor Veröffentlichung: TypeScript, alle 174 Tests und Android-Export erfolgreich. Mobile Browserprüfungen der geänderten Oberflächen sind in den UI-Notizen dokumentiert. Kein physischer Gerätetest. Der Veröffentlichungslauf prüft zusätzlich Backend-Deployment, Live-API und Android-OTA.
+Gesamtprüfung vor Veröffentlichung: TypeScript, alle 174 Tests und Android-Export erfolgreich. Mobile Browserprüfungen der geänderten Oberflächen sind in den UI-Notizen dokumentiert. Kein physischer Gerätetest. Backend-Deployment, Live-API-Prüfung und Android-OTA sind erfolgreich abgeschlossen. EAS meldet „Published“. Keine neue APK erforderlich. Physischer Gerätetest durch den Nutzer steht aus.
 
 ---
 
