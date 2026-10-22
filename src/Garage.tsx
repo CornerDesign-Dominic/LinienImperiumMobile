@@ -5,6 +5,8 @@ import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {Icon} from './Icon';
 import {rarityColor} from './items';
 import {VehicleFacts} from './VehicleFacts';
+import {VehicleArt} from './VehicleArt';
+import {bonusText} from './cardBonus';
 import {C,Txt,Row,Btn,Bar,n,remaining} from './ui';
 
 export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
@@ -22,7 +24,7 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
   const stats=data.cardVehicles[t.cardId];
   return <Pressable accessibilityRole="button" accessibilityLabel={translate(`Garagenplatz ${index+1}: ${t.model}`)} onPress={()=>setSelected(t.id)} style={[styles.tile,{borderColor:color,backgroundColor:wash}]}>
    <View style={styles.tileHeader}><Icon name="truck" size={28} color={color}/><Txt style={[styles.level,{color}]}>Stufe {g.expedition.characters[t.cardId]?.level||1}</Txt></View>
-   <Text numberOfLines={2} style={styles.name}>{t.model}</Text>
+   <VehicleArt card={card} style={{marginBottom:8}}/><Text numberOfLines={2} style={styles.name}>{t.model}</Text>
    <VehicleFacts capacity={t.capacity} rank={t.rarity.total} loadedSpeed={stats?.loadedSpeed} emptySpeed={stats?.speed??t.speed} color={color}/>
   </Pressable>;
  };
@@ -41,7 +43,7 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
      {adding?matching.length?matching.map((card:any)=>{
       const stats=data.cardVehicles[card.id],color=rarityColor(card.rarity);
       return <Pressable key={card.id} accessibilityRole="button" accessibilityState={{disabled:!!busy}} disabled={busy} onPress={async()=>{const result=await onCommand('garageAdd',{id:card.id});if(result?.state.trucks.some((t:any)=>t.cardId===card.id))setAdding(false);}} style={({pressed})=>[styles.choice,{borderLeftColor:color},(pressed||busy)&&{opacity:.65}]}>
-       <Icon name="truck" size={24} color={color}/>
+       <VehicleArt card={card} style={{width:52}}/>
        <View style={styles.choiceInfo}>
         <View style={styles.choiceHeader}><Text style={styles.choiceName}>{card.name}</Text><Txt style={styles.choiceCapacity}>{n(stats.capacity,1)} t</Txt></View>
         <Txt muted style={styles.choiceMeta}>Stufe {g.expedition.characters[card.id].level} · Rang {stats.rank.total}</Txt>
@@ -50,6 +52,8 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
        <Icon name="plus" size={16} color={C.accent}/>
       </Pressable>;
      }):<Txt muted>{available.length?'Keine freien Karten dieser Seltenheit.':'Keine freien Karten'}</Txt>:truck&&<>
+      <VehicleArt card={c.cards.find((card:any)=>card.id===truck.cardId)} style={{maxWidth:280,alignSelf:'center',marginBottom:12}}/>
+      <Txt gold style={{fontSize:12,marginBottom:12}}>{bonusText(c.cards.find((card:any)=>card.id===truck.cardId),data.cardBonuses[truck.cardId])}</Txt>
       <Fact label="Kapazität" value={`${n(truck.capacity,1)} t`}/>
       <Fact label="Stufe" value={g.expedition.characters[truck.cardId]?.level||1}/>
       <Fact label="Geschwindigkeitsrang" value={`${truck.rarity.label} · ${truck.rarity.level} ★`}/>

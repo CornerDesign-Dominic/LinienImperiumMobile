@@ -2,6 +2,7 @@ import {t as translate} from './i18n';
 import React,{useEffect,useRef,useState} from 'react';
 import {View,Pressable,Modal,ScrollView,StyleSheet,AccessibilityInfo} from 'react-native';
 import {Icon} from './Icon';
+import {VehicleArt} from './VehicleArt';
 import {rarityColor} from './items';
 import {giftRevealSteps} from './giftReveal';
 import {C,Txt,Card,Row,Btn,Pill,n} from './ui';
@@ -71,7 +72,7 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
      <Row><Txt muted>{gift.name}</Txt><Pill>1 Fahrzeugkarte</Pill></Row>
      <ScrollView ref={list} style={{flexShrink:1,flexGrow:0}} contentContainerStyle={{paddingBottom:4}}>
       {gift.cards.map((vehicle:any,index:number)=><View key={vehicle.id} onLayout={event=>{positions.current[index]=event.nativeEvent.layout.y;}} accessibilityState={{selected:highlight===index}} style={[styles.vehicle,{borderColor:rarityColor(vehicle.rarity)},highlight===index&&styles.highlight,!!card&&highlight===index&&styles.winner]}>
-       <Icon name={card&&highlight===index?'check':'truck'} size={24} color={rarityColor(vehicle.rarity)}/><View style={{flex:1,minWidth:0}}><Txt style={{fontSize:13,fontWeight:'700'}}>{vehicle.name}</Txt><Txt style={[styles.small,{color:rarityColor(vehicle.rarity)}]}>{data.catalog.rarities.find((r:any)=>r.id===vehicle.rarity)?.label}</Txt></View><Txt style={styles.small}>{n(vehicle.chance,2)} %</Txt>
+       <VehicleArt card={vehicle} style={{width:48}}/><View style={{flex:1,minWidth:0}}><Txt style={{fontSize:13,fontWeight:'700'}}>{vehicle.name}</Txt><Txt style={[styles.small,{color:rarityColor(vehicle.rarity)}]}>{data.catalog.rarities.find((r:any)=>r.id===vehicle.rarity)?.label}</Txt></View><Txt style={styles.small}>{n(vehicle.chance,2)} %</Txt>
       </View>)}
       {!opening&&!card&&<Txt muted style={styles.small}>Doppelte Karte → 1 Shard derselben Seltenheit</Txt>}
      </ScrollView>

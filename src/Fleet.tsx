@@ -7,8 +7,8 @@ import {C,Txt,Row,Btn,Empty,n} from './ui';
 import {Icon} from './Icon';
 import {VehicleCardGrid} from './VehicleCards';
 import {FleetDetails} from './FleetDetails';
-const BONUS:Record<string,string>={speed:'Tempo',cost:'Kostenersparnis',pay:'Frachtvergütung',xp:'Spieler-XP'};
-const SCOPE:Record<string,string>={self:'Dieses Fahrzeug',single:'Eigene Einzelaufträge',fleet:'Alle Fahrzeuge im Großauftrag',garage:'Alle Fahrzeuge in der Garage'};
+import {BONUS,SCOPE,bonusText,pointBonus} from './cardBonus';
+import {VehicleArt} from './VehicleArt';
 
 export function Fleet({data,busy,template,onTemplate,onCommand,onCollection,modalBlocked=false}:any){
  const [choosingSeat,setChoosingSeat]=useState<number|null>(null),[picking,setPicking]=useState(false),[saveFailed,setSaveFailed]=useState(false);
@@ -37,8 +37,8 @@ export function Fleet({data,busy,template,onTemplate,onCommand,onCollection,moda
   <Btn secondary style={{marginTop:0,marginBottom:12}} onPress={()=>setDetails(true)}>Flottendetails</Btn>
   <FleetDetails data={data} template={template} visible={details} modalBlocked={modalBlocked} onClose={()=>setDetails(false)}/>
   {slots.map((id:string|null,seat:number)=>{const card=c.cards.find((x:any)=>x.id===id);return <Pressable key={seat} accessibilityRole="button" accessibilityLabel={translate(`Flottenplatz ${seat+1}: ${card?.name||'Freier Platz'}`)} accessibilityState={{disabled:busy}} disabled={busy} onPress={()=>{setSaveFailed(false);setPicking(!card);setChoosingSeat(seat);}} style={({pressed})=>[styles.slot,(pressed||busy)&&{opacity:.7}]}>
-   <Txt muted style={styles.slotNumber}>{seat+1}</Txt><Icon name={card?'truck':'plus'} size={27} color={card?C.gold:C.muted}/>
-   <View style={{flex:1,minWidth:0}}><Text numberOfLines={1} style={styles.cardTitle}>{card?.name||'Freier Platz'}</Text><Text numberOfLines={1} style={styles.slotDetail}>{card?`${n(data.cardBonuses[id!],1)} % ${translate(BONUS[card.stat])}`:'Fahrzeug auswählen'}</Text></View><Icon name="chevron" size={16} color={C.gold}/>
+   <Txt muted style={styles.slotNumber}>{seat+1}</Txt>{card?<VehicleArt card={card} style={{width:48}}/>:<Icon name="plus" size={27} color={C.muted}/>}
+   <View style={{flex:1,minWidth:0}}><Text numberOfLines={1} style={styles.cardTitle}>{card?.name||'Freier Platz'}</Text><Text numberOfLines={1} style={styles.slotDetail}>{card?bonusText(card,data.cardBonuses[id!]):'Fahrzeug auswählen'}</Text></View><Icon name="chevron" size={16} color={C.gold}/>
   </Pressable>;})}
   <Btn secondary onPress={onCollection}>Sammlung & Kartenlevel</Btn>
   <Modal visible={choosingSeat!==null&&!modalBlocked} transparent animationType="none" onRequestClose={close}>
@@ -52,7 +52,7 @@ export function Fleet({data,busy,template,onTemplate,onCommand,onCollection,moda
       {cards.length?<VehicleCardGrid data={data} cards={cards} statusForCard={statusForCard} disabled={busy} onOpen={select}/>:<Empty>Noch keine Fahrzeugkarten entdeckt.</Empty>}
      </>:selected&&<>
       <Row><Txt muted>Stufe {g.expedition.characters[selected.id]?.level||1}</Txt><Txt>{n(stats.capacity,1)} t · Rang {stats.rank.total}</Txt></Row>
-      <Txt>{n(data.cardBonuses[selected.id],1)} % {BONUS[selected.stat]}</Txt><Txt muted>{SCOPE[selected.scope]}</Txt>
+      <VehicleArt card={selected} style={{maxWidth:240,alignSelf:'center',marginBottom:12}}/><Txt>{bonusText(selected,data.cardBonuses[selected.id])}</Txt><Txt muted>{pointBonus(selected)?'Wirkt nur in der Garage':SCOPE[selected.scope]}</Txt>
       <Btn disabled={busy} onPress={()=>{setSaveFailed(false);setPicking(true);}}>Wechseln</Btn>
       <Btn secondary disabled={busy} onPress={remove}>Entfernen</Btn>
      </>}

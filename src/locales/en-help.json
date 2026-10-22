@@ -48,7 +48,7 @@
     ],
     [
       "Speed and upgrades",
-      "Speed = 1 km/s × (1 + 0.005 × speed ranks) × (1 + active speed bonuses / 100) × (1 − 0.01 × loaded tonnes). Maximum speed rank: 50. A capacity module adds 0.5 t within the model limit. Cost per km = max(0, base cost − workshop levels × 0.001) × (1 − card cost bonus / 100). Upgrade card vehicles in the collection."
+      "Speed = individual base speed × rank multiplier × active speed bonus × load multiplier. Each capacity module adds 5% of base capacity, for ten stages. Existing module and rank investments are retained."
     ],
     [
       "Removing vehicles",
@@ -123,12 +123,16 @@
   ],
   "personnel": [
     [
-      "Fleets and bonuses",
-      "Three fleets with five slots each. A card can be assigned once per fleet and also to the garage. Bonuses apply to the card itself, all garage vehicles, its single contracts or all vehicles in a fleet project, depending on scope. Choose a fleet when starting a project; one card is enough. A template can run multiple projects."
+      "Vehicle cards",
+      "25 regional land transports, each with its own base capacity, speed and exactly one bonus. Every region has two Common, one Uncommon, one Rare and one Epic. Card details show the bonus at the current level and level 10."
     ],
     [
-      "Card levels",
-      "Each region offers Common cards at 6%, Uncommon at 3% and Rare at 1% per endless expedition. Levels 1–10 use shards of the matching rarity. Bonus percentages: Common 1 + (level−1) × 0.5; Uncommon 3 + (level−1) × 1; Rare 5 + (level−1) × 1.5. Matching bonuses add; speed/payment multipliers then apply, and costs decrease accordingly."
+      "Bonus scopes",
+      "Self bonuses affect their vehicle. Fleet bonuses affect all members including the donor. Garage bonuses stay active while the donor belongs to the garage, including single contracts and procurement. Different donors add their transport bonuses. Current trips keep their snapshot until the next departure."
+    ],
+    [
+      "Point bonuses",
+      "Royal Mail Coach increases overtime capacity; Oasis Caravan increases expedition capacity. Each grants 5/10/15/20/25/30/40/50/60/70 extra maximum points at levels 1–10. Jade Scout Team shortens the expedition interval by 10/20/30/40/50/60/75/90/105/120 seconds. Active only in the garage. Equipping never grants points. Removing keeps overflow and pauses regeneration until below the maximum. Timer changes preserve percentage progress."
     ]
   ],
   "expeditions": [

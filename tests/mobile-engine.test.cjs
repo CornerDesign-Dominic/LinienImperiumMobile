@@ -72,7 +72,7 @@ test('Collection facts retain upgrades outside the garage and do not expose job 
  const capacity=execute(initial.state,'capacity',{id},now,fixed);
  const ranked=execute(capacity.state,'rank',{id},now,fixed);
  const metrics=ranked.view.cardVehicles.navigator;
- assert.equal(metrics.capacity,4.5);assert.equal(metrics.rank.total,1);
+ assert.equal(metrics.capacity,2.1);assert.equal(metrics.rank.total,1);
  const parked=execute(ranked.state,'garageRemove',{id:'navigator'},now,fixed);
  assert.deepEqual(parked.view.cardVehicles.navigator,metrics);
  const offer=ranked.view.state.orders.find(o=>o.choices.length);
@@ -450,14 +450,14 @@ test('Max overtime uses the minimum whole points that make the saved fleet meet 
 
 test('Token regeneration countdowns follow server deadlines and stop at or above capacity',()=>{
  const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
- assert.deepEqual(start.view.regeneration,{expeditionNextAt:null,overtimeNextAt:null});
+ assert.deepEqual(start.view.regeneration,{expeditionNextAt:null,expeditionIntervalMs:600000,overtimeNextAt:null});
  const state=start.state;state.expedition.points=48;state.overtimePoints=98;state.expedition.lastRegenAt=now-10*60000+1000;state.overtimeLastRegenAt=now-10*60000+3000;
  const initial=execute(state,'sync',{},now,fixed);assert.equal(initial.view.regeneration.expeditionNextAt,now+1000);assert.equal(initial.view.regeneration.overtimeNextAt,now+3000);
  const expedition=execute(initial.state,'sync',{},now+1000,fixed);assert.equal(expedition.state.expedition.points,49);assert.equal(expedition.view.regeneration.expeditionNextAt,now+1000+10*60000);
  const overtime=execute(expedition.state,'sync',{},now+3000,fixed);assert.equal(overtime.state.overtimePoints,99);assert.equal(overtime.view.regeneration.overtimeNextAt,now+3000+10*60000);
- const full=execute(overtime.state,'sync',{},now+10*60000+3000,fixed);assert.equal(full.state.expedition.points,50);assert.equal(full.state.overtimePoints,100);assert.deepEqual(full.view.regeneration,{expeditionNextAt:null,overtimeNextAt:null});
+ const full=execute(overtime.state,'sync',{},now+10*60000+3000,fixed);assert.equal(full.state.expedition.points,50);assert.equal(full.state.overtimePoints,100);assert.deepEqual(full.view.regeneration,{expeditionNextAt:null,expeditionIntervalMs:600000,overtimeNextAt:null});
  full.state.expedition.points=75;full.state.overtimePoints=200;
- const over=execute(full.state,'sync',{},now+21*60000,fixed);assert.deepEqual(over.view.regeneration,{expeditionNextAt:null,overtimeNextAt:null});assert.equal(over.state.expedition.points,75);assert.equal(over.state.overtimePoints,200);
+ const over=execute(full.state,'sync',{},now+21*60000,fixed);assert.deepEqual(over.view.regeneration,{expeditionNextAt:null,expeditionIntervalMs:600000,overtimeNextAt:null});assert.equal(over.state.expedition.points,75);assert.equal(over.state.overtimePoints,200);
 });
 
 test('Collection upgrades work for parked cards without creating garage slots and preserve resource limits',()=>{
@@ -466,7 +466,7 @@ test('Collection upgrades work for parked cards without creating garage slots an
  game.state.inventory.capacityModules=2;game.state.inventory.gears.common=1000;
  const count=game.state.trucks.length;
  game=execute(game.state,'cardCapacity',{id:'navigator'},now,fixed);
- assert.equal(game.state.trucks.length,count);assert.equal(game.view.cardVehicles.navigator.capacity,4.5);
+ assert.equal(game.state.trucks.length,count);assert.equal(game.view.cardVehicles.navigator.capacity,2.1);
  assert.equal(game.state.inventory.capacityModules,1);
  game=execute(game.state,'cardRank',{id:'navigator'},now,fixed);
  assert.equal(game.state.trucks.length,count);assert.equal(game.view.cardVehicles.navigator.rank.total,1);
@@ -474,11 +474,11 @@ test('Collection upgrades work for parked cards without creating garage slots an
  const blocked=execute(game.state,'cardRank',{id:'navigator'},now,fixed);
  assert.equal(blocked.view.cardVehicles.navigator.rank.total,1);
  const added=execute(blocked.state,'garageAdd',{id:'navigator'},now,fixed);
- assert.equal(added.state.trucks.length,count+1);assert.equal(added.state.trucks[0].capacity,4.5);assert.equal(added.state.trucks[0].rarityLevel,1);
+ assert.equal(added.state.trucks.length,count+1);assert.equal(added.state.trucks[0].capacity,2.1);assert.equal(added.state.trucks[0].rarityLevel,1);
  const upgraded=execute(added.state,'cardCapacity',{id:'navigator'},now,fixed);
- assert.equal(upgraded.state.trucks.length,count+1);assert.equal(upgraded.state.trucks[0].capacity,5);
+ assert.equal(upgraded.state.trucks.length,count+1);assert.equal(upgraded.state.trucks[0].capacity,2.2);
  assert.equal(upgraded.state.inventory.capacityModules,0);
- assert.equal(execute(upgraded.state,'cardCapacity',{id:'navigator'},now,fixed).state.trucks[0].capacity,5);
+ assert.equal(execute(upgraded.state,'cardCapacity',{id:'navigator'},now,fixed).state.trucks[0].capacity,2.2);
  const unknown=execute(upgraded.state,'cardCapacity',{id:'does-not-exist'},now,fixed);
  assert.equal(unknown.state.trucks.length,count+1);
  const unowned=upgraded.view.catalog.cards.find(c=>!upgraded.state.expedition.characters[c.id]);
@@ -642,7 +642,7 @@ test('Every expedition exposes its actual absolute find chances and conditional 
   const finds=map.finds;assert.equal(finds.cost,5);assert.equal(finds.cards.length,5);assert.equal(finds.orders.length,4);
   assert.ok(Math.abs([...finds.cards,...finds.orders].reduce((sum,f)=>sum+f.chance,0)-100)<1e-6);
   for(const card of finds.cards)assert.equal(view.catalog.cards.find(c=>c.id===card.id).region,map.index);
-  assert.deepEqual(finds.cards.map(c=>c.chance),map.index===0?[3,1.5,1,3,1.5]:[3,3,.9,3,.1]);
+  assert.deepEqual(finds.cards.map(c=>c.chance),[3,3,3,.9,.1]);
   assert.deepEqual(finds.orders.map(o=>o.chance),[18,67.5,4.05,.45]);
   for(const order of finds.orders.filter(o=>o.ranks))assert.deepEqual(order.ranks.map(r=>r.chance),weights[map.index]);
   assert.match(finds.orders.find(o=>o.kind==='special').name,/^Sonderauftrag /);

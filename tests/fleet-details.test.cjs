@@ -26,10 +26,10 @@ test('Long and partial tours count travelled kilometres while only completed tou
 });
 test('Server fleet preview uses owned cards, fleet bonuses and workshop costs without rolling loot or touching saves',()=>{
  let game=execute(null,'foundCompany',{companyName:'Flottentest',cityName:'Testhafen'},now,fixed);
- game.state.expedition.characters.r1_rare={level:1,progress:0};
+ game.state.expedition.characters.pionierin={level:1,progress:0};
  game.state.expedition.characters.r2_rare={level:1,progress:0};
  game.state.expedition.characters.r1_uncommon={level:1,progress:0};
- for(const [seat,id] of ['navigator','r1_rare','r2_rare','r1_uncommon'].entries())
+ for(const [seat,id] of ['navigator','pionierin','r2_rare','r1_uncommon'].entries())
   game=execute(game.state,'seat',{id,template:0,seat},now,fixed);
  const saved=JSON.stringify(game.state),api=session(game.state,now,()=>{throw Error('Preview must not roll loot');});
  const apiSaved=JSON.stringify(api.state);
@@ -37,10 +37,10 @@ test('Server fleet preview uses owned cards, fleet bonuses and workshop costs wi
  assert.equal(JSON.stringify(api.state),apiSaved);
  assert.equal(JSON.stringify(game.state),saved);assert.equal(rows.length,4);
  const owned=rows.find(v=>v.cardId==='navigator');
- assert.equal(owned.bonuses.cost,6);assert.equal(owned.bonuses.speed,5);
+ assert.equal(owned.bonuses.cost,7);assert.equal(owned.bonuses.speed,4);
  assert.equal(owned.bonuses.pay,0);assert.equal(owned.bonuses.xp,0);
  // Garage-scope speed card contributes no fleet bonus.
- assert.equal(rows.find(v=>v.cardId==='r1_uncommon').bonuses.speed,5);
+ assert.equal(rows.find(v=>v.cardId==='r1_uncommon').bonuses.speed,4);
  for(const v of rows){assert.ok(v.emptySpeed>v.loadedSpeed);assert.ok(v.loadedSpeed>0);assert.ok(Number.isFinite(v.costPerKm));}
  assert.equal(view.fleetPreviews[1].length,0);
  const before=owned.costPerKm;

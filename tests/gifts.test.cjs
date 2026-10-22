@@ -15,7 +15,7 @@ test('Every region has exactly five stable cards and the same disclosed gift and
  for(const gift of view.catalog.gifts){
   assert.equal(gift.cost,10);assert.equal(gift.cards.length,5);
   const counts=Object.fromEntries(['common','uncommon','rare','epic'].map(r=>[r,gift.cards.filter(c=>c.rarity===r).length]));
-  assert.deepEqual(counts,gift.region===0?{common:2,uncommon:2,rare:1,epic:0}:{common:2,uncommon:1,rare:1,epic:1});
+  assert.deepEqual(counts,{common:2,uncommon:1,rare:1,epic:1});
   assert.ok(counts.epic<=1&&counts.rare<=2);
   assert.ok(Math.abs(gift.cards.reduce((s,c)=>s+c.chance,0)-100)<1e-8);
   assert.deepEqual(gift.cards.map(c=>c.id),view.expeditionMap[gift.region].finds.cards.map(c=>c.id));
