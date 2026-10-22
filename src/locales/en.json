@@ -985,5 +985,6 @@
   "Verbesserung erfolgreich.": "Upgrade successful.",
   "Verbesserung nicht bestätigt. Bitte Bestand prüfen und erneut versuchen.": "Upgrade not confirmed. Please check your resources and try again.",
   "Verbesserung fehlgeschlagen. Bitte erneut versuchen.": "Upgrade failed. Please try again.",
-  "Bisheriger Fortschritt ist angerechnet.": "Existing progress has been deducted from the cost."
+  "Bisheriger Fortschritt ist angerechnet.": "Existing progress has been deducted from the cost.",
+  "Erweitert": "Expanded"
 }

@@ -44,11 +44,8 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
    <Fact label="Beladen" value={`${n(stats.loadedSpeed,2)} km/s`}/>
    <Fact label="Durchschnitt" value={averageSpeed===undefined?'—':`${n(averageSpeed,2)} km/s`}/>
   </Card>
-  <Card><Row><Txt style={styles.title}>Kapazität</Txt><Txt style={styles.value}>{n(stats.capacity,1)} t</Txt></Row><Fact label="Module" value={`${modules} / ${maxModules}`}/></Card>
-  <Card><Txt style={[styles.title,{marginBottom:14}]}>Fahrzeugdaten</Txt>
-   <Fact label="Einsatz" value="Regional- und Fernverkehr"/>
-   <Fact label="Betriebskosten" value={`${n(stats.costPerKm,2)} M/km`}/>
-  </Card>
+  <Card><Row><Txt style={styles.title}>Kapazität</Txt><Txt style={styles.value}>{n(stats.capacity,1)} t</Txt></Row><Fact label="Erweitert" value={`${modules} / ${maxModules}`}/></Card>
+  <Card><Row style={{marginBottom:0}}><Txt style={styles.title}>Betriebskosten</Txt><Txt style={styles.value}>{n(stats.costPerKm,2)} M/km</Txt></Row></Card>
   {!own&&<Card><Txt muted>Auf Expeditionen in Region {card.region+1} entdecken.</Txt></Card>}
   {card.description&&<Card><Txt muted style={{fontSize:13,lineHeight:21}}>{card.description}</Txt></Card>}
   <Btn disabled={busy||!own} onPress={()=>setUpgradeOpen(true)}>Verbessern</Btn>

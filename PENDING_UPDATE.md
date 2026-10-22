@@ -1,3 +1,13 @@
+## Kartendetails: Betriebskosten und „Erweitert“ – neu gesammelt, nicht veröffentlicht
+
+- Fahrzeugdaten-Card in Betriebskosten umbenannt und auf den Kostenwert in M/km reduziert.
+- Einsatzangabe zu Regional-/Fernverkehr entfernt.
+- Kapazitätscard: „Module“ heißt nun „Erweitert“, Wert bleibt unverändert.
+- Deutsch/Englisch, Typprüfung und vier Übersetzungstests erfolgreich.
+- Gemeinsam mit den neuen Garage-/Sammlungskarten sammeln; keine Veröffentlichung.
+
+---
+
 ## Neues Sammelpaket: einheitliche Garage-/Sammlungskarten – nicht veröffentlicht
 
 Nach der erfolgreichen Veröffentlichung des vorherigen Pakets neu gesammelt am 22.10.2026:

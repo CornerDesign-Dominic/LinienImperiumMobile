@@ -55,3 +55,7 @@ Die alte alleinstehende Geschwindigkeitsrang-Card einschließlich Zahnradbedarf 
 ## Separate Kartenstufenerweiterung entfernt
 
 Die alte Kartenstufen-Card mit Fortschrittsbalken, Shardbestand und „Shards einsetzen“-Button ist aus den Kartendetails entfernt. Die römische Kartenstufe über dem Bild und das Bonusmodal mit Stufenübersicht bleiben erhalten. Der Entdeckungshinweis bei nicht besessenen Karten bleibt bestehen. Keine Änderung an gespeicherten Stufen, Shards oder serverseitigen Aufwertungen. Typprüfung erfolgreich. Nicht veröffentlicht.
+
+## Beschriftungen in den Detailkarten vereinfacht
+
+Die bisherige Fahrzeugdaten-Card heißt „Betriebskosten“ und zeigt nur ihren Kostenwert in M/km neben dem Titel. Die Einsatzzeile „Regional- und Fernverkehr“ entfällt. In der Kapazitätscard heißt „Module“ nun „Erweitert“; der Zahlenwert eingesetzt/Limit bleibt unverändert. Englische Übersetzung für Erweitert ergänzt. Typprüfung und vier Übersetzungstests erfolgreich. Nach dem ersten Release neu gesammelt, nicht veröffentlicht.
