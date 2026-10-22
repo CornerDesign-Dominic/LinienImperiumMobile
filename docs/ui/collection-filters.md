@@ -21,3 +21,7 @@ Prüfung: TypeScript und 15 vorhandene Übersetzungs-/Transportkartentests erfol
 - Freie Module, numerischer Gesamtrang und getrennte Tempozeilen entfallen in der Sammlung. Garage und Fahrzeugdetails behalten ihre bisherigen Werte; bestehende Tourberechnungen bleiben erhalten.
 - Zugängliche Beschriftungen benennen alle drei Werte weiterhin ausdrücklich. Deutsch/Englisch ergänzt.
 - Prüfung: TypeScript, sieben Mathe-/Rang-/Übersetzungstests und React-Native-Web bei 320/390/430 px erfolgreich. Drei Werte und römische Rangstufen sichtbar; keine entfernten Detailtexte, kein seitlicher Überlauf, keine Laufzeitfehler. Kein physischer Gerätetest und keine Veröffentlichung.
+
+## Betriebskosten ergänzt
+
+Auf Wunsch zusätzlich eine vierte kompakte Zeile: Münzicon mit Betriebskosten in M/km (maximal zwei Nachkommastellen). Quelle ist der bestehende serverseitige Fahrzeugwert `costPerKm`, einschließlich der dort berücksichtigten Boni. Kein eigener Pauschalwert und keine Änderung der Kostenberechnung. Fehlende Werte zeigen einen Gedankenstrich; null wird als 0 M/km angezeigt. Deutsche/englische zugängliche Beschriftung verwendet den vorhandenen Begriff Betriebskosten/Operating costs. Typprüfung erfolgreich. Nicht veröffentlicht.

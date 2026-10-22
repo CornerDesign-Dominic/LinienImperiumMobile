@@ -31,13 +31,14 @@ const s=StyleSheet.create({
 
 
 // Collection-only compact values. Garage and detail views retain their full facts.
-export function CollectionFacts({capacity,rank,loadedSpeed,emptySpeed}:{capacity:number;rank:{id?:string;label?:string;level:number;total:number};loadedSpeed?:number;emptySpeed?:number}){
+export function CollectionFacts({capacity,rank,loadedSpeed,emptySpeed,costPerKm}:{capacity:number;rank:{id?:string;label?:string;level:number;total:number};loadedSpeed?:number;emptySpeed?:number;costPerKm?:number}){
  const average=averageCardSpeed(loadedSpeed,emptySpeed),rankColor=rarityColor(rank.id||['common','uncommon','rare','epic','legendary'][Math.min(4,Math.floor(rank.total/10))]);
  const row=(label:string,icon:React.ReactNode,value:React.ReactNode)=><View accessible accessibilityLabel={label} style={collectionStyles.row}>{icon}{value}</View>;
  return <View style={collectionStyles.facts}>
   {row(`${t('Kapazität')}: ${n(capacity,1)} t`,<Icon name="orders" size={15} color={C.muted}/>,<Txt style={collectionStyles.value}>{n(capacity,1)} t</Txt>)}
   {row(`${t('Geschwindigkeitsrang')}: ${t(rank.label||rank.id||'Common')} ${rank.level}, ${rank.total} / 50`,<Text style={[collectionStyles.star,{color:rankColor}]}>★</Text>,<Text style={[collectionStyles.value,{color:rankColor}]}>{rankNumeral(rank.level)}</Text>)}
   {row(`${t('Durchschnittsgeschwindigkeit')}: ${average===undefined?'—':n(average,2)+' km/s'}`,<Icon name="timer" size={15} color={C.muted}/>,<Txt style={collectionStyles.value}>{average===undefined?'—':`${n(average,2)} km/s`}</Txt>)}
+  {row(`${t('Betriebskosten')}: ${costPerKm===undefined?'—':n(costPerKm,2)+' M/km'}`,<Icon name="coin" size={15} color={C.muted}/>,<Txt style={collectionStyles.value}>{costPerKm===undefined?'—':`${n(costPerKm,2)} M/km`}</Txt>)}
  </View>;
 }
 const collectionStyles=StyleSheet.create({facts:{marginTop:8,gap:4},row:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:3,minHeight:20},value:{fontSize:10,lineHeight:15,fontWeight:'600',flexShrink:1,textAlign:'right'},star:{fontSize:18,lineHeight:20,width:15,textAlign:'center'}});

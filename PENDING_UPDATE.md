@@ -1,3 +1,11 @@
+## Kartensammlung: Betriebskosten ergänzt – gesammelt, nicht veröffentlicht
+
+- Vierte kompakte Angabe unter den bisherigen drei Werten: Münzicon und Betriebskosten in M/km.
+- Bestehender serverseitiger Fahrzeugwert, Anzeige mit maximal zwei Nachkommastellen; keine Änderung der Kostenberechnung.
+- Typprüfung erfolgreich. Sammelbranch `batch/company-improvements`, keine Veröffentlichung.
+
+---
+
 ## Kartensammlung: drei kompakte Iconwerte – gesammelt, nicht veröffentlicht
 
 - Nur Kapazität (Kiste), Geschwindigkeitsrang (Stern und farbige römische Rangstufe) und Durchschnittstempo (Stoppuhr) unter dem Kartennamen.
