@@ -10,14 +10,13 @@ import {VehicleArt} from './VehicleArt';
 import {BONUS,bonusValue,bonusSentence,pointBonus} from './cardBonus';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
 function Fact({label,value}:any){return <Row style={styles.fact}><Txt muted style={{flex:1,fontSize:12}}>{label}</Txt><Txt style={{fontSize:13,fontWeight:'600',textAlign:'right'}}>{value}</Txt></Row>;}
-export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any){
+export function VehicleCardDetail({data,id,busy,onUpgrade}:any){
  const [bonusOpen,setBonusOpen]=useState(false);
  const {state:g,catalog:c}=data,card=c.cards.find((item:any)=>item.id===id);
  if(!card)return <Empty>Fahrzeugkarte nicht verfügbar.</Empty>;
  const own=g.expedition.characters[id],stats=data.cardVehicles[id],rarity=c.rarities.find((r:any)=>r.id===card.rarity);
  const shards=g.expedition.shards[card.rarity]||0,level=own?.level||0,needed=c.cardLevelCosts[level-1]||0;
  const modules=stats.capacityLevel||0,maxModules=stats.maxCapacityLevel??c.models[card.vehicleTier].maxCapacityLevel;
- const maxRank=stats.rank.total>=50;
  const averageSpeed=averageCardSpeed(stats.loadedSpeed,stats.speed),rankColor=rarityColor(stats.rank.id);
  return <>
   <Card>
@@ -53,9 +52,7 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
    <Card><Row><Txt style={styles.title}>Kartenstufe</Txt><Pill>{level} / 10</Pill></Row>
     {level<10?<><Bar value={own.progress/needed*100}/><Fact label="Fortschritt" value={`${n(own.progress)} / ${n(needed)}`}/><Fact label={`${rarity.label}-Shards`} value={`${n(shards)} vorhanden`}/><Btn disabled={busy||!shards} onPress={()=>onUpgrade(id)}>Shards einsetzen</Btn></>:<Txt muted>Maximum erreicht</Txt>}
    </Card>
-   <Card><Row><Txt style={[styles.title,{flex:1}]}>Geschwindigkeitsrang</Txt><Pill>{stats.rank.total} / 50</Pill></Row>
-    {maxRank?<Txt muted>Maximum erreicht</Txt>:<><Fact label={`${stats.rank.label}-Zahnräder`} value={`${n(g.inventory.gears[stats.rank.id])} / ${n(stats.rankCost)}`}/><Btn secondary disabled={busy||g.inventory.gears[stats.rank.id]<stats.rankCost} onPress={()=>onVehicleUpgrade(id,'rank')}>Rang erhöhen</Btn></>}
-   </Card>
+
   </>:<Card><Txt muted>Auf Expeditionen in Region {card.region+1} entdecken.</Txt></Card>}
   {card.description&&<Card><Txt muted style={{fontSize:13,lineHeight:21}}>{card.description}</Txt></Card>}
  </>;

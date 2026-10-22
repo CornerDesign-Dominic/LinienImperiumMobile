@@ -47,3 +47,7 @@ Direkt unter der Bonus-Card steht eine Card „Geschwindigkeit“: Leer, Beladen
 ## Kapazitätscard unter Geschwindigkeit
 
 Kapazität steht direkt unter der Geschwindigkeitscard, vor Fahrzeugdaten und Kartenstufenausbau. Sichtbar bleiben die aktuelle Kapazität in t sowie eingesetzte Module/Modullimit. Entfernt sind der Kapazitätserweiterungsbutton, der verfügbare Modulbestand und der Erklärungstext zur Wirkung der Module. Kapazitätsdaten sind auch als Vorschau für nicht besessene Karten sichtbar. Die tatsächliche Ausbau-/Bestandslogik bleibt unverändert. Typprüfung erfolgreich. Nicht veröffentlicht.
+
+## Separate Rangcard entfernt
+
+Die alte alleinstehende Geschwindigkeitsrang-Card einschließlich Zahnradbedarf und Rang-erhöhen-Button ist aus der Kartendetailansicht entfernt. Der Geschwindigkeitsrang bleibt als farbiger Stern mit römischer Rangstufe rechts oben in der Geschwindigkeitscard sichtbar. Keine Änderung an Rangwerten oder serverseitiger Ausbaulogik. Typprüfung erfolgreich. Nicht veröffentlicht.

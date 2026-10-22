@@ -1,3 +1,11 @@
+## Kartendetails: separate Geschwindigkeitsrang-Card entfernt – gesammelt
+
+- Alte Geschwindigkeitsrang-Card mit Ausbauanzeige entfernt.
+- Rang bleibt rechts oben in der Geschwindigkeitscard sichtbar.
+- Typprüfung erfolgreich. Nicht veröffentlicht.
+
+---
+
 ## Kartendetails: Kapazität verschoben und vereinfacht – gesammelt, nicht veröffentlicht
 
 - Kapazitätscard direkt unter der Geschwindigkeit.
