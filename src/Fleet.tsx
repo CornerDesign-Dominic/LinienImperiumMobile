@@ -52,7 +52,7 @@ export function Fleet({data,busy,template,onTemplate,onCommand,onCollection,moda
       {cards.length?<VehicleCardGrid data={data} cards={cards} statusForCard={statusForCard} disabled={busy} onOpen={select}/>:<Empty>Noch keine Fahrzeugkarten entdeckt.</Empty>}
      </>:selected&&<>
       <Row><Txt muted>Stufe {g.expedition.characters[selected.id]?.level||1}</Txt><Txt>{n(stats.capacity,1)} t · Rang {stats.rank.total}</Txt></Row>
-      <VehicleArt card={selected} style={{maxWidth:240,alignSelf:'center',marginBottom:12}}/><Txt>{bonusText(selected,data.cardBonuses[selected.id])}</Txt><Txt muted>{pointBonus(selected)?'Wirkt nur in der Garage':SCOPE[selected.scope]}</Txt>
+      <VehicleArt card={selected} level={g.expedition.characters[selected.id]?.level} style={{maxWidth:240,alignSelf:'center',marginBottom:12}}/><Txt>{bonusText(selected,data.cardBonuses[selected.id])}</Txt><Txt muted>{pointBonus(selected)?'Wirkt nur in der Garage':SCOPE[selected.scope]}</Txt>
       <Btn disabled={busy} onPress={()=>{setSaveFailed(false);setPicking(true);}}>Wechseln</Btn>
       <Btn secondary disabled={busy} onPress={remove}>Entfernen</Btn>
      </>}

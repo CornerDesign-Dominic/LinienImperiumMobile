@@ -18,7 +18,7 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade}:any)
  return <>
   <Card>
    <Row style={{marginBottom:14}}><Txt style={{color:rarityColor(card.rarity),fontSize:11,fontWeight:'700'}}>{rarity.label}</Txt><Txt muted style={{fontSize:11}}>{regionIdentities[card.region]?.title}</Txt></Row>
-   <VehicleArt card={card} style={{maxWidth:360,alignSelf:'center',borderWidth:1,borderColor:rarityColor(card.rarity)}}/>
+   <VehicleArt card={card} level={level} style={{maxWidth:360,alignSelf:'center'}}/>
    <Txt style={styles.name}>{card.name}</Txt>
    <View style={styles.badges}><Pill>{own?`Stufe ${level}`:'Nicht entdeckt'}</Pill><Txt muted style={{fontSize:12}}>{n(stats.capacity,1)} t · Rang {stats.rank.total}</Txt></View>
   </Card>
