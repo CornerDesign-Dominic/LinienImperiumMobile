@@ -1,3 +1,17 @@
+## Transportverbesserungen: kompakte Übersicht und Ausbau-Modal – gesammelt, nicht veröffentlicht
+
+Sammelbranch: `batch/company-improvements` · vorbereitet am 22.10.2026.
+
+- Regional-/Fernverkehr-Reiter und kompakte Verbesserungszeilen mit aktuellem Effekt, Stufe und Verfügbarkeitsanzeige.
+- Kleine Materialzeile statt großer Infokarte.
+- Je Verbesserung ein Modal mit Vorher/Nachher, Stufenauswahl, Gesamtkosten und ausdrücklicher Kaufaktion.
+- Bestehende Serverprüfung und Preise beibehalten, Deutsch/Englisch ergänzt.
+- Typprüfung und alle 169 Tests erfolgreich; Bedienung bei 320/360/390/430 px einschließlich Fehler-/Mangel-/Maximalzuständen geprüft; Android-Export erfolgreich. Kein physischer Gerätetest.
+- Keine Veröffentlichung. Erst nach ausdrücklichem Go veröffentlichen.
+- Details: `docs/ui/company-upgrade-editor.md`.
+
+---
+
 ## Stadthub-Fahrzeuge, Fahrzeugteile und Fundkisten – veröffentlicht am 22.10.2026
 
 Release: `6823306861d2dc217f0c52408d4a3bb970f0ba3e` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39786609414).

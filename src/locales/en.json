@@ -947,5 +947,17 @@
   "Nach der Erkundung kannst du hier eine Bonuslieferung starten. Hole ihre Belohnung ab, um deine Expeditionskapazität um 1 zu erhöhen.": "Once explored, you can start a bonus delivery here. Collect its reward to increase your expedition capacity by 1.",
   "Fundchancen": "Drop chances",
   "Stammkunde": "Regular customer",
-  "Expeditionskapazität": "Expedition capacity"
+  "Expeditionskapazität": "Expedition capacity",
+  "verfügbar": "available",
+  "Verbesserung verfügbar": "Upgrade available",
+  "Nach Ausbau": "After upgrade",
+  "Stufen verringern": "Decrease levels",
+  "Stufen erhöhen": "Increase levels",
+  "Gesamtkosten": "Total cost",
+  "{0} verfügbar": "{0} available",
+  "Nicht genügend Münzen.": "Not enough coins.",
+  "Nicht genügend Firmenausbau-Items.": "Not enough company upgrade items.",
+  "Ausbau nicht bestätigt. Bitte erneut versuchen.": "Upgrade not confirmed. Please try again.",
+  "Wird verbessert …": "Upgrading …",
+  "Für {0} M verbessern": "Upgrade for {0} coins"
 }
