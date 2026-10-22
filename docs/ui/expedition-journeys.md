@@ -2,7 +2,7 @@
 
 ## Ergebnis
 
-Die geöffnete Region ist eine zusammenhängende, horizontal scrollbar gemalte Landschaft. Auf Hochkant-Handys umfasst sie etwa vier bis fünf Bildschirmbreiten. Gebäude und Schauplätze sind in die Landschaft integriert; neutrale Namensschilder darunter markieren die antippbaren Orte. Großzügige unsichtbare Tippflächen umfassen Ortsbild und Schild. Titel und Regionspfeile schweben über der Karte. Die Pfeile wechseln ausschließlich zwischen benachbarten freigeschalteten Expeditionsregionen; Grenzen und gesperrte Regionen deaktivieren den jeweiligen Pfeil.
+Die geöffnete Region ist eine zusammenhängende, horizontal scrollbar gemalte Landschaft. Auf Hochkant-Handys umfasst sie etwa vier bis fünf Bildschirmbreiten. Gebäude und Schauplätze sind in die Landschaft integriert; kompakte Ortsmarkierungen in Dunkelgrün und Messing darunter kennzeichnen die antippbaren Orte. Die Markierungen zeigen Ortsnummer, Namen und gegebenenfalls den Auftragsstatus. Großzügige unsichtbare Tippflächen umfassen Ortsbild und Markierung. Titel und Regionspfeile schweben über der Karte. Die Pfeile wechseln ausschließlich zwischen benachbarten freigeschalteten Expeditionsregionen; Grenzen und gesperrte Regionen deaktivieren den jeweiligen Pfeil.
 
 Jede Region verwendet die bestehenden sieben Ortsindizes und einen achten Stammkunden-/Endlosort. Ihre Reihenfolge und die am fertigen Bild gemessenen Koordinaten stehen in `src/regionRoutes.ts`.
 

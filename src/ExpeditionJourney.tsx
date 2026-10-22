@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Text} from './Language';
 import {t} from './i18n';
 import {Icon} from './Icon';
-import {displayFont} from './theme';
+import {C,displayFont} from './theme';
 import {regionIdentities} from './regionIdentities';
 import {regionRoutes} from './regionRoutes';
 import {adjacentJourneyRegion,journeyFocus,journeyGeometry,journeyOffset} from './journeyLayout';
@@ -48,14 +48,14 @@ export function ExpeditionJourney({map,maps,state,missions,accountId,onRegion,on
      const complete=isFinal?state.finalClaimed:state.deliveries[index];
      const mission=missions.find(m=>isFinal?m.kind==='final':m.kind==='delivery'&&m.place===index);
      const status=complete?'Abgeschlossen':mission?.status==='completed'?'Bonus bereit':mission?.status==='active'?'Unterwegs':index===state.discovered?'Erkunden':isFinal?'Handelsplatz':'Bonuslieferung';
-     const width=Math.max(138,Math.min(184,geometry.worldWidth*.095)),artHeight=geometry.imageHeight*.19;
+     const width=Math.max(126,Math.min(180,location.name.length*6.2+42)),artHeight=geometry.imageHeight*.19;
      const top=Math.max(66,anchor.y-artHeight*.56),signY=anchor.y+artHeight*.44;
-     return <Pressable key={index} testID={`journey-place-${index}`} accessibilityRole="button" accessibilityLabel={`${t(location.name)}, ${t(status)}`} accessibilityHint={t('Ort öffnen')} onPress={()=>onPlace(isFinal?'endless':index)} style={({pressed})=>[s.place,{left:anchor.x-width/2,top,width,paddingTop:Math.max(44,signY-top),paddingBottom:compact?8:14,opacity:pressed?.78:1}]}>
-      <View testID={`journey-sign-${index}`} style={[s.sign,compact&&{minHeight:29,paddingVertical:3}]}>
-       <View style={s.rivet}/><Text numberOfLines={2} style={[s.name,compact&&{fontSize:11,lineHeight:14}]}>{location.name}</Text><View style={s.rivet}/>
+     return <Pressable key={index} testID={`journey-place-${index}`} accessibilityRole="button" accessibilityLabel={`${t(location.name)}, ${t(status)}`} accessibilityHint={t('Ort öffnen')} onPress={()=>onPlace(isFinal?'endless':index)} style={({pressed})=>[s.place,{left:Math.max(0,Math.min(geometry.worldWidth-width,anchor.x-width/2)),top,width,paddingTop:Math.max(44,signY-top),paddingBottom:compact?8:14,opacity:pressed?.8:1}]}>
+      <View testID={`journey-sign-${index}`} style={[s.sign,index===state.discovered&&!complete&&s.signNext]}>
+       <Text style={s.number}>{String(index+1).padStart(2,'0')}</Text>
+       <Text numberOfLines={2} style={[s.name,compact&&{fontSize:11,lineHeight:14}]}>{location.name}</Text>
+       {(complete||mission)&&<View style={s.status}><Icon name={complete?'check':mission.status==='completed'?'reward':'timer'} size={12} color={C.brassLight}/></View>}
       </View>
-      <View style={s.signPosts}><View style={s.post}/><View style={s.post}/></View>
-      {(complete||mission)&&<View style={s.seal}><Icon name={complete?'check':mission.status==='completed'?'reward':'timer'} size={12} color="#514B3C"/></View>}
      </Pressable>;
     })}
    </View>
@@ -73,10 +73,11 @@ const s=StyleSheet.create({
  titleWash:{position:'absolute',left:-4,right:-4,top:0,bottom:0,borderRadius:40,backgroundColor:'rgba(245,237,219,.60)',boxShadow:'0px 0px 16px 12px rgba(245,237,219,.50)'},
  title:{fontFamily:displayFont,fontSize:18,lineHeight:24,fontWeight:'400',color:'#34423C',textShadowColor:'rgba(249,245,232,.75)',textShadowOffset:{width:0,height:0},textShadowRadius:3},
  place:{position:'absolute',alignItems:'center',paddingBottom:14},
- sign:{minHeight:33,width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'center',gap:5,paddingHorizontal:6,paddingVertical:5,backgroundColor:'rgba(240,225,193,.96)',borderWidth:1,borderBottomWidth:2,borderColor:'#837255',borderRadius:3,boxShadow:'0px 2px 3px rgba(38,32,23,.23)'},
- name:{flex:1,fontFamily:displayFont,fontSize:12,lineHeight:16,fontWeight:'600',textAlign:'center',color:'#3D3B2F'},
- rivet:{width:3,height:3,borderRadius:2,backgroundColor:'#847154'},signPosts:{width:'65%',flexDirection:'row',justifyContent:'space-between'},post:{width:4,height:9,backgroundColor:'#7F6D50'},
- seal:{position:'absolute',right:6,bottom:1,width:22,height:22,borderWidth:1,borderColor:'#8C7D5E',backgroundColor:'#E9DDBF',borderRadius:11,alignItems:'center',justifyContent:'center'},
+ sign:{minHeight:38,width:'100%',flexDirection:'row',alignItems:'center',gap:7,paddingHorizontal:9,paddingVertical:5,backgroundColor:'rgba(36,61,64,.94)',borderWidth:1,borderColor:C.brass,borderRadius:7,boxShadow:'0px 2px 6px rgba(14,28,29,.34)'},
+ signNext:{borderColor:C.brassLight,borderWidth:2},
+ number:{fontFamily:displayFont,fontSize:11,lineHeight:15,fontWeight:'700',color:C.brassLight},
+ name:{flex:1,fontFamily:displayFont,fontSize:12,lineHeight:16,fontWeight:'600',textAlign:'left',color:C.onInk},
+ status:{width:20,height:20,borderWidth:1,borderColor:'rgba(225,201,143,.55)',backgroundColor:'rgba(225,201,143,.12)',borderRadius:10,alignItems:'center',justifyContent:'center'},
  navigation:{position:'absolute',left:12,right:12,bottom:10,flexDirection:'row',justifyContent:'space-between'},
  arrow:{width:48,height:48,alignItems:'center',justifyContent:'center'},arrowSpacer:{width:48,height:48},
  arrowDisc:{width:34,height:34,borderRadius:17,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(245,236,214,.54)',boxShadow:'0px 1px 7px rgba(35,32,24,.10)'},
