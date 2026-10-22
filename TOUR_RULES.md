@@ -9,7 +9,8 @@ Jede vollständige Fahrzeugtour umfasst Hin- und gegebenenfalls Rückfahrt. Sie 
 - Eine Karte kann innerhalb einer eingesetzten Flotte nicht doppelt fahren. Gegenseitige Platzwechsel warten bei Bedarf auf das Ende beider bisherigen Touren. Die bestehende Erlaubnis zum parallelen Einsatz derselben Karte in verschiedenen Flottenprojekten und in der Garage bleibt bestehen.
 - Ein austretender Bonusgeber bleibt bis zum Ende seiner Tour Mitglied. Der Nachfolger wird erst beim tatsächlichen Eintritt Bonusgeber. Beim Start einer Empfängertour werden die zu diesem Zeitpunkt aktiven Mitglieder und aktuellen Kartenlevel ausgewertet. Laufende Empfängertouren behalten ihre Boni.
 - Gleichzeitige Ankünfte werden zusammen abgeschlossen, bevor neue Touren beginnen. Die Bonuswirkung hängt damit nicht von der Reihenfolge der Plätze ab.
-- Überstunden buchen Teilmengen nach der gespeicherten Tourabrechnung. Eine vollständig dadurch erledigte Tour kann die nächste Tour mit neuen Werten starten. Bei fehlenden Nachfolgefahrzeugen wird nur die noch bewegliche Ladung beschleunigt und entsprechend abgerechnet.
+- Beim Pyramiden-Event wird die Ladung bereits am Ende der Hinfahrt gezählt; die eingefrorene Tour endet weiterhin nach der leeren Rückfahrt. Eventüberstunden sind separate Sofortlieferungen und verändern diese laufenden Touren nicht.
+- Überstunden in endlichen Kundenaufträgen buchen Teilmengen nach der gespeicherten Tourabrechnung. Eine vollständig dadurch erledigte Tour kann die nächste Tour mit neuen Werten starten. Bei fehlenden Nachfolgefahrzeugen wird nur die noch bewegliche Ladung beschleunigt und entsprechend abgerechnet.
 
 ## Prognosen, Speicherung und Zeit
 

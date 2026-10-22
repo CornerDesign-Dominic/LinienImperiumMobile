@@ -4,6 +4,7 @@ const { initializeApp } = require('firebase-admin/app');
 const { getFirestore, Timestamp } = require('firebase-admin/firestore');
 const { gzipSync, gunzipSync } = require('node:zlib');
 const { execute } = require('./engine.cjs');
+const {readEventContext,refreshRanking}=require('./event-store.cjs');
 initializeApp();
 const db=getFirestore();
 exports.game = onCall({region:'europe-west3', serviceAccount:'mobile-game-runtime@linienimperium.iam.gserviceaccount.com', memory:'512MiB', timeoutSeconds:60, maxInstances:3, cors:true}, async request=>{
@@ -19,16 +20,19 @@ exports.game = onCall({region:'europe-west3', serviceAccount:'mobile-game-runtim
       const previous=receipt?await tx.get(receipt):null;
       const record=saved.exists?saved.data():{};
       const state=record.snapshot?JSON.parse(gunzipSync(record.snapshot).toString('utf8')):null;
-      if(previous?.exists){const view=execute(state,'sync').view;if(previous.data().action==='transportBatch')view.transportBatchApplied=true;if(previous.data().customerBatchApplied)view.customerBatchApplied=true;const summary=previous.data().claimSummary;if(summary)view.claimSummary=summary;const levelUps=previous.data().levelUps;if(levelUps)view.levelUps=levelUps;if(previous.data().hubCrateParts)view.hubCrateParts=previous.data().hubCrateParts;const gift=previous.data().giftFind;if(gift)view.giftFind=gift;const find=previous.data().expeditionFind;if(find)view.expeditionFind=find;return view;}
       const now=Date.now();
       const requests=(record.requests||[]).filter(t=>now-t<60000);
       if(requests.length>=100)throw new HttpsError('resource-exhausted','Bitte einen Moment warten.');
+      const eventContext=await readEventContext(tx,db,request.auth.uid,previous?.exists?'sync':action,now);
       let result;
-      try {result=execute(state,action,payload,now);}catch(error){throw new HttpsError('invalid-argument',error.message);}
+      try {result=execute(state,previous?.exists?'sync':action,previous?.exists?{}:payload,now,Math.random,eventContext);}catch(error){throw new HttpsError('invalid-argument',error.message);}
+      if(previous?.exists){refreshRanking(result.view,eventContext,request.auth.uid,result.state);for(const key of ['claimSummary','levelUps','hubCrateParts','giftFind','expeditionFind','customerBatchApplied'])if(previous.data()[key])result.view[key]=previous.data()[key];if(previous.data().action==='transportBatch')result.view.transportBatchApplied=true;return result.view;}
+      eventContext.persist(result.state);
+      refreshRanking(result.view,eventContext,request.auth.uid,result.state);
       const snapshot=gzipSync(JSON.stringify(result.state));
       if(snapshot.length>900000)throw new HttpsError('resource-exhausted','Spielstand zu groß. Bitte Support kontaktieren.');
       tx.set(gameRef,{snapshot,revision:(record.revision||0)+1,requests:[...requests,now],updatedAt:Timestamp.fromMillis(now)});
-      if(receipt)tx.set(receipt,{action,...(result.view.customerBatchApplied?{customerBatchApplied:true}:{}),...(result.view.levelUps?{levelUps:result.view.levelUps}:{}),...(result.view.claimSummary?{claimSummary:result.view.claimSummary}:{}),...(result.view.hubCrateParts?{hubCrateParts:result.view.hubCrateParts}:{}),...(result.view.giftFind?{giftFind:result.view.giftFind}:{}),...(result.view.expeditionFind?{expeditionFind:result.view.expeditionFind}:{}),createdAt:Timestamp.fromMillis(now),expireAt:Timestamp.fromMillis(now+7*86400000)});
+      if(receipt&&!previous?.exists)tx.set(receipt,{action,...(result.view.customerBatchApplied?{customerBatchApplied:true}:{}),...(result.view.levelUps?{levelUps:result.view.levelUps}:{}),...(result.view.claimSummary?{claimSummary:result.view.claimSummary}:{}),...(result.view.hubCrateParts?{hubCrateParts:result.view.hubCrateParts}:{}),...(result.view.giftFind?{giftFind:result.view.giftFind}:{}),...(result.view.expeditionFind?{expeditionFind:result.view.expeditionFind}:{}),createdAt:Timestamp.fromMillis(now),expireAt:Timestamp.fromMillis(now+7*86400000)});
       return result.view;
     });
   } catch(error){if(error instanceof HttpsError)throw error;console.error('Game transaction failed',error);throw new HttpsError('internal','Spielstand konnte nicht geladen werden. Bitte erneut versuchen.');}

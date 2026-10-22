@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const itemNames = require('./item-names.json');
-const {eventViews, changeEvent, assignEventFleet, EVENT_PROJECT_DISTANCE_KM} = require('./events.cjs');
+const {eventViews, changeEvent, assignEventFleet, EVENT_PROJECT_DISTANCE_KM, touchEvent, recordActivity, claimEvent, spendEventOvertime, joinEvent, syncWorld, prepareEvent} = require('./events.cjs');
 const procurementRuntime = fs.readFileSync(path.join(__dirname, 'procurement-runtime.js'), 'utf8');
 const transportCards = require('./transport-cards.json');
 const transportRuntime = fs.readFileSync(path.join(__dirname, 'transport-runtime.js'), 'utf8');
@@ -161,8 +161,8 @@ const bridge = `
   ${transportRuntime}
   globalThis.mobile = {
     settleEventTours, refreshTourStarts, queueSingleVehicle, settleProcurementTimeline, startProcurement, startProcurementGroup, stopProcurement, stopProcurementGroup, claimProcurement,
-    eventFleetOptions() {
-      const order={distance:${EVENT_PROJECT_DISTANCE_KM},routeType:'single'};
+    eventFleetOptions(distance = 240) {
+      const order={distance,routeType:'single'};
       return [0,1,2].map(index=>({index,vehicles:projectFleetVehicles(index)?.map(vehicle=>({
         ...vehicle,bonusStats:{...vehicle.bonusStats},
         cycleMs:Math.max(1,Math.ceil(tourSeconds(order,vehicle,vehicle.capacity)*1000))
@@ -426,6 +426,7 @@ function session(state, now=Date.now(), random=Math.random) {
   if(state) api.state=JSON.parse(JSON.stringify(state));
   api.migrateLinearProgression();api.migrateHubVehicles();api.migrateTransportCards();
   if(!Number.isSafeInteger(api.state.inventory.expeditionRefills)||api.state.inventory.expeditionRefills<0)api.state.inventory.expeditionRefills=0;
+  prepareEvent(api.state);
   api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleProcurementTimeline(now);
   api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);
   return api;
@@ -443,9 +444,13 @@ const companyProfile = p => {
   };
   return {companyName:name(p.companyName,'Firmenname',40),cityName:name(p.cityName,'Stadtname',30)};
 };
-function execute(state, action='sync', p={}, now=Date.now(), random=Math.random) {
+function execute(state, action='sync', p={}, now=Date.now(), random=Math.random, eventContext={}) {
   const a=session(state,now,random);
+  touchEvent(a.state,now);
+  syncWorld(a.state,eventContext);
   const before=JSON.stringify(a.state);
+  const activityBefore={overtime:a.state.overtimePoints,expedition:a.state.expedition.points};
+  const distance=()=>a.state.eventTests?.[p.id]?.distance||240;
   const calls={
     procurementGroupStart:()=>{
       if(!Array.isArray(p.trucks)||!p.trucks.length||p.trucks.length>10)throw Error('Ungültige Fahrzeugauswahl.');
@@ -457,9 +462,14 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
     procurementStart:()=>a.startProcurement(num(p.region,4),id(p.truck),choice(p.mode,['count','reserve']),num(p.amount,p.mode==='count'?100000:1000000000)),
     procurementStop:()=>a.stopProcurement(id(p.id),choice(p.immediate,[true,false])),
     procurementClaim:()=>a.claimProcurement(),
-    eventStart:()=>changeEvent(a.state,id(p.id),'start',num(p.run),now),
+    eventStart:()=>changeEvent(a.state,id(p.id),'start',num(p.run),now,p),
+    eventRanks:()=>{},
+    eventJoin:()=>joinEvent(a.state,eventContext.world,now,eventContext.member),
+    eventRegister:()=>{if(!eventContext.world)throw Error('Gemeinschaftsevent nicht verfügbar.');if(now>=eventContext.world.startsAt)throw Error('Anmeldung geschlossen. Bitte beitreten.');a.state.eventRegistration=eventContext.world.id;return 'Für den Pyramidenbau angemeldet.';},
+    eventClaim:()=>claimEvent(a.state,id(p.id),num(p.run),p.kind,now,eventContext.world),
+    eventOvertime:()=>spendEventOvertime(a.state,id(p.id),num(p.run),p.amount,now),
     eventEnd:()=>changeEvent(a.state,id(p.id),'end',num(p.run),now),
-    eventFleet:()=>assignEventFleet(a.state,id(p.id),num(p.run),num(p.template,2),a.eventFleetOptions(),now),
+    eventFleet:()=>assignEventFleet(a.state,id(p.id),num(p.run),num(p.template,2),a.eventFleetOptions(distance()),now),
     singleVehicle:()=>a.queueSingleVehicle(id(p.order),id(p.truck)),
     sync:()=>{},start:()=>a.chooseStartCity(id(p.id)),foundCompany:()=>a.foundCompany(companyProfile(p)),
     garageAdd:()=>a.addCardToGarage(id(p.id)),garageRemove:()=>a.removeCardFromGarage(id(p.id)),
@@ -511,12 +521,15 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
   const oldJobs = new Set(a.state.expedition.jobs.map(j=>j.id));
   const clocks=a.capturePointClocks(now);
   const ok=calls[action]();
+  touchEvent(a.state,now);
+  recordActivity(a.state,action,activityBefore,now);
   a.reconcilePointClocks(clocks,now);
   if(action==='mission')a.shortenTestMissions();
   a.refreshTourStarts(now);
+  syncWorld(a.state,eventContext);
   const view=a.view();
-  view.testEvents=eventViews(a.state,a.eventFleetOptions());
-  if(['eventStart','eventEnd','eventFleet'].includes(action))view.message=ok;
+  view.testEvents=eventViews(a.state,a.eventFleetOptions(a.state.eventTests?.['large-project-own-overtime']?.distance||240),eventContext.world,eventContext.ranking);
+  if(action.startsWith('event'))view.message=ok;
   const normalizeNames=text=>typeof text==='string'?text.replace('Geeignete Klassen: Regionalverkehr 7,5-Tonner, 18-Tonner und 26-Tonner; Fernverkehr Sattelzug, 26-Tonner und 40-t-Tautliner.','Alle gefundenen Fahrzeugkarten können Regionalverkehr und Fernverkehr fahren.').replace(/Sonderfahrten/g,'Sonderaufträge').replace(/Sonderfahrt/g,'Sonderauftrag').replace(/Firmen-Items/g,'Firmenausbau-Items').replace(/Firmen-Item/g,'Firmenausbau-Item').replace(/100-Token-Refill|Überstunden-Refill/g,'Überstundenauffüller').replace(/\b(common|uncommon|rare)-Shard/g,(_,r)=>r[0].toUpperCase()+r.slice(1)+'-Shard'):text;
   view.message=normalizeNames(view.message);
   for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(normalizeNames);
@@ -548,7 +561,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random)
       :job?{type:'job',id:job.id,region:job.region,title:itemNames[job.kind==='character'?'character':'material'][0],detail:'Stufe '+job.tier}
       :{type:'reward',title:card?.name||view.message||'Fund erhalten',detail:card?(state?.expedition.characters[card.id]?'1 '+card.rarity[0].toUpperCase()+card.rarity.slice(1)+'-Shard':'Fahrzeugkarte'):''};
   }
-  if(action!=='sync'&&(ok===false||JSON.stringify(a.state)===before))view.message ||= 'Aktion nicht möglich: Voraussetzungen oder Vorräte prüfen.';
+  if(!['sync','eventRanks'].includes(action)&&(ok===false||JSON.stringify(a.state)===before))view.message ||= 'Aktion nicht möglich: Voraussetzungen oder Vorräte prüfen.';
   return {state:JSON.parse(JSON.stringify(a.state)),view:JSON.parse(JSON.stringify(view))};
 }
 module.exports={execute,session};

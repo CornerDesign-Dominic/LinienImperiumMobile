@@ -73,3 +73,10 @@ Fünf Regionskarten führen zu je sieben Ortskarten und einer Endloskarte. Kunde
 ## Materialbeschaffung
 
 Nach vollständigem Abschluss einer Expeditionsregion wird ihre Beschaffungsstelle dauerhaft verfügbar. Garagenfahrzeuge holen für feste Münzpreise Materialien ab, wahlweise mit vorausbezahlter Tourenzahl oder bis zu einer Kontoreserve. Offlinefahrten, getrennte Beendigung nach Tour oder sofortiger Abbruch, Rückerstattung ungestarteter Touren, gemeinsame Lootabholung und regionale Erfolgszähler sind enthalten. Flotteneinsätze bleiben parallel möglich. Preise beginnen bei 8.000 Münzen je Runde; alle fünf Stellen nutzen vorerst denselben niedrigen Lootpool. Zugang über Home und Expedition; Regeln und Hilfe beschreiben die Details.
+
+## Pyramiden-Event
+
+Das bestehende Event enthält die Reiter Event, Pass und Ränge, konfigurierbare
+Solotests sowie einen gemeinsamen Pyramidenbau mit 48-Stunden-Anmeldung.
+Regeln, vorläufige Skalierung, Belohnungen und verbleibende Grenzen stehen in
+[docs/events/pyramid.md](docs/events/pyramid.md).
