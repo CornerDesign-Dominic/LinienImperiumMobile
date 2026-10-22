@@ -1,3 +1,17 @@
+## Kartensammlung: Dropdown und klappbare Abschnitte – gesammelt, nicht veröffentlicht
+
+Sammelbranch: `batch/company-improvements` · vorbereitet am 22.10.2026.
+
+- „Deine Sammlung“ samt Icon entfernt; vorhandener Seitentitel bleibt.
+- Kompaktes Seltenheitsdropdown mit allen Seltenheiten und Splitterbeständen.
+- Freigeschaltete und gesperrte Karten unabhängig auf-/zuklappbar, jeweils mit gefilterter Anzahl; freigeschaltet zunächst offen, gesperrt geschlossen.
+- Deutsch/Englisch, bestehende Kartenansichten und Werte beibehalten.
+- Typprüfung und 15 relevante Tests erfolgreich; Bedienung und responsive Darstellung bei 320/390/430 px geprüft. Kein physischer Gerätetest.
+- Gemeinsam mit den Firmenverbesserungen sammeln. Keine Veröffentlichung vor ausdrücklichem Go.
+- Details: `docs/ui/collection-filters.md`.
+
+---
+
 ## Transportverbesserungen: kompakte Übersicht und Ausbau-Modal – gesammelt, nicht veröffentlicht
 
 Sammelbranch: `batch/company-improvements` · vorbereitet am 22.10.2026.

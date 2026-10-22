@@ -959,5 +959,9 @@
   "Nicht genügend Firmenausbau-Items.": "Not enough company upgrade items.",
   "Ausbau nicht bestätigt. Bitte erneut versuchen.": "Upgrade not confirmed. Please try again.",
   "Wird verbessert …": "Upgrading …",
-  "Für {0} M verbessern": "Upgrade for {0} coins"
+  "Für {0} M verbessern": "Upgrade for {0} coins",
+  "Seltenheit": "Rarity",
+  "Splitter": "Shards",
+  "Noch keine Karten dieser Seltenheit freigeschaltet.": "No cards of this rarity unlocked yet.",
+  "Alle Karten dieser Auswahl freigeschaltet.": "All cards in this selection are unlocked."
 }
