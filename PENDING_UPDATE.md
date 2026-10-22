@@ -1,3 +1,158 @@
+## Gesamtpaket Firma und Fahrzeugkarten – zur Veröffentlichung freigegeben am 22.10.2026
+
+Der gesamte Sammelstand `batch/company-improvements` wird auf ausdrücklichen Wunsch veröffentlicht. Mit dem aktuellen Hauptstand einschließlich der Expeditionsschilder konfliktfrei zusammengeführt. Die nachfolgenden Abschnitte „gesammelt/nicht veröffentlicht“ beschreiben historische Vorbereitungsschritte dieses Pakets; maßgeblich ist dieser oberste Releaseeintrag.
+
+Enthalten:
+- Kompakte Firmenverbesserungen mit Regional-/Fernverkehr-Reitern, Vorher/Nachher und Kaufmodal.
+- Sammlung ohne Zusatzüberschrift, mit Seltenheitsdropdown, klappbaren Gruppen, römischer Kartenstufe sowie kompakten Iconwerten für Kapazität, Geschwindigkeitsrang, Durchschnittstempo und Betriebskosten.
+- Engere Kartenabstände und halbierter allgemeiner seitlicher Seitenrand; Expeditionslayouts bleiben erhalten.
+- Vereinfachte Kartendetails: Bonus als Satz mit Stufenmodal, eigene Geschwindigkeits- und Kapazitätscard, zentrale Verbesserung unten mit Kosten, Bestand und Ergebnisvorschau.
+- Technische Bildskalierungsanpassung für die große Fahrzeugansicht; unveränderte 1024-Pixel-Originale. Android-Schärfe nach Veröffentlichung am Gerät prüfen.
+- Aktuelle Event-Erweiterung und Expeditionsschilder vollständig erhalten.
+
+Gesamtprüfung vor Veröffentlichung: TypeScript, alle 174 Tests und Android-Export erfolgreich. Mobile Browserprüfungen der geänderten Oberflächen sind in den UI-Notizen dokumentiert. Kein physischer Gerätetest. Der Veröffentlichungslauf prüft zusätzlich Backend-Deployment, Live-API und Android-OTA.
+
+---
+
+## Fahrzeugbilder: große Anzeige geprüft und Skalierung angepasst – gesammelt
+
+- Alle 25 Fahrzeugbilder besitzen 1024 × 1024 Pixel. Original visuell geprüft; für die bestehende Detailansicht voraussichtlich ausreichend. Keine Bilder neu erstellt oder verändert.
+- Bildmontage erst nach echter Layoutmessung; große Android-Ansicht mit explizitem Skalierungsmodus statt automatischer Softwareverkleinerung.
+- Typprüfung, 13 relevante Tests, Browserdarstellung mit dreifacher Pixeldichte und Android-Export erfolgreich.
+- Ursache auf dem tatsächlichen Android-Gerät nicht abschließend gemessen; native Schärfe nach Veröffentlichung am Handy prüfen.
+- Details: `docs/ui/vehicle-art-sharpness.md`. Nicht veröffentlicht.
+
+---
+
+## Kartendetails: gemeinsames Verbesserungsmodal – gesammelt, nicht veröffentlicht
+
+- Ein Button „Verbessern“ ganz unten öffnet die gemeinsame Verbesserung für Kartenstufe, Kapazität und Geschwindigkeitsrang.
+- Je Bereich Vorher/Nachher, Materialkosten, eigener Bestand, Fehlmenge und bewusste Upgrade-Aktion; aktuelle Höchststufen und unzureichende Vorräte sperren den jeweiligen Ausbau.
+- Splitterfortschritt wird angerechnet. Werte/Bestände aktualisieren sich nach Erfolg im geöffneten Modal. Fehlerhinweis und Schutz vor Doppelbetätigung enthalten.
+- Servervorschauen für Kapazität und Tempo verwenden die tatsächlichen Spielfunktionen; vorhandene Befehle und Kosten unverändert.
+- Deutsch/Englisch. Typprüfung, alle 174 Tests, Browserbedienung bei 320/390/430 px und Android-Export erfolgreich.
+- Details: `docs/ui/vehicle-upgrade-modal.md`. Kein physischer Gerätetest.
+- Sammelbranch `batch/company-improvements`; keine Veröffentlichung vor ausdrücklichem Go.
+
+---
+
+## Kartendetails: Kartenstufen-Erweiterungscard entfernt – gesammelt
+
+- Alte separate Card zum Erweitern der Kartenstufe inklusive Fortschritt, Shardbestand und Button entfernt.
+- Stufe über dem Bild und Bonus-Stufenübersicht bleiben erhalten.
+- Typprüfung erfolgreich. Nicht veröffentlicht.
+
+---
+
+## Kartendetails: separate Geschwindigkeitsrang-Card entfernt – gesammelt
+
+- Alte Geschwindigkeitsrang-Card mit Ausbauanzeige entfernt.
+- Rang bleibt rechts oben in der Geschwindigkeitscard sichtbar.
+- Typprüfung erfolgreich. Nicht veröffentlicht.
+
+---
+
+## Kartendetails: Kapazität verschoben und vereinfacht – gesammelt, nicht veröffentlicht
+
+- Kapazitätscard direkt unter der Geschwindigkeit.
+- Aktuelle Kapazität und eingesetzte Module/Limit bleiben sichtbar.
+- Erweiterungsbutton, verfügbarer Modulbestand und Erklärung der Modulwirkung entfernt.
+- Typprüfung erfolgreich; weiterhin nur im Sammelbranch.
+
+---
+
+## Kartendetails: eigene Geschwindigkeitscard – gesammelt, nicht veröffentlicht
+
+- Direkt unter der Bonus-Card: Geschwindigkeit mit Leer, Beladen und Durchschnitt.
+- Rechts oben farbiger Stern mit römischem Geschwindigkeitsrang.
+- Durchschnitt intern drei, Anzeige maximal zwei Nachkommastellen; keine doppelten Tempo-/Rangzeilen in Fahrzeugdaten.
+- Typprüfung und sieben relevante Tests erfolgreich. Weiterhin nur im Sammelbranch.
+
+---
+
+## Kartendetails: Bonussatz und Stufenmodal – gesammelt, nicht veröffentlicht
+
+- Bonus-Card mit kurzem Satz für aktuellen Bonus und Wirkungsbereich.
+- Fragezeichen oben rechts öffnet Stufe-1-bis-10-Übersicht mit exakten Bonuswerten und markierter aktueller Stufe.
+- Garagenaktivität sichtbar; Vorschauhinweis bei nicht besessenen Karten. Deutsch/Englisch.
+- Typprüfung, sieben relevante Tests und mobile Browserprüfung bei 320/390/430 px erfolgreich.
+- Im Sammelbranch `batch/company-improvements`, keine Veröffentlichung.
+
+---
+
+## Kartendetails: Kopfbereich vereinfacht – gesammelt, nicht veröffentlicht
+
+- Seltenheitsname und Herkunft über dem Bild entfernt; mittig steht nur die römische Kartenstufe.
+- Stufenbadge im Bild und Stufen-/Kapazitäts-/Rangzeile unter dem Namen entfernt.
+- Nachfolgende Bonus-, Daten- und Ausbauabschnitte unverändert. Typprüfung erfolgreich.
+- Weiterhin im Sammelbranch, keine Veröffentlichung.
+
+---
+
+## Sammlung: engere Kartenabstände – gesammelt, nicht veröffentlicht
+
+- Abstand zwischen Sammlungskarten horizontal von 9 auf 4,5 und vertikal von 10 auf 5 Einheiten halbiert.
+- Drei Spalten bleiben erhalten; Karten und quadratische Bilder werden automatisch breiter.
+- Flottenauswahl unverändert. Typprüfung erfolgreich. Weiterhin nur im Sammelbranch.
+
+---
+
+## Seitenabstand halbiert – gesammelt, nicht veröffentlicht
+
+- Gemeinsamer seitlicher Seitenrand im Inhaltsbereich von 18 auf 9 Einheiten halbiert.
+- Expeditionsübersicht und bildschirmfüllende Expeditionskarte behalten ihre bisherigen Abstände. Andere Sonderlayouts und Innenabstände bleiben erhalten.
+- Typprüfung erfolgreich. Details: `docs/ui/page-side-spacing.md`.
+- Sammelbranch `batch/company-improvements`; keine Veröffentlichung vor ausdrücklichem Go.
+
+---
+
+## Kartensammlung: Betriebskosten ergänzt – gesammelt, nicht veröffentlicht
+
+- Vierte kompakte Angabe unter den bisherigen drei Werten: Münzicon und Betriebskosten in M/km.
+- Bestehender serverseitiger Fahrzeugwert, Anzeige mit maximal zwei Nachkommastellen; keine Änderung der Kostenberechnung.
+- Typprüfung erfolgreich. Sammelbranch `batch/company-improvements`, keine Veröffentlichung.
+
+---
+
+## Kartensammlung: drei kompakte Iconwerte – gesammelt, nicht veröffentlicht
+
+- Nur Kapazität (Kiste), Geschwindigkeitsrang (Stern und farbige römische Rangstufe) und Durchschnittstempo (Stoppuhr) unter dem Kartennamen.
+- Durchschnitt = (beladen + leer) / 2, numerisch auf drei Nachkommastellen; Anzeige mit maximal zwei Nachkommastellen in km/s.
+- Freie Module und getrennte Tempoangaben aus der Sammlung entfernt; Garage, Details und Tourberechnungen unverändert.
+- Typprüfung, sieben relevante Tests und mobile Browserprüfung bei 320/390/430 px erfolgreich.
+- Sammelbranch `batch/company-improvements`; weiterhin keine Veröffentlichung vor ausdrücklichem Go.
+
+---
+
+## Kartensammlung: Dropdown und klappbare Abschnitte – gesammelt, nicht veröffentlicht
+
+Sammelbranch: `batch/company-improvements` · vorbereitet am 22.10.2026.
+
+- „Deine Sammlung“ samt Icon entfernt; vorhandener Seitentitel bleibt.
+- Kartenstufe als römische Zahl I–X über dem Bild; bisherige Stufenzeile darunter entfernt. Gesperrte Karten zeigen einen Gedankenstrich. Gemeinsame Darstellung in Sammlung und Flottenauswahl.
+- Kompaktes Seltenheitsdropdown mit allen Seltenheiten und Splitterbeständen.
+- Freigeschaltete und gesperrte Karten unabhängig auf-/zuklappbar, jeweils mit gefilterter Anzahl; freigeschaltet zunächst offen, gesperrt geschlossen.
+- Deutsch/Englisch, bestehende Kartenansichten und Werte beibehalten.
+- Typprüfung und 15 relevante Tests erfolgreich; Bedienung und responsive Darstellung bei 320/390/430 px geprüft. Kein physischer Gerätetest.
+- Gemeinsam mit den Firmenverbesserungen sammeln. Keine Veröffentlichung vor ausdrücklichem Go.
+- Details: `docs/ui/collection-filters.md`.
+
+---
+
+## Transportverbesserungen: kompakte Übersicht und Ausbau-Modal – gesammelt, nicht veröffentlicht
+
+Sammelbranch: `batch/company-improvements` · vorbereitet am 22.10.2026.
+
+- Regional-/Fernverkehr-Reiter und kompakte Verbesserungszeilen mit aktuellem Effekt, Stufe und Verfügbarkeitsanzeige.
+- Kleine Materialzeile statt großer Infokarte.
+- Je Verbesserung ein Modal mit Vorher/Nachher, Stufenauswahl, Gesamtkosten und ausdrücklicher Kaufaktion.
+- Bestehende Serverprüfung und Preise beibehalten, Deutsch/Englisch ergänzt.
+- Typprüfung und alle 169 Tests erfolgreich; Bedienung bei 320/360/390/430 px einschließlich Fehler-/Mangel-/Maximalzuständen geprüft; Android-Export erfolgreich. Kein physischer Gerätetest.
+- Keine Veröffentlichung. Erst nach ausdrücklichem Go veröffentlichen.
+- Details: `docs/ui/company-upgrade-editor.md`.
+
+---
+
 ## Stadthub-Fahrzeuge, Fahrzeugteile und Fundkisten – veröffentlicht am 22.10.2026
 
 Release: `6823306861d2dc217f0c52408d4a3bb970f0ba3e` · [Veröffentlichungslauf](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39786609414).

@@ -358,9 +358,13 @@ const bridge = `
         const owned = game.expedition.characters[card.id];
         const truck = game.trucks.find(t => t.cardId === card.id) || owned?.parkedTruck || createCardTruck(card);
         // Collection data intentionally excludes assignment, hub and trip state.
+        const capacityLevel=truck.moduleCapacityLevel||0,maxCapacityLevel=Math.max(card.maxCapacityLevel,capacityLevel);
+        const nextRank=truckRarity(truck).total<50?{...truck,rarityLevel:truckRarity(truck).total+1}:null;
+        const upgradePreview={capacity:capacityLevel<maxCapacityLevel?cardCapacity(card,capacityLevel+1):null,
+          rank:nextRank?{rank:truckRarity(nextRank),speed:truckSpeed(nextRank),loadedSpeed:truckSpeed(nextRank,nextRank.capacity)}:null};
         return [card.id, {capacity:truck.capacity, rank:truckRarity(truck), speed:truckSpeed(truck),
           loadedSpeed:truckSpeed(truck,truck.capacity), costPerKm:operatingCostPerKm(truck),
-          rankCost:rankGearCost(truck), capacityLevel:truck.moduleCapacityLevel || 0, maxCapacityLevel:Math.max(card.maxCapacityLevel,truck.moduleCapacityLevel||0), capacityStep:round2(card.baseCapacity*card.capacityStepPercent/100)}];
+          upgradePreview, rankCost:rankGearCost(truck), capacityLevel:truck.moduleCapacityLevel || 0, maxCapacityLevel:Math.max(card.maxCapacityLevel,truck.moduleCapacityLevel||0), capacityStep:round2(card.baseCapacity*card.capacityStepPercent/100)}];
       }));
       return {state: {...game,trucks,orders,overtimeCapacity:overtimeCapacity()}, serverTime:now, catalog, cardVehicles, procurement:procurementView(now),
         level:levelForXp(game.xp,game), expeditionCapacity:expeditionCapacity(),
