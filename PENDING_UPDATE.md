@@ -1,3 +1,9 @@
+## Veröffentlichung freigegeben am 23.10.2026
+
+Das gesamte seit der letzten Veröffentlichung gesammelte Garage-/Flotten-/Sammlungspaket ist freigegeben. Veröffentlichung über Mobile preview: Server vor Android-OTA. Die folgenden Sammelvermerke beschreiben den historischen Stand vor dieser Freigabe. Ergebnis des Workflows wird nach Abschluss dokumentiert.
+
+---
+
 ## Gemeinsame Kartenauswahl in Garage und Flotte – neu gesammelt, nicht veröffentlicht
 
 - Auswahlmodale verwenden den Seltenheits-Dropdown und das Dreispaltenraster der Sammlung.
