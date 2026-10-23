@@ -3,6 +3,8 @@ import {Icon,IconName} from './Icon';
 import {itemName,rarityColor} from './items';
 import {VehicleArt} from './VehicleArt';
 import React,{useState} from 'react';
+import {OrderVehiclePicker} from './OrderVehiclePicker';
+import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
 import {View,Pressable,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes} from './ui';
 const durationBand=(seconds:number)=>seconds<=300?'Kurz':seconds<=900?'Mittel':'Lang';
@@ -12,7 +14,6 @@ const rankStyle=(rank:number)=>rank===3?{backgroundColor:C.blueWash,borderColor:
 const expeditionRank=(job:any)=>[1,2,3].includes(job.tier)?job.tier:1;
 const expeditionName=(kind:string)=>itemName(kind==='character'?'character':'material');
 const endlessMissions=(data:any)=>data.state.expedition.missions.filter((m:any)=>m.kind==='endless'&&m.status==='active');
-const section=(name:string)=><Txt style={styles.section}>{name}</Txt>;
 function progress(o:any,clock:number){
  if(o.status==='completed')return 100;
  const fraction=o.tripEndsAt?Math.max(0,Math.min(1,(clock-o.tripStartAt)/(o.tripEndsAt-o.tripStartAt))):0;
@@ -28,18 +29,19 @@ function OrderTile({order:o,data,clock,onOpen}:any){
   </Card>
  </Pressable>;
 }
-export function Orders({data,clock,busy,onOpen,onRunning,onSaved,onRefresh,onClaim}:any){
+export function Orders({data,clock,busy,onOpen,onRefresh,onClaim,onMission,onJob,tab='offers',onTab,typeKey,onType}:any){
  const orders=data.state.orders.filter((o:any)=>!o.isProject),active=orders.filter((o:any)=>o.status==='active');
  const available=orders.filter((o:any)=>o.status==='available'),queued=orders.filter((o:any)=>o.status==='queued'),rewards=orders.filter((o:any)=>o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt);
- const runningCount=active.length+endlessMissions(data).length;
- const savedCount=queued.length+data.state.expedition.jobs.length;
- const tile=(o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>;
+ const tabs=[{id:'running',label:'Laufende',count:active.length+endlessMissions(data).length,ready:rewards.length},{id:'offers',label:'Angebote',count:available.length,ready:0},{id:'saved',label:'Aufträge',count:queued.length+data.state.expedition.jobs.length,ready:0}];
  return <>
-  {!!runningCount&&<Pressable accessibilityRole="button" accessibilityLabel={translate(`${runningCount} ${runningCount===1?'Auftrag':'Aufträge'} laufend`)} onPress={onRunning}><Card style={styles.running}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700'}}>{runningCount} {runningCount===1?'Auftrag':'Aufträge'} laufend</Txt><Icon name="chevron" size={17} color={C.accent}/></Row></Card></Pressable>}
-  {!!rewards.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {rewards.length}</Btn>}
-  <Pressable accessibilityRole="button" accessibilityLabel={translate(`Aufträge aus Vorräten, ${savedCount} verfügbar`)} onPress={onSaved}><Card style={styles.saved}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700',flex:1}}>Aufträge aus Vorräten</Txt><Pill>{savedCount}</Pill><Icon name="chevron" size={17} color={C.muted}/></Row></Card></Pressable>
-  <View style={styles.refresh}><Txt muted style={styles.small}>Neu {remaining(data.state.nextAutoRefreshAt,clock)}</Txt><Btn secondary style={{marginTop:0,flex:1}} disabled={busy||data.state.coins<data.refreshCost} onPress={onRefresh}>Wechseln · {n(data.refreshCost)} M</Btn></View>
-  {section('Angebote')}{available.map(tile)}{!available.length&&<Empty>Keine Angebote.</Empty>}
+  <View accessibilityRole="tablist" style={styles.tabs}>{tabs.map(item=><Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={`${translate(item.label)}, ${item.count}${item.ready?`, ${translate('Belohnungen')}: ${item.ready}`:''}`} accessibilityState={{selected:tab===item.id}} aria-selected={tab===item.id} onPress={()=>onTab(item.id)} style={[styles.tab,tab===item.id&&styles.activeTab]}><Txt style={[styles.tabLabel,tab===item.id&&{color:C.accent}]}>{item.label}</Txt><View style={{flexDirection:'row',gap:4,alignItems:'center'}}><Txt muted style={{fontSize:10}}>{item.count}</Txt>{!!item.ready&&<View accessible accessibilityLabel={`${translate('Belohnungen')}: ${item.ready}`} style={styles.ready}><Icon name="reward" size={11} color={C.gold}/><Txt gold style={{fontSize:10}}>{item.ready}</Txt></View>}</View></Pressable>)}</View>
+  {tab==='running'?<RunningOrders data={data} clock={clock} busy={busy} onOpen={onOpen} onClaim={onClaim} onMission={onMission}/>:tab==='saved'?<>
+   {typeKey&&<Btn secondary style={{marginTop:0,marginBottom:10}} onPress={()=>onType(null)}>Alle Aufträge</Btn>}
+   <SavedOrders data={data} clock={clock} busy={busy} onOpen={onOpen} onJob={onJob} typeKey={typeKey} onType={onType}/>
+  </>:<>
+   <View style={styles.refresh}><Txt muted style={styles.small}>Neu {remaining(data.state.nextAutoRefreshAt,clock)}</Txt><Btn secondary style={{marginTop:0,flex:1}} disabled={busy||data.state.coins<data.refreshCost} onPress={onRefresh}>Wechseln · {n(data.refreshCost)} M</Btn></View>
+   {available.map((o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>)}{!available.length&&<Empty>Keine Angebote.</Empty>}
+  </>}
  </>;
 }
 export function SavedOrders({data,clock,busy,onOpen,onJob,typeKey,onType}:any){
@@ -61,7 +63,7 @@ export function RunningOrders({data,clock,busy,onOpen,onClaim,onMission}:any){
  const orders=data.state.orders.filter((o:any)=>!o.isProject),active=orders.filter((o:any)=>o.status==='active'),ready=orders.filter((o:any)=>o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt);
  const tile=(o:any)=><OrderTile key={o.id} order={o} data={data} clock={clock} onOpen={onOpen}/>;
  const missions=endlessMissions(data);
- return <>{missions.map((m:any)=><Pressable key={`mission-${m.id}`} accessibilityRole="button" accessibilityLabel={translate(`${expeditionName(m.lootKind)}, unterwegs, ${m.id}`)} onPress={()=>onMission(m)}><Card style={[styles.offer,{borderLeftColor:C.accent}]}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{expeditionName(m.lootKind)}</Txt><Txt gold style={styles.small}>{remaining(m.endsAt,clock)}</Txt></Row><Txt muted style={styles.small}>{data.catalog.regionNames[m.region]} · {data.state.trucks.find((t:any)=>t.id===m.truckId)?.model||'Fahrzeug'}</Txt><Bar value={(clock-m.startedAt)/(m.endsAt-m.startedAt)*100}/></Card></Pressable>)}{!!ready.length&&<Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Prämien abholen · {ready.length}</Btn>}{active.map(tile)}{!active.length&&!missions.length&&<Empty>Keine Aufträge unterwegs.</Empty>}{!!ready.length&&<>{section('Prämien')}{ready.map(tile)}</>}</>;
+ return <>{!!ready.length&&<><Btn disabled={busy} style={{marginTop:0,marginBottom:12}} onPress={onClaim}>Belohnungen abholen · {ready.length}</Btn>{ready.map(tile)}</>}{missions.map((m:any)=><Pressable key={`mission-${m.id}`} accessibilityRole="button" accessibilityLabel={translate(`${expeditionName(m.lootKind)}, unterwegs, ${m.id}`)} onPress={()=>onMission(m)}><Card style={[styles.offer,{borderLeftColor:C.accent}]}><Row style={{marginBottom:3}}><Txt style={[styles.title,{flex:1}]}>{expeditionName(m.lootKind)}</Txt><Txt gold style={styles.small}>{remaining(m.endsAt,clock)}</Txt></Row><Txt muted style={styles.small}>{data.catalog.regionNames[m.region]} · {data.state.trucks.find((t:any)=>t.id===m.truckId)?.model||'Fahrzeug'}</Txt><Bar value={(clock-m.startedAt)/(m.endsAt-m.startedAt)*100}/></Card></Pressable>)}{active.map(tile)}{!active.length&&!missions.length&&!ready.length&&<Empty>Keine Aufträge unterwegs.</Empty>}</>;
 }
 
 function VehicleOrderQuote({quote:q,selected=false,onSelect,busy,active=false,relationship=0,card}:any){
@@ -90,7 +92,8 @@ function VehicleOrderQuote({quote:q,selected=false,onSelect,busy,active=false,re
   </View>}
  </View>;
 }
-function PossibleOrderRewards({labels}: {labels:string[]}){
+function PossibleOrderRewards({labels,modalBlocked=false}: {labels:string[];modalBlocked?:boolean}){
+ const [open,setOpen]=useState(false);
  const appearance=(label:string):{icon:IconName;color:string}=>{
   if(label.includes('Common-Zahnräder'))return {icon:'gear',color:rarityColor('common')};
   if(label.includes('Uncommon-Zahnräder'))return {icon:'gear',color:rarityColor('uncommon')};
@@ -100,17 +103,17 @@ function PossibleOrderRewards({labels}: {labels:string[]}){
   if(label.includes('Sonderauftrag'))return {icon:'projects',color:rarityColor('rare')};
   return {icon:'reward',color:C.gold};
  };
- return <Card><Txt style={[styles.title,{marginBottom:8}]}>Mögliche Belohnungen</Txt><View style={styles.possibleRewards}>{labels.map(label=>{
+ return <Card style={{padding:12}}><Row style={{marginBottom:4,flexWrap:'nowrap'}}><Txt style={[styles.small,{flex:1}]}>Mögliche Belohnungen</Txt><Btn icon="help" iconOnly secondary onPress={()=>setOpen(true)}>Mögliche Belohnungen</Btn></Row><View style={styles.possibleRewards}>{labels.map(label=>{
   const {icon,color}=appearance(label);
-  return <View key={label} accessible accessibilityLabel={translate(label)} style={[styles.possibleItem,{borderColor:color}]}><Icon name={icon} color={color} size={25}/><Txt style={styles.possibleLabel}>{label}</Txt></View>;
- })}</View></Card>;
+  return <Pressable key={label} accessibilityRole="button" accessibilityLabel={translate(label)} onPress={()=>setOpen(true)} style={[styles.possibleItem,{borderColor:color}]}><Icon name={icon} color={color} size={24}/></Pressable>;
+ })}</View><ExpeditionPlaceModal visible={open&&!modalBlocked} title="Mögliche Belohnungen" onClose={()=>setOpen(false)}>{labels.map(label=><Txt key={label} style={{marginBottom:8}}>{label}</Txt>)}</ExpeditionPlaceModal></Card>;
 }
 
-export function OrderDetail({data,id,busy,clock,onCommand,onBack,onSwitch}:any){
+export function OrderDetail({data,id,busy,clock,onCommand,onBack,onSwitch,modalBlocked=false}:any){
  const o=data.state.orders.find((o:any)=>o.id===id&&!o.isProject);
- const [truckId,setTruckId]=useState<string|null>(o?.choices[0]?.id||null);
+ const [picking,setPicking]=useState(false);
  if(!o)return <Card><Txt muted>Angebot nicht mehr verfügbar.</Txt><Btn secondary onPress={onBack}>Zur Übersicht</Btn></Card>;
- const active=o.status==='active',done=o.status==='completed',selected=o.choices.find((t:any)=>t.id===truckId),forecast=active?o.forecast:selected||o.forecast;
+ const active=o.status==='active',done=o.status==='completed',forecast=o.forecast;
  const truck=data.state.trucks.find((t:any)=>t.id===o.truckId);
  const fact=(label:string,value:string)=><Row><Txt muted>{label}</Txt><Txt style={{textAlign:'right'}}>{value}</Txt></Row>;
  const reward=o.completionReward;
@@ -121,13 +124,18 @@ export function OrderDetail({data,id,busy,clock,onCommand,onBack,onSwitch}:any){
     <Btn secondary disabled={busy} onPress={()=>onSwitch(o)}>Fahrzeug für nächste Tour wechseln</Btn>
    </>}
   </Card>
-  {!done&&<PossibleOrderRewards labels={o.possibleRewards||[]}/>}
+  {!done&&<PossibleOrderRewards labels={o.possibleRewards||[]} modalBlocked={modalBlocked}/>}
   {!active&&!done&&<Card>
-   {!o.choices.length?<Txt muted>{unavailable(o)}</Txt>:<><Txt style={styles.title}>Fahrzeug</Txt>{o.choices.map((t:any)=><VehicleOrderQuote key={t.id} quote={t} card={data.catalog.cards.find((card:any)=>card.id===(t.cardId||data.state.trucks.find((truck:any)=>truck.id===t.id)?.cardId))} selected={truckId===t.id} busy={busy} relationship={o.relationshipReward} onSelect={()=>setTruckId(t.id)}/>)}<Btn disabled={busy||!selected} onPress={()=>onCommand(o.kind==='private'?'assignPrivate':o.crafted?'assignCrafted':'assign',{order:o.id,truck:selected.id})}>Auftrag starten</Btn></>}
+   <Btn disabled={busy} style={{marginTop:0}} onPress={()=>setPicking(true)}>Fahrzeug wählen</Btn>
+   {!o.choices.length&&<Txt muted style={[styles.small,{marginTop:8}]}>{unavailable(o)}</Txt>}
    {o.status==='available'&&<Btn secondary disabled={busy} onPress={()=>onCommand('pin',{id:o.id})}>{o.pinned?'Freigeben':'Angebot halten'}</Btn>}
   </Card>}
+  {picking&&!active&&!done&&<OrderVehiclePicker key={o.id} data={data} choices={o.vehicleChoices||o.choices.map((q:any)=>({...q,free:true}))} summary={`${translate(o.cargo)} · ${n(o.volume,1)} t · ${n(o.distance)} km`} busy={busy} clock={clock} modalBlocked={modalBlocked} onClose={()=>setPicking(false)} onStart={async(truck:string)=>{
+   const next=await onCommand(o.kind==='private'?'assignPrivate':o.crafted?'assignCrafted':'assign',{order:o.id,truck});
+   return next?.state.orders.find((order:any)=>order.id===o.id)?.status==='active';
+  }}/>}
   {active&&forecast&&<Card><Txt style={styles.title}>Fahrzeug</Txt><VehicleOrderQuote card={data.catalog.cards.find((card:any)=>card.id===truck?.cardId)} quote={{...forecast,seconds:Math.max(0,((o.runningEndsAt||clock)-clock)/1000)}} active relationship={o.relationshipReward}/></Card>}
   {done&&reward?<Card><Txt style={[styles.title,{marginBottom:12}]}>Abschlussprämie</Txt>{fact('Münzen',`${n(reward.coins,2)} M`)}{Object.entries(reward.gears||{}).filter(([,amount])=>Number(amount)>0).map(([rarity,amount])=><View key={rarity}>{fact(`${data.catalog.rarities.find((r:any)=>r.id===rarity)?.label||rarity}-Zahnräder`,n(amount))}</View>)}{reward.companyItems>0&&fact(itemName('companyItems',2),n(reward.companyItems))}{reward.capacityModule&&fact('Kapazitätsmodul','1')}{reward.supplierContacts>0&&fact('Lieferantenkontakte',n(reward.supplierContacts))}{!reward.claimedAt?<Btn disabled={busy} onPress={()=>onCommand('claim',{id:o.id})}>Prämie abholen</Btn>:<Txt muted>Abgeholt</Txt>}</Card>:null}
  </>;
 }
-const styles=StyleSheet.create({metrics:{flexDirection:'row',flexWrap:'wrap',gap:6},metric:{width:'48%',minWidth:0,flexDirection:'row',alignItems:'baseline',gap:5},metricLabel:{fontSize:10,lineHeight:15},metricValue:{fontSize:11,lineHeight:16,fontWeight:'700',flexShrink:1},quoteDisclosure:{minHeight:30,flexDirection:'row',alignItems:'center',justifyContent:'space-between',borderTopWidth:1,borderTopColor:C.line,marginTop:5},quoteDetails:{paddingTop:2},possibleRewards:{flexDirection:'row',flexWrap:'wrap',gap:6},possibleItem:{width:'31%',minWidth:0,alignItems:'center',backgroundColor:C.raised,borderWidth:1,borderRadius:8,padding:6,gap:4},possibleLabel:{fontSize:10,lineHeight:14,textAlign:'center'},title:{fontSize:15,fontWeight:'700'},small:{fontSize:12,lineHeight:18},section:{fontSize:13,fontWeight:'700',color:C.muted,marginTop:10,marginBottom:9},offer:{padding:12,backgroundColor:C.panel,borderColor:C.line,borderLeftWidth:3,marginBottom:9},saved:{padding:12,backgroundColor:C.panel,borderColor:C.line},running:{padding:12,backgroundColor:C.greenWash,borderColor:C.accent},refresh:{flexDirection:'row',alignItems:'center',gap:10,marginBottom:8},vehicle:{padding:10,borderWidth:1,borderColor:C.line,borderRadius:10,marginTop:10}});
+const styles=StyleSheet.create({tabs:{flexDirection:'row',gap:5,marginBottom:14},tab:{flex:1,minHeight:54,alignItems:'center',justifyContent:'center',gap:2,borderWidth:1,borderColor:C.line,backgroundColor:C.panel,borderRadius:6},activeTab:{backgroundColor:C.greenWash,borderColor:C.accent},tabLabel:{fontSize:12,fontWeight:'700'},ready:{flexDirection:'row',alignItems:'center',gap:3},metrics:{flexDirection:'row',flexWrap:'wrap',gap:6},metric:{width:'48%',minWidth:0,flexDirection:'row',alignItems:'baseline',gap:5},metricLabel:{fontSize:10,lineHeight:15},metricValue:{fontSize:11,lineHeight:16,fontWeight:'700',flexShrink:1},quoteDisclosure:{minHeight:30,flexDirection:'row',alignItems:'center',justifyContent:'space-between',borderTopWidth:1,borderTopColor:C.line,marginTop:5},quoteDetails:{paddingTop:2},possibleRewards:{flexDirection:'row',flexWrap:'wrap',gap:6},possibleItem:{width:44,height:44,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderRadius:6},possibleLabel:{fontSize:10,lineHeight:14,textAlign:'center'},title:{fontSize:15,fontWeight:'700'},small:{fontSize:12,lineHeight:18},section:{fontSize:13,fontWeight:'700',color:C.muted,marginTop:10,marginBottom:9},offer:{padding:12,backgroundColor:C.panel,borderColor:C.line,borderLeftWidth:3,marginBottom:9},saved:{padding:12,backgroundColor:C.panel,borderColor:C.line},running:{padding:12,backgroundColor:C.greenWash,borderColor:C.accent},refresh:{flexDirection:'row',alignItems:'center',gap:10,marginBottom:8},vehicle:{padding:10,borderWidth:1,borderColor:C.line,borderRadius:10,marginTop:10}});

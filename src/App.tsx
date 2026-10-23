@@ -17,7 +17,8 @@ import {Expeditions} from './Expeditions';
 import {Wholesaler} from './Wholesaler';
 import {Gifts} from './Gifts';
 import {Projects,ProjectType,RunningProjects,ProjectDetail,projectTitle} from './Projects';
-import {Orders,SavedOrders,RunningOrders,OrderDetail} from './Orders';
+import {Orders,OrderDetail} from './Orders';
+import {OrderVehiclePicker} from './OrderVehiclePicker';
 import {Statistics} from './Statistics';
 import {CustomerList,CustomerDetail} from './Customers';
 import {Crafting} from './Crafting';
@@ -44,6 +45,7 @@ function Game(){
  const [eventId,setEventId]=useState<string|null>(null);
  const [orderId,setOrderId]=useState<string|null>(null);
  const [savedType,setSavedType]=useState<string|null>(null);
+ const [ordersTab,setOrdersTab]=useState('offers'),[jobId,setJobId]=useState<number|null>(null);
  const [cardId,setCardId]=useState<string|null>(null);
  const [customerId,setCustomerId]=useState<string|null>(null);
  const [levelNotices,setLevelNotices]=useState<number[]>([]);
@@ -67,9 +69,9 @@ function Game(){
   scroll.current?.scrollTo({y:0,animated:false});
  },[data,screen,orderId]);
  useEffect(()=>{if(!message)return;const timer=setTimeout(()=>setMessage(''),5000);return()=>clearTimeout(timer);},[message]);
- const go=(next:string)=>{if(next==='expeditions'&&screen!=='expeditions')setRegion(null);if(screen!==next)setTrail(v=>[...v,screen]);setScreen(next);scroll.current?.scrollTo({y:0,animated:false});};
- const back=()=>{if(levelNotices.length){setLevelNotices(queue=>queue.slice(1));return true;}if(sheet){setSheet(null);return true;}if(screen==='expeditions'&&region!==null){setRegion(null);scroll.current?.scrollTo({y:0,animated:false});return true;}if(trail.length){if(screen==='cardDetail')scroll.current?.scrollTo({y:0,animated:false});setScreen(trail[trail.length-1]);setTrail(v=>v.slice(0,-1));return true;}if(screen!=='home'){setScreen('home');return true;}return false;};
- useEffect(()=>{const handler=BackHandler.addEventListener('hardwareBackPress',back);return()=>handler.remove();},[screen,trail,sheet,projectId,region,levelNotices]);
+ const go=(next:string)=>{if(next==='runningOrders'||next==='savedOrders'){setOrdersTab(next==='runningOrders'?'running':'saved');setSavedType(null);next='orders';}if(next==='expeditions'&&screen!=='expeditions')setRegion(null);if(screen!==next)setTrail(v=>[...v,screen]);setScreen(next);scroll.current?.scrollTo({y:0,animated:false});};
+ const back=()=>{if(levelNotices.length){setLevelNotices(queue=>queue.slice(1));return true;}if(sheet){setSheet(null);return true;}if(screen==='orders'&&ordersTab==='saved'&&savedType){setSavedType(null);return true;}if(screen==='expeditions'&&region!==null){setRegion(null);scroll.current?.scrollTo({y:0,animated:false});return true;}if(trail.length){if(screen==='cardDetail')scroll.current?.scrollTo({y:0,animated:false});setScreen(trail[trail.length-1]);setTrail(v=>v.slice(0,-1));return true;}if(screen!=='home'){setScreen('home');return true;}return false;};
+ useEffect(()=>{const handler=BackHandler.addEventListener('hardwareBackPress',back);return()=>handler.remove();},[screen,trail,sheet,projectId,region,levelNotices,ordersTab,savedType]);
  const act=(action:string,payload:Record<string,unknown>={})=>run(action,payload);
  const confirm=(title:string,body:string,onConfirm:()=>void)=>Platform.OS==='web'?setSheet({title,body,items:[{title:'Bestätigen',onPress:onConfirm}]}):Alert.alert(translate(title),translate(body),[{text:translate('Abbrechen'),style:'cancel'},{text:translate('Bestätigen'),onPress:onConfirm}]);
  const choose=(title:string,items:any[],body?:string)=>setSheet({title,items,body});
@@ -78,7 +80,7 @@ function Game(){
  const hub=g?.hubs?.[0],hubCycles=Math.min(6,Math.max(0,Math.floor(Number(hub?.cashboxCycles)||0)));
  const hubStatus=hub?(hubCycles>=6?'Voll':`${hubCycles}/6`):null;
  const procurementRewards=Object.values(data?.procurement?.pending||{}).reduce((sum:number,value:any)=>sum+Number(value||0),0);
- const chooseTruck=(order:any)=>choose('Fahrzeug zuweisen',order.choices.map((t:any)=>({title:`${t.model} · ${n(t.capacity,1)} t`,detail:`${t.trips} Touren · ${minutes(t.seconds)} · Gewinn ${n(t.totalProfit,2)} M`,onPress:()=>act(order.kind==='private'?'assignPrivate':order.crafted?'assignCrafted':'assign',{order:order.id,truck:t.id})})),'Nur freie, geeignete Fahrzeuge werden angezeigt.');
+ const chooseTruck=(order:any)=>{setOrderId(order.id);go('orderDetail');};
  const chooseMission=(region:number,kind:string,place:number)=>choose('Fahrzeug wählen',g.trucks.filter((t:any)=>t.free&&t.tier>=2).map((t:any)=>({title:t.model,detail:`${n(t.capacity,1)} t`,onPress:()=>act('mission',{region,kind,place,truck:t.id})})));
  function showClaimSummary(next:any){
   setSheet({centered:true,title:'Belohnungen',rewardSummary:next.claimSummary,rarities:next.catalog.rarities});
@@ -87,8 +89,7 @@ function Game(){
   const find=next.expeditionFind;
   const assign=()=>{
    if(find.type==='job'){
-    const choices=next.state.trucks.filter((t:any)=>t.free&&t.tier>=2);
-    choose('Fahrzeug zuweisen',choices.map((t:any)=>({title:t.model,detail:`${n(t.capacity,1)} t`,onPress:async()=>{await run('mission',{region:find.region,kind:'endless',place:find.id,truck:t.id});}})));
+    setJobId(find.id);
    }else{
     const order=next.state.orders.find((o:any)=>o.id===find.id);
     if(order.isProject)choose('Flotte zuweisen',order.templates.filter((t:any)=>t.vehicles).map((t:any)=>({title:`Flotte ${t.index+1}`,detail:t.vehicles.map((v:any)=>v.model).join(' · '),onPress:async()=>{const result=await run('projectStart',{id:order.id,template:t.index});if(result?.state.orders.find((o:any)=>o.id===order.id)?.status==='active'){setScreen('projectDetail');setProjectId(order.id);setTrail(v=>[...v,'expeditions']);scroll.current?.scrollTo({y:0,animated:false});}}})));
@@ -122,10 +123,8 @@ function Game(){
    case 'fleet':return <Fleet data={data} busy={busy} template={template} onTemplate={setTemplate} onCommand={act} onCollection={()=>go('cards')} modalBlocked={levelNotices.length>0}/>;
    case 'cards':return <VehicleCards data={data} onOpen={(id:string)=>{setCardId(id);go('cardDetail');}}/>;
    case 'cardDetail':return <VehicleCardDetail data={data} id={cardId} busy={busy} onUpgrade={(id:string)=>act('cardUpgrade',{id})} onVehicleUpgrade={(id:string,kind:string)=>act(kind==='capacity'?'cardCapacity':'cardRank',{id})}/>;
-   case 'orders':return <Orders data={data} busy={busy} clock={clock} onOpen={(id:string)=>{setOrderId(id);go('orderDetail');}} onRunning={()=>go('runningOrders')} onSaved={()=>go('savedOrders')} onClaim={()=>act('claimSingles')} onRefresh={()=>confirm('Neue Angebote?',`${n(data.refreshCost)} M. Gehaltene Angebote bleiben bestehen.`,()=>act('refresh'))}/>;
-   case 'savedOrders':case 'savedOrderType':return <SavedOrders typeKey={screen==='savedOrderType'?savedType:null} onType={(key:string)=>{setSavedType(key);go('savedOrderType');}} data={data} clock={clock} busy={busy} onJob={(job:any)=>choose('Fahrzeug zuweisen',g.trucks.filter((t:any)=>t.free&&t.tier>=2).map((t:any)=>({title:t.model,detail:`${n(t.capacity,1)} t`,onPress:async()=>{const next=await act('mission',{region:job.region,kind:'endless',place:job.id,truck:t.id});if(next?.state.expedition.missions.some((m:any)=>m.jobId===job.id&&m.status==='active'))go('runningOrders');}})),`${c.regionNames[job.region]} · Rang ${job.tier||1}`)} onOpen={(id:string)=>{setOrderId(id);go('orderDetail');}}/>;
-   case 'runningOrders':return <RunningOrders onMission={(m:any)=>setSheet({centered:true,title:itemName(m.lootKind==='character'?'character':'material'),body:`${c.regionNames[m.region]} · Stufe ${m.tier}\n${n(m.transport?.volume)} t\n${g.trucks.find((t:any)=>t.id===m.truckId)?.model||'Fahrzeug'}\nRestzeit ${remaining(m.endsAt,clock)}`,items:[],emptyText:''})} data={data} clock={clock} busy={busy} onClaim={()=>act('claimSingles')} onOpen={(id:string)=>{setOrderId(id);go('orderDetail');}}/>;
-   case 'orderDetail':return <OrderDetail key={orderId} data={data} id={orderId} busy={busy} clock={clock} onCommand={async(action:string,payload:any)=>{const next=await act(action,payload);if(['assign','assignPrivate','assignCrafted'].includes(action)&&next?.state.orders.find((o:any)=>o.id===payload.order)?.status==='active'){setScreen('runningOrders');scroll.current?.scrollTo({y:0,animated:false});}}} onBack={back} onSwitch={(order:any)=>choose('Fahrzeug ab nächster Tour',[
+   case 'orders':return <Orders data={data} busy={busy} clock={clock} tab={ordersTab} onTab={(tab:string)=>{setOrdersTab(tab);setSavedType(null);scroll.current?.scrollTo({y:0,animated:false});}} typeKey={savedType} onType={setSavedType} onJob={(job:any)=>setJobId(job.id)} onOpen={(id:string)=>{setOrderId(id);go('orderDetail');}} onMission={(m:any)=>setSheet({centered:true,title:itemName(m.lootKind==='character'?'character':'material'),body:`${c.regionNames[m.region]} · Stufe ${m.tier}\n${n(m.transport?.volume)} t\n${g.trucks.find((t:any)=>t.id===m.truckId)?.model||'Fahrzeug'}\nRestzeit ${remaining(m.endsAt,clock)}`,items:[],emptyText:''})} onClaim={()=>act('claimSingles')} onRefresh={()=>confirm('Neue Angebote?',`${n(data.refreshCost)} M. Gehaltene Angebote bleiben bestehen.`,()=>act('refresh'))}/>;
+   case 'orderDetail':return <OrderDetail modalBlocked={!!sheet||levelNotices.length>0} key={orderId} data={data} id={orderId} busy={busy} clock={clock} onCommand={async(action:string,payload:any)=>{const next=await act(action,payload);if(['assign','assignPrivate','assignCrafted'].includes(action)&&next?.state.orders.find((o:any)=>o.id===payload.order)?.status==='active'){setOrdersTab('running');setTrail(previous=>{const index=previous.lastIndexOf('orders');return index>=0?previous.slice(0,index):previous;});setScreen('orders');scroll.current?.scrollTo({y:0,animated:false});}return next;}} onBack={back} onSwitch={(order:any)=>choose('Fahrzeug ab nächster Tour',[
     ...(order.replacementChoices||[]).map((truck:any)=>({title:truck.model,detail:`${n(truck.capacity,1)} t · Wechsel nach Ende der laufenden Tour`,onPress:()=>act('singleVehicle',{order:order.id,truck:truck.id})})),
     ...(order.pendingTruckId?[{title:'Aktuelles Fahrzeug behalten',onPress:()=>act('singleVehicle',{order:order.id,truck:order.truckId})}]:[])
    ],'Das Ersatzfahrzeug wird bis zum Wechsel reserviert. Die laufende Tour wird unverändert abgeschlossen.')}/>;
@@ -168,6 +167,7 @@ function Game(){
  </ScrollView>}
  <View style={v.nav}>{TABS.map(([key,label])=><Pressable key={key} accessibilityRole="tab" accessibilityLabel={translate(label)} accessibilityState={{selected:screen===key}} onPress={()=>{setScreen(key);setTrail([]);setProjectId(null);scroll.current?.scrollTo({y:0,animated:false});}} style={[v.navItem,screen===key&&v.navActive]}><Icon name={screenIcons[key]} size={26} color={screen===key?C.brassLight:C.mutedOnInk}/><Text numberOfLines={2} style={[v.navLabel,screen===key&&{color:C.brassLight}]}>{key==='orders'?'Einzel-\naufträge':key==='projects'?'Groß-\naufträge':label}</Text></Pressable>)}</View>
  {message?<View pointerEvents="none" accessibilityLiveRegion="polite" style={[v.notice,{bottom:76+insets.bottom}]}><Txt style={{color:C.accent,fontSize:12}}>{message}</Txt></View>:null}
+ {jobId!==null&&data&&g.expedition.jobs.some((job:any)=>job.id===jobId)&&<OrderVehiclePicker key={`job-${jobId}`} data={data} choices={data.jobChoices?.[jobId]||[]} summary={(()=>{const job=g.expedition.jobs.find((entry:any)=>entry.id===jobId);return `${itemName(job.kind==='character'?'character':'material')} · ${c.regionNames[job.region]} · ${job.tier||1}`;})()} busy={busy} clock={clock} modalBlocked={!!sheet||levelNotices.length>0} onClose={()=>setJobId(null)} onStart={async(truck:string)=>{const job=g.expedition.jobs.find((entry:any)=>entry.id===jobId);if(!job)return false;const next=await act('mission',{region:job.region,kind:'endless',place:job.id,truck});const started=next?.state.expedition.missions.some((m:any)=>m.jobId===job.id&&m.status==='active');if(started){setJobId(null);setOrdersTab('running');go('runningOrders');}return !!started;}}/>}
  <Modal visible={!!sheet&&!levelNotices.length} transparent animationType="none" onRequestClose={()=>setSheet(null)}><View style={[v.overlay,sheet?.centered&&v.centeredOverlay]}><SafeAreaView edges={sheet?.centered?[]:['bottom']} style={[v.sheet,sheet?.centered&&v.centeredSheet]}><Row style={{flexWrap:'nowrap'}}><Txt style={[v.cardTitle,{flex:1,minWidth:0,flexShrink:1}]}>{sheet?.title}</Txt><Btn icon="close" iconOnly secondary style={{flexShrink:0,marginTop:0}} onPress={()=>setSheet(null)}>Schließen</Btn></Row>{sheet?.rewardSummary?<ClaimRewards summary={sheet.rewardSummary} rarities={sheet.rarities}/>:<>{sheet?.body&&<Txt muted>{sheet.body}</Txt>}<ScrollView keyboardShouldPersistTaps="handled">{!sheet?.items?.length&&sheet?.emptyText!==''&&<Txt muted style={{paddingVertical:20}}>Keine passende Auswahl verfügbar.</Txt>}{sheet?.items?.map((item:any,i:number)=><Pressable key={i} accessibilityRole="button" style={[v.sheetItem,item.primary&&{backgroundColor:C.accent,borderRadius:10,paddingHorizontal:14,marginTop:12}]} onPress={()=>{setSheet(null);item.onPress();}}><Txt style={{fontWeight:'700',...(item.primary?{color:C.onInk}:{})}}>{item.title}</Txt>{item.detail&&<Txt muted style={{fontSize:12}}>{item.detail}</Txt>}</Pressable>)}</ScrollView></>}</SafeAreaView></View></Modal>
  <LevelUpNotice level={levelNotices[0]} onClose={()=>setLevelNotices(queue=>queue.slice(1))}/>
  </SafeAreaView>;

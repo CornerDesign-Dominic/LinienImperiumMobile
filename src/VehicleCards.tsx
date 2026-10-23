@@ -68,7 +68,7 @@ export function VehicleCards({data,onOpen}:any){
  </>;
 }
 
-export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,showDetails=false,accessibilityLabel}:any){
+export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,showDetails=false,accessibilityLabel,facts}:any){
  const owned=data.state.expedition.characters[card.id],unavailable=!!status?.disabled,locked=disabled||unavailable;
  const average=averageCardSpeed(stats.loadedSpeed,stats.speed);
  const label=accessibilityLabel||[
@@ -76,9 +76,9 @@ export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,s
   showDetails?`${translate('Durchschnittsgeschwindigkeit')}: ${average===undefined?'—':n(average,2)+' km/s'}, ${translate('Betriebskosten')}: ${stats.costPerKm===undefined?'—':n(stats.costPerKm,2)+' M/km'}`:`${translate('Geschwindigkeitsrang')}: ${stats.rank.total}`,
   status?.label?translate(status.label):''
  ].filter(Boolean).join(', ');
- return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{disabled:locked,selected:!!status?.selected}} disabled={locked} onPress={onPress} style={({pressed})=>[styles.card,{borderColor:rarityColor(card.rarity)},!owned&&{backgroundColor:C.raised,borderStyle:'dashed'},status?.selected&&{backgroundColor:C.greenWash},unavailable&&styles.unavailable,(pressed||locked)&&{opacity:.7}]}>
+ return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{disabled:locked,selected:!!status?.selected}} aria-selected={!!status?.selected} disabled={locked} onPress={onPress} style={({pressed})=>[styles.card,{borderColor:rarityColor(card.rarity)},!owned&&{backgroundColor:C.raised,borderStyle:'dashed'},status?.selected&&{backgroundColor:C.greenWash},unavailable&&styles.unavailable,(pressed||locked)&&{opacity:.7}]}>
   <Text accessibilityLabel={translate(owned?`Stufe ${owned.level}`:'Nicht entdeckt')} style={styles.level}>{owned?ROMAN_LEVELS[owned.level]||String(owned.level):'—'}</Text><View style={unavailable?styles.usedArtwork:undefined}><VehicleArt card={card}/></View><VehicleName name={card.name} numberOfLines={3} style={styles.name}/>
-  {showDetails?<CollectionFacts capacity={stats.capacity} loadedSpeed={stats.loadedSpeed} emptySpeed={stats.speed} costPerKm={stats.costPerKm}/>:<><Txt style={styles.rank}>Rang {stats.rank.total}</Txt><Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt></>}
+  {facts??(showDetails?<CollectionFacts capacity={stats.capacity} loadedSpeed={stats.loadedSpeed} emptySpeed={stats.speed} costPerKm={stats.costPerKm}/>:<><Txt style={styles.rank}>Rang {stats.rank.total}</Txt><Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt></>)}
   {status&&<View style={[styles.assignment,status?.label&&!unavailable&&styles.assigned]}>{status?.label&&<Icon name={unavailable?"lock":"check"} size={11} color={unavailable?C.muted:C.accent}/>}<Text numberOfLines={2} style={[styles.assignmentText,unavailable&&{color:C.muted}]}>{status?.label||'Verfügbar'}</Text></View>}
  </Pressable>;
 }

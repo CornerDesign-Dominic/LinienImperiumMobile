@@ -1,3 +1,16 @@
+## Einzelaufträge: Veröffentlichung freigegeben am 23.10.2026
+
+- Reiter Laufende, Angebote, Aufträge; fertige Belohnungen mit Sammelbutton und Hinweis am Reiter.
+- Kartenmodal ohne Vorauswahl, Touren/Dauer/Gewinn statt Fahrzeugwerten; Standard Gewinn, alternativ kürzeste Gesamtdauer.
+- Auswahl markiert nur; schwebender Startbutton erscheint erst danach. Kein unmittelbarer Start durch Antippen einer Karte.
+- Belegte Fahrzeuge bleiben grau und gesperrt am Ende, mit Countdown bzw. passendem Einsatzstatus.
+- Gilt für Angebote, Privatabholungen, Kundenaufträge und gespeicherte Material-/Fahrzeugkartenaufträge.
+- Servervorschauen, reservierte Ersatzfahrzeuge, Beschaffungen und Doppelstartschutz geprüft; Typprüfung, alle 183 Tests und Android-Export erfolgreich.
+- Browser bei 320/390/430 px und Englisch geprüft. Kein physischer Gerätetest.
+- Details: `docs/ui/single-order-tabs-and-assignment.md`. Veröffentlichung ist beauftragt; Workflow-Ergebnis wird nachgetragen.
+
+---
+
 ## Erfolgreich veröffentlicht am 23.10.2026
 
 Das gesamte seit der letzten Veröffentlichung gesammelte Garage-/Flotten-/Sammlungspaket wurde veröffentlicht. GitHub Actions Mobile preview, Lauf 39939509041, erfolgreich abgeschlossen: Typprüfung, 177 Tests, Android-Export, Firebase-Server und Regeln, Live-API-Smoke-Test und Android-OTA im Kanal preview. Release-Commit: e5f026dc94399708876290e1aee506215be895ca. OTA-Veröffentlichung am 23.10.2026 um 09:35 Uhr (Atlantic/Cape_Verde). Keine neue APK erforderlich. Die folgenden Sammelvermerke beschreiben den historischen Stand vor dieser Veröffentlichung.

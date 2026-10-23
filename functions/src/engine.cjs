@@ -326,6 +326,21 @@ const bridge = `
         procurementId:procurementActive(t.id)?.id||null,
         busyUntil: (() => { const procurement=procurementActive(t.id);if(procurement)return procurement.nextAt;const o = game.orders.find(o => o.status === 'active' && o.truckId === t.id); if(o) return now + remainingOrderSeconds(o,t,now)*1000; return game.expedition.missions.find(m=>m.status==='active' && m.truckId===t.id)?.endsAt || null; })()
       }));
+      // Availability is shared by regular orders and stored expedition jobs.
+      // A reserve/group procurement has no definite end: never label its next tour as free.
+      const availability = t => {
+        const truck=trucks.find(item=>item.id===t.id),procurement=procurementActive(t.id);
+        let availableAt=truck.busyUntil;
+        const current=game.orders.find(o=>o.status==='active'&&o.truckId===t.id),reserved=game.orders.find(o=>o.status==='active'&&o.pendingTruckId===t.id);
+        if(current?.pendingTruckId&&current.pendingTruckId!==t.id)availableAt=current.tripSnapshot?.endsAt||availableAt;
+        if(reserved)availableAt=now+remainingOrderSeconds(reserved,truckById(reserved.truckId),now)*1000;
+        if(procurement)availableAt=procurement.stopAfter?procurement.nextAt:procurement.mode==='count'&&!procurement.groupId?procurement.nextAt+Math.max(0,procurement.requested-procurement.started)*procurement.durationMs:null;
+        return {cardId:t.cardId,free:free.has(t.id),availableAt,unavailableReason:procurement?'In Beschaffung':game.orders.some(o=>o.status==='active'&&o.pendingTruckId===t.id)?'Reserviert':'Im Einsatz'};
+      };
+      const jobChoices=Object.fromEntries(game.expedition.jobs.map(job=>[job.id,game.trucks.filter(t=>!t.hubAssigned&&t.tier>=2).map(t=>{
+        const plan=expeditionTransportPlan(job,t,now),seconds=(plan.tours.at(-1).endsAt-now)/1000;
+        return {id:t.id,model:t.model,capacity:t.capacity,...availability(t),trips:plan.tours.length,seconds:expeditionTestDuration?Math.min(seconds,expeditionTestDuration/1000):seconds,totalProfit:(job.kind==='character'?5:15)*(job.region+1)};
+      })]));
       const orders = game.orders.map(o => {
         const project = Boolean(PROJECT_DEADLINES[o.kind]);
         const suitable = !project ? game.trucks.filter(t=>canTruckTakeOrder(t,o)) : [];
@@ -345,6 +360,7 @@ const bridge = `
           transportLabel:CATEGORIES.find(c=>c.id===o.category)?.label||'Regionalverkehr',
           durationSeconds, durationBand:durationSeconds==null?null:durationSeconds<=300?'Kurz':durationSeconds<=900?'Mittel':'Lang',
           customerName: o.customer ? customerById(o.customer)?.name : 'Freie Frachtbörse',
+          vehicleChoices:!project&&['available','queued'].includes(o.status)?suitable.map(t=>({...estimate(t),...availability(t)})):[],
           choices, vehicleStatus: choices.length?'ready':suitable.length?'busy':'missing',
           forecast: assigned ? singleForecast(o) : forecastTruck && o.status!=='completed' ? estimate(forecastTruck) : null,
           replacementChoices:assigned?game.trucks.filter(t=>canTruckTakeOrder(t,o)&&(free.has(t.id)||o.pendingTruckId===t.id)).map(t=>({id:t.id,model:t.model,capacity:t.capacity})):[],
@@ -376,7 +392,7 @@ const bridge = `
           loadedSpeed:truckSpeed(truck,truck.capacity), costPerKm:operatingCostPerKm(truck),
           upgradePreview, rankCost:rankGearCost(truck), capacityLevel:truck.moduleCapacityLevel || 0, maxCapacityLevel:Math.max(card.maxCapacityLevel,truck.moduleCapacityLevel||0), capacityStep:round2(card.baseCapacity*card.capacityStepPercent/100)}];
       }));
-      return {state: {...game,trucks,orders,overtimeCapacity:overtimeCapacity()}, serverTime:now, catalog, cardVehicles, procurement:procurementView(now),
+      return {state: {...game,trucks,orders,overtimeCapacity:overtimeCapacity()}, serverTime:now, catalog, cardVehicles, jobChoices, procurement:procurementView(now),
         level:levelForXp(game.xp,game), expeditionCapacity:expeditionCapacity(),
         regeneration:{expeditionNextAt:game.expedition.points<expeditionCapacity()?game.expedition.lastRegenAt+expeditionInterval():null,expeditionIntervalMs:expeditionInterval(),overtimeNextAt:game.overtimePoints<overtimeCapacity()?game.overtimeLastRegenAt+OVERTIME_REGEN_MS:null},
         templates:[0,1,2].map(i=>fleetTemplate(i)),

@@ -989,5 +989,20 @@
   "Erweitert": "Expanded",
   "Fahrzeugwechsel konnte nicht gespeichert werden.": "Vehicle replacement could not be saved.",
   "In Garage": "In garage",
-  "In dieser Flotte": "In this fleet"
+  "In dieser Flotte": "In this fleet",
+  "Laufende": "Running",
+  "Alle Aufträge": "All contracts",
+  "Belohnungen abholen · {0}": "Collect rewards · {0}",
+  "Sortieren: Gewinn": "Sort: Profit",
+  "Sortieren: Geschwindigkeit": "Sort: Speed",
+  "Gewinn · höchster zuerst": "Profit · highest first",
+  "Geschwindigkeit · kürzeste Dauer": "Speed · shortest duration",
+  "Frei in": "Free in",
+  "Frei in {0}": "Free in {0}",
+  "Wird aktualisiert …": "Updating …",
+  "In Beschaffung": "On procurement",
+  "Kein geeignetes Fahrzeug in der Garage.": "No suitable vehicle in the garage.",
+  "Auftrag konnte nicht gestartet werden. Bitte Auswahl prüfen und erneut versuchen.": "Could not start contract. Check your selection and try again.",
+  "Auftrag startet …": "Starting contract …",
+  "Ausgewählt": "Selected"
 }
