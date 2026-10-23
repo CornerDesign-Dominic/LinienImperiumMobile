@@ -1,6 +1,8 @@
-## Veröffentlichung freigegeben am 23.10.2026
+## Erfolgreich veröffentlicht am 23.10.2026
 
-Das gesamte seit der letzten Veröffentlichung gesammelte Garage-/Flotten-/Sammlungspaket ist freigegeben. Veröffentlichung über Mobile preview: Server vor Android-OTA. Die folgenden Sammelvermerke beschreiben den historischen Stand vor dieser Freigabe. Ergebnis des Workflows wird nach Abschluss dokumentiert.
+Das gesamte seit der letzten Veröffentlichung gesammelte Garage-/Flotten-/Sammlungspaket wurde veröffentlicht. GitHub Actions Mobile preview, Lauf 39939509041, erfolgreich abgeschlossen: Typprüfung, 177 Tests, Android-Export, Firebase-Server und Regeln, Live-API-Smoke-Test und Android-OTA im Kanal preview. Release-Commit: e5f026dc94399708876290e1aee506215be895ca. OTA-Veröffentlichung am 23.10.2026 um 09:35 Uhr (Atlantic/Cape_Verde). Keine neue APK erforderlich. Die folgenden Sammelvermerke beschreiben den historischen Stand vor dieser Veröffentlichung.
+
+Workflow: https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39939509041
 
 ---
 
