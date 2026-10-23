@@ -1,3 +1,15 @@
+## Gemeinsame Kartenauswahl in Garage und Flotte – neu gesammelt, nicht veröffentlicht
+
+- Auswahlmodale verwenden den Seltenheits-Dropdown und das Dreispaltenraster der Sammlung.
+- Jede Karte zeigt römische Stufe, Bild, Name und die drei Iconwerte Kapazität, Durchschnittsgeschwindigkeit und Betriebskosten.
+- Nur freigeschaltete Karten; verfügbare zuerst, bereits belegte danach abgedunkelt und gesperrt mit Schloss und Kontextangabe.
+- Garage sperrt dort verwendete Karten; Flotte sperrt nur die Karten der aktuell ausgewählten Flotte. Auch beim Wechseln gilt diese Auswahlregel.
+- Typprüfung, alle 177 Tests und Browserbedienung bei 320/390/430 px erfolgreich; Deutsch/Englisch geprüft.
+- Details: `docs/ui/shared-card-pickers.md`. Kein physischer Gerätetest.
+- Nur Sammelbranch, keine Veröffentlichung.
+
+---
+
 ## Gemeinsame Fahrzeugdetails in Garage und Flotte – neu gesammelt, nicht veröffentlicht
 
 - Gemeinsamer Aufbau mit Sammlung: römische Stufe, Bild/Name, Bonussatz mit Hilfe, Geschwindigkeit, Kapazität und Betriebskosten.

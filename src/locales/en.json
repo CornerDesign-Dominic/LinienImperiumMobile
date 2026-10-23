@@ -987,5 +987,7 @@
   "Verbesserung fehlgeschlagen. Bitte erneut versuchen.": "Upgrade failed. Please try again.",
   "Bisheriger Fortschritt ist angerechnet.": "Existing progress has been deducted from the cost.",
   "Erweitert": "Expanded",
-  "Fahrzeugwechsel konnte nicht gespeichert werden.": "Vehicle replacement could not be saved."
+  "Fahrzeugwechsel konnte nicht gespeichert werden.": "Vehicle replacement could not be saved.",
+  "In Garage": "In garage",
+  "In dieser Flotte": "In this fleet"
 }

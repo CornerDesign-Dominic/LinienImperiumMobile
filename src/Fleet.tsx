@@ -3,9 +3,9 @@ import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Text} from './Language';
 import {t as translate} from './i18n';
-import {C,Txt,Row,Btn,Empty} from './ui';
+import {C,Txt,Row,Btn} from './ui';
 import {Icon} from './Icon';
-import {VehicleCardGrid} from './VehicleCards';
+import {VehicleCardPicker} from './VehicleCards';
 import {FleetDetails} from './FleetDetails';
 import {bonusText} from './cardBonus';
 import {VehicleCardDetail} from './VehicleCardDetail';
@@ -15,13 +15,10 @@ export function Fleet({data,busy,template,onTemplate,onCommand,onCollection,moda
  const [choosingSeat,setChoosingSeat]=useState<number|null>(null),[picking,setPicking]=useState(false),[saveFailed,setSaveFailed]=useState(false);
  const [details,setDetails]=useState(false);
  const {state:g,catalog:c}=data,slots=data.templates[template];
- const cards=c.cards.filter((card:any)=>g.expedition.characters[card.id]);
  const selected=choosingSeat===null?null:c.cards.find((card:any)=>card.id===slots[choosingSeat]);
- const close=()=>{setChoosingSeat(null);setSaveFailed(false);};
- const statusForCard=(id:string)=>{const seat=slots.indexOf(id);return seat<0?null:{label:`${seat===choosingSeat?'Ausgewählt':'In Flotte'} · Platz ${seat+1}`,selected:seat===choosingSeat};};
+ const close=()=>{setChoosingSeat(null);setPicking(false);setSaveFailed(false);};
  const select=async(id:string)=>{
-  if(busy||choosingSeat===null)return;
-  if(slots[choosingSeat]===id){close();return;}
+  if(busy||choosingSeat===null||slots.includes(id))return;
   setSaveFailed(false);
   const next=await onCommand('seat',{id,template,seat:choosingSeat});
   if(next?.templates?.[template]?.[choosingSeat]===id)close();else setSaveFailed(true);
@@ -48,8 +45,8 @@ export function Fleet({data,busy,template,onTemplate,onCommand,onCollection,moda
     {saveFailed&&<Txt accessibilityRole="alert" style={{color:C.red,marginBottom:8}}>Änderung konnte nicht gespeichert werden. Bitte erneut versuchen.</Txt>}
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:4}}>
      {picking?<>
-      <Txt muted style={styles.hint}>Markierte Fahrzeuge sind bereits in dieser Flotte. Ihre Auswahl verschiebt sie auf diesen Platz.</Txt>
-      {cards.length?<VehicleCardGrid data={data} cards={cards} statusForCard={statusForCard} disabled={busy} onOpen={select}/>:<Empty>Noch keine Fahrzeugkarten entdeckt.</Empty>}
+      {selected&&<Btn secondary disabled={busy} onPress={()=>setPicking(false)}>Zurück</Btn>}
+      <VehicleCardPicker key={`${template}:${choosingSeat}`} data={data} context="fleet" template={template} busy={busy} onSelect={select}/>
      </>:selected&&<VehicleCardDetail key={selected.id} data={data} id={selected.id} compact modalBlocked={modalBlocked} busy={busy} actions={<View style={{flexDirection:'row',gap:8}}>
       <Btn style={{flex:1}} disabled={busy} onPress={()=>{setSaveFailed(false);setPicking(true);}}>Wechseln</Btn>
       <Btn style={{flex:1}} secondary disabled={busy} onPress={remove}>Entfernen</Btn>
