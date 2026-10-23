@@ -986,5 +986,6 @@
   "Verbesserung nicht bestätigt. Bitte Bestand prüfen und erneut versuchen.": "Upgrade not confirmed. Please check your resources and try again.",
   "Verbesserung fehlgeschlagen. Bitte erneut versuchen.": "Upgrade failed. Please try again.",
   "Bisheriger Fortschritt ist angerechnet.": "Existing progress has been deducted from the cost.",
-  "Erweitert": "Expanded"
+  "Erweitert": "Expanded",
+  "Fahrzeugwechsel konnte nicht gespeichert werden.": "Vehicle replacement could not be saved."
 }

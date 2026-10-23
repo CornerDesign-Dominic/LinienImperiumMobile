@@ -160,3 +160,36 @@ test('Collection previews cover rank rarity transitions, parked cards and capped
  const maxed=cmd(upgraded.state);
  assert.deepEqual(maxed.view.cardVehicles.navigator.upgradePreview,{capacity:null,rank:null});
 });
+
+test('Garage replacement works in a full garage, preserves position and parked upgrades',()=>{
+ let r=setup();for(const card of cards.slice(1,10))r=equip(r,card.id);
+ const replacement=cards[10].id;r=own(r,replacement,3);
+ const original=r.state.trucks.find(t=>t.cardId==='navigator');original.kmDriven=1234;original.moduleCapacityLevel=2;original.capacity=2.2;
+ r.state.inventory.capacityModules=2;r=cmd(r.state,'cardCapacity',{id:replacement});
+ const expectedCapacity=r.view.cardVehicles[replacement].capacity,coins=r.state.coins,modules=r.state.inventory.capacityModules;
+ const swapped=cmd(r.state,'garageReplace',{id:'navigator',replacement});
+ assert.equal(swapped.state.trucks.length,10);assert.equal(swapped.state.trucks[0].cardId,replacement);
+ assert.equal(swapped.state.trucks[0].capacity,expectedCapacity);
+ assert.equal(swapped.state.expedition.characters.navigator.parkedTruck.kmDriven,1234);
+ assert.equal(swapped.state.expedition.characters.navigator.parkedTruck.capacity,2.2);
+ assert.equal(swapped.state.coins,coins);assert.equal(swapped.state.inventory.capacityModules,modules);
+ const restored=cmd(swapped.state,'garageReplace',{id:replacement,replacement:'navigator'});
+ assert.equal(restored.state.trucks[0].cardId,'navigator');assert.equal(restored.state.trucks[0].kmDriven,1234);assert.equal(restored.state.trucks[0].capacity,2.2);
+});
+test('Invalid, duplicated and unowned garage replacements leave the original vehicle installed',()=>{
+ let r=equip(setup(),cards[1].id);
+ for(const replacement of ['navigator',cards[1].id,cards[2].id,'missing']){
+  const next=cmd(r.state,'garageReplace',{id:'navigator',replacement});
+  assert.deepEqual(next.state.trucks.map(t=>t.cardId),r.state.trucks.map(t=>t.cardId));
+  assert.equal(next.state.expedition.characters.navigator.parkedTruck,undefined);
+ }
+});
+test('Busy garage vehicles cannot be replaced or lose their running assignment',()=>{
+ let r=own(setup(),cards[1].id),truck=r.state.trucks.find(t=>t.cardId==='navigator');
+ const order=r.view.state.orders.find(o=>o.choices.some(choice=>choice.id===truck.id));
+ r=cmd(r.state,'assign',{order:order.id,truck:truck.id});
+ const next=cmd(r.state,'garageReplace',{id:'navigator',replacement:cards[1].id});
+ assert.equal(next.state.trucks[0].cardId,'navigator');assert.equal(next.state.trucks.length,1);
+ assert.equal(next.state.orders.find(o=>o.id===order.id).truckId,truck.id);
+ assert.equal(next.state.expedition.characters.navigator.parkedTruck,undefined);
+});

@@ -3,11 +3,12 @@ import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Text} from './Language';
 import {t as translate} from './i18n';
-import {C,Txt,Row,Btn,Empty,n} from './ui';
+import {C,Txt,Row,Btn,Empty} from './ui';
 import {Icon} from './Icon';
 import {VehicleCardGrid} from './VehicleCards';
 import {FleetDetails} from './FleetDetails';
-import {BONUS,SCOPE,bonusText,pointBonus} from './cardBonus';
+import {bonusText} from './cardBonus';
+import {VehicleCardDetail} from './VehicleCardDetail';
 import {VehicleArt} from './VehicleArt';
 
 export function Fleet({data,busy,template,onTemplate,onCommand,onCollection,modalBlocked=false}:any){
@@ -16,7 +17,6 @@ export function Fleet({data,busy,template,onTemplate,onCommand,onCollection,moda
  const {state:g,catalog:c}=data,slots=data.templates[template];
  const cards=c.cards.filter((card:any)=>g.expedition.characters[card.id]);
  const selected=choosingSeat===null?null:c.cards.find((card:any)=>card.id===slots[choosingSeat]);
- const stats=selected?(data.cardVehicles?.[selected.id]||{capacity:c.models[selected.vehicleTier].capacity,rank:{total:0}}):null;
  const close=()=>{setChoosingSeat(null);setSaveFailed(false);};
  const statusForCard=(id:string)=>{const seat=slots.indexOf(id);return seat<0?null:{label:`${seat===choosingSeat?'Ausgewählt':'In Flotte'} · Platz ${seat+1}`,selected:seat===choosingSeat};};
  const select=async(id:string)=>{
@@ -50,12 +50,10 @@ export function Fleet({data,busy,template,onTemplate,onCommand,onCollection,moda
      {picking?<>
       <Txt muted style={styles.hint}>Markierte Fahrzeuge sind bereits in dieser Flotte. Ihre Auswahl verschiebt sie auf diesen Platz.</Txt>
       {cards.length?<VehicleCardGrid data={data} cards={cards} statusForCard={statusForCard} disabled={busy} onOpen={select}/>:<Empty>Noch keine Fahrzeugkarten entdeckt.</Empty>}
-     </>:selected&&<>
-      <Row><Txt muted>Stufe {g.expedition.characters[selected.id]?.level||1}</Txt><Txt>{n(stats.capacity,1)} t · Rang {stats.rank.total}</Txt></Row>
-      <VehicleArt card={selected} level={g.expedition.characters[selected.id]?.level} style={{maxWidth:240,alignSelf:'center',marginBottom:12}}/><Txt>{bonusText(selected,data.cardBonuses[selected.id])}</Txt><Txt muted>{pointBonus(selected)?'Wirkt nur in der Garage':SCOPE[selected.scope]}</Txt>
-      <Btn disabled={busy} onPress={()=>{setSaveFailed(false);setPicking(true);}}>Wechseln</Btn>
-      <Btn secondary disabled={busy} onPress={remove}>Entfernen</Btn>
-     </>}
+     </>:selected&&<VehicleCardDetail key={selected.id} data={data} id={selected.id} compact modalBlocked={modalBlocked} busy={busy} actions={<View style={{flexDirection:'row',gap:8}}>
+      <Btn style={{flex:1}} disabled={busy} onPress={()=>{setSaveFailed(false);setPicking(true);}}>Wechseln</Btn>
+      <Btn style={{flex:1}} secondary disabled={busy} onPress={remove}>Entfernen</Btn>
+     </View>}/>}
     </ScrollView>
    </View></SafeAreaView>
   </Modal>

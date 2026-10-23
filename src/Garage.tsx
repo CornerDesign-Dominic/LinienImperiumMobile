@@ -6,11 +6,11 @@ import {Icon} from './Icon';
 import {rarityColor} from './items';
 import {VehicleCardTile} from './VehicleCards';
 import {VehicleArt} from './VehicleArt';
-import {bonusText} from './cardBonus';
+import {VehicleCardDetail} from './VehicleCardDetail';
 import {C,Txt,Row,Btn,Bar,n,remaining} from './ui';
 
 export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
- const [selected,setSelected]=useState<string|null>(null),[adding,setAdding]=useState(false),[rarity,setRarity]=useState('all');
+ const [selected,setSelected]=useState<string|null>(null),[adding,setAdding]=useState(false),[rarity,setRarity]=useState('all'),[saveFailed,setSaveFailed]=useState(false);
  const {state:g,catalog:c}=data;
  const regular=g.trucks.filter((t:any)=>!!t.cardId);
  const truck=g.trucks.find((t:any)=>t.id===selected);
@@ -25,9 +25,11 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
  };
  return <>
   {Array.from({length:4},(_,row)=><View key={row} style={styles.row}>{[0,1,2].map(col=>{const index=row*3+col;return <React.Fragment key={col}>{index<10?tile(regular[index],index):<View style={{flex:1,minWidth:0}}/>}</React.Fragment>;})}</View>)}
-  <Modal transparent visible={(!!truck||adding)&&!modalBlocked} animationType="none" onRequestClose={()=>{setSelected(null);setAdding(false);}}>
+  <Modal transparent visible={(!!truck||adding)&&!modalBlocked} animationType="none" onRequestClose={()=>{setSelected(null);setAdding(false);setSaveFailed(false);}}>
    <View style={styles.overlay}><View style={styles.detail}>
-    <Row style={{flexWrap:'nowrap'}}><Txt style={styles.title}>{adding?'Fahrzeug wählen':truck?.model}</Txt><Btn icon="close" iconOnly secondary onPress={()=>{setSelected(null);setAdding(false);}}>Schließen</Btn></Row>
+    <Row style={{flexWrap:'nowrap'}}><Txt style={styles.title}>{adding?(truck?'Fahrzeug wechseln':'Fahrzeug wählen'):truck?.model}</Txt><Btn icon="close" iconOnly secondary onPress={()=>{setSelected(null);setAdding(false);setSaveFailed(false);}}>Schließen</Btn></Row>
+    {saveFailed&&<Txt style={{color:C.red,marginBottom:8}}>Änderung konnte nicht gespeichert werden. Bitte erneut versuchen.</Txt>}
+    {adding&&truck&&<Btn secondary disabled={busy} onPress={()=>{setAdding(false);setSaveFailed(false);}}>Zurück</Btn>}
     {adding&&<View style={styles.filters}>{filters.map((filter:any)=>{
      const active=rarity===filter.id,color=filter.id==='all'?C.accent:rarityColor(filter.id);
      return <Pressable key={filter.id} accessibilityRole="button" accessibilityLabel={translate(filter.label)} accessibilityState={{selected:active}} onPress={()=>setRarity(filter.id)} style={[styles.filter,{borderColor:color},active&&{backgroundColor:C.greenWash}]}>
@@ -37,7 +39,7 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
     <ScrollView keyboardShouldPersistTaps="handled">
      {adding?matching.length?matching.map((card:any)=>{
       const stats=data.cardVehicles[card.id],color=rarityColor(card.rarity);
-      return <Pressable key={card.id} accessibilityRole="button" accessibilityState={{disabled:!!busy}} disabled={busy} onPress={async()=>{const result=await onCommand('garageAdd',{id:card.id});if(result?.state.trucks.some((t:any)=>t.cardId===card.id))setAdding(false);}} style={({pressed})=>[styles.choice,{borderLeftColor:color},(pressed||busy)&&{opacity:.65}]}>
+      return <Pressable key={card.id} accessibilityRole="button" accessibilityState={{disabled:!!busy}} disabled={busy} onPress={async()=>{setSaveFailed(false);const result=await onCommand(truck?'garageReplace':'garageAdd',truck?{id:truck.cardId,replacement:card.id}:{id:card.id});if(result?.state.trucks.some((t:any)=>t.cardId===card.id)&&(!truck||!result.state.trucks.some((t:any)=>t.cardId===truck.cardId))){setAdding(false);setSelected(null);}else setSaveFailed(true);}} style={({pressed})=>[styles.choice,{borderLeftColor:color},(pressed||busy)&&{opacity:.65}]}>
        <VehicleArt card={card} style={{width:52}}/>
        <View style={styles.choiceInfo}>
         <View style={styles.choiceHeader}><Text style={styles.choiceName}>{card.name}</Text><Txt style={styles.choiceCapacity}>{n(stats.capacity,1)} t</Txt></View>
@@ -46,21 +48,16 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
        </View>
        <Icon name="plus" size={16} color={C.accent}/>
       </Pressable>;
-     }):<Txt muted>{available.length?'Keine freien Karten dieser Seltenheit.':'Keine freien Karten'}</Txt>:truck&&<>
-      <VehicleArt card={c.cards.find((card:any)=>card.id===truck.cardId)} level={g.expedition.characters[truck.cardId]?.level} style={{maxWidth:280,alignSelf:'center',marginBottom:12}}/>
-      <Txt gold style={{fontSize:12,marginBottom:12}}>{bonusText(c.cards.find((card:any)=>card.id===truck.cardId),data.cardBonuses[truck.cardId])}</Txt>
-      <Fact label="Kapazität" value={`${n(truck.capacity,1)} t`}/>
-      <Fact label="Stufe" value={g.expedition.characters[truck.cardId]?.level||1}/>
-      <Fact label="Geschwindigkeitsrang" value={`${truck.rarity.label} · ${truck.rarity.level} ★`}/>
-      <Fact label="Tempo beladen" value={`${n(data.cardVehicles[truck.cardId]?.loadedSpeed,2)} km/s`}/>
-      <Fact label="Tempo leer" value={`${n(data.cardVehicles[truck.cardId]?.speed??truck.speed,2)} km/s`}/>
-      <Fact label="Betriebskosten" value={`${n(truck.costPerKm,2)} M/km`}/>
+     }):<Txt muted>{available.length?'Keine freien Karten dieser Seltenheit.':'Keine freien Karten'}</Txt>:truck&&<VehicleCardDetail key={truck.cardId} data={data} id={truck.cardId} compact modalBlocked={modalBlocked} busy={busy} extra={<>
       <Fact label="Gefahren" value={`${n(truck.kmDriven)} km`}/>
       <Fact label="Aufträge" value={n(truck.ordersCompleted)}/>
       <Fact label="Status" value={truck.procurementId?'Materialbeschaffung':truck.free?'Bereit':'Im Einsatz'}/>
       {!!truck.busyUntil&&<><Bar value={truck.progress}/><Txt gold>{remaining(truck.busyUntil,clock)}</Txt></>}
-      <Btn secondary disabled={busy||!truck.free} onPress={async()=>{const result=await onCommand('garageRemove',{id:truck.cardId});if(result&&!result.state.trucks.some((t:any)=>t.id===truck.id))setSelected(null);}}>Aus Garage nehmen</Btn>
-     </>}
+     </>} actions={<View style={{flexDirection:'row',gap:8}}>
+      <Btn style={{flex:1}} disabled={busy||!truck.free} onPress={()=>{setSaveFailed(false);setRarity('all');setAdding(true);}}>Wechseln</Btn>
+      <Btn style={{flex:1}} secondary disabled={busy||!truck.free} onPress={async()=>{setSaveFailed(false);const result=await onCommand('garageRemove',{id:truck.cardId});if(result&&!result.state.trucks.some((t:any)=>t.id===truck.id))setSelected(null);else setSaveFailed(true);}}>Entfernen</Btn>
+     </View>}/>}
+
     </ScrollView>
    </View></View>
   </Modal>

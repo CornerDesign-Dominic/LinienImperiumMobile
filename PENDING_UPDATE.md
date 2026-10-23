@@ -1,3 +1,15 @@
+## Gemeinsame Fahrzeugdetails in Garage und Flotte – neu gesammelt, nicht veröffentlicht
+
+- Gemeinsamer Aufbau mit Sammlung: römische Stufe, Bild/Name, Bonussatz mit Hilfe, Geschwindigkeit, Kapazität und Betriebskosten.
+- In Garage/Flotte kompakte Abschnitte mit Trennlinien statt einzelner Cards; unten Wechseln/Entfernen, kein Verbessern.
+- Sammlung mit ihren Cards und Verbesserungsmodal beibehalten; Garagenstatus und Betriebsstatistik weiter sichtbar.
+- Garagenwechsel über einen einzigen Servervorgang, auch bei voller Garage, mit Positionserhalt und weiter wirksamen Einsatz-/Reservierungssperren.
+- Typprüfung, alle 177 Tests, Browserbedienung bei 320/390/430 px und Android-Export erfolgreich. Deutsch/Englisch geprüft.
+- Details: `docs/ui/unified-context-card-details.md`. Kein physischer Gerätetest.
+- Gemeinsam mit den übrigen neuen Anpassungen im Sammelbranch; keine Veröffentlichung vor erneutem Go.
+
+---
+
 ## Kartendetails: Betriebskosten und „Erweitert“ – neu gesammelt, nicht veröffentlicht
 
 - Fahrzeugdaten-Card in Betriebskosten umbenannt und auf den Kostenwert in M/km reduziert.

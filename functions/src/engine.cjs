@@ -175,6 +175,16 @@ const bridge = `
     autoRefreshOrders, regenerateExpedition, regenerateOvertime,
     chooseStartCity, addCardToGarage, removeCardFromGarage, assignCharacterSeat,
     giveCharacterShard, combineExpeditionShards, buyTruck, upgradeTruckRarity,
+    replaceGarageCard(cardId,replacementId) {
+      const index=game.trucks.findIndex(truck=>truck.cardId===cardId),replacement=vehicleCardById(replacementId);
+      if(index<0||cardId===replacementId||!replacement||!game.expedition.characters[replacementId]||game.trucks.some(truck=>truck.cardId===replacementId)||regularTruckCount()>10)return false;
+      // All validation precedes removal. Reuse busy/reservation checks and keep
+      // both changes in the same server transaction, including a full garage.
+      if(!removeCardFromGarage(cardId))return false;
+      if(!addCardToGarage(replacementId))throw Error('Fahrzeugwechsel konnte nicht gespeichert werden.');
+      const truck=game.trucks.pop();game.trucks.splice(index,0,truck);
+      return true;
+    },
     upgradeCardVehicle(cardId,kind) {
       const card=vehicleCardById(cardId),owned=game.expedition.characters[cardId];
       if(!card||!owned)return false;
@@ -477,6 +487,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     singleVehicle:()=>a.queueSingleVehicle(id(p.order),id(p.truck)),
     sync:()=>{},start:()=>a.chooseStartCity(id(p.id)),foundCompany:()=>a.foundCompany(companyProfile(p)),
     garageAdd:()=>a.addCardToGarage(id(p.id)),garageRemove:()=>a.removeCardFromGarage(id(p.id)),
+    garageReplace:()=>a.replaceGarageCard(id(p.id),id(p.replacement)),
     seat:()=>a.assignCharacterSeat(id(p.id),num(p.seat,4),num(p.template,2)),
     unseat:()=>a.removeSeat(num(p.template,2),num(p.seat,4)),
     cardUpgrade:()=>a.giveCharacterShard(id(p.id),true),shardCombine:()=>a.combineExpeditionShards(choice(p.rarity,['common','uncommon'])),
