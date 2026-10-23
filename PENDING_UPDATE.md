@@ -1,4 +1,4 @@
-## Einzelaufträge: Veröffentlichung freigegeben am 23.10.2026
+## Einzelaufträge: erfolgreich veröffentlicht am 23.10.2026
 
 - Reiter Laufende, Angebote, Aufträge; fertige Belohnungen mit Sammelbutton und Hinweis am Reiter.
 - Kartenmodal ohne Vorauswahl, Touren/Dauer/Gewinn statt Fahrzeugwerten; Standard Gewinn, alternativ kürzeste Gesamtdauer.
@@ -7,7 +7,9 @@
 - Gilt für Angebote, Privatabholungen, Kundenaufträge und gespeicherte Material-/Fahrzeugkartenaufträge.
 - Servervorschauen, reservierte Ersatzfahrzeuge, Beschaffungen und Doppelstartschutz geprüft; Typprüfung, alle 183 Tests und Android-Export erfolgreich.
 - Browser bei 320/390/430 px und Englisch geprüft. Kein physischer Gerätetest.
-- Details: `docs/ui/single-order-tabs-and-assignment.md`. Veröffentlichung ist beauftragt; Workflow-Ergebnis wird nachgetragen.
+- Details: `docs/ui/single-order-tabs-and-assignment.md`.
+- Erfolgreiche Veröffentlichung: Mobile preview, Lauf 39952140016; Prüfungen, Server/Regeln, Live-API-Smoke-Test und Android-OTA im Kanal preview erfolgreich. Release-Commit: b41093e9879ee568d9dc3df565cde6ec3767dec2. Keine neue APK erforderlich.
+- Workflow: https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/39952140016
 
 ---
 
