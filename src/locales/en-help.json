@@ -86,7 +86,7 @@
     ],
     [
       "Items",
-      "Gears improve vehicle speed ranks; capacity modules increase capacity. Pickup clues craft private pickups. Supplier contacts upgrade city hub sales. Company upgrade items improve the company or craft customer contracts. Stored contracts remain here until started. Vehicle cards belong in the collection; shards stay here."
+      "Gears improve vehicle speed ranks; capacity modules increase capacity. Pickup clues craft private pickups. Supplier contacts upgrade city hub sales. Company upgrade items improve the company. Stored contracts remain here until started. Vehicle cards belong in the collection; shards stay here."
     ],
     [
       "Sources",
@@ -104,7 +104,7 @@
   "development": [
     [
       "Crafting",
-      "100 pickup clues craft one private pickup. 10 company upgrade items craft a contract from a random unlocked regular customer. Assign a suitable garage vehicle under Single contracts → Stored contracts."
+      "100 pickup clues make one private pickup. Frame shards combine into the next rarity. Company upgrade items cannot currently be used for crafting."
     ],
     [
       "Shards",
@@ -118,7 +118,7 @@
     ],
     [
       "Transport upgrades",
-      "Bonus upgrades add 1 percentage point to completion bonuses per level. Volume upgrades add 1 t to maximum volume per level and 1 t to minimum volume every two levels. Range adds 1 km to the upper distance limit. New level N costs 2 + floor((N−1)/10) items; coins: bonus 10×N², volume 50×N², range 100×N²."
+      "Completion bonus: 1,000 levels, +1 percentage point each. New level N costs 1,000 × N coins and 1 + floor((N−1)/25) company upgrade items. Regional and long-distance transport are separate. Quantity and range each have 100 levels, preserving their previous final effects and full upgrade budgets. The bonus affects only the completion reward of that category, not freight revenue or loot."
     ]
   ],
   "personnel": [

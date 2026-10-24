@@ -16,7 +16,7 @@ test('Guest starts without a city, then all five mobile sections receive server 
  const claimed=execute(done.state,'claim',{id:offer.id},now+86400000,fixed);
  const twice=execute(claimed.state,'claim',{id:offer.id},now+86400000,fixed);
  assert.equal(twice.state.coins,claimed.state.coins);
- assert.equal(game.view.catalog.craftedOrderItems,10);
+ assert.ok(!game.view.catalog.recipes.some(r=>r.inputId==='companyItems'));
 });
 test('Untrusted clients cannot set coins, clocks, XP or invent engine commands',()=>{
  const start=execute(null,'start',{id:'hamburg'},now,fixed);
@@ -234,24 +234,24 @@ test('Transport upgrades save multiple segments atomically at cumulative server 
  assert.equal(result.view.transportBatchApplied,true);
  assert.equal(result.state.company.transportUpgrades.national.premiumLevel,3);
  assert.equal(result.state.company.transportUpgrades.international.rangeLevel,2);
- assert.equal(result.state.coins,100000-(10+40+90+100+400));
- assert.equal(result.state.inventory.companyItems,90);
- assert.equal(result.state.stats.transportUpgradeSpent,640);
+ assert.equal(result.state.coins,100000-(1000+2000+3000+100+400));
+ assert.equal(result.state.inventory.companyItems,93);
+ assert.equal(result.state.stats.transportUpgradeSpent,6500);
  assert.equal(result.view.transportUpgradeOptions.length,6);
  const next=result.view.transportUpgradeOptions.find(o=>o.category==='national'&&o.kind==='premium');
- assert.equal(next.level,3);assert.equal(next.costs[0].coins,160);
+ assert.equal(next.level,3);assert.equal(next.costs[0].coins,4000);
  assert.throws(()=>execute(result.state,'transportBatch',{upgrades},now,fixed),/geändert/);
- const poor=structuredClone(start.state);poor.inventory.companyItems=9;
+ const poor=structuredClone(start.state);poor.inventory.companyItems=6;
  const before=JSON.stringify(poor);
  assert.throws(()=>execute(poor,'transportBatch',{upgrades},now,fixed),/fehlen/);
  assert.equal(JSON.stringify(poor),before);
- const lowCoins=structuredClone(start.state);lowCoins.coins=639;
+ const lowCoins=structuredClone(start.state);lowCoins.coins=6499;
  assert.throws(()=>execute(lowCoins,'transportBatch',{upgrades},now,fixed),/fehlen/);
- for(const invalid of [[],[upgrades[0],upgrades[0]],[{...upgrades[0],count:0}],[{...upgrades[0],kind:'__proto__'}],[{...upgrades[0],count:101}],[{...upgrades[0],level:1}]])
+ for(const invalid of [[],[upgrades[0],upgrades[0]],[{...upgrades[0],count:0}],[{...upgrades[0],kind:'__proto__'}],[{...upgrades[0],count:1001}],[{...upgrades[0],level:1}]])
   assert.throws(()=>execute(start.state,'transportBatch',{upgrades:invalid},now,fixed));
- const boundary=structuredClone(start.state);boundary.company.transportUpgrades.national.premiumLevel=99;
- const capped=execute(boundary,'transportBatch',{upgrades:[{category:'national',kind:'premium',count:1,level:99}]},now,fixed);
- assert.equal(capped.state.company.transportUpgrades.national.premiumLevel,100);
+ const boundary=structuredClone(start.state);boundary.company.transportUpgrades.national.premiumLevel=999;boundary.coins=1000000;
+ const capped=execute(boundary,'transportBatch',{upgrades:[{category:'national',kind:'premium',count:1,level:999}]},now,fixed);
+ assert.equal(capped.state.company.transportUpgrades.national.premiumLevel,1000);
  assert.deepEqual(capped.view.transportUpgradeOptions.find(o=>o.category==='national'&&o.kind==='premium').costs,[]);
 });
 

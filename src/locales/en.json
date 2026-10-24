@@ -1051,5 +1051,7 @@
   "Weitere Details": "More details",
   "Weitere Aktionen": "More actions",
   "{0} t mögliche Verteilung pro Stunde": "{0} t potential distribution per hour",
-  "Fahrzeuge": "Vehicles"
+  "Fahrzeuge": "Vehicles",
+  "Für Firmenausbau. {0} / 750.000 tkm zum nächsten Item.": "For company upgrades. {0} / 750,000 tkm until the next item.",
+  "Kundenaufträge aus Firmenausbau-Items sind vorerst nicht herstellbar.": "Crafting customer contracts from company upgrade items is currently unavailable."
 }
