@@ -2,7 +2,7 @@
 
 Die 14 Startziele verwenden die freigegebenen farbigen Miniaturen statt Umrisszeichen. Firma/Home teilen den Verwaltungssitz, Einzel- und Großaufträge ihre jeweilige Auftragsrolle. Die untere Leiste ergänzt das Fünfer-Pferdegespann und die Scheunengarage. Alle Motive sind transparent, ohne Itemrahmen oder Seltenheitsfarbe.
 
-Startzeilen: 48 dp, Firmenkarte: 60 dp, untere Navigation: 36 dp. Proportionale Darstellung und einheitlicher transparenter Rand. Die fünf unteren Schaltflächen bleiben gleich breit und mindestens 66 dp hoch. Aktive Auswahl weiterhin durch Petrolfläche und goldene Oberkante; Bilder behalten ihre Farben. Die gesprochenen Beschriftungen stammen von den Schaltflächen, dekorative Bilder werden nicht doppelt vorgelesen. Auswahlstatus auch explizit über `aria-selected` für die Webdarstellung.
+Startzeilen: 48 dp, Firmenkarte: 60 dp, untere Navigation: 36 dp. Proportionale Darstellung und einheitlicher transparenter Rand. Die fünf unteren Schaltflächen zeigen nur die Bilder, bleiben gleich breit und 44 dp hoch. Mit oberem/unterem Abstand und Trennlinie ist die Leiste 53 dp statt zuvor 80 dp hoch; der geräteabhängige Sicherheitsabstand bleibt erhalten. Die Namen bleiben für die Sprachausgabe verfügbar. Aktive Auswahl weiterhin durch Petrolfläche und goldene Oberkante; Bilder behalten ihre Farben. Die gesprochenen Beschriftungen stammen von den Schaltflächen, dekorative Bilder werden nicht doppelt vorgelesen. Auswahlstatus auch explizit über `aria-selected` für die Webdarstellung.
 
 ## Validierung
 
