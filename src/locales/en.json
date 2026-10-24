@@ -1020,5 +1020,9 @@
   "+{0} Punkte zum Verteilen": "+{0} points to allocate",
   "+{0} Stadthub Fahrzeug": "+{0} city hub vehicle",
   "+{0} Expeditionsauffüller": "+{0} expedition refill",
-  "+{0} Überstundenauffüller": "+{0} overtime refill"
+  "+{0} Überstundenauffüller": "+{0} overtime refill",
+  "Dein Gewinn": "Your reward",
+  "Nochmal öffnen": "Open again",
+  "Weiter": "Continue",
+  "Nochmal öffnen · {0} M": "Open again · {0} M"
 }

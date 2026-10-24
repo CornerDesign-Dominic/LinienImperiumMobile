@@ -1,3 +1,14 @@
+## Geschenke: separates Gewinnmodal – neu gesammelt, nicht veröffentlicht
+
+- Gewinn erscheint 350 ms nach dem Stillstand in einem separaten Modal; Schließen/Weiter kehrt zur geöffneten Kiste zurück.
+- Nochmal öffnen bleibt unten erreichbar; die Gewinnerkarte bleibt markiert. Kein Inline-Ergebnis mehr.
+- Label 1 Fahrzeugkarte entfernt; richtige Regionsnamen aus der gemeinsamen regionIdentities-Zuordnung.
+- Neue Karten und Duplikate, Wiederholung, Überspringen, Fehler, reduzierte Bewegung und Englisch geprüft.
+- Typprüfung, alle 188 Tests, Android-Export und Browser bei 320/390/430 px erfolgreich. Kein physischer Gerätetest.
+- Details: `docs/ui/gift-result-modal.md`. Gemeinsam mit Entwicklungspunkten sammeln, keine Veröffentlichung.
+
+---
+
 ## Entwicklungspunkte in der Firma – neu gesammelt, nicht veröffentlicht
 
 - Hinweis Punkte verfügbar auf der Firmen-Card der Startseite; großer Verteiler auf Home entfernt.
