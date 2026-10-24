@@ -33,6 +33,6 @@ Abgeschlossen: TypeScript ohne Fehler, 198/198 Tests, Android-Export mit 145 ein
 ![Werkzeugkasten-Detail](item-detail-390.png)
 ![Auftragsrollen und Siegel](items-scrolls-390.png)
 
-## Gesammelte Folgeänderung – noch nicht veröffentlicht
+## Folgeänderung – Auftragsart im Eckkennzeichen
 
 Auftragsart aus der Wachsfläche nach oben links verschoben und vergrößert. Dieselbe zentrale Darstellung gilt an allen Einsatzstellen. Bilder müssen nicht neu erzeugt werden. TypeScript und die drei vorhandenen Prüfungen der Itemzuordnung sind erfolgreich.
