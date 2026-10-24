@@ -1,20 +1,30 @@
 import {t as translate} from './i18n';
 import {Icon} from './Icon';
 import React,{useEffect,useState} from 'react';
-import {View,Pressable,StyleSheet} from 'react-native';
-import {C,Txt,Card,Row,Bar,Pill,Empty,Btn,n} from './ui';
+import {Image,View,Pressable,StyleSheet} from 'react-native';
+import {C,Txt,Card,Row,Pill,Empty,Btn,n} from './ui';
+import {regionIdentities} from './regionIdentities';
+import {portraitForPlace} from './placePortraits';
 const SKILLS=[{kind:'pay',label:'Frachtvergütung',limit:100},{kind:'special',label:'Sonderaufträge',limit:25},{kind:'referral',label:'Empfehlungen',limit:25}];
-function Relationship({customer,trust}:any){
- return <><Bar value={customer.next?trust/customer.next*100:100}/><Row style={{marginBottom:0}}><Txt muted style={styles.small}>{n(trust)}{customer.next?` / ${n(customer.next)}`:''} Beziehung</Txt>{!customer.next&&<Txt muted style={styles.small}>Maximum</Txt>}</Row></>;
+function CustomerScene({customer,detail=false}:{customer:any;detail?:boolean}){
+ const index=regionIdentities.findIndex(identity=>identity.id===customer.id),identity=regionIdentities[index];
+ const source=portraitForPlace(index,7),available=customer.points>0;
+ return <View testID={`customer-scene-${customer.id}`} style={[styles.scene,detail&&styles.detailScene]}>
+  {source&&<Image testID={`customer-place-${customer.id}`} source={source} resizeMode="cover" accessible={false} style={[StyleSheet.absoluteFill,{width:'100%',height:'100%'}]}/>}
+  <View accessible accessibilityLabel={`${translate(`Level ${customer.level}`)}${available?`, ${translate('Fähigkeitspunkte verfügbar')}`:''}`} style={styles.level}>
+   <Txt style={styles.levelText}>Level {customer.level}</Txt>
+   {available&&<View testID={`customer-points-${customer.id}`} style={styles.pointDot}/>}
+  </View>
+  <View style={styles.caption}>
+   <Txt numberOfLines={2} style={[styles.name,detail&&styles.detailName]}>{customer.name}</Txt>
+   <Txt numberOfLines={1} style={styles.region}>{identity?.title||customer.regionName}</Txt>
+  </View>
+ </View>;
 }
 export function CustomerList({data,onOpen}:any){
  if(!data.customers.length)return <Empty>Stammkunden über den Endlosort freischalten.</Empty>;
- return <>{data.customers.map((customer:any)=><Pressable key={customer.id} accessibilityRole="button" accessibilityLabel={translate(`${customer.name}, Level ${customer.level}`)} onPress={()=>onOpen(customer.id)}>
-  <Card style={styles.summary}>
-   <Row><Txt style={[styles.title,{flex:1}]}>{customer.name}</Txt><Icon name="chevron" size={17} color={C.muted}/></Row>
-   <Row><Txt muted>{customer.industry}</Txt><Pill>Level {customer.level}</Pill></Row>
-   <Relationship customer={customer} trust={data.state.customerTrust[customer.id]||0}/>
-  </Card>
+ return <>{data.customers.map((customer:any)=><Pressable key={customer.id} accessibilityRole="button" accessibilityLabel={`${translate(customer.name)}, ${translate(`Level ${customer.level}`)}${customer.points>0?`, ${translate('Fähigkeitspunkte verfügbar')}`:''}`} onPress={()=>onOpen(customer.id)} style={({pressed})=>[styles.summary,pressed&&{opacity:.8}]}>
+  <CustomerScene customer={customer}/>
  </Pressable>)}</>;
 }
 export function CustomerDetail({data,id,busy,onSave}:any){
@@ -28,7 +38,7 @@ export function CustomerDetail({data,id,busy,onSave}:any){
  const region=data.expeditionMap.find((r:any)=>r.customer.id===id);
  const category=data.catalog.categories.find((c:any)=>c.id===customer.category);
  return <>
-  <Card><Row><Txt style={[styles.title,{flex:1}]}>{customer.name}</Txt><Pill>Level {customer.level}</Pill></Row><Txt muted>{customer.industry}</Txt><Relationship customer={customer} trust={data.state.customerTrust[id]||0}/></Card>
+  <View style={styles.summary}><CustomerScene customer={customer} detail/></View>
   <Card><Row><Txt style={styles.title}>Fähigkeiten</Txt>{editing&&<Pill gold>{Math.max(0,left)} {left===1?'Punkt':'Punkte'}</Pill>}</Row>
    {SKILLS.map(skill=>{const level=customer.skills[skill.kind]||0,extra=draft[skill.kind],next=level+extra;return <View key={skill.kind} style={styles.skill}>
     <Txt style={{fontWeight:'700',marginBottom:6}}>{skill.label}</Txt>
@@ -42,7 +52,12 @@ export function CustomerDetail({data,id,busy,onSave}:any){
    </View>;})}
    {assigned>0&&<Btn disabled={busy||!valid} onPress={async()=>{const result=await onSave(id,draft,customer.skills);if(result?.customerBatchApplied)setDraft({pay:0,special:0,referral:0});}}>Speichern</Btn>}
   </Card>
-  <Card><Row><Txt muted>Ware</Txt><Txt>{customer.cargo}</Txt></Row><Row><Txt muted>Verkehr</Txt><Txt>{category?.label||customer.category}</Txt></Row><Row style={{marginBottom:0}}><Txt muted>Herkunft</Txt><Txt>{region?.name||'Expedition'}</Txt></Row></Card>
+  <Card><Row><Txt muted>Ware</Txt><Txt>{customer.cargo}</Txt></Row><Row><Txt muted>Verkehr</Txt><Txt>{category?.label||customer.category}</Txt></Row><Row style={{marginBottom:0}}><Txt muted>Herkunft</Txt><Txt>{customer.regionName||region?.name||'Expedition'}</Txt></Row></Card>
  </>;
 }
-const styles=StyleSheet.create({summary:{backgroundColor:C.panel,borderColor:C.line},title:{fontSize:16,fontWeight:'700'},small:{fontSize:12,lineHeight:18},skill:{paddingVertical:14,borderBottomWidth:1,borderColor:C.line},plus:{minWidth:44,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:10}});
+const styles=StyleSheet.create({summary:{backgroundColor:C.ink,borderColor:C.line,borderWidth:1,borderRadius:6,overflow:'hidden',marginBottom:12},
+ scene:{height:118,backgroundColor:C.ink,overflow:'hidden'},detailScene:{height:200},
+ level:{position:'absolute',top:9,right:9,paddingHorizontal:8,paddingVertical:3,borderWidth:1,borderColor:C.brass,borderRadius:5,backgroundColor:'#F2E8D0'},
+ levelText:{fontSize:11,lineHeight:16,fontWeight:'700',color:C.ink},pointDot:{position:'absolute',right:-4,top:-4,width:9,height:9,borderRadius:5,backgroundColor:C.accent,borderWidth:1.5,borderColor:'#F2E8D0'},
+ caption:{position:'absolute',bottom:0,left:0,right:0,paddingHorizontal:11,paddingVertical:7,backgroundColor:'rgba(17,34,35,.82)'},
+ name:{fontSize:14,lineHeight:18,fontWeight:'700',color:C.onInk},detailName:{fontSize:18,lineHeight:23},region:{fontSize:11,lineHeight:15,color:C.brassLight,marginTop:1},title:{fontSize:16,fontWeight:'700'},small:{fontSize:12,lineHeight:18},skill:{paddingVertical:14,borderBottomWidth:1,borderColor:C.line},plus:{minWidth:44,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:10}});

@@ -3,6 +3,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const itemNames = require('./item-names.json');
+const customerIdentities = require('./customer-identities.json');
+const normalizeCustomerNames = text => typeof text==='string'?customerIdentities.reduce((value,identity)=>value.split(identity.legacyName).join(identity.customer),text):text;
 const {eventViews, changeEvent, assignEventFleet, EVENT_PROJECT_DISTANCE_KM, touchEvent, recordActivity, claimEvent, spendEventOvertime, joinEvent, syncWorld, prepareEvent} = require('./events.cjs');
 const procurementRuntime = fs.readFileSync(path.join(__dirname, 'procurement-runtime.js'), 'utf8');
 const transportCards = require('./transport-cards.json');
@@ -21,6 +23,12 @@ const bridge = `
   const itemNames = ${JSON.stringify(itemNames)};
   const expeditionTestDuration = ${JSON.stringify(EXPEDITION_TEST_DURATION_MS)};
   const transportCards = ${JSON.stringify(transportCards)};
+  const customerIdentities = ${JSON.stringify(customerIdentities)};
+  customerIdentities.forEach((identity,index)=>{
+    const customer=CUSTOMERS.find(customer=>customer.id===identity.id);
+    Object.assign(customer,{name:identity.customer,initials:identity.initials,industry:identity.industry,region:index,regionName:identity.title,endlessPlace:identity.endlessPlace});
+    EXPEDITION_REGIONS[index]=identity.title;
+  });
   ${companyTransportRuntime}
   ${giftsRuntime}
   ${progressionRuntime}
@@ -577,8 +585,9 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   const view=a.view();
   view.testEvents=eventViews(a.state,a.eventFleetOptions(a.state.eventTests?.['large-project-own-overtime']?.distance||240),eventContext.world,eventContext.ranking);
   if(action.startsWith('event'))view.message=ok;
-  const normalizeNames=text=>typeof text==='string'?text.replace('Geeignete Klassen: Regionalverkehr 7,5-Tonner, 18-Tonner und 26-Tonner; Fernverkehr Sattelzug, 26-Tonner und 40-t-Tautliner.','Alle gefundenen Fahrzeugkarten können Regionalverkehr und Fernverkehr fahren.').replace(/Sonderfahrten/g,'Sonderaufträge').replace(/Sonderfahrt/g,'Sonderauftrag').replace(/Firmen-Items/g,'Firmenausbau-Items').replace(/Firmen-Item/g,'Firmenausbau-Item').replace(/100-Token-Refill|Überstunden-Refill/g,'Überstundenauffüller').replace(/\b(common|uncommon|rare)-Shard/g,(_,r)=>r[0].toUpperCase()+r.slice(1)+'-Shard'):text;
+  const normalizeNames=text=>typeof text==='string'?normalizeCustomerNames(text).replace('Geeignete Klassen: Regionalverkehr 7,5-Tonner, 18-Tonner und 26-Tonner; Fernverkehr Sattelzug, 26-Tonner und 40-t-Tautliner.','Alle gefundenen Fahrzeugkarten können Regionalverkehr und Fernverkehr fahren.').replace(/Sonderfahrten/g,'Sonderaufträge').replace(/Sonderfahrt/g,'Sonderauftrag').replace(/Firmen-Items/g,'Firmenausbau-Items').replace(/Firmen-Item/g,'Firmenausbau-Item').replace(/100-Token-Refill|Überstunden-Refill/g,'Überstundenauffüller').replace(/\b(common|uncommon|rare)-Shard/g,(_,r)=>r[0].toUpperCase()+r.slice(1)+'-Shard'):text;
   view.message=normalizeNames(view.message);
+  view.state.events=view.state.events.map(event=>({...event,text:normalizeCustomerNames(event.text)}));
   for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(normalizeNames);
   for(const key of Object.keys(view.help)){const help=view.help[key];help[1]=help[1].map(([title,body])=>[normalizeNames(title),normalizeNames(body)]);}
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>title==='Fundchancen je Auslosung'?[title,'<p>Je Gebiet gibt es fünf Fahrzeugkarten. Insgesamt 10 % Kartenchance pro Expedition. Die Fahrzeugchancen und Auftragschancen stehen am Endlosort unter ?. Geschenke im Großhändler enthalten denselben Fahrzeugpool und geben garantiert eine Karte. Doppelte Karten geben 1 Shard derselben Seltenheit.</p>']:[title,body]);

@@ -1053,5 +1053,11 @@
   "{0} t mögliche Verteilung pro Stunde": "{0} t potential distribution per hour",
   "Fahrzeuge": "Vehicles",
   "Für Firmenausbau. {0} / 750.000 tkm zum nächsten Item.": "For company upgrades. {0} / 750,000 tkm until the next item.",
-  "Kundenaufträge aus Firmenausbau-Items sind vorerst nicht herstellbar.": "Crafting customer contracts from company upgrade items is currently unavailable."
+  "Kundenaufträge aus Firmenausbau-Items sind vorerst nicht herstellbar.": "Crafting customer contracts from company upgrade items is currently unavailable.",
+  "Fähigkeitspunkte verfügbar": "Skill points available",
+  "Königlicher Handel": "Royal trade",
+  "Präriehandel": "Prairie trade",
+  "Karawanenhandel": "Caravan trade",
+  "Handel am Jadetor": "Jade Gate trade",
+  "Nordischer Handel": "Northern trade"
 }
