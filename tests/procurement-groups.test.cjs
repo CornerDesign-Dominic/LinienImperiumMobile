@@ -143,7 +143,15 @@ test('Offline shared-pool settlement matches frequent synchronization and legacy
  let begun=start(state,ids(state).slice(0,2),'count',15);
  begun=cmd(begun.state,'procurementStart',{region:0,truck:ids(state)[2],mode:'count',amount:5});
  let frequent=begun;
- for(let at=now+100000;at<=now+10000000;at+=100000)frequent=cmd(frequent.state,'sync',{},at);
+ // Observe before and exactly on every real return instead of issuing 100
+ // arbitrary syncs, most of which used to occur after all work had finished.
+ for(let returns=0;frequent.state.procurement.runs.some(run=>run.status==='active');returns++){
+  assert.ok(returns<20,'each return must make progress');
+  const at=Math.min(...frequent.state.procurement.runs.filter(run=>run.status==='active').map(run=>run.nextAt));
+  frequent=cmd(frequent.state,'sync',{},at-1);
+  frequent=cmd(frequent.state,'sync',{},at);
+ }
+ frequent=cmd(frequent.state,'sync',{},now+10000000);
  const offline=cmd(begun.state,'sync',{},now+10000000);
  assert.deepEqual(frequent.state.procurement,offline.state.procurement);
  assert.equal(frequent.state.coins,offline.state.coins);

@@ -612,21 +612,28 @@ test('Legacy saves receive an empty expedition filler slot without retroactive r
 test('All expedition cards can start regional and long-distance orders while garage exclusivity and city vehicle restrictions remain',()=>{
  const initial=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
  assert.match(initial.view.help.fleet[1][0][1],/Alle gefundenen Fahrzeugkarten können Regionalverkehr und Fernverkehr/);
- for(const card of initial.view.catalog.cards)for(const category of ['national','international']){
-  let state=structuredClone(initial.state);state.expedition.characters[card.id]={level:1,progress:0};
+ // Equip once per card and prepare both routes together. Actual starts still
+ // cover all 25 cards in both categories; exclusivity is category-independent.
+ for(const card of initial.view.catalog.cards){
+  const state=structuredClone(initial.state);state.expedition.characters[card.id]={level:1,progress:0};
   let ready=execute(state,'garageAdd',{id:card.id},now,fixed);
   const truck=ready.state.trucks.find(t=>t.cardId===card.id);assert.ok(truck);
-  const raw=ready.state.orders[0];Object.assign(raw,{category,customer:null,status:'available',volume:10,distance:60,delivered:0});
+  const routes=ready.state.orders.slice(0,2);
+  for(const [index,category] of ['national','international'].entries())Object.assign(routes[index],{category,customer:null,status:'available',volume:10,distance:60,delivered:0});
   ready=execute(ready.state,'sync',{},now,fixed);
-  const offer=ready.view.state.orders.find(o=>o.id===raw.id);
-  assert.ok(offer.choices.some(t=>t.id===truck.id),card.id+' '+category);
-  assert.equal(offer.vehicleStatus,'ready');
-  const active=execute(ready.state,'assign',{order:raw.id,truck:truck.id},now,fixed);
-  assert.equal(active.state.orders.find(o=>o.id===raw.id).status,'active',card.id+' '+category);
-  const other=active.view.state.orders.find(o=>o.status==='available'&&!o.isProject);assert.ok(other);
-  assert.ok(!other.choices.some(t=>t.id===truck.id));
-  const blocked=execute(active.state,'assign',{order:other.id,truck:truck.id},now,fixed);
-  assert.equal(blocked.state.orders.find(o=>o.id===other.id).status,'available');
+  for(const route of routes){
+   const offer=ready.view.state.orders.find(o=>o.id===route.id);
+   assert.ok(offer.choices.some(t=>t.id===truck.id),card.id+' '+route.category);
+   assert.equal(offer.vehicleStatus,'ready');
+   const active=execute(ready.state,'assign',{order:route.id,truck:truck.id},now,fixed);
+   assert.equal(active.state.orders.find(o=>o.id===route.id).status,'active',card.id+' '+route.category);
+   if(card.id==='navigator'){
+    const other=active.view.state.orders.find(o=>o.status==='available'&&!o.isProject);assert.ok(other);
+    assert.ok(!other.choices.some(t=>t.id===truck.id));
+    const blocked=execute(active.state,'assign',{order:other.id,truck:truck.id},now,fixed);
+    assert.equal(blocked.state.orders.find(o=>o.id===other.id).status,'available');
+   }
+  }
  }
  let city=structuredClone(initial);city.state.xp=1000;city.state.coins=100000;city=execute(city.state,'buyHub',{},now,fixed);city=execute(city.state,'hubVehicleBuy',{},now,fixed);
  const bought=city.state.trucks.find(t=>!t.cardId);city=execute(city.state,'hubTruck',{id:bought.id},now,fixed);

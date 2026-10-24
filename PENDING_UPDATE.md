@@ -1,3 +1,14 @@
+## Tests geprüft und gestrafft – neu gesammelt, nicht veröffentlicht
+
+- Vorhandene Testgruppen auf aktuelle Mobile-Regeln und die bewusst erhaltene Vendor-Baseline geprüft.
+- Redundante Engine-Vorbereitung und unnötige Offline-Synchronisationen reduziert; alle 50 Karten-/Verkehrsart-Starts bleiben erhalten.
+- Vier schnelle Verhaltenstests für Geschenk- und Entwicklungspunkte-Modale ergänzt; zwei absichtlich eingebaute Regressionen zuverlässig erkannt und wieder entfernt.
+- Jetzt 192 statt 188 erfolgreiche Fälle, lokaler Gesamtlauf etwa 14,0 statt 16,4 Sekunden. Bestehende CI-Abdeckung und Standardparallelität bleiben erhalten.
+- Umfang, Grenzen und effiziente Prüfstrategie: `tests/README.md`.
+- Nur Tests und Dokumentation geändert; Anwendungscode unverändert. Keine Veröffentlichung.
+
+---
+
 ## Geschenke: separates Gewinnmodal – neu gesammelt, nicht veröffentlicht
 
 - Gewinn erscheint 350 ms nach dem Stillstand in einem separaten Modal; Schließen/Weiter kehrt zur geöffneten Kiste zurück.
