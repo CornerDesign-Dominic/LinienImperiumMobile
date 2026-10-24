@@ -10,7 +10,7 @@ import {rarityColor} from './items';
 import {CollectionFacts} from './VehicleFacts';
 import {VehicleArt} from './VehicleArt';
 import {VehicleName} from './VehicleName';
-import {averageCardSpeed} from './collectionStats';
+import {averageCardSpeed,speedRankSegments} from './collectionStats';
 import {CardLevelShield} from './CardLevelShield';
 
 const ROMAN_LEVELS=['','I','II','III','IV','V','VI','VII','VIII','IX','X'];
@@ -73,8 +73,10 @@ export function VehicleCards({data,onOpen}:any){
 export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,showDetails=false,ornate=false,accessibilityLabel,facts}:any){
  const owned=data.state.expedition.characters[card.id],unavailable=!!status?.disabled,locked=disabled||unavailable;
  const average=averageCardSpeed(stats.loadedSpeed,stats.speed);
+ const speedRanks=ornate&&owned?speedRankSegments(stats.rank?.total):[];
  const label=accessibilityLabel||[
   translate(card.name),translate(owned?`Stufe ${owned.level}`:'Nicht entdeckt'),`${n(stats.capacity,1)} t`,
+  ornate&&owned?`${translate('Geschwindigkeitsrang')}: ${stats.rank.total}`:'',
   showDetails?`${translate('Durchschnittsgeschwindigkeit')}: ${average===undefined?'—':n(average,2)+' km/s'}, ${translate('Betriebskosten')}: ${stats.costPerKm===undefined?'—':n(stats.costPerKm,2)+' M/km'}`:`${translate('Geschwindigkeitsrang')}: ${stats.rank.total}`,
   status?.label?translate(status.label):''
  ].filter(Boolean).join(', ');
@@ -86,6 +88,9 @@ export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,s
    <VehicleArt card={card}/>
    <View style={styles.nameBand}><VehicleName name={card.name} numberOfLines={3} style={styles.collectibleName}/></View>
    <CardDivider color={rarityColor(card.rarity)}/>
+   <View testID="speed-rank-row" accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" pointerEvents="none" style={styles.speedRankRow}>
+    {speedRanks.length?speedRanks.map(segment=><Text key={segment.rarity} testID={`speed-rank-${segment.rarity}`} accessible={false} allowFontScaling={false} style={[styles.speedRankNumeral,{color:rarityColor(segment.rarity)}]}>{segment.numeral}</Text>):<Text accessible={false} allowFontScaling={false} style={[styles.speedRankNumeral,{color:C.muted}]}>—</Text>}
+   </View>
    <View style={styles.collectibleFacts}>{values}</View>
   </>:<>
    <Text accessibilityLabel={translate(owned?`Stufe ${owned.level}`:'Nicht entdeckt')} style={styles.level}>{owned?ROMAN_LEVELS[owned.level]||String(owned.level):'—'}</Text><View style={unavailable?styles.usedArtwork:undefined}><VehicleArt card={card}/></View><VehicleName name={card.name} numberOfLines={3} style={styles.name}/>
@@ -118,6 +123,8 @@ const styles=StyleSheet.create({
  collectibleName:{fontFamily:displayFont,fontSize:11,lineHeight:14,textAlign:'center',color:C.text},
  divider:{height:5,marginHorizontal:7,marginTop:5,marginBottom:0,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:5},diamond:{width:4,height:4,transform:[{rotate:'45deg'}]},
  collectibleFacts:{paddingHorizontal:7,paddingBottom:8},
+ speedRankRow:{height:24,marginTop:2,paddingHorizontal:2,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:6},
+ speedRankNumeral:{fontFamily:displayFont,fontSize:12,lineHeight:18,fontWeight:'600'},
  unavailable:{backgroundColor:C.raised,borderColor:C.common},usedArtwork:{filter:[{grayscale:1}],opacity:.6},
  filterBox:{marginBottom:8,borderWidth:1,borderColor:C.line,borderRadius:6,backgroundColor:C.panel,overflow:'hidden'},filterTrigger:{minHeight:48,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:10,paddingHorizontal:12,paddingVertical:8},selectedFilter:{flexDirection:'row',alignItems:'center',gap:10,flexShrink:1},filterLabel:{fontSize:13,fontWeight:'700',flexShrink:1},filterOptions:{borderTopWidth:1,borderColor:C.line},filterOption:{minHeight:44,flexDirection:'row',alignItems:'center',gap:10,paddingHorizontal:12,paddingVertical:9},shards:{flexDirection:'row',alignItems:'center',gap:5},
  sectionToggle:{minHeight:48,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:10,marginBottom:6},section:{fontSize:13,fontWeight:'700',flexShrink:1},emptyGroup:{fontSize:12,marginBottom:16},
