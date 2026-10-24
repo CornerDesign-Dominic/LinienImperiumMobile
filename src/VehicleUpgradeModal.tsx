@@ -1,3 +1,4 @@
+import {ItemArt,ItemAmount} from './ItemArt';
 import React,{useRef,useState} from 'react';
 import {View,StyleSheet} from 'react-native';
 import {C,Txt,Row,Btn,n} from './ui';
@@ -7,9 +8,9 @@ import {BONUS,bonusValue} from './cardBonus';
 import {averageCardSpeed,rankNumeral} from './collectionStats';
 import {t} from './i18n';
 
-function Cost({icon,label,needed,available}:{icon:IconName;label:string;needed:number;available:number}){
+function Cost({id,icon,label,needed,available}:{id:string;icon:IconName;label:string;needed:number;available:number}){
  const enough=available>=needed;
- return <View style={s.cost}><Icon name={icon} size={18} color={enough?C.accent:C.red}/><View style={{flex:1}}><Txt muted style={{fontSize:11}}>{label}</Txt><Txt style={{fontSize:12,color:enough?C.accent:C.red}}>{t('Kosten')}: {n(needed)} · {t('Bestand')}: {n(available)}</Txt></View>{!enough&&<Txt style={{fontSize:11,color:C.red}}>{t('Fehlen')}: {n(needed-available)}</Txt>}</View>;
+ return <View style={s.cost}><ItemArt id={id} size={40}/><View style={{flex:1}}><Txt muted style={{fontSize:11}}>{label}</Txt><Txt style={{fontSize:12,color:enough?C.accent:C.red}}>{t('Kosten')}: {n(needed)} · {t('Bestand')}: {n(available)}</Txt></View>{!enough&&<Txt style={{fontSize:11,color:C.red}}>{t('Fehlen')}: {n(needed-available)}</Txt>}</View>;
 }
 function Section({title,progress,maximum,children}:any){return <View testID={`upgrade-${title}`} style={s.section}><Row style={{marginBottom:8}}><Txt style={s.title}>{title}</Txt><Txt muted style={{fontSize:11}}>{progress}</Txt></Row>{maximum?<Txt muted>Maximum erreicht</Txt>:children}</View>;}
 export function VehicleUpgradeModal({visible,data,id,busy,onClose,onUpgrade,onVehicleUpgrade}:any){
@@ -40,19 +41,19 @@ export function VehicleUpgradeModal({visible,data,id,busy,onClose,onUpgrade,onVe
   <Section title="Kartenstufe" progress={`${rankNumeral(level)} / X`} maximum={level>=10}>
    <Txt muted style={{fontSize:10,marginBottom:3}}>{BONUS[card.stat]}</Txt>
    <Txt style={s.effect}>{rankNumeral(level)} → {rankNumeral(level+1)} · {bonusValue(card,card.bonusLevels[level-1],2)} → {bonusValue(card,card.bonusLevels[level],2)}</Txt>
-   <Cost icon="shard" label={`${t(rarity)}-${t('Splitter')}`} needed={needed} available={shards}/>
+   <Cost id={`shard:${card.rarity}`} icon="shard" label={`${t(rarity)}-${t('Splitter')}`} needed={needed} available={shards}/>
    {own.progress>0&&<Txt muted style={{fontSize:10}}>Bisheriger Fortschritt ist angerechnet.</Txt>}
    {button('level',shards<needed||needed<=0)}
   </Section>
   <Section title="Kapazität" progress={`${modules} / ${maxModules}`} maximum={modules>=maxModules}>
    <Txt style={s.effect}>{n(stats.capacity,2)} t → {next?.capacity!=null?`${n(next.capacity,2)} t`:'—'}</Txt>
-   <Cost icon="module" label="Kapazitätsmodule" needed={1} available={data.state.inventory.capacityModules||0}/>
+   <Cost id="capacityModules" icon="module" label="Kapazitätsmodule" needed={1} available={data.state.inventory.capacityModules||0}/>
    {button('capacity',!data.state.inventory.capacityModules||next?.capacity==null)}
   </Section>
   <Section title="Geschwindigkeit" progress={`${rank.total} / 50`} maximum={rank.total>=50}>
    <Txt style={s.effect}>{rank.total} → {rank.total+1} · {nextAverage===undefined?'—':`${n(average,2)} → ${n(nextAverage,2)} km/s`}</Txt>
    {next?.rank&&<Txt muted style={{fontSize:10}}>{t('Grundtempo')}: +{n((next.rank.speed/stats.speed-1)*100,2)} %</Txt>}
-   <Cost icon="gear" label={`${t(rank.label)}-${t('Zahnräder')}`} needed={stats.rankCost} available={gear}/>
+   <Cost id={`gear:${rank.id}`} icon="gear" label={`${t(rank.label)}-${t('Zahnräder')}`} needed={stats.rankCost} available={gear}/>
    {button('rank',gear<stats.rankCost||!next?.rank)}
   </Section>
  </ExpeditionPlaceModal>;

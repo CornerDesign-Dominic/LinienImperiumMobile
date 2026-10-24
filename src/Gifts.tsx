@@ -1,3 +1,4 @@
+import {ItemArt,ItemAmount} from './ItemArt';
 import {t as translate} from './i18n';
 import React,{useEffect,useRef,useState} from 'react';
 import {View,Pressable,Modal,ScrollView,StyleSheet,AccessibilityInfo} from 'react-native';
@@ -95,7 +96,7 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
     <VehicleArt card={card} style={{width:160}}/>
     <Txt style={styles.resultName}>{card.name}</Txt>
     <Pill>{data.catalog.rarities.find((r:any)=>r.id===card.rarity)?.label}</Pill>
-    <View style={styles.reward} accessibilityLiveRegion="polite"><Icon name={found.duplicate?'shard':'cards'} size={24} color={rarityColor(card.rarity)}/><Txt style={{flexShrink:1}}>{found.duplicate?`+${n(found.shards||1)} ${data.catalog.rarities.find((r:any)=>r.id===card.rarity)?.label}-Shard`:'Neue Fahrzeugkarte'}</Txt></View>
+    <View style={styles.reward} accessibilityLiveRegion="polite">{found.duplicate?<ItemArt id={`shard:${card.rarity}`} size={44}/>:<Icon name="cards" size={24} color={rarityColor(card.rarity)}/>}<Txt style={{flexShrink:1}}>{found.duplicate?`+${n(found.shards||1)} ${data.catalog.rarities.find((r:any)=>r.id===card.rarity)?.label}-Shard`:'Neue Fahrzeugkarte'}</Txt></View>
    </View>}
    <Btn onPress={()=>{setRewardOpen(false);presenting.current=false;}}>Weiter</Btn>
   </ExpeditionPlaceModal>

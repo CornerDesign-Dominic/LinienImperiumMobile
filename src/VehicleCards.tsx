@@ -1,3 +1,4 @@
+import {ItemArt,ItemAmount} from './ItemArt';
 import {Text} from './Language';
 import {t as translate} from './i18n';
 import React,{useState} from 'react';
@@ -27,7 +28,7 @@ export function RarityFilter({data,rarity,onChange}:any){
     const active=rarity===filter.id,color=filter.id==='all'?C.accent:rarityColor(filter.id),shards=g.expedition.shards[filter.id]||0;
     return <Pressable key={filter.id} accessibilityRole="button" accessibilityLabel={`${translate(filter.label)}${filter.id==='all'?'':`, ${n(shards)} ${translate('Splitter')}`}`} accessibilityState={{selected:active}} onPress={()=>{onChange(filter.id);setFilterOpen(false);}} style={[styles.filterOption,active&&{backgroundColor:C.greenWash}]}>
      <Txt style={[styles.filterLabel,{color,flex:1}]}>{filter.label}</Txt>
-     {filter.id!=='all'&&<View style={styles.shards}><Icon name="shard" size={15} color={color}/><Txt muted style={{fontSize:12}}>{n(shards)}</Txt></View>}
+     {filter.id!=='all'&&<View style={styles.shards}><ItemArt id={`shard:${filter.id}`} size={26}/><Txt muted style={{fontSize:12}}>{n(shards)}</Txt></View>}
      <View style={{width:16}}>{active&&<Icon name="check" size={15} color={color}/>}</View>
     </Pressable>;
    })}</View>}

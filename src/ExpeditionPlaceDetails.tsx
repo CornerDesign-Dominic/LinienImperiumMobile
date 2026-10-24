@@ -13,7 +13,7 @@ export function ExpeditionPlaceDetails({data,region,selected,busy,clock,onComman
  const noTruck=!g.trucks.some((truck:any)=>truck.free&&truck.tier>=2),active=!done&&mission?.status==='active',claimable=!done&&mission?.status==='completed'&&!mission.claimedAt;
  const duration=mission?Math.max(0,mission.endsAt-mission.startedAt):isFinal?map.finalDurationMs:place.durationMs;
  const button=(label:string,action:string,payload:any,disabled=false,secondary=false)=><Btn secondary={secondary} disabled={busy||disabled} onPress={()=>onCommand(action,payload)}>{label}</Btn>;
- const rewardItems=isFinal?[{icon:'customers' as const,label:'Stammkunde',amount:'+1'},...(!state.moduleAwarded||done&&state.moduleAwarded?[{icon:'module' as const,label:'Kapazitätsmodul',amount:'+1'}]:[])]:[{icon:'expedition' as const,label:'Expeditionskapazität',amount:'+1'}];
+ const rewardItems=isFinal?[{icon:'customers' as const,label:'Stammkunde',amount:'+1'},...(!state.moduleAwarded||done&&state.moduleAwarded?[{itemId:'capacityModules',icon:'module' as const,label:'Kapazitätsmodul',amount:'+1'}]:[])]:[{icon:'expedition' as const,label:'Expeditionskapazität',amount:'+1'}];
  return <>
   <Row style={{marginBottom:0}}><PlaceStatus icon={done?'check':active?'timer':claimable?'reward':!known?'expedition':isFinal?'customers':'truck'}>{done?(isFinal?'Kunde freigeschaltet':'Abgeschlossen'):active?'Bonuslieferung unterwegs':claimable?'Belohnung bereit':!known?'Erkundung':isFinal?'Handelsplatz erreicht':'Bonuslieferung verfügbar'}</PlaceStatus>{active&&<Txt gold style={s.time}>{remaining(mission.endsAt,clock)}</Txt>}</Row>
   {!known?<>

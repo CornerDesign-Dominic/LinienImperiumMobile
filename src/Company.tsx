@@ -1,3 +1,4 @@
+import {ItemArt,ItemAmount} from './ItemArt';
 import {t as translate} from './i18n';
 import {Icon,IconName} from './Icon';
 import {itemName} from './items';
@@ -54,7 +55,7 @@ export function TransportEditor({data,busy,onSave,onInventory}:any){
  };
  return <>
   <View style={styles.stock}>
-   <View style={styles.stockValue}><Icon name="company" size={21}/><Txt gold style={{fontWeight:'700'}}>{n(items)}</Txt><Txt muted style={{fontSize:12}}>verfügbar</Txt></View>
+   <View style={styles.stockValue}><ItemArt id="companyItems" size={32}/><Txt gold style={{fontWeight:'700'}}>{n(items)}</Txt><Txt muted style={{fontSize:12}}>verfügbar</Txt></View>
    <Pressable accessibilityRole="button" onPress={onInventory} style={styles.stockLink}><Txt style={{fontSize:12}}>Vorräte</Txt><Icon name="chevron" size={14}/></Pressable>
   </View>
   <View accessibilityRole="tablist" style={styles.tabs}>{['national','international'].map(value=><Pressable key={value} accessibilityRole="tab" accessibilityState={{selected:category===value}} onPress={()=>setCategory(value)} style={[styles.tab,category===value&&styles.tabActive]}><Txt style={[styles.tabText,category===value&&{color:C.onInk}]}>{categoryName(value)}</Txt></Pressable>)}</View>
@@ -80,7 +81,7 @@ export function TransportEditor({data,busy,onSave,onInventory}:any){
       <Btn iconOnly secondary icon="plus" disabled={busy||!canAdd} onPress={()=>{setSelection(previous=>previous?{...previous,count:previous.count+1}:null);setSaveError(false);}}>Stufen erhöhen</Btn>
      </View></View>
      <Txt muted style={styles.caption}>Gesamtkosten</Txt>
-     <View style={styles.costs}><View style={styles.cost}><Icon name="coin" size={22} color={g.coins<quote.coins?C.red:C.gold}/><Txt style={{color:g.coins<quote.coins?C.red:C.text,fontWeight:'700'}}>{n(quote.coins)} M</Txt></View><View style={styles.cost}><Icon name="company" size={22} color={items<quote.items?C.red:C.gold}/><Txt style={{color:items<quote.items?C.red:C.text,fontWeight:'700'}}>{quote.items} / {n(items)}</Txt></View></View>
+     <View style={styles.costs}><View style={styles.cost}><Icon name="coin" size={22} color={g.coins<quote.coins?C.red:C.gold}/><Txt style={{color:g.coins<quote.coins?C.red:C.text,fontWeight:'700'}}>{n(quote.coins)} M</Txt></View><View style={styles.cost}><ItemArt id="companyItems" size={36}/><Txt style={{color:items<quote.items?C.red:C.text,fontWeight:'700'}}>{quote.items} / {n(items)}</Txt></View></View>
      <Txt muted style={{fontSize:11}}>{itemName('companyItems',2)}: {n(items)} verfügbar</Txt>
      {!affordable&&!stale&&<Txt style={styles.error}>{g.coins<quote.coins?'Nicht genügend Münzen.':'Nicht genügend Firmenausbau-Items.'}</Txt>}
      {saveError&&<Txt style={styles.error}>Ausbau nicht bestätigt. Bitte erneut versuchen.</Txt>}</>}

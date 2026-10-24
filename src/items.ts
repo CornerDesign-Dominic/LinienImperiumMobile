@@ -2,7 +2,7 @@ import C from './palette.json';
 import names from '../functions/src/item-names.json';
 export const itemName=(id:string,amount=1)=>((names as Record<string,string[]>)[id]||[id,id])[amount===1?0:1];
 export const rarityColor=(id:string)=>({common:C.common,uncommon:C.uncommon,rare:C.rare,epic:C.epic,legendary:C.legendary} as Record<string,string>)[id]||C.common;
-export type StockItem={id:string;name:string;amount:number;source:string;description:string;recipe?:string;craft?:boolean;use?:string;refill?:'expedition'|'overtime';color?:string};
+export type StockItem={id:string;name:string;amount:number;source:string;description:string;recipe?:string;craft?:boolean;use?:string;refill?:'expedition'|'overtime';kind?:string;rarity?:string;color?:string};
 export function stockItems(data:any):StockItem[]{
  const {state:g,catalog:c}=data;
  const recipes=c.recipes||[];
@@ -27,6 +27,6 @@ export function stockItems(data:any):StockItem[]{
  for(const kind of ['private','customer'])items.push({id:`order:${kind}`,name:itemName(kind),amount:g.orders.filter((o:any)=>!o.isProject&&o.status==='queued'&&(kind==='private'?o.kind==='private':o.kind!=='private')).length,source:kind==='private'?'Herstellung aus Abholhinweisen.':'Herstellung und Expeditionen.',description:'Starten unter Einzelaufträge → Aufträge aus Vorräten.',recipe:recipeText(kind),craft:true,use:'savedOrders'});
  const projectGroups=new Map<string,any[]>();
  for(const o of g.orders.filter((o:any)=>o.isProject&&o.status==='queued')){const key=o.projectInfo.key;projectGroups.set(key,[...(projectGroups.get(key)||[]),o]);}
- for(const [key,orders] of projectGroups){const o=orders[0];items.push({id:`project:${key}`,name:`${o.kind==='referral'?'Empfehlungsauftrag':'Sonderauftrag'} ${(o.projectName||'').replace(/^(?:Großauftrag|Großprojekt|Sonderauftrag|Empfehlungsauftrag)\s+/,'')}`,amount:orders.length,source:'Expeditionen und Stammkunden.',description:'Mit einer Flotte unter Großaufträge starten.',use:'projects',color:rarityColor(o.kind==='referral'?'epic':'rare')});}
+ for(const [key,orders] of projectGroups){const o=orders[0];items.push({id:`project:${key}`,kind:o.kind==='referral'?'referral':'special',rarity:o.kind==='referral'?'epic':'rare',name:`${o.kind==='referral'?'Empfehlungsauftrag':'Sonderauftrag'} ${(o.projectName||'').replace(/^(?:Großauftrag|Großprojekt|Sonderauftrag|Empfehlungsauftrag)\s+/,'')}`,amount:orders.length,source:'Expeditionen und Stammkunden.',description:'Mit einer Flotte unter Großaufträge starten.',use:'projects',color:rarityColor(o.kind==='referral'?'epic':'rare')});}
  return items;
 }

@@ -1,16 +1,17 @@
+import {ItemArt,ItemAmount} from './ItemArt';
 import {Text} from './Language';
 import {t as translate} from './i18n';
 import React from 'react';
 import {View,StyleSheet} from 'react-native';
 import {stockItems} from './items';
-import {Icon,stockIcon} from './Icon';
+import {Icon} from './Icon';
 import {C,Txt,Card,Btn,n} from './ui';
 
 type Recipe={id:string;inputId:string;outputId:string;input:string;output:string;needed:number;owned:number;outputOwned:number;inputColor?:string;outputColor?:string;action:string;payload?:Record<string,unknown>;locked?:boolean};
 function Ingredient({id,name,amount,color,owned,insufficient=false}:any){
  return <View style={styles.item} accessible accessibilityLabel={translate(`${n(amount)} ${name}, ${n(owned)} vorhanden`)}>
   <Txt style={[styles.stock,insufficient&&{color:C.red}]}>{n(owned)} vorhanden</Txt>
-  <View style={[styles.artwork,color&&{borderColor:color}]} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><Icon name={stockIcon(id)} size={30} color={color||C.gold}/></View>
+  <View style={[styles.artwork,color&&{borderColor:color}]} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><ItemArt id={id} size={52}/></View>
   <Txt style={[styles.amount,color&&{color}]}>{n(amount)}</Txt>
   <Text style={styles.name} numberOfLines={3}>{name}</Text>
  </View>;

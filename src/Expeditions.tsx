@@ -1,3 +1,4 @@
+import {ItemArt,ItemAmount} from './ItemArt';
 import React,{useState} from 'react';
 import {View,StyleSheet} from 'react-native';
 import {Txt,Row,n} from './ui';
@@ -32,7 +33,7 @@ function OpenedExpedition({data,region,onSelectRegion,busy,clock,onCommand,onMis
       <Txt style={styles.section}>Fahrzeugkarten</Txt>
       {map.finds.cards.map((card:any)=><View key={card.id} style={styles.chance}><Row style={{marginBottom:2,flexWrap:'nowrap'}}><Txt style={{flex:1}}>{card.name}</Txt><Txt gold>{n(card.chance,2)} %</Txt></Row><Txt style={[styles.small,{color:rarityColor(card.rarity)}]}>{data.catalog.rarities.find((rarity:any)=>rarity.id===card.rarity)?.label}</Txt></View>)}
       <Txt style={styles.section}>Aufträge</Txt>
-      {map.finds.orders.map((order:any)=><View key={order.kind} style={styles.chance}><Row style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={{flex:1}}>{order.name}</Txt><Txt gold>{n(order.chance,2)} %</Txt></Row>{order.ranks?<Txt muted style={styles.small}>Rang bei Fund: {order.ranks.map((rank:any)=>`${rank.rank} (${n(rank.chance,2)} %)`).join(' · ')}</Txt>:<Txt style={[styles.small,{color:rarityColor(order.rarity)}]}>{data.catalog.rarities.find((rarity:any)=>rarity.id===order.rarity)?.label}</Txt>}</View>)}
+      {map.finds.orders.map((order:any)=><View key={order.kind} style={styles.chance}><Row style={{marginBottom:3,flexWrap:'nowrap'}}><ItemArt id={order.kind} rarity={order.rarity} size={44}/><Txt style={{flex:1}}>{order.name}</Txt><Txt gold>{n(order.chance,2)} %</Txt></Row>{order.ranks?<Txt muted style={styles.small}>Rang bei Fund: {order.ranks.map((rank:any)=>`${rank.rank} (${n(rank.chance,2)} %)`).join(' · ')}</Txt>:<Txt style={[styles.small,{color:rarityColor(order.rarity)}]}>{data.catalog.rarities.find((rarity:any)=>rarity.id===order.rarity)?.label}</Txt>}</View>)}
    </>:selected!==null&&permitted?<ExpeditionPlaceDetails data={data} region={region} selected={selected} busy={busy} clock={clock} onCommand={onCommand} onMission={onMission} onChances={()=>setChances(true)}/>:null}
   </ExpeditionPlaceModal>
  </View>;

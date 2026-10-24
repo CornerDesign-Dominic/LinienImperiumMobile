@@ -1,3 +1,4 @@
+import {ItemArt,ItemAmount} from './ItemArt';
 import React,{useEffect,useState} from 'react';
 import {View,TextInput,Modal,ScrollView,Pressable,StyleSheet} from 'react-native';
 import {Text} from './Language';
@@ -31,8 +32,8 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
  const rewards=Object.entries(p.pending).filter(([,amount]:any)=>amount>0).map(([id,amount])=>({id,amount}));
  const regionTitle=(index:number)=>regionIdentities[index]?.title||data.catalog.regionNames[index];
  const visited=p.sites.filter((s:any)=>s.completed>0);
- const rewardInfo=(id:string)=>{const rarity=data.catalog.rarities.find((r:any)=>r.id===id);return {name:rarity?`${rarity.label}-Zahnräder`:itemName(id,2),icon:stockIcon(rarity?`gear:${id}`:id),color:rarity?rarityColor(id):C.gold};};
- const rewardTiles=(items:any[],amounts=false)=><View style={amounts?styles.rewards:styles.itemGrid}>{items.map(item=>{const info=rewardInfo(item.id);return <View key={item.id} accessible accessibilityLabel={`${translate(info.name)}${amounts?`: ${n(item.amount)}`:''}`} style={amounts?styles.reward:[styles.itemCard,{borderColor:info.color}]}>{amounts?<><Icon name={info.icon} color={info.color} size={30}/><Txt style={styles.rewardAmount}>{n(item.amount)}</Txt></>:<><View style={styles.itemArtwork}><Icon name={info.icon} color={info.color} size={30}/></View><Text numberOfLines={3} style={styles.itemName}>{info.name.replace(/Firmenausbau/g,'Firmen\u00adausbau').replace(/Kapazitätsmodul/g,'Kapazitäts\u00admodul')}</Text></>}</View>;})}</View>;
+ const rewardInfo=(id:string)=>{const rarity=data.catalog.rarities.find((r:any)=>r.id===id);return {name:rarity?`${rarity.label}-Zahnräder`:itemName(id,2),itemId:rarity?`gear:${id}`:id,icon:stockIcon(rarity?`gear:${id}`:id),color:rarity?rarityColor(id):C.gold};};
+ const rewardTiles=(items:any[],amounts=false)=><View style={amounts?styles.rewards:styles.itemGrid}>{items.map(item=>{const info=rewardInfo(item.id);return <View key={item.id} accessible accessibilityLabel={`${translate(info.name)}${amounts?`: ${n(item.amount)}`:''}`} style={amounts?styles.reward:[styles.itemCard,{borderColor:info.color}]}>{amounts?<><ItemArt id={info.itemId} size={48}/><Txt style={styles.rewardAmount}>{n(item.amount)}</Txt></>:<><View style={styles.itemArtwork}><ItemArt id={info.itemId} size={48}/></View><Text numberOfLines={3} style={styles.itemName}>{info.name.replace(/Firmenausbau/g,'Firmen\u00adausbau').replace(/Kapazitätsmodul/g,'Kapazitäts\u00admodul')}</Text></>}</View>;})}</View>;
  const close=()=>{setDialog(null);setRegion(null);setPicker(false);setSaveFailed(false);};
  const runs=[...(p.groups||[]),...p.runs.filter((r:any)=>!r.groupId)];
  const active=runs.filter((r:any)=>r.status==='active');

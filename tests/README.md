@@ -2,7 +2,7 @@
 
 ## Zweck und aktueller Umfang
 
-`npm test` führt 192 benannte Prüfungen aus. Ein Fall enthält häufig mehrere Grenzwerte oder alle Karten/Regionen; die Fallzahl ist deshalb kein Maß für die Zahl der Assertions. Ein Fall führt zusätzlich die 23 ursprünglichen Web-Prüfskripte aus.
+`npm test` führt 198 benannte Prüfungen aus. Ein Fall enthält häufig mehrere Grenzwerte oder alle Karten/Regionen; die Fallzahl ist deshalb kein Maß für die Zahl der Assertions. Ein Fall führt zusätzlich die 23 ursprünglichen Web-Prüfskripte aus.
 
 | Bereich | Was abgesichert wird | Wichtige Dateien |
 | --- | --- | --- |
@@ -43,3 +43,5 @@ Eine Begrenzung auf vier Worker brachte hier keinen Vorteil (17,90 s vor der Str
 Die Tests prüfen lokale Logik, ausgewählte Komponentenentscheidungen und simulierte Firestore-Transaktionen. Die kleinen Hook-/Timerprüfungen in `helpers/component-harness.cjs` ersetzen weder React Native noch einen Browser oder ein echtes Gerät: Layout, Gesten, Animationseindruck, Accessibility und native Modalübergänge bleiben Teil der separaten Sicht-/Bedienprüfung. Echte Firebase-Berechtigungen, Netzwerkausfälle und der veröffentlichte Server werden damit ebenfalls nicht vollständig geprüft; dafür gibt es den Live-API-Smoke-Test im Veröffentlichungsworkflow. Ein grüner Testlauf allein belegt keine erfolgte Veröffentlichung und keine vollständige Sicherheit des Spiels.
 
 `hub-ui` prüft drei zusätzliche Abläufe: Mehrfachtipps/Fehler und Reiter, Fahrzeugplatz-/Ressourcen-Grenzen mit Ausbaupayload sowie Fundkisten-Cooldown und Ergebnisdialog. Die vorhandenen Hub-Regeltests decken Preise, tägliche Limits, Offline-Zeit und Migration ab.
+
+Die Itemdarstellung ergänzt drei Prüfungen für vollständige Katalogzuordnung, unabhängige Auftragsart/Seltenheit/Schleife/Stufe und gültige römische Rangzahlen. Die bestehenden Modal-Harnesses behandeln die neue Itemkomponente als Hostdarstellung; ihre Ablaufprüfungen bleiben erhalten.

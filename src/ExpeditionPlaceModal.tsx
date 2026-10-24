@@ -1,3 +1,4 @@
+import {ItemArt,ItemAmount} from './ItemArt';
 import React,{useState} from 'react';
 import {Image,ImageSourcePropType,Modal,Pressable,ScrollView,StyleSheet,View} from 'react-native';
 import {Text} from './Language';
@@ -20,9 +21,9 @@ export function ExpeditionPlaceModal({visible,title,region,image,onClose,childre
  </View></View></Modal>;
 }
 export function PlaceStatus({icon,children}:{icon:IconName;children:React.ReactNode}){return <View style={s.status}><Icon name={icon} size={15} color={C.accent}/><Text style={s.statusText}>{children}</Text></View>;}
-export function PlaceRewards({items,received=false}:{items:{icon:IconName;label:string;amount:string}[];received?:boolean}){
+export function PlaceRewards({items,received=false}:{items:{icon:IconName;itemId?:string;label:string;amount:string}[];received?:boolean}){
  if(!items.length)return null;
- return <View style={s.rewards}><Text style={s.rewardLabel}>{received?'Belohnung erhalten':'Belohnung'}</Text><View style={s.rewardIcons}>{items.map((item,i)=><View key={i} accessible accessibilityLabel={`${t(item.label)} ${item.amount}`} style={s.reward}><Icon name={item.icon} size={23} color={C.gold}/><Text literal style={s.rewardAmount}>{item.amount}</Text></View>)}</View></View>;
+ return <View style={s.rewards}><Text style={s.rewardLabel}>{received?'Belohnung erhalten':'Belohnung'}</Text><View style={s.rewardIcons}>{items.map((item,i)=><View key={i} accessible accessibilityLabel={`${t(item.label)} ${item.amount}`} style={s.reward}>{item.itemId?<ItemArt id={item.itemId} size={36}/>:<Icon name={item.icon} size={23} color={C.gold}/>}<Text literal style={s.rewardAmount}>{item.amount}</Text></View>)}</View></View>;
 }
 export function PlaceExtraDetails({children}:{children:React.ReactNode}){
  const [open,setOpen]=useState(false);

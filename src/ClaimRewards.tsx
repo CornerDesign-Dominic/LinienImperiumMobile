@@ -1,3 +1,4 @@
+import {ItemArt,ItemAmount} from './ItemArt';
 import React from 'react';
 import {View,ScrollView,StyleSheet} from 'react-native';
 import {Icon,IconName} from './Icon';
@@ -14,7 +15,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
  if(summary.coins>0)rewards.push({id:'coins',label:'Münzen',amount:summary.coins,icon:'coin',color:C.gold});
  for(const rarity of rarities){
   const amount=summary.gears?.[rarity.id]||0;
-  if(amount>0)rewards.push({id:rarity.id,label:`${rarity.label}-${amount===1?'Zahnrad':'Zahnräder'}`,amount,icon:'gear',color:rarityColor(rarity.id)});
+  if(amount>0)rewards.push({id:`gear:${rarity.id}`,label:`${rarity.label}-${amount===1?'Zahnrad':'Zahnräder'}`,amount,icon:'gear',color:rarityColor(rarity.id)});
  }
  for(const [id,icon] of [['capacityModules','module'],['companyItems','company'],['supplierContacts','customers']] as const){
   const amount=summary[id]||0;
@@ -29,7 +30,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
   <ScrollView style={styles.scroll} contentContainerStyle={styles.loot} showsVerticalScrollIndicator>
    {rows.map((row,index)=><View key={index} style={styles.row}>
     {row.map(reward=><View key={reward.id} style={[styles.item,{borderColor:reward.color}]}>
-     <View style={styles.art}><Icon name={reward.icon} size={38} color={reward.color}/></View>
+     <View style={styles.art}>{reward.id==='coins'?<Icon name="coin" size={38} color={reward.color}/>:<ItemArt id={reward.id} size={52}/>}</View>
      <Txt style={[styles.amount,{color:reward.color}]}>+{n(reward.amount,reward.id==='coins'?2:0)}</Txt>
      <Txt style={styles.label}>{reward.label}</Txt>
     </View>)}

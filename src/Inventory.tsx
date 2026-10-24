@@ -1,3 +1,4 @@
+import {ItemArt,ItemAmount} from './ItemArt';
 import {Text} from './Language';
 import {t as translate} from './i18n';
 import React,{useState} from 'react';
@@ -5,7 +6,6 @@ import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {C,Txt,Row,Btn,Pill,Empty,n} from './ui';
 
-import {Icon,stockIcon} from './Icon';
 import {stockItems} from './items';
 export function Inventory({data,busy,onNavigate,onUseRefill,modalBlocked=false}:any){
  const [selected,setSelected]=useState<string|null>(null);
@@ -17,14 +17,14 @@ export function Inventory({data,busy,onNavigate,onUseRefill,modalBlocked=false}:
  return <>
   {!owned.length&&<Empty>Noch keine Vorräte.</Empty>}
   {rows.map((row,i)=><View key={i} style={styles.row}>{row.map(stock=><Pressable key={stock.id} accessibilityRole="button" accessibilityLabel={translate(`${stock.name}, ${n(stock.amount)} vorhanden`)} onPress={()=>setSelected(stock.id)} style={({pressed})=>[styles.card,{borderColor:stock.color||C.line},pressed&&{opacity:.7}]}>
-   <View style={styles.artwork} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><Icon name={stockIcon(stock.id)} size={38} color={stock.color||C.gold}/></View>
+   <View style={styles.artwork} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><ItemArt id={stock.id} kind={stock.kind} rarity={stock.rarity} size={96} style={{width:'100%',height:'100%'}}/></View>
    <Text numberOfLines={3} style={styles.name}>{stock.name.replace(/Expeditionsauffüller/g,'Expeditions\u00adauffüller').replace(/Überstundenauffüller/g,'Überstunden\u00adauffüller').replace(/Kapazitätsmodul/g,'Kapazitäts\u00admodul').replace(/Firmenausbau/g,'Firmen\u00adausbau').replace(/Abholhinweis/g,'Abhol\u00adhinweis').replace(/Lieferantenkontakt/g,'Lieferanten\u00adkontakt').replace(/Fahrzeugkartenauftrag/g,'Fahrzeug\u00adkarten\u00adauftrag').replace(/Empfehlungsauftrag/g,'Empfehlungs\u00adauftrag').replace(/Sonderauftrag/g,'Sonder\u00adauftrag')}</Text><Txt style={styles.amount}>{n(stock.amount)}</Txt>
   </Pressable>)}{Array.from({length:3-row.length},(_,i)=><View key={`empty-${i}`} style={{flex:1}}/>)}</View>)}
   <Modal visible={!!item&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setSelected(null)}>
    <View style={styles.overlay}><SafeAreaView edges={['bottom']} style={styles.detail}>
     <Row><Txt style={styles.title}>{item?.name}</Txt><Btn icon="close" iconOnly secondary onPress={()=>setSelected(null)}>Schließen</Btn></Row>
     {item&&<ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:12}}>
-     <Pill>{n(item.amount)} vorhanden</Pill>
+     <View style={{alignItems:'center',marginBottom:14}}><ItemArt id={item.id} kind={item.kind} rarity={item.rarity} size={152}/></View><Pill>{n(item.amount)} vorhanden</Pill>
      <Txt style={{marginTop:16}}>{item.description}</Txt>
      <Txt muted style={styles.label}>Herkunft</Txt><Txt muted>{item.source}</Txt>
      {item.recipe&&<><Txt muted style={styles.label}>Herstellung</Txt><Txt>{item.recipe}</Txt></>}

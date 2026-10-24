@@ -52,7 +52,7 @@ test('Every agreed place has a unique bundled close-up and invalid indices have 
 test('Modal images override Android intrinsic image sizes and the X remains outside scrolling content',()=>{
  function modal(width){return compile('ExpeditionPlaceModal.tsx',id=>{
   if(id==='react')return {...React,useState:()=>[width,()=>{}]};if(id==='react-native')return {View:'View',Image:'Image',Modal:'Modal',Pressable:'Pressable',ScrollView:'ScrollView',StyleSheet:{create:x=>x}};
-  if(id==='./Language')return {Text:'Text'};if(id==='./i18n')return {t:x=>x};if(id==='./Icon')return {Icon:'Icon'};if(id==='./theme')return {C:ui.C,displayFont:'serif'};throw Error(id);
+  if(id==='./ItemArt')return {ItemArt:'ItemArt',ItemAmount:'ItemAmount'};if(id==='./Language')return {Text:'Text'};if(id==='./i18n')return {t:x=>x};if(id==='./Icon')return {Icon:'Icon'};if(id==='./theme')return {C:ui.C,displayFont:'serif'};throw Error(id);
  });}
  for(const width of [286,326,356,396,458]){const {PlacePortrait}=modal(width),tree=PlacePortrait({source:{uri:'test',width:1536,height:1024}}),image=nodes(tree,'Image')[0];const frame={width:1536,height:1024,...image.props.style};assert.equal(frame.width,width);assert.ok(frame.height>=140&&frame.height<280);}
  const {ExpeditionPlaceModal,PlacePortrait}=modal(0);assert.equal(nodes(PlacePortrait({source:{uri:'test'}}),'Image').length,0);assert.equal(ExpeditionPlaceModal({visible:false,title:'Hidden',onClose:()=>{},children:null}),null);
