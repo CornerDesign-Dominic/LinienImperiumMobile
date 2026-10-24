@@ -1,3 +1,13 @@
+## Stadthub: kompakte Übersicht und Fahrzeugraster – neu gesammelt, nicht veröffentlicht
+
+- Hub-Bild entfernt; Reiter Übersicht und Fahrzeuge.
+- Kompakte Erträge mit drei Icons, Speicherfortschritt und Countdown; Fundkisten mit Hilfe und separatem Ergebnis; Vertriebsausbau im Modal.
+- Stadttransporter im Dreierspaltenraster, Kauf über freien Platz, Ressourcenvergleich bei Ausbauten und einklappbare Details/Aktionen.
+- Drei gezielte Verhaltenstests ergänzt, 195 Tests erfolgreich; Typprüfung, Browser 320/390/430 px und Englisch sowie Android-Export geprüft. Kein physischer Gerätetest.
+- Details: `docs/ui/city-hub.md`. Gemeinsam mit den bisherigen Änderungen sammeln; keine Veröffentlichung.
+
+---
+
 ## Einzelaufträge: direkte Sortierbuttons – neu gesammelt, nicht veröffentlicht
 
 - Sortiert nach: Gewinn und Geschwindigkeit als zwei Buttons nebeneinander, ohne Dropdown.

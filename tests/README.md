@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | Server, Aufträge, Flotten | Eingabevalidierung, Geld/XP/Kosten, echte Zuteilung, Reservierungen, Überstunden, Fristen, laufende Touren bei Verbesserungen, Offline-Abrechnung, keine Doppelbelohnung | mobile-engine, tour-updates, order-selection, fleet-details |
 | Karten, Geschenke, Entwicklung | Alle 25 Karten, Boni, Ausbauten, Garagenwechsel, Drop-Pools, Duplikate/Shards, sichere Kaufwiederholung über Receipts, gesammelte Punkte, Basis/Boni-Trennung, Migration alter Speicherstände | transport-cards, gifts, development, collection-stats |
-| Beschaffung und Stadthub | Freischaltung, Einzel-/Gruppenfahrten, Reserven/Vorauszahlungen/Erstattungen, Abbruch, Offline-Zeitlinie, tägliche Kisten, 30-Minuten-Grenzen, Teile und Fahrzeuglimits | procurement, procurement-groups, hub-vehicles |
+| Beschaffung und Stadthub | Freischaltung, Einzel-/Gruppenfahrten, Reserven/Vorauszahlungen/Erstattungen, Abbruch, Offline-Zeitlinie, tägliche Kisten, 30-Minuten-Grenzen, Teile und Fahrzeuglimits | procurement, procurement-groups, hub-vehicles, hub-ui |
 | Events und Fortschritt | Eventzustände, Pass, Gemeinschaftsfortschritt/Ränge, Fristen, Transaktionswiederholung ohne Doppelgutschrift, Levelkurve und alte Speicherstände | events, pyramid, pyramid-store, linear-progression |
 | Darstellung und Bedienentscheidungen | Kartenwerte, Inventar, Regions-/Ortszuordnung, ausgewählte Bildgrößen, Texte/Platzhalter, Eventreiter, Geschenkmodal-Timer/Rückkehr/Wiederholung, Staging/Bestätigung der Punkteverteilung | modal-flows, journey-map, place-modals, region-image-layout, item-catalog, i18n, pyramid-ui |
 | Eingebundener Web-Unterbau | Unveränderte ursprüngliche Regeln des gepinnten Vendor-Codes, auf dem die Mobile-Erweiterungen aufsetzen | web-regression und web/*.test.cjs |
@@ -41,3 +41,5 @@ Eine Begrenzung auf vier Worker brachte hier keinen Vorteil (17,90 s vor der Str
 ## Grenzen
 
 Die Tests prüfen lokale Logik, ausgewählte Komponentenentscheidungen und simulierte Firestore-Transaktionen. Die kleinen Hook-/Timerprüfungen in `helpers/component-harness.cjs` ersetzen weder React Native noch einen Browser oder ein echtes Gerät: Layout, Gesten, Animationseindruck, Accessibility und native Modalübergänge bleiben Teil der separaten Sicht-/Bedienprüfung. Echte Firebase-Berechtigungen, Netzwerkausfälle und der veröffentlichte Server werden damit ebenfalls nicht vollständig geprüft; dafür gibt es den Live-API-Smoke-Test im Veröffentlichungsworkflow. Ein grüner Testlauf allein belegt keine erfolgte Veröffentlichung und keine vollständige Sicherheit des Spiels.
+
+`hub-ui` prüft drei zusätzliche Abläufe: Mehrfachtipps/Fehler und Reiter, Fahrzeugplatz-/Ressourcen-Grenzen mit Ausbaupayload sowie Fundkisten-Cooldown und Ergebnisdialog. Die vorhandenen Hub-Regeltests decken Preise, tägliche Limits, Offline-Zeit und Migration ab.

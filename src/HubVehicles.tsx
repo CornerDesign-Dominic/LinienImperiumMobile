@@ -1,61 +1,116 @@
-import React,{useState} from 'react';
-import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
-import {t as translate} from './i18n';
-import {Icon} from './Icon';
+import React,{useRef,useState} from 'react';
+import {View,Pressable,StyleSheet} from 'react-native';
+import {t} from './i18n';
+import {Icon,IconName} from './Icon';
 import {itemName} from './items';
-import {C,Txt,Card,Row,Btn,n,remaining,Empty} from './ui';
+import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
+import {C,Txt,Card,Row,Btn,Bar,Pill,n,remaining} from './ui';
 
-export function HubParts({data,busy,clock,onCommand,modalBlocked=false}:any){
- const [found,setFound]=useState<number|null>(null),c=data.hubInfo.crates;
- return <Card>
-  <Row><Txt style={{fontWeight:'700'}}>Fundkisten</Txt><Txt muted>{c.opened} / 3</Txt></Row>
-  <Row><Icon name="crafting" color={C.gold} size={24}/><Txt>{itemName('hubVehicleParts',2)} · {n(data.state.inventory.hubVehicleParts)}</Txt></Row>
-  <Txt muted style={{fontSize:11}}>3 täglich · 30 Minuten Abstand · Tageswechsel 00:00 UTC</Txt>
-  {!c.available&&<Txt muted style={{fontSize:12,marginTop:5}}>Nächste Kiste {remaining(c.nextAt,clock)}</Txt>}
-  <Btn disabled={busy||!c.available} onPress={async()=>{const next=await onCommand('hubCrate');if(next?.hubCrateParts)setFound(next.hubCrateParts);}}>Fundkiste öffnen</Btn>
-  <Modal visible={found!==null&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setFound(null)}>
-   <View style={styles.overlay}><View style={styles.detail}>
-    <Row><Txt style={{fontWeight:'700',flex:1}}>Fundkiste geöffnet</Txt><Btn icon="close" iconOnly secondary onPress={()=>setFound(null)}>Schließen</Btn></Row>
-    <View style={{alignItems:'center',padding:16}}><Icon name="crafting" color={C.gold} size={52}/><Txt style={{fontSize:24,fontWeight:'700',marginTop:12}}>+{found}</Txt><Txt>{itemName('hubVehicleParts',2)}</Txt></View>
-   </View></View>
-  </Modal>
- </Card>;
+function Metric({icon,label,value}: {icon:IconName;label:string;value:string}){
+ return <View accessible accessibilityLabel={`${t(label)}: ${value}`} style={s.metric}><Icon name={icon} size={20} color={C.gold}/><Txt style={s.metricValue}>{value}</Txt><Txt muted style={s.caption}>{label}</Txt></View>;
 }
-export function HubVehicles({data,busy,onCommand,onSell,modalBlocked=false}:any){
- const [selected,setSelected]=useState<string|null>(null);
- const g=data.state,vehicles=g.trucks.filter((t:any)=>!t.cardId&&t.tier<=1),truck=vehicles.find((t:any)=>t.id===selected);
- const fact=(label:string,value:string)=><Row><Txt muted style={{fontSize:12,flex:1}}>{label}</Txt><Txt style={{fontSize:12}}>{value}</Txt></Row>;
+function Cost({label,owned,need,unit=''}: {label:string;owned:number;need:number;unit?:string}){
+ const enough=owned>=need;
+ return <View style={s.cost}><Txt muted style={{fontSize:12,flex:1}}>{label}</Txt><View style={s.costValue}><Icon name={enough?'check':'close'} size={13} color={enough?C.accent:C.red}/><Txt style={{fontSize:12,color:enough?C.accent:C.red}}>{n(owned,2)} / {n(need,2)}{unit}</Txt></View></View>;
+}
+export function HubScreen({data,busy,clock,onCommand,onSell,modalBlocked=false}:any){
+ const [tab,setTab]=useState('overview'),[salesOpen,setSalesOpen]=useState(false),[pending,setPending]=useState(false),[error,setError]=useState(false);
+ const inFlight=useRef(false),g=data.state,h=g.hubs[0],info=data.hubInfo,locked=busy||pending;
+ const command=async(action:string,payload={})=>{
+  if(busy||inFlight.current)return;
+  inFlight.current=true;setPending(true);setError(false);
+  try{const result=await onCommand(action,payload);if(!result)setError(true);return result;}
+  catch{setError(true);}finally{inFlight.current=false;setPending(false);}
+ };
+ const failure=error?<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>:null;
+ if(!h)return <Card><Txt muted>Stadttransporter verteilen jede Stunde selbstständig Waren. Erträge und Abholhinweise sammeln sich in der Kasse.</Txt>{!info.unlocked&&<Txt gold style={{marginTop:10}}>Stadthub ab Level 5 verfügbar.</Txt>}{failure}<Btn disabled={locked||!info.unlocked} onPress={()=>command('buyHub')}>Stadthub kostenlos eröffnen</Btn></Card>;
+ const canUpgrade=h.salesLevel<25&&!h.construction&&g.coins>=info.upgradeCoins&&g.inventory.supplierContacts>=info.upgradeContacts&&g.inventory.companyItems>=info.upgradeItems;
+ const cycles=Math.min(6,h.cashboxCycles),active=g.trucks.some((truck:any)=>!truck.cardId&&truck.tier<=1&&truck.hubAssigned);
  return <>
-  <Card><Row><Txt style={{fontWeight:'700'}}>Stadttransporter</Txt><Txt muted>{vehicles.length} / {data.hubLimit}</Txt></Row>
-   {data.hubInfo.nextVehicleLevel?<Txt muted style={{fontSize:12}}>Nächster Fahrzeugplatz ab Level {data.hubInfo.nextVehicleLevel}</Txt>:<Txt muted>Alle 20 Fahrzeugplätze freigeschaltet.</Txt>}
-   <Txt muted style={{fontSize:12,marginTop:5}}>2 t Startkapazität · Ausbau im Stadthub</Txt>
-   <Btn disabled={busy||vehicles.length>=data.hubLimit||vehicles.length>=20||g.coins<data.hubInfo.vehiclePrice} onPress={()=>onCommand('hubVehicleBuy')}>Kaufen · {n(data.hubInfo.vehiclePrice)} M</Btn>
-  </Card>
-  {vehicles.map((t:any)=><Pressable key={t.id} accessibilityRole="button" accessibilityLabel={translate(t.model)+', '+t.id} onPress={()=>setSelected(t.id)}><Card><Row style={{marginBottom:3}}><Icon name="truck" size={26} color={C.gold}/><Txt style={{fontWeight:'700',flex:1}}>{t.model} · {t.id}</Txt><Icon name="chevron" size={17}/></Row><Txt muted>{n(t.capacity,1)} t · {n(t.speed,2)} km/s</Txt><Txt muted style={{fontSize:11}}>Laderaum {t.hubCapacityLevel||0}/10 · Antrieb {t.hubSpeedLevel||0}/10</Txt></Card></Pressable>)}
-  {!vehicles.length&&<Empty>Keine Stadttransporter</Empty>}
-  <Modal visible={!!truck&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setSelected(null)}>
-   <View style={styles.overlay}><View style={styles.detail}>
-    <Row style={{flexWrap:'nowrap'}}><Txt style={{fontSize:17,fontWeight:'700',flex:1}}>{truck?.model} · {truck?.id}</Txt><Btn icon="close" iconOnly secondary onPress={()=>setSelected(null)}>Schließen</Btn></Row>
-    {truck&&<ScrollView keyboardShouldPersistTaps="handled">
-     {fact('Kapazität',n(truck.capacity,1)+' t')}
-     {fact('Geschwindigkeit',n(truck.speed,2)+' km/s')}
-     {fact('Gefahren',n(truck.kmDriven)+' km')}
-     {fact(itemName('hubVehicleParts',2),n(g.inventory.hubVehicleParts))}
-     {(['capacity','speed'] as const).map(kind=>{
-      const q=truck.hubUpgrades[kind],label=kind==='capacity'?'Laderaum':'Antrieb',unit=kind==='capacity'?'t':'km/s';
-      return <View key={kind} style={styles.upgrade}>
-       <Row><Txt style={{fontWeight:'700'}}>{label}</Txt><Txt muted>{q.level} / 10</Txt></Row>
-       {q.level<10?<><Txt>{n(q.current,2)} → {n(q.next,2)} {unit}</Txt><Txt muted style={{fontSize:12,marginTop:5}}>{q.parts} {itemName('hubVehicleParts',2)} · {n(q.coins)} M</Txt>
-        <Btn secondary disabled={busy||g.inventory.hubVehicleParts<q.parts||g.coins<q.coins} onPress={()=>onCommand('hubVehicleUpgrade',{id:truck.id,kind})}>Ausbauen</Btn>
-       </>:<Txt muted>Maximum erreicht</Txt>}
-      </View>;
-     })}
-     <Txt muted style={{fontSize:11,marginTop:10}}>Ausbauten wirken ab dem nächsten Stundenzyklus.</Txt>
-     <Btn secondary disabled={busy} onPress={()=>onCommand('hubTruck',{id:truck.id})}>{truck.hubAssigned?'Aus Hub nehmen':'Im Hub einsetzen'}</Btn>
-     {!!truck.sale&&<Btn secondary disabled={busy} onPress={()=>{setSelected(null);onSell(truck);}}>Verkaufen · {n(truck.sale.coins,2)} M</Btn>}
-    </ScrollView>}
-   </View></View>
-  </Modal>
+  <View accessibilityRole="tablist" accessibilityLabel={t('Stadthub')} style={s.tabs}>{[{id:'overview',label:'Übersicht'},{id:'vehicles',label:'Fahrzeuge'}].map(option=><Pressable key={option.id} accessibilityRole="tab" disabled={locked} accessibilityState={{selected:tab===option.id,disabled:locked}} aria-selected={tab===option.id} onPress={()=>setTab(option.id)} style={[s.tab,tab===option.id&&s.activeTab]}><Txt style={[s.tabLabel,tab===option.id&&{color:C.onInk}]}>{option.label}</Txt></Pressable>)}</View>
+  {failure}
+  {tab==='overview'?<>
+   <Card><Row><Txt style={s.title}>Erträge</Txt><Pill>{cycles} / 6 Stunden</Pill></Row>
+    <View style={s.metrics}><Metric icon="coin" label="Münzen" value={`${n(h.cashboxCoins,2)} M`}/><Metric icon="document" label="Abholhinweise" value={n(h.cashboxHints)}/><Metric icon="crafting" label="Fahrzeugteile" value={n(h.cashboxParts||0)}/></View>
+    <Bar value={cycles/6*100}/>
+    <Txt muted style={s.caption}>{cycles>=6?'Kasse voll · Erträge abholen':active?`${t('Nächster Einkauf')} ${remaining(h.nextCycleAt,clock)}`:'Keine Stadttransporter im Einsatz'}</Txt>
+    <Btn disabled={locked||!h.cashboxCoins&&!h.cashboxHints&&!h.cashboxParts} onPress={()=>command('hubCollect')}>Erträge abholen</Btn>
+   </Card>
+   <HubParts data={data} busy={locked} clock={clock} onCommand={command} modalBlocked={modalBlocked}/>
+   <Card><Row><Txt style={s.title}>Vertrieb</Txt><Pill>Stufe {h.salesLevel} / 25</Pill></Row>
+    <Row style={{marginBottom:4}}><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{75+h.salesLevel} %</Txt></Row>
+    <Txt muted style={s.caption}>{n(info.hourlyCapacity,1)} t mögliche Verteilung pro Stunde</Txt>
+    {h.construction?<Txt gold style={s.note}>Ausbau fertig in {remaining(h.construction.finishAt,clock)}</Txt>:h.salesLevel>=25?<Txt gold style={s.note}>Maximum erreicht</Txt>:null}
+    <Btn secondary onPress={()=>{setError(false);setSalesOpen(true);}}>{h.construction?'Ausbau ansehen':h.salesLevel>=25?'Details':'Verbessern'}</Btn>
+   </Card>
+  </>:<HubVehicles data={data} busy={locked} onCommand={command} onSell={onSell} modalBlocked={modalBlocked} error={error}/>}
+  <ExpeditionPlaceModal visible={salesOpen&&!modalBlocked} title={t('Vertrieb verbessern')} onClose={()=>setSalesOpen(false)}>
+   <Row><Txt muted>Stufe</Txt><Txt>{h.salesLevel} / 25</Txt></Row>
+   <Row><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{75+h.salesLevel} %{h.salesLevel<25?` → ${76+h.salesLevel} %`:''}</Txt></Row>
+   <Txt muted style={s.caption}>Mehr Einkauf bei gleicher Verteilkapazität.</Txt>
+   {h.construction?<Txt gold style={s.note}>Ausbau fertig in {remaining(h.construction.finishAt,clock)}</Txt>:h.salesLevel>=25?<Txt gold style={s.note}>Maximum erreicht</Txt>:<View style={s.section}>
+    <Txt muted style={s.caption}>Vorhanden / Benötigt</Txt>
+    <Cost label="Münzen" owned={g.coins} need={info.upgradeCoins} unit=" M"/>
+    <Cost label={itemName('supplierContacts',2)} owned={g.inventory.supplierContacts} need={info.upgradeContacts}/>
+    <Cost label={itemName('companyItems',2)} owned={g.inventory.companyItems} need={info.upgradeItems}/>
+    <Txt muted style={s.note}>Ausbaudauer: {(h.salesLevel+1)*12} Stunden</Txt>
+    {failure}<Btn disabled={locked||!canUpgrade} onPress={()=>command('hubUpgrade')}>Ausbau starten</Btn>
+   </View>}
+  </ExpeditionPlaceModal>
  </>;
 }
-const styles=StyleSheet.create({upgrade:{borderTopWidth:1,borderTopColor:C.line,paddingTop:12,marginTop:10},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:18},detail:{width:'100%',maxWidth:480,maxHeight:'85%',alignSelf:'center',backgroundColor:C.panel,borderColor:C.line,borderWidth:1,borderRadius:18,padding:16}});
+export function HubParts({data,busy,clock,onCommand,modalBlocked=false}:any){
+ const [found,setFound]=useState<number|null>(null),[help,setHelp]=useState(false),c=data.hubInfo.crates;
+ return <Card>
+  <Row style={{flexWrap:'nowrap'}}><Icon name="reward" color={C.gold} size={24}/><View style={{flex:1}}><Txt style={s.title}>Fundkisten</Txt><Txt muted style={s.caption}>Noch {Math.max(0,c.max-c.opened)} heute</Txt></View><Btn icon="help" iconOnly secondary onPress={()=>setHelp(true)}>Über Fundkisten</Btn></Row>
+  {!c.available&&<Txt muted style={s.caption}>{c.opened>=c.max?'Neue Fundkisten in':'Nächste Kiste in'} {remaining(c.nextAt,clock)}</Txt>}
+  <Btn disabled={busy||!c.available} onPress={async()=>{const next=await onCommand('hubCrate');if(next?.hubCrateParts)setFound(next.hubCrateParts);}}>Fundkiste öffnen</Btn>
+  <ExpeditionPlaceModal visible={help&&!modalBlocked} title={t('Fundkisten')} onClose={()=>setHelp(false)}><Txt>3 Fundkisten täglich. Zwischen zwei Kisten liegen 30 Minuten. Jede Kiste enthält 10–20 Fahrzeugteile.</Txt><Txt muted style={s.note}>Neue Fundkisten gibt es täglich um 00:00 UTC. Eine laufende Wartezeit bleibt bestehen.</Txt></ExpeditionPlaceModal>
+  <ExpeditionPlaceModal visible={found!==null&&!modalBlocked} title={t('Fundkiste geöffnet')} onClose={()=>setFound(null)}><View style={{alignItems:'center',padding:12}}><Icon name="crafting" color={C.gold} size={44}/><Txt style={{fontSize:24,fontWeight:'700',marginTop:8}}>+{found}</Txt><Txt>{itemName('hubVehicleParts',2)}</Txt></View><Btn onPress={()=>setFound(null)}>Weiter</Btn></ExpeditionPlaceModal>
+ </Card>;
+}
+export function HubVehicles({data,busy,onCommand,onSell,modalBlocked=false,error=false}:any){
+ const [selected,setSelected]=useState<string|null>(null),[buyOpen,setBuyOpen]=useState(false),[details,setDetails]=useState(false),[actions,setActions]=useState(false);
+ const g=data.state,info=data.hubInfo,vehicles=g.trucks.filter((truck:any)=>!truck.cardId&&truck.tier<=1),truck=vehicles.find((truck:any)=>truck.id===selected);
+ const slots=Math.min(data.hubLimit,info.vehicleMax),canBuy=vehicles.length<slots;
+ const tiles=[...vehicles,...(canBuy?[null]:[])],rows=Array.from({length:Math.ceil(tiles.length/3)},(_,i)=>tiles.slice(i*3,i*3+3));
+ const failure=error?<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>:null;
+ const fact=(label:string,value:string)=><Row><Txt muted style={{fontSize:12,flex:1}}>{label}</Txt><Txt style={{fontSize:12}}>{value}</Txt></Row>;
+ const toggle=(label:string,open:boolean,onPress:()=>void)=><Pressable accessibilityRole="button" accessibilityLabel={t(label)} accessibilityState={{expanded:open}} onPress={onPress} style={s.toggle}><Txt muted style={{fontSize:12}}>{label}</Txt><Icon name="chevron" size={14} style={{transform:[{rotate:open?'90deg':'0deg'}]}}/></Pressable>;
+ return <>
+  <Row><Txt style={s.title}>Stadttransporter · {vehicles.length} / {data.hubLimit}</Txt><View accessible accessibilityLabel={`${t('Fahrzeugteile')}: ${n(g.inventory.hubVehicleParts)}`} style={s.costValue}><Icon name="crafting" color={C.gold} size={18}/><Txt>{n(g.inventory.hubVehicleParts)}</Txt></View></Row>
+  {!canBuy&&<Txt muted style={[s.caption,{marginBottom:10}]}>{info.nextVehicleLevel?`${t('Nächster Fahrzeugplatz ab Level')} ${info.nextVehicleLevel}`:'Alle 20 Fahrzeugplätze freigeschaltet.'}</Txt>}
+  {rows.map((row,i)=><View key={i} style={s.gridRow}>{row.map((vehicle:any,j:number)=>vehicle?<Pressable key={vehicle.id} accessibilityRole="button" accessibilityLabel={`${t(vehicle.model)}, ${vehicle.id}, ${n(vehicle.capacity,1)} t, ${n(vehicle.speed,2)} km/s, ${t(vehicle.hubAssigned?'Im Hub eingesetzt':'Nicht eingesetzt')}`} onPress={()=>{setSelected(vehicle.id);setDetails(false);setActions(false);}} style={({pressed})=>[s.vehicle,pressed&&{opacity:.8}]}>
+   <Txt style={s.vehicleName}>{vehicle.id}</Txt><View style={s.truckArt}><Icon name="truck" size={44} color={C.gold}/></View>
+   <View style={s.tileFact}><Icon name="orders" size={14} color={C.muted}/><Txt style={s.tileValue}>{n(vehicle.capacity,1)} t</Txt></View><View style={s.tileFact}><Icon name="timer" size={14} color={C.muted}/><Txt style={s.tileValue}>{n(vehicle.speed,2)} km/s</Txt></View>
+   <View accessible accessibilityLabel={`${t('Laderaum')} ${vehicle.hubCapacityLevel||0}/10`} style={s.level}><Icon name="module" size={11} color={C.muted}/><View style={{flex:1}}><Bar value={(vehicle.hubCapacityLevel||0)*10}/></View><Txt style={s.caption}>{vehicle.hubCapacityLevel||0}/10</Txt></View>
+   <View accessible accessibilityLabel={`${t('Antrieb')} ${vehicle.hubSpeedLevel||0}/10`} style={s.level}><Icon name="gear" size={11} color={C.muted}/><View style={{flex:1}}><Bar value={(vehicle.hubSpeedLevel||0)*10}/></View><Txt style={s.caption}>{vehicle.hubSpeedLevel||0}/10</Txt></View>
+   <Txt style={[s.caption,{color:vehicle.hubAssigned?C.accent:C.muted,textAlign:'center',marginTop:5}]}>{vehicle.hubAssigned?'Im Hub':'Nicht eingesetzt'}</Txt>
+  </Pressable>:<Pressable key={`buy-${j}`} accessibilityRole="button" accessibilityLabel={t('Stadttransporter kaufen')} onPress={()=>setBuyOpen(true)} style={[s.vehicle,s.emptySlot]}><Icon name="plus" size={30} color={C.gold}/><Txt style={s.vehicleName}>Kaufen</Txt><Txt muted style={s.caption}>2 t · {n(info.vehiclePrice)} M</Txt></Pressable>)}{row.length<3&&Array.from({length:3-row.length},(_,j)=><View key={`space-${j}`} style={{flex:1}}/>)}</View>)}
+  <ExpeditionPlaceModal visible={buyOpen&&!modalBlocked} title={t('Stadttransporter kaufen')} onClose={()=>setBuyOpen(false)}><Txt>2 t Startkapazität · Ausbau im Stadthub</Txt><View style={s.section}><Txt muted style={s.caption}>Vorhanden / Benötigt</Txt><Cost label="Münzen" owned={g.coins} need={info.vehiclePrice} unit=" M"/>{failure}<Btn disabled={busy||!canBuy||g.coins<info.vehiclePrice} onPress={async()=>{if(await onCommand('hubVehicleBuy'))setBuyOpen(false);}}>Kaufen · {n(info.vehiclePrice)} M</Btn></View></ExpeditionPlaceModal>
+  <ExpeditionPlaceModal visible={!!truck&&!modalBlocked} title={truck?`${t(truck.model)} · ${truck.id}`:''} onClose={()=>setSelected(null)}>
+   {truck&&<>
+    <View style={s.metrics}><Metric icon="orders" label="Kapazität" value={`${n(truck.capacity,1)} t`}/><Metric icon="timer" label="Geschwindigkeit" value={`${n(truck.speed,2)} km/s`}/></View>
+    {(['capacity','speed'] as const).map(kind=>{
+     const q=truck.hubUpgrades[kind],label=kind==='capacity'?'Laderaum':'Antrieb',unit=kind==='capacity'?'t':'km/s';
+     return <View key={kind} style={s.section}>
+      <Row><Txt style={s.title}>{label}</Txt><Txt muted style={{fontSize:12}}>{q.level} / {q.max}</Txt></Row>
+      {q.level<q.max?<><Txt style={{fontWeight:'700',marginBottom:6}}>{n(q.current,2)} → {n(q.next,2)} {unit}</Txt>
+       <Txt muted style={s.caption}>Vorhanden / Benötigt</Txt><Cost label="Fahrzeugteile" owned={g.inventory.hubVehicleParts} need={q.parts}/><Cost label="Münzen" owned={g.coins} need={q.coins} unit=" M"/>
+       <Btn secondary disabled={busy||g.inventory.hubVehicleParts<q.parts||g.coins<q.coins} onPress={()=>onCommand('hubVehicleUpgrade',{id:truck.id,kind})}>{label} ausbauen</Btn>
+      </>:<Txt muted>Maximum erreicht</Txt>}
+     </View>;
+    })}
+    {failure}<Txt muted style={s.note}>Ausbauten wirken ab dem nächsten Stundenzyklus.</Txt>
+    <View style={s.section}>{toggle('Weitere Details',details,()=>setDetails(!details))}{details&&<>{fact('Gefahren',n(truck.kmDriven)+' km')}{fact('Status',t(truck.hubAssigned?'Im Hub eingesetzt':'Nicht eingesetzt'))}</>}</View>
+    <View style={s.section}>{toggle('Weitere Aktionen',actions,()=>setActions(!actions))}{actions&&<><Btn secondary disabled={busy} onPress={()=>onCommand('hubTruck',{id:truck.id})}>{truck.hubAssigned?'Aus Hub nehmen':'Im Hub einsetzen'}</Btn>{!!truck.sale&&<Btn secondary disabled={busy} onPress={()=>{setSelected(null);onSell(truck);}}>Verkaufen · {n(truck.sale.coins,2)} M</Btn>}</>}</View>
+   </>}
+  </ExpeditionPlaceModal>
+ </>;
+}
+const s=StyleSheet.create({
+ title:{fontSize:15,fontWeight:'700'},caption:{fontSize:10,lineHeight:16},note:{fontSize:11,lineHeight:17,marginTop:8},error:{color:C.red,fontSize:12,marginBottom:8},
+ tabs:{flexDirection:'row',gap:6,marginBottom:12},tab:{flex:1,minHeight:44,borderWidth:1,borderBottomWidth:3,borderColor:C.line,borderRadius:5,backgroundColor:C.raised,justifyContent:'center',alignItems:'center'},activeTab:{backgroundColor:C.accent,borderColor:C.ink},tabLabel:{fontSize:13,fontWeight:'700'},
+ metrics:{flexDirection:'row',gap:6,marginVertical:4},metric:{flex:1,minWidth:0,alignItems:'center',gap:3},metricValue:{fontSize:16,lineHeight:23,fontWeight:'700',textAlign:'center'},section:{borderTopWidth:1,borderTopColor:C.line,paddingTop:10,marginTop:10},
+ cost:{flexDirection:'row',alignItems:'center',gap:6,marginTop:5},costValue:{flexDirection:'row',alignItems:'center',gap:5,flexShrink:1},gridRow:{flexDirection:'row',gap:4.5,marginBottom:5},vehicle:{flex:1,minWidth:0,borderWidth:1,borderTopWidth:3,borderColor:C.line,borderRadius:6,backgroundColor:C.panel,padding:7},vehicleName:{fontSize:13,lineHeight:19,fontWeight:'700',textAlign:'center'},truckArt:{height:68,justifyContent:'center',alignItems:'center'},tileFact:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:3,marginBottom:5},tileValue:{fontSize:10,lineHeight:16,fontWeight:'700',textAlign:'right',flexShrink:1},level:{flexDirection:'row',alignItems:'center',gap:3,marginTop:3},emptySlot:{borderStyle:'dashed',justifyContent:'center',alignItems:'center',gap:12,minHeight:205},toggle:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',minHeight:44}
+});
