@@ -1,5 +1,5 @@
 import React,{useRef,useState} from 'react';
-import {Modal,View,ScrollView,StyleSheet} from 'react-native';
+import {Modal,View,Pressable,ScrollView,StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {C,Txt,Row,Btn,Empty,n,remaining,minutes} from './ui';
 import {Icon,IconName} from './Icon';
@@ -8,7 +8,7 @@ import {sortOrderVehicles,OrderSort} from './orderSelection';
 import {t} from './i18n';
 
 export function OrderVehiclePicker({data,choices,summary,busy,clock,onStart,onClose,modalBlocked=false}:any){
- const [selectedId,setSelectedId]=useState<string|null>(null),[sort,setSort]=useState<OrderSort>('profit'),[rarity,setRarity]=useState('all'),[sortOpen,setSortOpen]=useState(false),[starting,setStarting]=useState(false),[failed,setFailed]=useState(false);
+ const [selectedId,setSelectedId]=useState<string|null>(null),[sort,setSort]=useState<OrderSort>('profit'),[rarity,setRarity]=useState('all'),[starting,setStarting]=useState(false),[failed,setFailed]=useState(false);
  const pending=useRef(false);
  const selected=choices.find((q:any)=>q.id===selectedId&&q.free),locked=busy||starting;
  const cardFor=(q:any)=>data.catalog.cards.find((card:any)=>card.id===q.cardId)||{id:q.id,name:q.model,rarity:'common'};
@@ -25,8 +25,11 @@ export function OrderVehiclePicker({data,choices,summary,busy,clock,onStart,onCl
    <Row style={{flexWrap:'nowrap'}}><Txt style={s.title}>Fahrzeug wählen</Txt><Btn icon="close" iconOnly secondary disabled={starting} onPress={onClose}>Schließen</Btn></Row>
    <Txt muted style={s.summary}>{summary}</Txt>
    <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:selected?104:6}}>
-    <View style={s.sortBox}><Btn secondary style={{marginTop:0}} onPress={()=>setSortOpen(!sortOpen)} endIcon="chevron" endIconRotation={sortOpen?270:90}>{sort==='profit'?'Sortieren: Gewinn':'Sortieren: Geschwindigkeit'}</Btn>
-     {sortOpen&&<View><Btn secondary onPress={()=>{setSort('profit');setSortOpen(false);}}>Gewinn · höchster zuerst</Btn><Btn secondary onPress={()=>{setSort('speed');setSortOpen(false);}}>Geschwindigkeit · kürzeste Dauer</Btn></View>}
+    <View style={s.sortBox}>
+     <Txt muted style={s.sortCaption}>Sortiert nach</Txt>
+     <View accessibilityRole="radiogroup" accessibilityLabel={t('Sortiert nach')} style={s.sortButtons}>
+      {([{id:'profit',label:'Gewinn'},{id:'speed',label:'Geschwindigkeit'}] as const).map(option=><Pressable key={option.id} accessibilityRole="radio" accessibilityLabel={t(option.label)} accessibilityState={{checked:sort===option.id}} aria-checked={sort===option.id} onPress={()=>setSort(option.id)} style={({pressed})=>[s.sortButton,sort===option.id&&s.sortActive,pressed&&{opacity:.8}]}><Txt style={[s.sortLabel,sort===option.id&&{color:C.onInk}]}>{option.label}</Txt></Pressable>)}
+     </View>
     </View>
     <RarityFilter data={data} rarity={rarity} onChange={(value:string)=>{setRarity(value);setSelectedId(null);setFailed(false);}}/>
     {failed&&<Txt style={{color:C.red,marginBottom:8}}>Auftrag konnte nicht gestartet werden. Bitte Auswahl prüfen und erneut versuchen.</Txt>}
@@ -41,4 +44,4 @@ export function OrderVehiclePicker({data,choices,summary,busy,clock,onStart,onCl
   </View></SafeAreaView>
  </Modal>;
 }
-const s=StyleSheet.create({overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',paddingHorizontal:10},sheet:{width:'100%',maxWidth:520,maxHeight:'92%',alignSelf:'center',backgroundColor:C.panel,borderColor:C.line,borderWidth:1,borderRadius:14,padding:10,overflow:'hidden'},title:{fontSize:17,fontWeight:'700',flex:1},summary:{fontSize:12,lineHeight:18,marginBottom:10},sortBox:{marginBottom:8},row:{flexDirection:'row',gap:4.5,marginBottom:5},facts:{marginTop:6,gap:4},metric:{minHeight:20,flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:3},value:{fontSize:10,lineHeight:15,fontWeight:'700',textAlign:'right',flexShrink:1},floating:{position:'absolute',bottom:10,left:10,right:10,backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:8,padding:8,boxShadow:'0px 2px 8px rgba(0,0,0,.2)'},chosen:{fontSize:11,lineHeight:16,textAlign:'center'}});
+const s=StyleSheet.create({overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',paddingHorizontal:10},sheet:{width:'100%',maxWidth:520,maxHeight:'92%',alignSelf:'center',backgroundColor:C.panel,borderColor:C.line,borderWidth:1,borderRadius:14,padding:10,overflow:'hidden'},title:{fontSize:17,fontWeight:'700',flex:1},summary:{fontSize:12,lineHeight:18,marginBottom:10},sortBox:{marginBottom:8},sortCaption:{fontSize:11,lineHeight:16,marginBottom:5},sortButtons:{flexDirection:'row',gap:6},sortButton:{flex:1,minWidth:0,minHeight:44,justifyContent:'center',alignItems:'center',paddingHorizontal:6,paddingVertical:9,borderWidth:1,borderBottomWidth:3,borderColor:C.line,borderRadius:5,backgroundColor:C.raised},sortActive:{backgroundColor:C.accent,borderColor:C.ink},sortLabel:{fontSize:12,lineHeight:18,fontWeight:'700',textAlign:'center'},row:{flexDirection:'row',gap:4.5,marginBottom:5},facts:{marginTop:6,gap:4},metric:{minHeight:20,flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:3},value:{fontSize:10,lineHeight:15,fontWeight:'700',textAlign:'right',flexShrink:1},floating:{position:'absolute',bottom:10,left:10,right:10,backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:8,padding:8,boxShadow:'0px 2px 8px rgba(0,0,0,.2)'},chosen:{fontSize:11,lineHeight:16,textAlign:'center'}});

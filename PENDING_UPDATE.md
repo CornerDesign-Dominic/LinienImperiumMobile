@@ -1,3 +1,12 @@
+## Einzelaufträge: direkte Sortierbuttons – neu gesammelt, nicht veröffentlicht
+
+- Sortiert nach: Gewinn und Geschwindigkeit als zwei Buttons nebeneinander, ohne Dropdown.
+- Genau einer aktiv; Gewinn beim Öffnen vorausgewählt. Sortieren erhält die Fahrzeugauswahl.
+- Typprüfung, zehn betroffene Tests, Browser bei 320/390/430 px, Englisch und Android-Export erfolgreich.
+- Details: `docs/ui/single-order-tabs-and-assignment.md`. Zusammen mit den übrigen Anpassungen sammeln, keine Veröffentlichung.
+
+---
+
 ## Tests geprüft und gestrafft – neu gesammelt, nicht veröffentlicht
 
 - Vorhandene Testgruppen auf aktuelle Mobile-Regeln und die bewusst erhaltene Vendor-Baseline geprüft.
