@@ -1,3 +1,5 @@
+Veröffentlicht am 24.10.2026 mit Release `bd678df7b4e82278b18dba33447b7ece0c5bf390` (Mobile preview, Lauf 40088588867). Frühere Sammelvermerke im folgenden Text sind historisch.
+
 # Geschenke: separates Gewinnmodal und wiederholtes Öffnen
 
 Die Ziehung und ihre serverseitigen Wahrscheinlichkeiten bleiben unverändert. Der Client lässt die bestehende Markierung auf der tatsächlich erhaltenen Karte stehen und wartet anschließend 350 Millisekunden. Dann erscheint ein separates Gewinnmodal mit Regionsname, größerem Fahrzeugbild, Kartenname und Seltenheit sowie Neue Fahrzeugkarte oder dem tatsächlich erhaltenen Duplikat-Shard.

@@ -1,3 +1,5 @@
+Veröffentlicht am 24.10.2026 mit Release `bd678df7b4e82278b18dba33447b7ece0c5bf390` (Mobile preview, Lauf 40088588867). Frühere Sammelvermerke im folgenden Text sind historisch.
+
 # Entwicklungspunkte in der Firma
 
 ## Einstieg und Anzeige

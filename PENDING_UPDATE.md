@@ -1,3 +1,15 @@
+## Erfolgreich veröffentlicht am 24.10.2026
+
+Das gesamte gesammelte Paket ist veröffentlicht: Entwicklungspunkte in der Firma, separates Geschenk-Gewinnmodal, direkte Sortierbuttons bei Einzelaufträgen, kompakter Stadthub mit Fahrzeugraster sowie die gestrafften und ergänzten Tests.
+
+- Release-Commit: bd678df7b4e82278b18dba33447b7ece0c5bf390.
+- Mobile preview, Lauf 40088588867, erfolgreich: Typprüfung, alle 195 Tests, Android-Export, Firebase-Server und Datenbankregeln, Live-API-Test und Android-OTA im Kanal preview.
+- Android-OTA erfolgreich veröffentlicht am 24.10.2026 um 10:11 Uhr (Atlantic/Cape_Verde); keine neue APK erforderlich.
+- Workflow: https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/40088588867
+- Sammelbranch und main auf demselben veröffentlichten Stand. Die folgenden Sammelvermerke sind historisch und beschreiben den Stand vor diesem Release.
+
+---
+
 ## Stadthub: kompakte Übersicht und Fahrzeugraster – neu gesammelt, nicht veröffentlicht
 
 - Hub-Bild entfernt; Reiter Übersicht und Fahrzeuge.
