@@ -14,7 +14,7 @@
 
 ## Technischer Aufbau
 
-`ItemArt` verwendet die lokalen transparenten PNGs aus `assets/art/items`. Die App benötigt keine Bild-API oder zusätzliche native Bibliothek. Rahmen, halbtransparenter Farbhintergrund und römische Stufe entstehen technisch. Mengen stehen weiterhin separat in der jeweiligen Ansicht. Die Siegelgrafiken werden als scharfe Vektormotive vorgerendert und auf die leere Wachsfläche gelegt, damit alle Auftragsarten bei jeder Schleifenfarbe konsistent bleiben. Quelle und optionaler Renderer: `scripts/build-item-seals.cjs`.
+`ItemArt` verwendet die lokalen transparenten PNGs aus `assets/art/items`. Die App benötigt keine Bild-API oder zusätzliche native Bibliothek. Rahmen, halbtransparenter Farbhintergrund und römische Stufe entstehen technisch. Mengen stehen weiterhin separat in der jeweiligen Ansicht. Die Auftragsart erscheint als helles Vektorsymbol auf einer kontrastreichen dunklen Plakette oben links (34 % der Itemfläche). Das Wachs bleibt ohne Symbol. Römische Stufen bleiben ausschließlich bei gestuften Items unten rechts. Die sechs Motive werden als scharfe PNGs aus den Vektorquellen vorgerendert. Quelle und optionaler Renderer: `scripts/build-item-seals.cjs`.
 
 `itemVisual.js` trennt Item-ID, Auftragsart, Seltenheit und Rang. Der Rang eines Material-/Fahrzeugkartenauftrags steht als römische Zahl im Item; er erzeugt keine neue Seltenheit. Projektgruppen übergeben ihre tatsächliche Art ausdrücklich. Die Beispiele ändern nicht, welche Auftragsarten im Spiel als Großauftrag existieren.
 
@@ -32,3 +32,7 @@ Abgeschlossen: TypeScript ohne Fehler, 198/198 Tests, Android-Export mit 145 ein
 ![Herstellung](items-crafting-390.png)
 ![Werkzeugkasten-Detail](item-detail-390.png)
 ![Auftragsrollen und Siegel](items-scrolls-390.png)
+
+## Gesammelte Folgeänderung – noch nicht veröffentlicht
+
+Auftragsart aus der Wachsfläche nach oben links verschoben und vergrößert. Dieselbe zentrale Darstellung gilt an allen Einsatzstellen. Bilder müssen nicht neu erzeugt werden. TypeScript und die drei vorhandenen Prüfungen der Itemzuordnung sind erfolgreich.
