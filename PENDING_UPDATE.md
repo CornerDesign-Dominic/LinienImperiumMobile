@@ -1,3 +1,15 @@
+## Entwicklungspunkte in der Firma – neu gesammelt, nicht veröffentlicht
+
+- Hinweis Punkte verfügbar auf der Firmen-Card der Startseite; großer Verteiler auf Home entfernt.
+- Ganz oben in der Firma kompakte Entwicklungscard mit offenen Punkten, Basiswerten und separaten +Boni. Keine Kapazitätssumme und keine Anzeige bisher vergebener Punkte.
+- Punkte verteilen öffnet ein Modal für alle angesammelten Levelpunkte; Vorschau und einmalige gemeinsame Bestätigung.
+- Mehrere Levelaufstiege werden in einem Glückwunschhinweis zusammengefasst.
+- Servervalidierung gegen überhöhte/veraltete Verteilungen und Doppelvergabe; alte Clients bleiben kompatibel.
+- Typprüfung, alle 188 Tests, Android-Export und Browser bei 320/390/430 px erfolgreich; Englisch geprüft. Kein physischer Gerätetest.
+- Details: `docs/ui/company-development-points.md`. Keine Veröffentlichung beauftragt.
+
+---
+
 ## Einzelaufträge: erfolgreich veröffentlicht am 23.10.2026
 
 - Reiter Laufende, Angebote, Aufträge; fertige Belohnungen mit Sammelbutton und Hinweis am Reiter.

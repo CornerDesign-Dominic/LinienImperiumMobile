@@ -255,6 +255,17 @@ const bridge = `
       addEvent('Level ' + level + ': ' + expedition + ' Expeditionspunkte und ' + overtime + ' Überstundenpunkte dauerhaft zugewiesen.');
       return true;
     },
+    allocateLevelBatch(expedition, overtime, points) {
+      const available=(game.pendingLevelUps?.length||0)*3;
+      if(!available||points!==available||expedition+overtime!==available)throw Error('Verfügbare Punkte haben sich geändert. Bitte Verteilung prüfen.');
+      game.expedition.levelCapacityBonus=(game.expedition.levelCapacityBonus||0)+expedition;
+      game.expedition.points+=expedition;
+      game.overtimeCapacity=(game.overtimeCapacity??100)+overtime;
+      game.overtimePoints=(game.overtimePoints??100)+overtime;
+      game.pendingLevelUps=[];
+      addEvent(available+' Entwicklungspunkte verteilt: '+expedition+' Expedition, '+overtime+' Überstunden.');
+      return true;
+    },
     sell(id) { if (!openSaleDialog(id)) return false; return confirmSale(); },
     claimSingleRewards() {
       const orders=game.orders.filter(o=>!PROJECT_DEADLINES[o.kind]&&o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt);
@@ -394,6 +405,9 @@ const bridge = `
       }));
       return {state: {...game,trucks,orders,overtimeCapacity:overtimeCapacity()}, serverTime:now, catalog, cardVehicles, jobChoices, procurement:procurementView(now),
         level:levelForXp(game.xp,game), expeditionCapacity:expeditionCapacity(),
+        development:{points:(game.pendingLevelUps?.length||0)*3,
+          expedition:{base:50+(game.expedition.levelCapacityBonus||0),bonus:expeditionCapacity()-50-(game.expedition.levelCapacityBonus||0)},
+          overtime:{base:game.overtimeCapacity??100,bonus:overtimeCapacity()-(game.overtimeCapacity??100)}},
         regeneration:{expeditionNextAt:game.expedition.points<expeditionCapacity()?game.expedition.lastRegenAt+expeditionInterval():null,expeditionIntervalMs:expeditionInterval(),overtimeNextAt:game.overtimePoints<overtimeCapacity()?game.overtimeLastRegenAt+OVERTIME_REGEN_MS:null},
         templates:[0,1,2].map(i=>fleetTemplate(i)),
         fleetPreviews:[0,1,2].map(index=>(projectFleetVehicles(index)||[]).map(vehicle=>({
@@ -544,6 +558,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     },
     customerSkill:()=>a.allocateCustomerSkill(id(p.id),choice(p.kind,['pay','special','referral'])),
     pin:()=>a.toggleOrderPin(id(p.id)),refresh:()=>a.manualRefreshOrders(),level:()=>a.allocateLevel(num(p.expedition,3),p.overtime===undefined?3-num(p.expedition,3):num(p.overtime,3)),
+    levelBatch:()=>a.allocateLevelBatch(num(p.expedition,300000),num(p.overtime,300000),num(p.points,300000)),
     testCoins:()=>a.grantTestCoins(),testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>a.reset()
   };
   if(!Object.hasOwn(calls,action))throw Error('Unbekannte Aktion');

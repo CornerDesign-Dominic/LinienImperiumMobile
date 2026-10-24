@@ -1004,5 +1004,21 @@
   "Kein geeignetes Fahrzeug in der Garage.": "No suitable vehicle in the garage.",
   "Auftrag konnte nicht gestartet werden. Bitte Auswahl prüfen und erneut versuchen.": "Could not start contract. Check your selection and try again.",
   "Auftrag startet …": "Starting contract …",
-  "Ausgewählt": "Selected"
+  "Ausgewählt": "Selected",
+  "Entwicklung": "Development",
+  "Punkte verfügbar · {0}": "Points available · {0}",
+  "Verfügbare Punkte: {0}": "Available points: {0}",
+  "Basis": "Base",
+  "Basiswert + Boni": "Base + bonuses",
+  "Punkte verteilen": "Allocate points",
+  "Noch verfügbar": "Still available",
+  "Jeder Punkt erhöht den Basiswert um 1. Boni bleiben zusätzlich erhalten.": "Each point increases the base by 1. Bonuses remain additional.",
+  "Boni +{0}": "Bonuses +{0}",
+  "Verteilung bestätigen": "Confirm allocation",
+  "Verfügbare Punkte haben sich geändert. Bitte Verteilung prüfen.": "Available points have changed. Please check your allocation.",
+  "Verteilung konnte nicht gespeichert werden. Bitte verfügbare Punkte prüfen und erneut versuchen.": "Could not save allocation. Check available points and try again.",
+  "+{0} Punkte zum Verteilen": "+{0} points to allocate",
+  "+{0} Stadthub Fahrzeug": "+{0} city hub vehicle",
+  "+{0} Expeditionsauffüller": "+{0} expedition refill",
+  "+{0} Überstundenauffüller": "+{0} overtime refill"
 }
