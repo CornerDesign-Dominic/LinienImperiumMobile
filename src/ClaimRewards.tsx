@@ -1,5 +1,6 @@
-import {ItemArt,ItemAmount} from './ItemArt';
-import React from 'react';
+import {ItemArt} from './ItemArt';
+import {Text} from './Language';
+import React,{useState} from 'react';
 import {View,ScrollView,StyleSheet} from 'react-native';
 import {Icon,IconName} from './Icon';
 import {itemName,rarityColor} from './items';
@@ -11,6 +12,7 @@ type Summary={
 };
 type Reward={id:string;label:string;amount:number;icon:IconName;color:string};
 export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:string;label:string}[]}){
+ const [contentWidth,setContentWidth]=useState(240);
  const rewards:Reward[]=[];
  if(summary.coins>0)rewards.push({id:'coins',label:'Münzen',amount:summary.coins,icon:'coin',color:C.gold});
  for(const rarity of rarities){
@@ -21,20 +23,20 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
   const amount=summary[id]||0;
   if(amount>0)rewards.push({id,label:itemName(id,amount),amount,icon,color:C.accent});
  }
- const rows=Array.from({length:Math.ceil(rewards.length/3)},(_,index)=>rewards.slice(index*3,index*3+3));
- return <View style={styles.content}>
+ const amountText=(reward:Reward)=>`+${n(reward.amount,reward.id==='coins'?2:0)}`;
+ const amountWidth=(reward:Reward)=>Math.min(144,Math.max(64,amountText(reward).length>8?contentWidth*.4:64));
+ return <View onLayout={event=>setContentWidth(event.nativeEvent.layout.width)} style={styles.content}>
   <View style={styles.source}>
    <Txt muted style={styles.sourceText}>Einzelaufträge</Txt>
    <View style={styles.count}><Txt style={styles.sourceText}>{n(summary.count)} {summary.count===1?'Abschluss':'Abschlüsse'}</Txt></View>
   </View>
-  <ScrollView style={styles.scroll} contentContainerStyle={styles.loot} showsVerticalScrollIndicator>
-   {rows.map((row,index)=><View key={index} style={styles.row}>
-    {row.map(reward=><View key={reward.id} style={[styles.item,{borderColor:reward.color}]}>
-     <View style={styles.art}>{reward.id==='coins'?<Icon name="coin" size={52}/>:<ItemArt id={reward.id} size={52}/>}</View>
-     <Txt style={[styles.amount,{color:reward.color}]}>+{n(reward.amount,reward.id==='coins'?2:0)}</Txt>
-     <Txt style={styles.label}>{reward.label}</Txt>
-    </View>)}
-    {Array.from({length:3-row.length},(_,index)=><View key={`empty-${index}`} style={styles.spacer}/>)}
+  <ScrollView testID="claim-reward-list" style={styles.scroll} contentContainerStyle={styles.loot} showsVerticalScrollIndicator>
+   {rewards.map((reward,index)=><View key={reward.id} testID={`claim-reward-${reward.id}`} style={[styles.row,index>0&&styles.separator]}>
+    <View style={styles.art}>{reward.id==='coins'?<Icon name="coin" size={52}/>:<ItemArt id={reward.id} size={52}/>}</View>
+    <Txt style={styles.label}>{reward.label}</Txt>
+    <View style={[styles.amountColumn,{width:amountWidth(reward)}]}>
+     <Text literal numberOfLines={1} style={[styles.amount,{color:reward.color,fontSize:Math.min(17,(amountWidth(reward)-2)/(amountText(reward).length*.65))}]}>{amountText(reward)}</Text>
+    </View>
    </View>)}
   </ScrollView>
  </View>;
@@ -46,10 +48,10 @@ const styles=StyleSheet.create({
  count:{backgroundColor:C.greenWash,paddingHorizontal:8,paddingVertical:5,borderRadius:8},
  scroll:{flexShrink:1,flexGrow:0},
  loot:{paddingBottom:4},
- row:{flexDirection:'row',gap:8,marginBottom:8},
- item:{flex:1,minWidth:0,padding:7,alignItems:'center',backgroundColor:C.raised,borderWidth:1,borderRadius:12},
- spacer:{flex:1,minWidth:0},
- art:{width:52,height:52,maxWidth:'100%',alignItems:'center',justifyContent:'center',backgroundColor:C.panel,borderRadius:10,marginBottom:5},
- amount:{fontSize:18,fontWeight:'800',textAlign:'center',marginBottom:4},
- label:{fontSize:10,lineHeight:14,minHeight:42,textAlign:'center'},
+ row:{flexDirection:'row',alignItems:'flex-start',gap:8,paddingVertical:10,minHeight:72},
+ separator:{borderTopWidth:StyleSheet.hairlineWidth,borderTopColor:C.line},
+ art:{width:52,height:52,flexShrink:0,alignItems:'center',justifyContent:'center'},
+ amountColumn:{maxWidth:144,minWidth:64,flexShrink:0,alignSelf:'center'},
+ amount:{fontWeight:'800',textAlign:'right',fontVariant:['tabular-nums']},
+ label:{flex:1,minWidth:0,fontSize:13,lineHeight:18},
 });
