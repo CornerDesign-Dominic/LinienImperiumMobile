@@ -5,7 +5,7 @@ const now=Date.UTC(2026,9,24,12);
 function fixture(){let r=execute(null,'start',{id:'hamburg'},now,()=>0);r.state.xp=50*30*29;r.state.coins=1e6;r=execute(r.state,'buyHub',{},now,()=>0);r=execute(r.state,'hubVehicleBuy',{},now,()=>0);return r.view;}
 function setup(name,extra={}){
  const ui={C:require('../src/palette.json'),Txt:'Txt',Card:'Card',Row:'Row',Btn:'Btn',Pill:'Pill',Bar:'Bar',n:String,remaining:()=> '00:30:00'};
- const h=componentHarness('HubVehicles.tsx',{'./ui':ui}),calls=[],props={data:fixture(),busy:false,clock:now,onCommand:async(...args)=>{calls.push(args);return {};},onSell:()=>{},...extra};
+ const h=componentHarness('HubVehicles.tsx',{'./ui':ui,'./HubVehicleDetail':{HubVehicleDetail:'HubVehicleDetail'}}),calls=[],props={data:fixture(),busy:false,clock:now,onCommand:async(...args)=>{calls.push(args);return {};},onSell:()=>{},...extra};
  return {h,props,calls,render:()=>h.render(name,props)};
 }
 const button=(tree,label)=>{const b=nodes(tree,'Btn').find(b=>text(b)===label);assert.ok(b,label);return b;};
@@ -21,10 +21,22 @@ test('Hub actions reject rapid duplicate taps, recover from failure, and retain 
 test('Hub vehicles use resource and slot gates, exact upgrade commands, and keep destructive actions collapsed',async()=>{
  const x=setup('HubVehicles');let tree=x.render();press(tree,'Stadttransporter kaufen');tree=x.render();assert.equal(button(tree,`Kaufen · ${x.props.data.hubInfo.vehiclePrice} M`).props.disabled,false);
  const vehicle=x.props.data.state.trucks.find(t=>!t.cardId&&t.tier<=1);nodes(tree,'Pressable').find(p=>p.props.accessibilityLabel?.includes(vehicle.id)).props.onPress();tree=x.render();assert.ok(!nodes(tree,'Btn').some(b=>text(b).startsWith('Verkaufen')));
- assert.equal(button(tree,'Laderaum ausbauen').props.disabled,true);x.props.data.state.inventory.hubVehicleParts=100;tree=x.render();assert.equal(button(tree,'Laderaum ausbauen').props.disabled,false);
- await button(tree,'Laderaum ausbauen').props.onPress();assert.equal(x.calls[0][0],'hubVehicleUpgrade');assert.equal(x.calls[0][1].id,vehicle.id);assert.equal(x.calls[0][1].kind,'capacity');
- press(tree,'Weitere Aktionen');tree=x.render();assert.ok(nodes(tree,'Btn').some(b=>text(b).startsWith('Verkaufen')));
+ const detail=nodes(tree,'HubVehicleDetail')[0];assert.equal(detail.props.truck.id,vehicle.id);assert.equal(detail.props.inventory,x.props.data.state.inventory);
  x.props.data.hubLimit=1;assert.ok(!nodes(x.render(),'Pressable').some(p=>p.props.accessibilityLabel==='Stadttransporter kaufen'));
+});
+test('Hub vehicle detail gates upgrades, rejects duplicate taps and returns to overview',async()=>{
+ const data=fixture(),truck=data.state.trucks.find(t=>!t.cardId&&t.tier<=1),calls=[];
+ const h=componentHarness('HubVehicleDetail.tsx'),props={truck,inventory:{hubVehicleParts:0},coins:1e6,busy:false,onClose:()=>{},onSell:()=>{},onCommand:async(...args)=>{calls.push(args);return {};}};
+ const render=()=>h.render('HubVehicleDetail',props);
+ let tree=render();assert.ok(!nodes(tree,'Btn').some(b=>text(b).startsWith('Verkaufen')));
+ nodes(tree,'Pressable').find(p=>p.props.accessibilityLabel?.startsWith('Laderaum,')).props.onPress();
+ assert.equal(button(render(),'Laderaum ausbauen').props.disabled,true);
+ props.inventory.hubVehicleParts=100;assert.equal(button(render(),'Laderaum ausbauen').props.disabled,false);
+ let finish;props.onCommand=(...args)=>{calls.push(args);return new Promise(resolve=>finish=resolve)};
+ const upgrade=button(render(),'Laderaum ausbauen').props.onPress,first=upgrade();await upgrade();assert.equal(calls.length,1);assert.deepEqual(JSON.parse(JSON.stringify(calls[0])),['hubVehicleUpgrade',{id:truck.id,kind:'capacity'}]);
+ finish(null);await first;assert.ok(text(render()).includes('Aktion fehlgeschlagen'));
+ props.onCommand=async()=>({});await button(render(),'Laderaum ausbauen').props.onPress();assert.ok(text(render()).includes('Verbesserungen'));
+ press(render(),'Weitere Aktionen');assert.ok(nodes(render(),'Btn').some(b=>text(b).startsWith('Verkaufen')));
 });
 test('Hub crates respect cooldown, show received parts separately and return after closing',async()=>{
  const x=setup('HubParts');x.props.onCommand=async()=>({hubCrateParts:17});await button(x.render(),'Fundkiste öffnen').props.onPress();let tree=x.render();let reward=nodes(tree,'RewardModal').find(m=>m.props.title==='Fundkiste geöffnet');assert.equal(reward.props.visible,true);assert.ok(text(reward).includes('+17'));reward.props.onClose();assert.equal(nodes(x.render(),'RewardModal').find(m=>m.props.title==='Fundkiste geöffnet').props.visible,false);

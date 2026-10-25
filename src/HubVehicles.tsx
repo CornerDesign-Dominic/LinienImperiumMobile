@@ -1,4 +1,5 @@
 import {ItemArt,ItemAmount} from './ItemArt';
+import {HubVehicleDetail} from './HubVehicleDetail';
 import React,{useRef,useState} from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
 import {t} from './i18n';
@@ -71,17 +72,15 @@ export function HubParts({data,busy,clock,onCommand,modalBlocked=false}:any){
  </Card>;
 }
 export function HubVehicles({data,busy,onCommand,onSell,modalBlocked=false,error=false}:any){
- const [selected,setSelected]=useState<string|null>(null),[buyOpen,setBuyOpen]=useState(false),[details,setDetails]=useState(false),[actions,setActions]=useState(false);
+ const [selected,setSelected]=useState<string|null>(null),[buyOpen,setBuyOpen]=useState(false);
  const g=data.state,info=data.hubInfo,vehicles=g.trucks.filter((truck:any)=>!truck.cardId&&truck.tier<=1),truck=vehicles.find((truck:any)=>truck.id===selected);
  const slots=Math.min(data.hubLimit,info.vehicleMax),canBuy=vehicles.length<slots;
  const tiles=[...vehicles,...(canBuy?[null]:[])],rows=Array.from({length:Math.ceil(tiles.length/3)},(_,i)=>tiles.slice(i*3,i*3+3));
  const failure=error?<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>:null;
- const fact=(label:string,value:string)=><Row><Txt muted style={{fontSize:12,flex:1}}>{label}</Txt><Txt style={{fontSize:12}}>{value}</Txt></Row>;
- const toggle=(label:string,open:boolean,onPress:()=>void)=><Pressable accessibilityRole="button" accessibilityLabel={t(label)} accessibilityState={{expanded:open}} onPress={onPress} style={s.toggle}><Txt muted style={{fontSize:12}}>{label}</Txt><Icon name="chevron" size={14} style={{transform:[{rotate:open?'90deg':'0deg'}]}}/></Pressable>;
  return <>
   <Row><Txt style={s.title}>Stadttransporter · {vehicles.length} / {data.hubLimit}</Txt><View accessible accessibilityLabel={`${t('Werkzeugkästen')}: ${n(g.inventory.hubVehicleParts)}`} style={s.costValue}><ItemArt id="hubVehicleParts" size={28}/><Txt>{n(g.inventory.hubVehicleParts)}</Txt></View></Row>
   {!canBuy&&<Txt muted style={[s.caption,{marginBottom:10}]}>{info.nextVehicleLevel?`${t('Nächster Fahrzeugplatz ab Level')} ${info.nextVehicleLevel}`:'Alle 20 Fahrzeugplätze freigeschaltet.'}</Txt>}
-  {rows.map((row,i)=><View key={i} style={s.gridRow}>{row.map((vehicle:any,j:number)=>vehicle?<Pressable key={vehicle.id} accessibilityRole="button" accessibilityLabel={`${t(vehicle.model)}, ${vehicle.id}, ${n(vehicle.capacity,1)} t, ${n(vehicle.speed,2)} km/s, ${t(vehicle.hubAssigned?'Im Hub eingesetzt':'Nicht eingesetzt')}`} onPress={()=>{setSelected(vehicle.id);setDetails(false);setActions(false);}} style={({pressed})=>[s.vehicle,pressed&&{opacity:.8}]}>
+  {rows.map((row,i)=><View key={i} style={s.gridRow}>{row.map((vehicle:any,j:number)=>vehicle?<Pressable key={vehicle.id} accessibilityRole="button" accessibilityLabel={`${t(vehicle.model)}, ${vehicle.id}, ${n(vehicle.capacity,1)} t, ${n(vehicle.speed,2)} km/s, ${t(vehicle.hubAssigned?'Im Hub eingesetzt':'Nicht eingesetzt')}`} onPress={()=>{setSelected(vehicle.id);}} style={({pressed})=>[s.vehicle,pressed&&{opacity:.8}]}>
    <Txt style={s.vehicleName}>{vehicle.id}</Txt><View style={s.truckArt}><Icon name="truck" size={44} color={C.gold}/></View>
    <View style={s.tileFact}><Icon name="orders" size={14} color={C.muted}/><Txt style={s.tileValue}>{n(vehicle.capacity,1)} t</Txt></View><View style={s.tileFact}><Icon name="timer" size={14} color={C.muted}/><Txt style={s.tileValue}>{n(vehicle.speed,2)} km/s</Txt></View>
    <View accessible accessibilityLabel={`${t('Laderaum')} ${vehicle.hubCapacityLevel||0}/10`} style={s.level}><Icon name="module" size={11} color={C.muted}/><View style={{flex:1}}><Bar value={(vehicle.hubCapacityLevel||0)*10}/></View><Txt style={s.caption}>{vehicle.hubCapacityLevel||0}/10</Txt></View>
@@ -89,24 +88,7 @@ export function HubVehicles({data,busy,onCommand,onSell,modalBlocked=false,error
    <Txt style={[s.caption,{color:vehicle.hubAssigned?C.accent:C.muted,textAlign:'center',marginTop:5}]}>{vehicle.hubAssigned?'Im Hub':'Nicht eingesetzt'}</Txt>
   </Pressable>:<Pressable key={`buy-${j}`} accessibilityRole="button" accessibilityLabel={t('Stadttransporter kaufen')} onPress={()=>setBuyOpen(true)} style={[s.vehicle,s.emptySlot]}><Icon name="plus" size={30} color={C.gold}/><Txt style={s.vehicleName}>Kaufen</Txt><Txt muted style={s.caption}>2 t · {n(info.vehiclePrice)} M</Txt></Pressable>)}{row.length<3&&Array.from({length:3-row.length},(_,j)=><View key={`space-${j}`} style={{flex:1}}/>)}</View>)}
   <ExpeditionPlaceModal visible={buyOpen&&!modalBlocked} title={t('Stadttransporter kaufen')} onClose={()=>setBuyOpen(false)}><Txt>2 t Startkapazität · Ausbau im Stadthub</Txt><View style={s.section}><Txt muted style={s.caption}>Vorhanden / Benötigt</Txt><Cost label="Münzen" owned={g.coins} need={info.vehiclePrice} unit=" M"/>{failure}<Btn disabled={busy||!canBuy||g.coins<info.vehiclePrice} onPress={async()=>{if(await onCommand('hubVehicleBuy'))setBuyOpen(false);}}>Kaufen · {n(info.vehiclePrice)} M</Btn></View></ExpeditionPlaceModal>
-  <ExpeditionPlaceModal visible={!!truck&&!modalBlocked} title={truck?`${t(truck.model)} · ${truck.id}`:''} onClose={()=>setSelected(null)}>
-   {truck&&<>
-    <View style={s.metrics}><Metric icon="orders" label="Kapazität" value={`${n(truck.capacity,1)} t`}/><Metric icon="timer" label="Geschwindigkeit" value={`${n(truck.speed,2)} km/s`}/></View>
-    {(['capacity','speed'] as const).map(kind=>{
-     const q=truck.hubUpgrades[kind],label=kind==='capacity'?'Laderaum':'Antrieb',unit=kind==='capacity'?'t':'km/s';
-     return <View key={kind} style={s.section}>
-      <Row><Txt style={s.title}>{label}</Txt><Txt muted style={{fontSize:12}}>{q.level} / {q.max}</Txt></Row>
-      {q.level<q.max?<><Txt style={{fontWeight:'700',marginBottom:6}}>{n(q.current,2)} → {n(q.next,2)} {unit}</Txt>
-       <Txt muted style={s.caption}>Vorhanden / Benötigt</Txt><Cost label="Werkzeugkästen" owned={g.inventory.hubVehicleParts} need={q.parts}/><Cost label="Münzen" owned={g.coins} need={q.coins} unit=" M"/>
-       <Btn secondary disabled={busy||g.inventory.hubVehicleParts<q.parts||g.coins<q.coins} onPress={()=>onCommand('hubVehicleUpgrade',{id:truck.id,kind})}>{label} ausbauen</Btn>
-      </>:<Txt muted>Maximum erreicht</Txt>}
-     </View>;
-    })}
-    {failure}<Txt muted style={s.note}>Ausbauten wirken ab dem nächsten Stundenzyklus.</Txt>
-    <View style={s.section}>{toggle('Weitere Details',details,()=>setDetails(!details))}{details&&<>{fact('Gefahren',n(truck.kmDriven)+' km')}{fact('Status',t(truck.hubAssigned?'Im Hub eingesetzt':'Nicht eingesetzt'))}</>}</View>
-    <View style={s.section}>{toggle('Weitere Aktionen',actions,()=>setActions(!actions))}{actions&&<><Btn secondary disabled={busy} onPress={()=>onCommand('hubTruck',{id:truck.id})}>{truck.hubAssigned?'Aus Hub nehmen':'Im Hub einsetzen'}</Btn>{!!truck.sale&&<Btn secondary disabled={busy} onPress={()=>{setSelected(null);onSell(truck);}}>Verkaufen · {n(truck.sale.coins,2)} M</Btn>}</>}</View>
-   </>}
-  </ExpeditionPlaceModal>
+  {truck&&!modalBlocked&&<HubVehicleDetail key={truck.id} truck={truck} inventory={g.inventory} coins={g.coins} busy={busy} error={error} onCommand={onCommand} onClose={()=>setSelected(null)} onSell={onSell}/>}
  </>;
 }
 const s=StyleSheet.create({
