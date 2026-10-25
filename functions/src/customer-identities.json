@@ -1,0 +1,7 @@
+[
+  {"id":"nordbau","legacyName":"Nordbau GmbH","title":"Kronenlande","customer":"Königliches Handelskontor","initials":"KH","industry":"Königlicher Handel","endlessPlace":"Kronenhafen"},
+  {"id":"frischgut","legacyName":"Frischgut AG","title":"Weite Ebenen","customer":"Prärie-Handelsgesellschaft","initials":"PH","industry":"Präriehandel","endlessPlace":"Weidenhafen"},
+  {"id":"stahlwerk","legacyName":"Stahlwerk West","title":"Safranstraße","customer":"Bund der Karawanenhändler","initials":"BK","industry":"Karawanenhandel","endlessPlace":"Karawanserei der sieben Bögen"},
+  {"id":"alpenhandel","legacyName":"Alpenhandel KG","title":"Jadetal","customer":"Handelshaus der Jadebrücke","initials":"HJ","industry":"Handel am Jadetor","endlessPlace":"Handelshof am Jadetor"},
+  {"id":"eurolog","legacyName":"EuroLog SE","title":"Nordmark","customer":"Nordlicht-Kontor","initials":"NK","industry":"Nordischer Handel","endlessPlace":"Handelsfeste am Eisstrom"}
+]

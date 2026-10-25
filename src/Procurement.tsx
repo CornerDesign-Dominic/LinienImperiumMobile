@@ -1,6 +1,7 @@
 import {ItemArt,ItemAmount} from './ItemArt';
 import React,{useEffect,useState} from 'react';
-import {View,TextInput,Modal,ScrollView,Pressable,StyleSheet} from 'react-native';
+import {View,TextInput,ScrollView,Pressable,StyleSheet} from 'react-native';
+import {AppModal as Modal} from './AppModal';
 import {Text} from './Language';
 import {t as translate} from './i18n';
 import {VehicleArt} from './VehicleArt';

@@ -1,6 +1,7 @@
 import {t as translate} from './i18n';
 import React,{useState} from 'react';
-import {View,Pressable,Modal,ScrollView,StyleSheet} from 'react-native';
+import {View,Pressable,ScrollView,StyleSheet} from 'react-native';
+import {AppModal as Modal} from './AppModal';
 import {Icon} from './Icon';
 import {VehicleCardTile,VehicleCardPicker} from './VehicleCards';
 import {VehicleCardDetail} from './VehicleCardDetail';

@@ -20,7 +20,7 @@ export function Crafting({data,busy,onCommand}:any){
  const {catalog:c}=data;
  const stocks=new Map(stockItems(data).map(item=>[item.id,item]));
  const stockFor=(id:string)=>stocks.get(id)||stocks.get(`order:${id}`);
- const recipes:Recipe[]=(c.recipes||[]).map((r:any)=>{
+ const recipes:Recipe[]=(c.recipes||[]).filter((r:any)=>r.inputId!=='companyItems').map((r:any)=>{
   const input=stockFor(r.inputId),output=stockFor(r.outputId);
   return {...r,owned:input?.amount||0,outputOwned:output?.amount||0,inputColor:input?.color,outputColor:output?.color||C.gold,locked:r.id==='customer'&&!data.customers.length};
  });

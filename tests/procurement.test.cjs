@@ -125,7 +125,7 @@ test('Income after reserve exhaustion cannot fund earlier tours; early income ca
   assert.ok(out.state.coins>=0);
  }
 });
-test('Full expedition workflow discovers, supplies and claims all eight places before unlocking procurement',()=>{
+test('Full expedition workflow automatically collects all eight places before unlocking procurement',()=>{
  let state=cmd(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'}).state;
  state.expedition.points=1000;state.coins=8000;
  for(let i=0;i<100&&!state.expedition.regions[0].endlessUnlocked;i++)state=cmd(state,'discover',{region:0}).state;
@@ -137,7 +137,7 @@ test('Full expedition workflow discovers, supplies and claims all eight places b
   assert.equal(out.view.procurement.sites[0].unlocked,false);
  }
  let out=cmd(state,'mission',{region:0,kind:'final',place:0,truck},at);const mission=out.state.expedition.missions.at(-1);at=mission.endsAt;
- out=cmd(out.state,'sync',{},at);assert.equal(out.view.procurement.sites[0].unlocked,false);
+ out=cmd(out.state,'sync',{},at);assert.equal(out.view.procurement.sites[0].unlocked,true);
  out=cmd(out.state,'claimMission',{id:mission.id},at);assert.equal(out.view.procurement.sites[0].unlocked,true);assert.equal(out.state.inventory.capacityModules,1);
  out=cmd(out.state,'procurementStart',{region:0,mode:'count',amount:1,truck},at);assert.equal(out.state.coins,0);
 });

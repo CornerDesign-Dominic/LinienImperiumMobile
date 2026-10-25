@@ -135,6 +135,8 @@ Alle Ziele werden aus den hinterlegten Ortsrouten gewählt. Gibt es im Basisbere
 
 Alte noch verfügbare Marktangebote außerhalb der neuen Grenzen werden beim Laden ersetzt. Laufende Altaufträge und bereits erhaltene Sonder- oder Empfehlungsfahrten behalten ihre gespeicherten Routen und Mengen und dürfen abgeschlossen werden. Alte verfügbare Stadtangebote werden beim Laden entfernt; laufende und abgeschlossene Stadtaufträge bleiben erhalten.
 
+**Mobiler Sammelstand:** Die folgenden Ausbauzahlen beschreiben die gepinnte Web-Grundlage. Der neue mobile Ausbau mit 1.000 Prämien- und jeweils 100 Mengen-/Reichweitenstufen, Kostenstaffel und einmaliger Spielstandsumrechnung ist in [docs/transport-upgrades.md](docs/transport-upgrades.md) beschrieben. Das Rezept Firmenausbau-Items → Kundenauftrag ist dort vorerst deaktiviert.
+
 Die Basiswerte stehen zentral in `TRANSPORT_BASE` in `app.js`. Prämie, Menge und Reichweite lassen sich je Segment getrennt ausbauen. Bei Mengenstufe `S` gilt: `Untergrenze = Basisuntergrenze + floor(S / 2)` und `Obergrenze = Basisobergrenze + S`; die Menge wird in ganzen Tonnen ausgewürfelt. Reichweite erhöht nur die Obergrenze, nie die Mindeststrecke. Die vorhandenen Ortsrouten bleiben maßgeblich; ein Ausbau erfindet keine zusätzliche Route. Privatabholungen behalten ihre eigenen Basiswerte.
 
 | Ausbau | Regionalverkehr | Fernverkehr |

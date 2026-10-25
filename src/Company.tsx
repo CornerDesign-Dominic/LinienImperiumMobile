@@ -1,22 +1,23 @@
-import {ItemArt,ItemAmount} from './ItemArt';
+import {ItemArt} from './ItemArt';
 import {t as translate} from './i18n';
 import {Icon,IconName} from './Icon';
-import {itemName} from './items';
 import React,{useEffect,useRef,useState} from 'react';
-import {Modal,ScrollView,View,Pressable,StyleSheet} from 'react-native';
+import {ScrollView,View,Pressable,StyleSheet} from 'react-native';
+import {AppModal as Modal} from './AppModal';
 import {C,Txt,Card,Row,Btn,n} from './ui';
 const LABELS:Record<string,string>={premium:'Abschlussprämie',volume:'Auftragsmenge',range:'Reichweite'};
 const ICONS:Record<string,IconName>={premium:'reward',volume:'truck',range:'expedition'};
-const categoryName=(category:string)=>category==='national'?'Regionalverkehr':'Fernverkehr';
+const categoryName=(category:string)=>category==='national'?'Nahverkehr':'Fernverkehr';
 export type UpgradeDraft=Record<string,number>;
 export const upgradeKey=(o:any)=>`${o.category}:${o.kind}`;
 export function upgradeQuote(options:any[],draft:UpgradeDraft){
  return options.reduce((sum,o)=>o.costs.slice(0,draft[upgradeKey(o)]||0).reduce((s:any,c:any)=>({coins:s.coins+c.coins,items:s.items+c.items}),sum),{coins:0,items:0});
 }
+const effectNumber=(value:number)=>n(value,Number.isInteger(value)?0:1);
 function effect(o:any,level:number){
  if(o.kind==='premium')return `+${level} % Prämie`;
- if(o.kind==='volume')return `${o.base.minVolume+Math.floor(level/2)}–${o.base.maxVolume+level} t`;
- return `${o.base.minDistance}–${o.base.maxDistance+level} km`;
+ if(o.kind==='volume')return `${effectNumber(o.base.minVolume+Math.floor(level*(o.step??1)/2))}–${effectNumber(o.base.maxVolume+level*(o.step??1))} t`;
+ return `${effectNumber(o.base.minDistance)}–${effectNumber(o.base.maxDistance+level*(o.step??1))} km`;
 }
 export function TransportSummary({data,onImprove}:any){
  return <Card style={styles.summary}>
@@ -68,7 +69,6 @@ export function TransportEditor({data,busy,onSave,onInventory}:any){
     <Icon name="chevron" size={17} color={C.muted}/>
    </Pressable>;
   })}</Card>
-  <View style={styles.legend}><View style={styles.availableDot}/><Txt muted style={{fontSize:11}}>Verbesserung verfügbar</Txt></View>
   <Modal visible={!!active} transparent animationType="fade" onRequestClose={close}>
    <View style={styles.overlay}><View accessibilityViewIsModal style={styles.modal}>
     <View style={styles.modalHeader}><View style={{flex:1}}><Txt muted style={{fontSize:11}}>{categoryName(active?.category)}</Txt><Txt style={[styles.title,{fontSize:20}]}>{active?LABELS[active.kind]:''}</Txt></View><Btn iconOnly icon="close" secondary disabled={busy} onPress={close}>Schließen</Btn></View>
@@ -82,7 +82,6 @@ export function TransportEditor({data,busy,onSave,onInventory}:any){
      </View></View>
      <Txt muted style={styles.caption}>Gesamtkosten</Txt>
      <View style={styles.costs}><View style={styles.cost}><Icon name="coin" size={22} color={g.coins<quote.coins?C.red:C.gold}/><Txt style={{color:g.coins<quote.coins?C.red:C.text,fontWeight:'700'}}>{n(quote.coins)} M</Txt></View><View style={styles.cost}><ItemArt id="companyItems" size={36}/><Txt style={{color:items<quote.items?C.red:C.text,fontWeight:'700'}}>{quote.items} / {n(items)}</Txt></View></View>
-     <Txt muted style={{fontSize:11}}>{itemName('companyItems',2)}: {n(items)} verfügbar</Txt>
      {!affordable&&!stale&&<Txt style={styles.error}>{g.coins<quote.coins?'Nicht genügend Münzen.':'Nicht genügend Firmenausbau-Items.'}</Txt>}
      {saveError&&<Txt style={styles.error}>Ausbau nicht bestätigt. Bitte erneut versuchen.</Txt>}</>}
      {maximum&&<Txt style={{color:C.accent,marginTop:14}}>Maximale Stufe erreicht.</Txt>}
@@ -95,7 +94,7 @@ const styles=StyleSheet.create({
  summary:{backgroundColor:C.panel,borderColor:C.line},title:{fontSize:16,fontWeight:'700'},group:{paddingVertical:14,borderBottomWidth:1,borderColor:C.line,marginBottom:4},
  stock:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginBottom:12},stockValue:{flexDirection:'row',alignItems:'center',gap:7,flexShrink:1,flexWrap:'wrap'},stockLink:{flexDirection:'row',alignItems:'center',gap:4,minHeight:44,paddingHorizontal:4},
  tabs:{flexDirection:'row',gap:6,marginBottom:12},tab:{flex:1,minHeight:44,padding:8,borderWidth:1,borderColor:C.line,borderRadius:6,justifyContent:'center',alignItems:'center',backgroundColor:C.raised},tabActive:{backgroundColor:C.accent,borderColor:C.ink},tabText:{fontSize:13,fontWeight:'700',textAlign:'center'},
- upgradeRow:{flexDirection:'row',alignItems:'center',gap:10,padding:14,minHeight:100},divider:{borderTopWidth:1,borderColor:C.line},upgradeIcon:{width:38,height:42,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderRadius:6},availableDot:{width:7,height:7,borderRadius:4,backgroundColor:C.accent,flexShrink:0},legend:{flexDirection:'row',alignItems:'center',gap:7},
+ upgradeRow:{flexDirection:'row',alignItems:'center',gap:10,padding:14,minHeight:100},divider:{borderTopWidth:1,borderColor:C.line},upgradeIcon:{width:38,height:42,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderRadius:6},availableDot:{width:7,height:7,borderRadius:4,backgroundColor:C.accent,flexShrink:0},
  overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:16},modal:{width:'100%',maxWidth:460,maxHeight:'90%',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:12,overflow:'hidden'},modalHeader:{flexDirection:'row',alignItems:'center',gap:8,padding:18},modalFooter:{padding:18,paddingTop:4,borderTopWidth:1,borderColor:C.line},
  comparison:{flexDirection:'row',alignItems:'center',gap:8},effectColumn:{flex:1,minWidth:0,padding:10,borderRadius:6,backgroundColor:C.raised},after:{backgroundColor:C.greenWash},caption:{fontSize:11,marginBottom:4},effect:{fontSize:15,fontWeight:'700'},quantity:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginVertical:18},stepper:{flexDirection:'row',alignItems:'center',gap:8},costs:{flexDirection:'row',gap:12,flexWrap:'wrap',marginVertical:5},cost:{flexDirection:'row',alignItems:'center',gap:6,paddingVertical:6},error:{fontSize:12,color:C.red,marginTop:10}
 });

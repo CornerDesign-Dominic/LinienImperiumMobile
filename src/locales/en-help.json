@@ -44,7 +44,7 @@
   "fleet": [
     [
       "Garage",
-      "10 slots for card vehicles; each owned card may occupy one garage slot. It may also be used in fleets. City vehicles are managed at the city hub. Every expedition vehicle card can handle regional and long-distance contracts."
+      "10 slots for card vehicles; each owned card may occupy one garage slot. It may also be used in fleets. City vehicles are managed at the city hub. Every expedition vehicle card can handle local and long-distance contracts."
     ],
     [
       "Speed and upgrades",
@@ -86,11 +86,11 @@
     ],
     [
       "Items",
-      "Gears improve vehicle speed ranks; capacity modules increase capacity. Pickup clues craft private pickups. Supplier contacts upgrade city hub sales. Company upgrade items improve the company or craft customer contracts. Stored contracts remain here until started. Vehicle cards belong in the collection; shards stay here."
+      "Gears improve vehicle speed ranks; capacity modules increase capacity. Pickup clues craft private pickups. Supplier contacts upgrade city hub sales. Company upgrade items improve the company. Stored contracts remain here until started. Vehicle cards belong in the collection; shards stay here."
     ],
     [
       "Sources",
-      "Normal regional and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Material expedition contracts have a 6% chance for 1/2/3 items according to rank, and a 0.3% chance for a capacity module. Hub cycles yield 8–12 pickup clues."
+      "Normal local and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Material expedition contracts have a 6% chance for 1/2/3 items according to rank, and a 0.3% chance for a capacity module. Hub cycles yield 8–12 pickup clues."
     ],
     [
       "Gear loot",
@@ -104,7 +104,7 @@
   "development": [
     [
       "Crafting",
-      "100 pickup clues craft one private pickup. 10 company upgrade items craft a contract from a random unlocked regular customer. Assign a suitable garage vehicle under Single contracts → Stored contracts."
+      "100 pickup clues make one private pickup. Frame shards combine into the next rarity. Company upgrade items cannot currently be used for crafting."
     ],
     [
       "Shards",
@@ -118,7 +118,7 @@
     ],
     [
       "Transport upgrades",
-      "Bonus upgrades add 1 percentage point to completion bonuses per level. Volume upgrades add 1 t to maximum volume per level and 1 t to minimum volume every two levels. Range adds 1 km to the upper distance limit. New level N costs 2 + floor((N−1)/10) items; coins: bonus 10×N², volume 50×N², range 100×N²."
+      "Completion bonus: 1,000 levels, +1 percentage point each. New level N costs 1,000 × N coins and 1 + floor((N−1)/25) company upgrade items. Local and long-distance transport are separate. Quantity and range each have 100 levels, preserving their previous final effects and full upgrade budgets. The bonus affects only the completion reward of that category, not freight revenue or loot."
     ]
   ],
   "personnel": [
@@ -146,7 +146,11 @@
     ],
     [
       "Locations and bonuses",
-      "Seven locations per region; point cost = 3 + 9 × region index + floor(location index/2), using zero-based indices. The seventh discovery unlocks the next region and endless location. Each location’s one-off delivery grants +1 maximum expedition capacity when collected. Unlocking the endless location grants 1 module; its one-off delivery unlocks that region’s customer. Assign vehicles from the garage."
+      "Seven locations per region; discovery cost = 3 + 9 × region index + floor(location index/2), with zero-based indices. The seventh discovery unlocks the next region and endless location. A completed location delivery automatically grants one expansion point. The first endless-location delivery automatically unlocks its customer and grants one capacity module unless already received. Existing claimed capacity bonuses remain unchanged."
+    ],
+    [
+      "Automatic completions",
+      "Completed expedition deliveries and contracts are credited automatically. A single completion summary batches arrivals and milestones. Close it with X or open point allocation. Expansion points permanently raise either expedition or overtime maximum by 1 each, without refilling energy. Confirmed allocations cannot be reversed; unspent points remain available under Company."
     ]
   ],
   "statistics": [

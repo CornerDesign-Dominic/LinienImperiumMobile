@@ -30,7 +30,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
   <ScrollView style={styles.scroll} contentContainerStyle={styles.loot} showsVerticalScrollIndicator>
    {rows.map((row,index)=><View key={index} style={styles.row}>
     {row.map(reward=><View key={reward.id} style={[styles.item,{borderColor:reward.color}]}>
-     <View style={styles.art}>{reward.id==='coins'?<Icon name="coin" size={38} color={reward.color}/>:<ItemArt id={reward.id} size={52}/>}</View>
+     <View style={styles.art}>{reward.id==='coins'?<Icon name="coin" size={52}/>:<ItemArt id={reward.id} size={52}/>}</View>
      <Txt style={[styles.amount,{color:reward.color}]}>+{n(reward.amount,reward.id==='coins'?2:0)}</Txt>
      <Txt style={styles.label}>{reward.label}</Txt>
     </View>)}

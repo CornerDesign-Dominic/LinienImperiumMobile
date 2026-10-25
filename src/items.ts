@@ -13,7 +13,7 @@ export function stockItems(data:any):StockItem[]{
   {...material('expeditionRefills','Levelaufstieg.',`Gibt ${c.refillPoints?.expedition??50} Expeditionspunkte – auch über das Maximum hinaus.`),refill:'expedition',color:rarityColor('uncommon')},
   {...material('overtimeRefills','Levelaufstieg.',`Gibt ${c.refillPoints?.overtime??50} Überstundenpunkte – auch über das Maximum hinaus.`),refill:'overtime',color:rarityColor('legendary')},
   material('capacityModules','Endlosorte und seltene Auftragsbeute.','Erhöht die Fahrzeugkapazität um 0,5 t.'),
-  material('companyItems','Normale Aufträge und Materialaufträge.',`Für Firmenausbau und Kundenaufträge. ${g.inventory.companyItemTkmRemainder||0} / 750.000 tkm zum nächsten Item.`,'company'),
+  material('companyItems','Normale Aufträge und Materialaufträge.',`Für Firmenausbau. ${g.inventory.companyItemTkmRemainder||0} / 750.000 tkm zum nächsten Item.`,'company'),
   material('pickupHints','Kasse des Stadthubs.','Für die Herstellung von Privatabholungen.'),
   material('hubVehicleParts','Fundkisten und Einkäufe des Stadthubs.','Für Laderaum und Antrieb der Stadttransporter.','hub'),
   material('supplierContacts','Privatabholungen.','Für den Ausbau des Stadthub-Vertriebs.','hub'),

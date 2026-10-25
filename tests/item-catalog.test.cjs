@@ -26,20 +26,21 @@ test('Every usable material, gear rarity and shard rarity is represented in inve
  assert.ok(g.expedition.characters.navigator,'Inventory filtering must retain owned cards');
 });
 
-test('All four engine recipes are listed and crafting outputs return to inventory',()=>{
+test('Available recipes exclude company-item crafting and return outputs to inventory',()=>{
  let game=initial();game.state.inventory.pickupHints=100;game.state.inventory.companyItems=10;
  game.state.expedition.shards.common=10;game.state.expedition.shards.uncommon=10;
  game.state.expedition.regions[0].customerUnlocked=true;
  game=execute(game.state,'sync',{},now,()=>.5);
  const recipes=game.view.catalog.recipes;
- assert.deepEqual(recipes.map(r=>r.id),['pickup','customer','uncommon','rare']);
- assert.deepEqual(recipes.map(r=>r.needed),[100,10,10,10]);
- assert.equal(recipes[1].input,itemName('companyItems',2));
+ assert.deepEqual(recipes.map(r=>r.id),['pickup','uncommon','rare']);
+ assert.deepEqual(recipes.map(r=>r.needed),[100,10,10]);
+ assert.throws(()=>execute(game.state,'customerCraft',{},now,()=>.5),/vorerst nicht herstellbar/);
  for(const r of recipes)game=execute(game.state,r.action,r.payload||{},now,()=>.5);
  const owned=stockItems(game.view).filter(i=>i.amount>0);
- for(const id of ['order:private','order:customer','shard:uncommon','shard:rare'])assert.ok(owned.some(i=>i.id===id),id);
+ for(const id of ['order:private','shard:uncommon','shard:rare'])assert.ok(owned.some(i=>i.id===id),id);
  assert.equal(owned.find(i=>i.id==='order:private').recipe,'100 Abholhinweise → 1 Privatabholung');
- assert.equal(owned.find(i=>i.id==='order:customer').recipe,'10 Firmenausbau-Items → 1 Kundenauftrag');
+ assert.equal(game.state.inventory.companyItems,10);
+ assert.equal(stockItems(game.view).find(i=>i.id==='companyItems').craft,false);
 });
 
 test('Found jobs stack by kind and rank, queued projects appear, and running work leaves inventory',()=>{
