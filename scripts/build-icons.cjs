@@ -4,6 +4,10 @@
 const fs=require('node:fs'),path=require('node:path');
 const sharp=require(process.env.ICON_RENDERER_NODE_MODULES?path.join(process.env.ICON_RENDERER_NODE_MODULES,'sharp'):'sharp');
 const icons={
+ location:'<path d="M26 13c0 8-10 17-10 17S6 21 6 13a10 10 0 0 1 20 0z"/><circle cx="16" cy="13" r="3"/>',
+ pin:'<path d="m13 3 12 12-4 2-3 7-4-4-9 9 8-10-5-5 7-3z"/>',
+ pinFilled:'<path fill="#000" d="m13 3 12 12-4 2-3 7-4-4-9 9 8-10-5-5 7-3z"/>',
+ direction:'<path d="M3 16h25M20 8l8 8-8 8"/>',
  book:'<path d="M4 5h10a4 4 0 0 1 4 4v20a5 5 0 0 0-4-2H4zM18 9a4 4 0 0 1 4-4h7v22h-7a5 5 0 0 0-4 2M8 10h5M8 14h5M22 10h3M22 14h3M8 18h5"/>',
  home:'<path d="M3 14 16 4l13 10M6 12v16h20V12M13 28V18h6v10M3 29h26"/><path d="M9 15h2m10 0h2"/>',
  fleet:'<path d="M3 5h15v9H3zM18 8h6l4 4v2H18M8 18h13v9H8zM21 21h5l3 3v3h-8"/><circle cx="7" cy="15" r="2"/><circle cx="24" cy="15" r="2"/><circle cx="12" cy="28" r="2"/><circle cx="25" cy="28" r="2"/>',

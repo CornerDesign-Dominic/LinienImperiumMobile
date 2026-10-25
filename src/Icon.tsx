@@ -2,6 +2,10 @@ import React from 'react';
 import {Image,ImageStyle,StyleProp} from 'react-native';
 import {C} from './theme';
 const icons={
+ location:require('../assets/icons/location.png'),
+ pin:require('../assets/icons/pin.png'),
+ pinFilled:require('../assets/icons/pinFilled.png'),
+ direction:require('../assets/icons/direction.png'),
  book:require('../assets/icons/book.png'),
  arrow:require('../assets/icons/arrow.png'),
  back:require('../assets/icons/back.png'),

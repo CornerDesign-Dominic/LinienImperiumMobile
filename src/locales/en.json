@@ -1079,5 +1079,20 @@
   "Nach der Erkundung kannst du hier eine Bonuslieferung starten. Bei Abschluss erhältst du automatisch 1 Erweiterungspunkt für ein dauerhaft höheres Expeditions- oder Überstundenmaximum.": "After exploring, you can start a bonus delivery here. Completion automatically grants 1 expansion point for a permanently higher expedition or overtime maximum.",
   "{0} Erweiterungspunkte dauerhaft verteilt.": "{0} expansion points permanently allocated.",
   "Stammkunde freigeschaltet": "Regular customer unlocked",
-  "+{0} Kapazitätsmodul": "+{0} capacity module"
+  "+{0} Kapazitätsmodul": "+{0} capacity module",
+  "Nahverkehr": "Local transport",
+  "Nah- und Fernverkehr": "Regional and long-distance transport",
+  "Erweitert die Auftragslisten für Nahverkehr und Fernverkehr.": "Expands offer lists for regional and long-distance transport.",
+  "Für Aufträge im Nahverkehr.": "For regional contracts.",
+  "Nur für Aufträge im Nahverkehr.": "For regional contracts only.",
+  "Nahverkehr und Fernverkehr.": "Regional and long-distance transport.",
+  "Nah": "Local",
+  "Fern": "Long-distance",
+  "Stadt": "City",
+  "Single": "Single",
+  "Dual": "Dual",
+  "Angebot freigeben": "Release offer",
+  "Alle Halteplätze sind belegt.": "All hold slots are occupied.",
+  "Single Way, beladene Hinfahrt und leere Rückfahrt": "Single Way, loaded outbound and empty return trip",
+  "Dual Way, beladene Hin- und Rückfahrt": "Dual Way, loaded outbound and return trips"
 }

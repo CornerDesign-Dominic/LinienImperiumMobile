@@ -7,7 +7,7 @@ import {AppModal as Modal} from './AppModal';
 import {C,Txt,Card,Row,Btn,n} from './ui';
 const LABELS:Record<string,string>={premium:'Abschlussprämie',volume:'Auftragsmenge',range:'Reichweite'};
 const ICONS:Record<string,IconName>={premium:'reward',volume:'truck',range:'expedition'};
-const categoryName=(category:string)=>category==='national'?'Regionalverkehr':'Fernverkehr';
+const categoryName=(category:string)=>category==='national'?'Nahverkehr':'Fernverkehr';
 export type UpgradeDraft=Record<string,number>;
 export const upgradeKey=(o:any)=>`${o.category}:${o.kind}`;
 export function upgradeQuote(options:any[],draft:UpgradeDraft){

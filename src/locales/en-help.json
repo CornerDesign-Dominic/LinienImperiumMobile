@@ -44,7 +44,7 @@
   "fleet": [
     [
       "Garage",
-      "10 slots for card vehicles; each owned card may occupy one garage slot. It may also be used in fleets. City vehicles are managed at the city hub. Every expedition vehicle card can handle regional and long-distance contracts."
+      "10 slots for card vehicles; each owned card may occupy one garage slot. It may also be used in fleets. City vehicles are managed at the city hub. Every expedition vehicle card can handle local and long-distance contracts."
     ],
     [
       "Speed and upgrades",
@@ -90,7 +90,7 @@
     ],
     [
       "Sources",
-      "Normal regional and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Material expedition contracts have a 6% chance for 1/2/3 items according to rank, and a 0.3% chance for a capacity module. Hub cycles yield 8–12 pickup clues."
+      "Normal local and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Material expedition contracts have a 6% chance for 1/2/3 items according to rank, and a 0.3% chance for a capacity module. Hub cycles yield 8–12 pickup clues."
     ],
     [
       "Gear loot",
@@ -118,7 +118,7 @@
     ],
     [
       "Transport upgrades",
-      "Completion bonus: 1,000 levels, +1 percentage point each. New level N costs 1,000 × N coins and 1 + floor((N−1)/25) company upgrade items. Regional and long-distance transport are separate. Quantity and range each have 100 levels, preserving their previous final effects and full upgrade budgets. The bonus affects only the completion reward of that category, not freight revenue or loot."
+      "Completion bonus: 1,000 levels, +1 percentage point each. New level N costs 1,000 × N coins and 1 + floor((N−1)/25) company upgrade items. Local and long-distance transport are separate. Quantity and range each have 100 levels, preserving their previous final effects and full upgrade budgets. The bonus affects only the completion reward of that category, not freight revenue or loot."
     ]
   ],
   "personnel": [
