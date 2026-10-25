@@ -1,5 +1,6 @@
 import React,{useState} from 'react';
-import {View,Modal,ScrollView,StyleSheet,TextInput} from 'react-native';
+import {View,ScrollView,StyleSheet,TextInput} from 'react-native';
+import {AppModal as Modal} from './AppModal';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {t as translate} from './i18n';
 import {C,Txt,Card,Row,Btn,Empty,n,remaining} from './ui';

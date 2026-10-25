@@ -1,6 +1,7 @@
 import {ItemArt,ItemAmount} from './ItemArt';
 import React,{useState} from 'react';
-import {Image,ImageSourcePropType,Modal,Pressable,ScrollView,StyleSheet,View} from 'react-native';
+import {Image,ImageSourcePropType,Pressable,ScrollView,StyleSheet,View} from 'react-native';
+import {AppModal as Modal} from './AppModal';
 import {Text} from './Language';
 import {t} from './i18n';
 import {Icon,IconName} from './Icon';

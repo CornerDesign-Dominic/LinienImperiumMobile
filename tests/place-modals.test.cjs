@@ -20,12 +20,12 @@ test('Reachable exploration spends a single point, blocks inaccessible places an
  game.view.state.expedition.points=0;r=render(game.view,0);assert.equal(r.buttons.find(b=>b.props.children==='Erkunden · 1 Punkt').props.disabled,true);
  r=render(explored(6).view,6);assert.equal(nodes(r.tree,'PlaceRewards').length,0,'Mobile grants the module on final collection, not discovery');
 });
-test('Bonus delivery keeps stable vehicle and claim commands through available, running, ready and collected states',()=>{
+test('Bonus delivery starts normally and reports automatic expansion rewards after completion',()=>{
  let game=explored();let r=render(game.view,0);click(r,'Bonus liefern');assert.deepEqual(r.missions,[[0,'delivery',0]]);
- assert.equal(nodes(r.tree,'PlaceRewards')[0].props.items[0].label,'Expeditionskapazität');
+ assert.equal(nodes(r.tree,'PlaceRewards')[0].props.items[0].label,'Erweiterungspunkt');
  game=execute(game.state,'mission',{region:0,kind:'delivery',place:0,truck:game.view.state.trucks[0].id},now,random);
  r=render(game.view,0,{clock:now+7500});assert.equal(r.buttons.length,0);assert.equal(nodes(r.tree,'Bar')[0].props.value,50);
- game=execute(game.state,'sync',{},now+15001,random);const id=game.state.expedition.missions[0].id;r=render(game.view,0);click(r,'Bonus abholen');assert.deepEqual(r.commands,[['claimMission',{id}]]);
+ game=execute(game.state,'sync',{},now+15001,random);const id=game.state.expedition.missions[0].id;r=render(game.view,0);assert.equal(r.buttons.length,0);assert.equal(game.view.expansion.available,1);
  game=execute(game.state,'claimMission',{id},now+15002,random);r=render(game.view,0);assert.equal(nodes(r.tree,'PlaceRewards')[0].props.received,true);assert.equal(r.buttons.length,0);assert.equal(game.state.expedition.regions[0].deliveries[0],true);
 });
 test('Final location retains discovery draws before customer completion and never promises a second module',()=>{
@@ -36,7 +36,7 @@ test('Final location retains discovery draws before customer completion and neve
   const pending=nodes(r.tree,'PlaceRewards')[0].props.items;assert.equal(pending.some(item=>item.icon==='module'),!alreadyAwarded);
   game=execute(game.state,'mission',{region:0,kind:'final',place:0,truck:game.view.state.trucks[0].id},now,random);
   r=render(game.view,'endless',{clock:now+7500});assert.ok(r.buttons.some(b=>/^Expedition ·/.test(b.props.children)),'Repeat expeditions remain available during first delivery');
-  game=execute(game.state,'sync',{},now+15001,random);const id=game.state.expedition.missions[0].id;r=render(game.view,'endless');click(r,'Kunde freischalten');assert.deepEqual(r.commands,[['claimMission',{id}]]);
+  game=execute(game.state,'sync',{},now+15001,random);const id=game.state.expedition.missions[0].id;r=render(game.view,'endless');assert.ok(!r.buttons.some(b=>b.props.children==='Kunde freischalten'));assert.equal(game.state.expedition.regions[0].customerUnlocked,true);
   game=execute(game.state,'claimMission',{id},now+15002,random);assert.equal(game.state.inventory.capacityModules,alreadyAwarded?2:3);r=render(game.view,'endless');assert.equal(nodes(r.tree,'PlaceRewards')[0].props.received,true);assert.ok(!r.buttons.some(b=>b.props.children==='Kunde freischalten'));click(r,'Fundchancen');assert.equal(r.chances.length,1);
  }
  const game=explored(7);game.view.state.expedition.points=0;const r=render(game.view,'endless',{busy:true});assert.ok(r.buttons.filter(b=>b.props.children!=='Fundchancen').every(b=>b.props.disabled));
@@ -52,7 +52,7 @@ test('Every agreed place has a unique bundled close-up and invalid indices have 
 test('Modal images override Android intrinsic image sizes and the X remains outside scrolling content',()=>{
  function modal(width){return compile('ExpeditionPlaceModal.tsx',id=>{
   if(id==='react')return {...React,useState:()=>[width,()=>{}]};if(id==='react-native')return {View:'View',Image:'Image',Modal:'Modal',Pressable:'Pressable',ScrollView:'ScrollView',StyleSheet:{create:x=>x}};
-  if(id==='./ItemArt')return {ItemArt:'ItemArt',ItemAmount:'ItemAmount'};if(id==='./Language')return {Text:'Text'};if(id==='./i18n')return {t:x=>x};if(id==='./Icon')return {Icon:'Icon'};if(id==='./theme')return {C:ui.C,displayFont:'serif'};throw Error(id);
+  if(id==='./AppModal')return {AppModal:'Modal'};if(id==='./ItemArt')return {ItemArt:'ItemArt',ItemAmount:'ItemAmount'};if(id==='./Language')return {Text:'Text'};if(id==='./i18n')return {t:x=>x};if(id==='./Icon')return {Icon:'Icon'};if(id==='./theme')return {C:ui.C,displayFont:'serif'};throw Error(id);
  });}
  for(const width of [286,326,356,396,458]){const {PlacePortrait}=modal(width),tree=PlacePortrait({source:{uri:'test',width:1536,height:1024}}),image=nodes(tree,'Image')[0];const frame={width:1536,height:1024,...image.props.style};assert.equal(frame.width,width);assert.ok(frame.height>=140&&frame.height<280);}
  const {ExpeditionPlaceModal,PlacePortrait}=modal(0);assert.equal(nodes(PlacePortrait({source:{uri:'test'}}),'Image').length,0);assert.equal(ExpeditionPlaceModal({visible:false,title:'Hidden',onClose:()=>{},children:null}),null);

@@ -9,6 +9,7 @@ const {eventViews, changeEvent, assignEventFleet, EVENT_PROJECT_DISTANCE_KM, tou
 const procurementRuntime = fs.readFileSync(path.join(__dirname, 'procurement-runtime.js'), 'utf8');
 const transportCards = require('./transport-cards.json');
 const companyTransportRuntime = fs.readFileSync(path.join(__dirname, 'company-transport-runtime.js'), 'utf8');
+const expeditionCompletionRuntime = fs.readFileSync(path.join(__dirname, 'expedition-completion-runtime.js'), 'utf8');
 const transportRuntime = fs.readFileSync(path.join(__dirname, 'transport-runtime.js'), 'utf8');
 const giftsRuntime = fs.readFileSync(path.join(__dirname, 'gifts-runtime.js'), 'utf8');
 const tourRuntime = fs.readFileSync(path.join(__dirname, 'tour-runtime.js'), 'utf8');
@@ -169,6 +170,7 @@ const bridge = `
   ${procurementRuntime}
   ${hubVehiclesRuntime}
   ${transportRuntime}
+  ${expeditionCompletionRuntime}
   globalThis.mobile = {
     settleEventTours, refreshTourStarts, queueSingleVehicle, settleProcurementTimeline, startProcurement, startProcurementGroup, stopProcurement, stopProcurementGroup, claimProcurement,
     eventFleetOptions(distance = 240) {
@@ -179,7 +181,7 @@ const bridge = `
       }))||null}));
     },
     get state() { return game; }, set state(value) { game = value; },
-    migrateCompanyTransport, migrateTransportCards, capturePointClocks, reconcilePointClocks,
+    expansionState, acknowledgeExpeditionCompletions, allocateExpansionPoints, migrateCompanyTransport, migrateTransportCards, capturePointClocks, reconcilePointClocks,
     migrateHubVehicles, buyHubVehicle, upgradeHubVehicle, openHubCrate,
     migrateLinearProgression, newGame, save, loadGame, shortenTestMissions, normalizeQueuedReferrals, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
     autoRefreshOrders, regenerateExpedition, regenerateOvertime,
@@ -414,6 +416,7 @@ const bridge = `
       }));
       return {state: {...game,trucks,orders,overtimeCapacity:overtimeCapacity()}, serverTime:now, catalog, cardVehicles, jobChoices, procurement:procurementView(now),
         level:levelForXp(game.xp,game), expeditionCapacity:expeditionCapacity(),
+        expansion:{...expansionState(),expeditionMaximum:expeditionCapacity(),overtimeMaximum:overtimeCapacity()},
         development:{points:(game.pendingLevelUps?.length||0)*3,
           expedition:{base:50+(game.expedition.levelCapacityBonus||0),bonus:expeditionCapacity()-50-(game.expedition.levelCapacityBonus||0)},
           overtime:{base:game.overtimeCapacity??100,bonus:overtimeCapacity()-(game.overtimeCapacity??100)}},
@@ -477,7 +480,7 @@ function session(state, now=Date.now(), random=Math.random) {
   compiled.runInContext(context,{timeout:2000});
   const api=context.mobile;
   if(state) api.state=JSON.parse(JSON.stringify(state));
-  api.migrateCompanyTransport();api.migrateLinearProgression();api.migrateHubVehicles();api.migrateTransportCards();
+  api.expansionState();api.migrateCompanyTransport();api.migrateLinearProgression();api.migrateHubVehicles();api.migrateTransportCards();
   if(!Number.isSafeInteger(api.state.inventory.expeditionRefills)||api.state.inventory.expeditionRefills<0)api.state.inventory.expeditionRefills=0;
   prepareEvent(api.state);
   api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleProcurementTimeline(now);
@@ -540,6 +543,8 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     discover:()=>a.discoverExpeditionPlace(num(p.region,4)),draw:()=>a.drawExpeditionJob(num(p.region,4)),
     mission:()=>a.startExpeditionMission(num(p.region,4),choice(p.kind,['delivery','final','endless']),id(p.truck),num(p.place)),
     claimMission:()=>a.claimExpeditionMission(num(p.id)),
+    expeditionNoticeAck:()=>a.acknowledgeExpeditionCompletions(num(p.through,Number.MAX_SAFE_INTEGER)),
+    expansionAllocate:()=>a.allocateExpansionPoints(num(p.expedition,1000000),num(p.overtime,1000000),num(p.points,1000000)),
     hubVehicleBuy:()=>a.buyHubVehicle(),hubVehicleUpgrade:()=>a.upgradeHubVehicle(id(p.id),choice(p.kind,['capacity','speed'])),hubCrate:()=>a.openHubCrate(),
     buyHub:()=>a.buyHub(),hubTruck:()=>a.toggleHubTruck(id(p.id)),hubCollect:()=>a.collectHub(),hubUpgrade:()=>a.startHubUpgrade(),
     pickupCraft:()=>a.combinePickupHints(),customerCraft:()=>a.craftCustomerOrder(),
@@ -591,6 +596,8 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(normalizeNames);
   for(const key of Object.keys(view.help)){const help=view.help[key];help[1]=help[1].map(([title,body])=>[normalizeNames(title),normalizeNames(body)]);}
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>title==='Fundchancen je Auslosung'?[title,'<p>Je Gebiet gibt es fünf Fahrzeugkarten. Insgesamt 10 % Kartenchance pro Expedition. Die Fahrzeugchancen und Auftragschancen stehen am Endlosort unter ?. Geschenke im Großhändler enthalten denselben Fahrzeugpool und geben garantiert eine Karte. Doppelte Karten geben 1 Shard derselben Seltenheit.</p>']:[title,body]);
+  view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>[title,title==='Missionen'?'Jeder der sieben Orte hat eine einmalige Bonuslieferung. Ihr Abschluss gibt automatisch 1 Erweiterungspunkt. Die erste Endlosort-Lieferung schaltet den regionalen Stammkunden frei und gibt 1 Kapazitätsmodul, sofern noch nicht erhalten. Fahrzeuge kommen aus der Garage.':body]);
+  view.help.expeditions[1].push(['Automatische Abschlüsse','Abgeschlossene Expeditionslieferungen und Expeditionsaufträge werden automatisch gutgeschrieben. Ortslieferungen geben 1 Erweiterungspunkt statt einer festen Erhöhung des Expeditionsmaximums. Jeder Punkt erhöht wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1. Bestätigte Verteilungen sind nicht rückgängig zu machen. Unvergebene Punkte bleiben unter Firma verfügbar. Die Abschlussübersicht kann geschlossen werden; sie ist keine Abholung.']);
   view.help.dashboard[1]=view.help.dashboard[1].map(([title,body])=>[title,title==='Spielerlevel'?'<p>Transportierte Tonnen geben XP: gelieferte Tonnen × bezahlte Richtungen × (1 + aktive Karten-XP-Boni / 100). Bei Dual Way zählen beide Richtungen. Jeder nächste Aufstieg benötigt 100 × aktuelles Level XP. Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 dauerhaft verteilbare Punkte. Ab Level 5 wird alle fünf Level ein weiterer Stadthub-Fahrzeugplatz freigeschaltet, maximal 20 bei Level 100.</p>':body]);
   view.help.company[1]=view.help.company[1].map(([title,body])=>title==='Transportsegmente'?[title,'Prämie: 1.000 Stufen, je +1 Prozentpunkt. Neue Stufe N kostet 1.000 × N M und 1 + abrunden((N−1)/25) Firmenausbau-Items. Regional- und Fernverkehr getrennt. Menge und Reichweite: je 100 Stufen; bisherige Endwerte und Gesamtkosten bleiben erhalten. Prämien wirken auf die Abschlussprämie der jeweiligen Kategorie, nicht auf Frachtvergütung oder Beute.']: [title,body]);
   view.help.development[1]=view.help.development[1].map(([title,body])=>title==='Herstellung'?[title,'100 Abholhinweise ergeben eine Privatabholung. Rahmensplitter lassen sich zur nächsthöheren Seltenheit kombinieren. Firmenausbau-Items werden vorerst nicht zur Herstellung verwendet.']:[title,body]);
@@ -612,6 +619,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   if(action==='claimSingles'&&ok!==false)view.claimSummary=ok;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;
   if(action==='customerBatch')view.customerBatchApplied=ok===true;
+  if(action==='expansionAllocate')view.expansionAllocationApplied=ok===true;
   if(action==='draw'&&ok!==false){
     const order=view.state.orders.find(o=>!oldOrders.has(o.id));
     const job=view.state.expedition.jobs.find(j=>!oldJobs.has(j.id));
