@@ -461,7 +461,7 @@ const bridge = `
         discoveryCosts:game.expedition.regions.map((r,i)=>expeditionDiscoveryCost(i,r.discovered)),
         customers:CUSTOMERS.filter(c=>customerUnlocked(c.id)).map(c=>({...c,level:customerLevel(game.customerTrust[c.id]||0),next:customerNext(game.customerTrust[c.id]||0),points:availableCustomerSkillPoints(c.id),skills:customerSkillLevels(c.id)})),
         refreshCost:manualRefreshCost(), offers:offerLimit(), pinLimit:pinLimit(), hubLimit:hubCapacity(),
-        hubInfo:{vehiclePrice:HUB_VEHICLE_PRICE,vehicleMax:HUB_VEHICLE_MAX,crates:hubCrateView(now),unlocked:hubUnlocked(),nextVehicleLevel:nextHubVehicleLevel(),hourlyCapacity:hubHourlyCapacity(), upgradeContacts:hubUpgradeContactCost((hub()?.salesLevel||0)+1),upgradeItems:COMPANY_BALANCE.upgradeItems((hub()?.salesLevel||0)+1),upgradeCoins:COMPANY_BALANCE.upgradeCoins((hub()?.salesLevel||0)+1)},
+        hubInfo:{cycle:hubCycleView(),vehiclePrice:HUB_VEHICLE_PRICE,vehicleMax:HUB_VEHICLE_MAX,crates:hubCrateView(now),unlocked:hubUnlocked(),nextVehicleLevel:nextHubVehicleLevel(),hourlyCapacity:hubHourlyCapacity(), upgradeContacts:hubUpgradeContactCost((hub()?.salesLevel||0)+1),upgradeItems:COMPANY_BALANCE.upgradeItems((hub()?.salesLevel||0)+1),upgradeCoins:COMPANY_BALANCE.upgradeCoins((hub()?.salesLevel||0)+1)},
         companyCosts:{offers:{coins:offerUpgradeCost(),items:COMPANY_BALANCE.upgradeItems((game.company.offerLevel||0)+1)},workshop:{coins:workshopUpgradeCost(),items:COMPANY_BALANCE.upgradeItems((game.company.workshopLevel||0)+1)},sales:{coins:salesUpgradeCost(),items:COMPANY_BALANCE.upgradeItems((game.company.salesLevel||0)+1)},transport:Object.fromEntries(['national','international'].map(c=>[c,Object.fromEntries(['premium','volume','range'].map(k=>[k,transportUpgradeCost(c,k)]))]))},
         help:{procurement:procurementHelp,...Object.fromEntries(['dashboard','orders','special','fleet','dealer','hub','inventory','development','company','personnel','expeditions','statistics','customers'].map(k=>{const help=pageHelp(k);return [k,[help[0],help[1].filter(([heading])=>heading!=='Werte im Code ändern')]];}))},
         message:mobileToast
@@ -630,7 +630,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   if(['assign','assignPrivate','assignCrafted'].includes(action)&&view.state.orders.find(o=>o.id===p.order)?.status==='active')view.message='Auftrag gestartet.';
   if(action==='hubCrate'&&ok!==false)view.hubCrateParts=ok;
   if(action==='giftOpen'&&ok!==false)view.giftFind=ok;
-  if(action==='claimSingles'&&ok!==false)view.claimSummary=ok;
+  if(['claimSingles','hubCollect'].includes(action)&&ok!==false)view.claimSummary=ok;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;
   if(action==='customerBatch')view.customerBatchApplied=ok===true;
   if(action==='expansionAllocate')view.expansionAllocationApplied=ok===true;

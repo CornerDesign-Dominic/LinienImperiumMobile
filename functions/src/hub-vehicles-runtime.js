@@ -82,9 +82,15 @@ const originalCollectHub=collectHub;
 collectHub=()=>{
  const h=hub();if(!h)return false;
  settleHub(Date.now());const parts=h.cashboxParts||0;
+ const summary={source:'Stadthub',coins:h.cashboxCoins||0,pickupHints:h.cashboxHints||0,hubVehicleParts:parts,gears:{},capacityModules:0,companyItems:0,supplierContacts:0};
  originalCollectHub();game.inventory.hubVehicleParts+=parts;h.cashboxParts=0;
- return true;
+ return summary;
 };
+function hubCycleView(){
+ const h=hub();
+ return {durationMs:HUB_CYCLE_MS,workMs:HUB_WORK_SECONDS*1000,cashboxMax:HUB_CASHBOX_CYCLES,
+  quantity:h?round2((h.cycleCapacity??hubHourlyCapacity())*hubSalesPercent(h.cycleSalesLevel??h.salesLevel)/100):0};
+}
 function hubCrateView(now) {
  const c=game.hubCrates,opened=c.day===hubPartDay(now)?c.opened:0;
  const cooldown=c.lastOpenedAt==null?now:c.lastOpenedAt+30*60*1000;
