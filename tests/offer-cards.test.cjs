@@ -20,6 +20,10 @@ test('List holding is a separate action, respects authoritative slots, and alway
  pin.props.onPress({stopPropagation(){}});assert.deepEqual(pinned,[first.id]);
  pin=nodes(render(held),'Pressable').find(b=>b.props.testID===`order-pin-${first.id}`);assert.equal(pin.props.disabled,false);assert.equal(pin.props['aria-pressed'],true);
  game=execute(game.state,'pin',{id:first.id},now,random);assert.equal(game.view.state.orders.find(o=>o.id===first.id).pinned,false);
+ const busyTree=h.render('OrderTile',{order:held,data:game.view,clock:now,busy:true,onOpen:id=>opened.push(id),onPin:id=>pinned.push(id)});
+ const busyPin=nodes(busyTree,'Pressable').find(b=>b.props.testID===`order-pin-${first.id}`);assert.equal(busyPin.props.disabled,true);
+ busyPin.props.onPress({stopPropagation(){}});assert.deepEqual(pinned,[first.id],'busy hold action must not submit');
+ const filled=nodes(render(held),'Icon').find(i=>i.props.name==='pinFilled');assert.equal(filled.props.color,require('../src/palette.json').gold);
  const queued={...first,status:'queued'};assert.equal(nodes(render(queued),'Pressable').length,1,'stored orders have no hold action');
 });
 
