@@ -62,12 +62,11 @@ export function HubScreen({data,busy,clock,onCommand,onSell,modalBlocked=false}:
  </>;
 }
 export function HubParts({data,busy,clock,onCommand,modalBlocked=false}:any){
- const [found,setFound]=useState<number|null>(null),[help,setHelp]=useState(false),c=data.hubInfo.crates;
+ const [found,setFound]=useState<number|null>(null),c=data.hubInfo.crates;
  return <Card>
-  <Row style={{flexWrap:'nowrap'}}><Icon name="reward" color={C.gold} size={24}/><View style={{flex:1}}><Txt style={s.title}>Fundkisten</Txt><Txt muted style={s.caption}>Noch {Math.max(0,c.max-c.opened)} heute</Txt></View><Btn icon="help" iconOnly secondary onPress={()=>setHelp(true)}>Über Fundkisten</Btn></Row>
+  <Row style={{flexWrap:'nowrap'}}><Icon name="reward" color={C.gold} size={24}/><View style={{flex:1}}><Txt style={s.title}>Fundkisten</Txt><Txt muted style={s.caption}>Noch {Math.max(0,c.max-c.opened)} heute</Txt></View></Row>
   {!c.available&&<Txt muted style={s.caption}>{c.opened>=c.max?'Neue Fundkisten in':'Nächste Kiste in'} {remaining(c.nextAt,clock)}</Txt>}
   <Btn disabled={busy||!c.available} onPress={async()=>{const next=await onCommand('hubCrate');if(next?.hubCrateParts)setFound(next.hubCrateParts);}}>Fundkiste öffnen</Btn>
-  <ExpeditionPlaceModal visible={help&&!modalBlocked} title={t('Fundkisten')} onClose={()=>setHelp(false)}><Txt>3 Fundkisten täglich. Zwischen zwei Kisten liegen 30 Minuten. Jede Kiste enthält 10–20 Werkzeugkästen.</Txt><Txt muted style={s.note}>Neue Fundkisten gibt es täglich um 00:00 UTC. Eine laufende Wartezeit bleibt bestehen.</Txt></ExpeditionPlaceModal>
   <ExpeditionPlaceModal visible={found!==null&&!modalBlocked} title={t('Fundkiste geöffnet')} onClose={()=>setFound(null)}><View style={{alignItems:'center',padding:12}}><ItemArt id="hubVehicleParts" size={120}/><Txt style={{fontSize:24,fontWeight:'700',marginTop:8}}>+{found}</Txt><Txt>{itemName('hubVehicleParts',2)}</Txt></View><Btn onPress={()=>setFound(null)}>Weiter</Btn></ExpeditionPlaceModal>
  </Card>;
 }
