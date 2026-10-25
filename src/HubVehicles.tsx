@@ -1,5 +1,6 @@
 import {ItemArt,ItemAmount} from './ItemArt';
 import {HubVehicleDetail} from './HubVehicleDetail';
+import {HubEarnings} from './HubEarnings';
 import React,{useRef,useState} from 'react';
 import {View,Pressable,StyleSheet} from 'react-native';
 import {t} from './i18n';
@@ -27,17 +28,11 @@ export function HubScreen({data,busy,clock,onCommand,onSell,modalBlocked=false}:
  const failure=error?<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>:null;
  if(!h)return <Card><Txt muted>Stadttransporter verteilen jede Stunde selbstständig Waren. Erträge und Abholhinweise sammeln sich in der Kasse.</Txt>{!info.unlocked&&<Txt gold style={{marginTop:10}}>Stadthub ab Level 5 verfügbar.</Txt>}{failure}<Btn disabled={locked||!info.unlocked} onPress={()=>command('buyHub')}>Stadthub kostenlos eröffnen</Btn></Card>;
  const canUpgrade=h.salesLevel<25&&!h.construction&&g.coins>=info.upgradeCoins&&g.inventory.supplierContacts>=info.upgradeContacts&&g.inventory.companyItems>=info.upgradeItems;
- const cycles=Math.min(6,h.cashboxCycles),active=g.trucks.some((truck:any)=>!truck.cardId&&truck.tier<=1&&truck.hubAssigned);
  return <>
   <View accessibilityRole="tablist" accessibilityLabel={t('Stadthub')} style={s.tabs}>{[{id:'overview',label:'Übersicht'},{id:'vehicles',label:'Fahrzeuge'}].map(option=><Pressable key={option.id} accessibilityRole="tab" disabled={locked} accessibilityState={{selected:tab===option.id,disabled:locked}} aria-selected={tab===option.id} onPress={()=>setTab(option.id)} style={[s.tab,tab===option.id&&s.activeTab]}><Txt style={[s.tabLabel,tab===option.id&&{color:C.onInk}]}>{option.label}</Txt></Pressable>)}</View>
   {failure}
   {tab==='overview'?<>
-   <Card><Row><Txt style={s.title}>Erträge</Txt><Pill>{cycles} / 6 Stunden</Pill></Row>
-    <View style={s.metrics}><Metric icon="coin" label="Münzen" value={`${n(h.cashboxCoins,2)} M`}/><Metric icon="document" label="Abholhinweise" value={n(h.cashboxHints)}/><Metric icon="crafting" label="Werkzeugkästen" value={n(h.cashboxParts||0)}/></View>
-    <Bar value={cycles/6*100}/>
-    <Txt muted style={s.caption}>{cycles>=6?'Kasse voll · Erträge abholen':active?`${t('Nächster Einkauf')} ${remaining(h.nextCycleAt,clock)}`:'Keine Stadttransporter im Einsatz'}</Txt>
-    <Btn disabled={locked||!h.cashboxCoins&&!h.cashboxHints&&!h.cashboxParts} onPress={()=>command('hubCollect')}>Erträge abholen</Btn>
-   </Card>
+   <HubEarnings hub={h} cycle={info.cycle} clock={clock} busy={locked} onCollect={()=>command('hubCollect')}/>
    <HubParts data={data} busy={locked} clock={clock} onCommand={command} modalBlocked={modalBlocked}/>
    <Card><Row><Txt style={s.title}>Vertrieb</Txt><Pill>Stufe {h.salesLevel} / 25</Pill></Row>
     <Row style={{marginBottom:4}}><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{75+h.salesLevel} %</Txt></Row>

@@ -5,17 +5,17 @@ const now=Date.UTC(2026,9,24,12);
 function fixture(){let r=execute(null,'start',{id:'hamburg'},now,()=>0);r.state.xp=50*30*29;r.state.coins=1e6;r=execute(r.state,'buyHub',{},now,()=>0);r=execute(r.state,'hubVehicleBuy',{},now,()=>0);return r.view;}
 function setup(name,extra={}){
  const ui={C:require('../src/palette.json'),Txt:'Txt',Card:'Card',Row:'Row',Btn:'Btn',Pill:'Pill',Bar:'Bar',n:String,remaining:()=> '00:30:00'};
- const h=componentHarness('HubVehicles.tsx',{'./ui':ui,'./HubVehicleDetail':{HubVehicleDetail:'HubVehicleDetail'}}),calls=[],props={data:fixture(),busy:false,clock:now,onCommand:async(...args)=>{calls.push(args);return {};},onSell:()=>{},...extra};
+ const h=componentHarness('HubVehicles.tsx',{'./ui':ui,'./HubVehicleDetail':{HubVehicleDetail:'HubVehicleDetail'},'./HubEarnings':{HubEarnings:'HubEarnings'}}),calls=[],props={data:fixture(),busy:false,clock:now,onCommand:async(...args)=>{calls.push(args);return {};},onSell:()=>{},...extra};
  return {h,props,calls,render:()=>h.render(name,props)};
 }
 const button=(tree,label)=>{const b=nodes(tree,'Btn').find(b=>text(b)===label);assert.ok(b,label);return b;};
 const press=(tree,label)=>{const b=nodes(tree,'Pressable').find(b=>b.props.accessibilityLabel===label);assert.ok(b,label);b.props.onPress();};
 test('Hub actions reject rapid duplicate taps, recover from failure, and retain overview/vehicles selection',async()=>{
  let finish;const x=setup('HubScreen',{onCommand:()=>new Promise(resolve=>finish=resolve)});let tree=x.render();
- assert.ok(text(tree).includes('Erträge'));const open=button(tree,'Erträge abholen').props.onPress;
- const first=open();assert.equal(await open(),undefined);assert.equal(button(x.render(),'Erträge abholen').props.disabled,true);
+ assert.ok(nodes(tree,'HubEarnings').length);const open=nodes(tree,'HubEarnings')[0].props.onCollect;
+ const first=open();assert.equal(await open(),undefined);assert.equal(nodes(x.render(),'HubEarnings')[0].props.busy,true);
  finish(null);await first;assert.ok(text(x.render()).includes('Aktion fehlgeschlagen'));
- x.props.onCommand=async()=>({});await button(x.render(),'Erträge abholen').props.onPress();assert.ok(!text(x.render()).includes('Aktion fehlgeschlagen'));
+ x.props.onCommand=async()=>({});await nodes(x.render(),'HubEarnings')[0].props.onCollect();assert.ok(!text(x.render()).includes('Aktion fehlgeschlagen'));
  nodes(x.render(),'Pressable').find(p=>text(p)==='Fahrzeuge').props.onPress();assert.ok(!text(x.render()).includes('Erträge abholen'));assert.ok(nodes(x.render(),'Pressable').find(p=>p.props.accessibilityState?.selected&&text(p)==='Fahrzeuge'));
 });
 test('Hub vehicles use resource and slot gates, exact upgrade commands, and keep destructive actions collapsed',async()=>{

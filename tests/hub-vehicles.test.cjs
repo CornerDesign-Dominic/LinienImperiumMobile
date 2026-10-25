@@ -91,3 +91,21 @@ test('Legacy city vehicles migrate once without deleting vehicles, losing capaci
  assert.equal(migrated.model,'Stadttransporter');assert.equal(migrated.capacity,5);assert.equal(migrated.speed,1.25);assert.equal(migrated.hubSpeedLevel,10);assert.equal(r.state.inventory.capacityModules,beforeModules+7);
  const twice=run(r.state);assert.equal(twice.state.inventory.capacityModules,beforeModules+7);assert.deepEqual(twice.state.trucks,r.state.trucks);
 });
+test('Hub cycle view follows frozen hourly purchases and the actual 45-minute distribution window',()=>{
+ const {hubCycle}=require('../src/hubCycle');let r=hubbed();const h=r.state.hubs[0],cycle=r.view.hubInfo.cycle;
+ assert.equal(cycle.durationMs,H);assert.equal(cycle.workMs,45*60000);assert.equal(cycle.cashboxMax,6);
+ assert.equal(cycle.quantity,Math.round(h.cycleCapacity*(75+h.cycleSalesLevel))/100);
+ let view=hubCycle(h,cycle,now+20*60000);assert.equal(view.minutes,20);assert.equal(view.emptyAt,.75);assert.equal(view.idleMs,15*60000);assert.ok(Math.abs(view.remaining-25/45)<1e-9);
+ view=hubCycle(h,cycle,now+50*60000);assert.equal(view.remaining,0);assert.equal(view.waiting,true);
+ assert.equal(hubCycle({...h,cashboxCycles:6},cycle,now).emptyAt,null);
+ assert.equal(hubCycle(h,{...cycle,quantity:0},now).emptyAt,null);
+ r.state.trucks.find(t=>!t.cardId).capacity=20;
+ assert.equal(run(r.state).view.hubInfo.cycle.quantity,cycle.quantity);
+});
+test('Hub collection reports all credited rewards exactly once without changing the payout',()=>{
+ let r=hubbed();r=run(r.state,'sync',{},now+H);const before=r.state,expected={coins:before.hubs[0].cashboxCoins,hints:before.hubs[0].cashboxHints,parts:before.hubs[0].cashboxParts};
+ const coins=before.coins,hints=before.inventory.pickupHints,parts=before.inventory.hubVehicleParts;
+ r=run(before,'hubCollect',{},now+H);assert.equal(r.view.claimSummary.source,'Stadthub');assert.equal(r.view.claimSummary.coins,expected.coins);assert.equal(r.view.claimSummary.pickupHints,expected.hints);assert.equal(r.view.claimSummary.hubVehicleParts,expected.parts);
+ assert.equal(r.state.coins-coins,expected.coins);assert.equal(r.state.inventory.pickupHints-hints,expected.hints);assert.equal(r.state.inventory.hubVehicleParts-parts,expected.parts);
+ r=run(r.state,'hubCollect',{},now+H);assert.equal(r.view.claimSummary.coins,0);assert.equal(r.view.claimSummary.pickupHints,0);assert.equal(r.view.claimSummary.hubVehicleParts,0);
+});
