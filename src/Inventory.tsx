@@ -1,41 +1,50 @@
-import {ItemArt,ItemAmount} from './ItemArt';
+import {ItemArt} from './ItemArt';
 import {Text} from './Language';
 import {t as translate} from './i18n';
-import React,{useState} from 'react';
-import {View,Pressable,ScrollView,StyleSheet} from 'react-native';
+import React,{useRef,useState} from 'react';
+import {View,Pressable,ScrollView,StyleSheet,useWindowDimensions} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {C,Txt,Row,Btn,Pill,Empty,n} from './ui';
-
+import {C,Txt,Btn,Empty,n} from './ui';
 import {stockItems} from './items';
-export function Inventory({data,busy,onNavigate,onUseRefill,modalBlocked=false}:any){
- const [selected,setSelected]=useState<string|null>(null);
- const {state:g,catalog:c}=data;
- const items=stockItems(data);
+
+export function Inventory({data,busy,onUseRefill,modalBlocked=false}:any){
+ const [selected,setSelected]=useState<string|null>(null),[pending,setPending]=useState(false),[failed,setFailed]=useState(false);
+ const inFlight=useRef(false),{width}=useWindowDimensions(),[gridWidth,setGridWidth]=useState(width-18);
+ const {catalog:c}=data,items=stockItems(data);
  const owned=items.filter(item=>item.amount>0),item=items.find(item=>item.id===selected);
- const rows=Array.from({length:Math.ceil(owned.length/3)},(_,i)=>owned.slice(i*3,i*3+3));
- const navigate=(screen:string)=>{setSelected(null);onNavigate(screen);};
+ const rows=Array.from({length:Math.ceil(owned.length/4)},(_,i)=>owned.slice(i*4,i*4+4));
+ const artSize=Math.max(1,(gridWidth-24)/4),locked=busy||pending;
+ const close=()=>{if(!inFlight.current)setSelected(null);};
+ const useRefill=async()=>{
+  if(!item?.refill||item.amount<1||locked||inFlight.current)return;
+  inFlight.current=true;setPending(true);setFailed(false);
+  try{const result=await onUseRefill(item.refill);if(result===null||result===false)setFailed(true);}
+  catch{setFailed(true);}finally{inFlight.current=false;setPending(false);}
+ };
  return <>
-  {!owned.length&&<Empty>Noch keine Vorräte.</Empty>}
-  {rows.map((row,i)=><View key={i} style={styles.row}>{row.map(stock=><Pressable key={stock.id} accessibilityRole="button" accessibilityLabel={translate(`${stock.name}, ${n(stock.amount)} vorhanden`)} onPress={()=>setSelected(stock.id)} style={({pressed})=>[styles.card,{borderColor:stock.color||C.line},pressed&&{opacity:.7}]}>
-   <View style={styles.artwork} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><ItemArt id={stock.id} kind={stock.kind} rarity={stock.rarity} size={96} style={{width:'100%',height:'100%'}}/></View>
-   <Text numberOfLines={3} style={styles.name}>{stock.name.replace(/Expeditionsauffüller/g,'Expeditions\u00adauffüller').replace(/Überstundenauffüller/g,'Überstunden\u00adauffüller').replace(/Kapazitätsmodul/g,'Kapazitäts\u00admodul').replace(/Firmenausbau/g,'Firmen\u00adausbau').replace(/Abholhinweis/g,'Abhol\u00adhinweis').replace(/Lieferantenkontakt/g,'Lieferanten\u00adkontakt').replace(/Fahrzeugkartenauftrag/g,'Fahrzeug\u00adkarten\u00adauftrag').replace(/Empfehlungsauftrag/g,'Empfehlungs\u00adauftrag').replace(/Sonderauftrag/g,'Sonder\u00adauftrag')}</Text><Txt style={styles.amount}>{n(stock.amount)}</Txt>
-  </Pressable>)}{Array.from({length:3-row.length},(_,i)=><View key={`empty-${i}`} style={{flex:1}}/>)}</View>)}
-  <Modal visible={!!item&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setSelected(null)}>
-   <View style={styles.overlay}><SafeAreaView edges={['bottom']} style={styles.detail}>
-    <Row><Txt style={styles.title}>{item?.name}</Txt><Btn icon="close" iconOnly secondary onPress={()=>setSelected(null)}>Schließen</Btn></Row>
-    {item&&<ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:12}}>
-     <View style={{alignItems:'center',marginBottom:14}}><ItemArt id={item.id} kind={item.kind} rarity={item.rarity} size={152}/></View><Pill>{n(item.amount)} vorhanden</Pill>
-     <Txt style={{marginTop:16}}>{item.description}</Txt>
-     <Txt muted style={styles.label}>Herkunft</Txt><Txt muted>{item.source}</Txt>
-     {item.recipe&&<><Txt muted style={styles.label}>Herstellung</Txt><Txt>{item.recipe}</Txt></>}
-     {item.craft&&<Btn secondary disabled={busy} onPress={()=>navigate('crafting')}>{item.recipe?'Herstellen ›':'In Herstellung verwenden ›'}</Btn>}
-     {(item.id==='capacityModules'||item.id.startsWith('gear:'))&&<><Btn endIcon="chevron" disabled={busy} onPress={()=>navigate('cards')}>Zur Sammlung</Btn><Btn endIcon="chevron" secondary disabled={busy} onPress={()=>navigate('hub')}>Zum Stadthub</Btn></>}
-     {item.use&&<Btn endIcon="chevron" disabled={busy||item.amount<1} onPress={()=>navigate(item.use!)}>Benutzen</Btn>}
-     {item.refill&&<Btn disabled={busy||item.amount<1} onPress={()=>onUseRefill(item.refill)}>Benutzen · +{c.refillPoints?.[item.refill]??50} {item.refill==='expedition'?'Expeditionspunkte':'Überstundenpunkte'}</Btn>}
+  <View onLayout={event=>setGridWidth(event.nativeEvent.layout.width)}>
+   {!owned.length&&<Empty>Noch keine Vorräte.</Empty>}
+   {rows.map((row,i)=><View key={i} style={styles.row}>{row.map(stock=><Pressable key={stock.id} accessibilityRole="button" accessibilityLabel={translate(`${stock.name}, ${n(stock.amount)} vorhanden`)} onPress={()=>{setFailed(false);setSelected(stock.id);}} style={({pressed})=>[styles.card,pressed&&{opacity:.7}]}>
+    <ItemArt id={stock.id} kind={stock.kind} rarity={stock.rarity} size={artSize}/>
+    <Text literal numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.55} style={[styles.amount,{fontSize:Math.max(8,Math.min(14,artSize/(n(stock.amount).length*.8)))}]}>{n(stock.amount)}</Text>
+   </Pressable>)}{Array.from({length:4-row.length},(_,i)=><View key={`empty-${i}`} style={styles.card}/>)}</View>)}
+  </View>
+  <Modal visible={!!item&&!modalBlocked} transparent animationType="none" onRequestClose={close}>
+   <SafeAreaView edges={['top','bottom']} style={styles.overlay}><View style={styles.detail} testID="inventory-item-detail">
+    <View style={styles.header}><Txt style={styles.title}>{item?.name}</Txt><Btn icon="close" iconOnly secondary disabled={pending} style={styles.close} onPress={close}>Schließen</Btn></View>
+    {item&&<ScrollView style={styles.scroll} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
+     <View style={styles.identity}><ItemArt id={item.id} kind={item.kind} rarity={item.rarity} size={88}/><Txt style={styles.stock}>{n(item.amount)} vorhanden</Txt></View>
+     <Txt muted style={styles.label}>Verwendung</Txt><Txt style={styles.copy}>{item.description}</Txt>
+     <Txt muted style={styles.label}>Herkunft</Txt><Txt muted style={styles.copy}>{item.source}</Txt>
+     {failed&&<Txt style={styles.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}
+     {item.refill&&<Btn disabled={locked||item.amount<1} onPress={useRefill}>{pending?'Wird verwendet …':`Benutzen · +${c.refillPoints?.[item.refill]??50} ${item.refill==='expedition'?'Expeditionspunkte':'Überstundenpunkte'}`}</Btn>}
     </ScrollView>}
-   </SafeAreaView></View>
+   </View></SafeAreaView>
   </Modal>
  </>;
 }
-const styles=StyleSheet.create({row:{flexDirection:'row',gap:9,marginBottom:10},card:{flex:1,minWidth:0,borderWidth:1,borderRadius:12,backgroundColor:C.panel,padding:7},artwork:{width:'100%',aspectRatio:1,backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:7,alignItems:'center',justifyContent:'center'},name:{color:C.muted,fontSize:10,lineHeight:15,textAlign:'center',minHeight:45,marginTop:7},amount:{fontSize:15,lineHeight:22,fontWeight:'700',textAlign:'center',marginTop:3},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'flex-end'},detail:{maxHeight:'85%',backgroundColor:C.panel,borderTopLeftRadius:20,borderTopRightRadius:20,padding:20},title:{fontSize:17,fontWeight:'700',flex:1},label:{fontSize:11,fontWeight:'700',marginTop:16,marginBottom:4}});
+const styles=StyleSheet.create({
+ row:{flexDirection:'row',gap:8,marginBottom:10},card:{flex:1,minWidth:0,alignItems:'center'},amount:{width:'100%',color:C.text,fontSize:14,lineHeight:21,fontWeight:'700',textAlign:'center',marginTop:4},
+ overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',paddingHorizontal:16,paddingVertical:16},detail:{width:'100%',maxWidth:440,maxHeight:'90%',backgroundColor:C.panel,borderRadius:12,borderWidth:1,borderColor:C.line,overflow:'hidden'},header:{flexDirection:'row',alignItems:'center',gap:10,padding:16,borderBottomWidth:1,borderBottomColor:C.line},title:{fontSize:18,lineHeight:25,fontWeight:'700',flex:1,minWidth:0},close:{flexShrink:0,marginTop:0},scroll:{flexShrink:1},content:{padding:16,paddingTop:12},identity:{alignItems:'center',gap:8,marginBottom:4},stock:{fontSize:15,lineHeight:22,fontWeight:'700'},label:{fontSize:11,fontWeight:'700',marginTop:14,marginBottom:4},copy:{fontSize:13,lineHeight:20},error:{color:C.red,fontSize:12,lineHeight:18,marginTop:12}
+});
