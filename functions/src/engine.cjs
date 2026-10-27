@@ -644,6 +644,12 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
       :job?{type:'job',id:job.id,region:job.region,title:itemNames[job.kind==='character'?'character':'material'][0],detail:'Stufe '+job.tier,itemId:'job:'+job.kind+':'+job.tier}
       :{type:'reward',itemId:card&&state?.expedition.characters[card.id]?'shard:'+card.rarity:undefined,cardId:card?.id,title:card?.name||view.message||'Fund erhalten',detail:card?(state?.expedition.characters[card.id]?'1 '+card.rarity[0].toUpperCase()+card.rarity.slice(1)+'-Shard':'Fahrzeugkarte'):''};
   }
+  // Single-order successes are already visible in the updated list; retain rejection feedback.
+  const singleAction=['assign','assignPrivate','assignCrafted','pin','refresh','singleVehicle','claimSingles'].includes(action)
+    ||(action==='claim'&&view.state.orders.some(o=>o.id===p.id&&!o.isProject))
+    ||(action==='mission'&&p.kind==='endless')
+    ||(action==='claimMission'&&view.state.expedition.missions.some(m=>m.id===p.id&&m.kind==='endless'));
+  view.silentSuccess=singleAction&&ok!==false&&(ok===true||JSON.stringify(a.state)!==before);
   if(!['sync','eventRanks'].includes(action)&&(ok===false||JSON.stringify(a.state)===before))view.message ||= 'Aktion nicht möglich: Voraussetzungen oder Vorräte prüfen.';
   return {state:JSON.parse(JSON.stringify(a.state)),view:JSON.parse(JSON.stringify(view))};
 }
