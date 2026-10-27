@@ -5,7 +5,7 @@ const now=Date.UTC(2026,9,24,12);
 function fixture(){let r=execute(null,'start',{id:'hamburg'},now,()=>0);r.state.xp=50*30*29;r.state.coins=1e6;r=execute(r.state,'buyHub',{},now,()=>0);r=execute(r.state,'hubVehicleBuy',{},now,()=>0);return r.view;}
 function setup(name,extra={}){
  const ui={C:require('../src/palette.json'),Txt:'Txt',Card:'Card',Row:'Row',Btn:'Btn',Pill:'Pill',Bar:'Bar',n:String,remaining:()=> '00:30:00'};
- const h=componentHarness('HubVehicles.tsx',{'./ui':ui,'./HubArt':{HubArt:'HubArt'},'./HubVehicleDetail':{HubVehicleDetail:'HubVehicleDetail'},'./HubEarnings':{HubEarnings:'HubEarnings'}}),calls=[],props={data:fixture(),busy:false,clock:now,onCommand:async(...args)=>{calls.push(args);return {};},onSell:()=>{},...extra};
+ const h=componentHarness('HubVehicles.tsx',{'./ui':ui,'./HubArt':{HubArt:'HubArt'},'./HubCrateCard':{HubCrateCard:'HubCrateCard'},'./HubVehicleDetail':{HubVehicleDetail:'HubVehicleDetail'},'./HubEarnings':{HubEarnings:'HubEarnings'}}),calls=[],props={data:fixture(),busy:false,clock:now,onCommand:async(...args)=>{calls.push(args);return {};},onSell:()=>{},...extra};
  return {h,props,calls,render:()=>h.render(name,props)};
 }
 const button=(tree,label)=>{const b=nodes(tree,'Btn').find(b=>text(b)===label);assert.ok(b,label);return b;};
@@ -39,6 +39,9 @@ test('Hub vehicle detail gates upgrades, rejects duplicate taps and returns to o
  press(render(),'Weitere Aktionen');assert.ok(nodes(render(),'Btn').some(b=>text(b).startsWith('Verkaufen')));
 });
 test('Hub crates respect cooldown, show received parts separately and return after closing',async()=>{
- const x=setup('HubParts');x.props.onCommand=async()=>({hubCrateParts:17});await button(x.render(),'Fundkiste öffnen').props.onPress();let tree=x.render();let reward=nodes(tree,'RewardModal').find(m=>m.props.title==='Fundkiste geöffnet');assert.equal(reward.props.visible,true);assert.ok(text(reward).includes('+17'));reward.props.onClose();assert.equal(nodes(x.render(),'RewardModal').find(m=>m.props.title==='Fundkiste geöffnet').props.visible,false);
- x.props.data.hubInfo.crates={opened:3,max:3,nextAt:now+1800000,available:false};tree=x.render();assert.equal(button(tree,'Fundkiste öffnen').props.disabled,true);assert.ok(text(tree).includes('Noch 0 heute'));assert.ok(text(tree).includes('Neue Fundkisten in'));
+ const x=setup('HubParts');let finish;x.props.onCommand=()=>new Promise(resolve=>finish=resolve);
+ const open=nodes(x.render(),'HubCrateCard')[0].props.onOpen,first=open();await open();assert.equal(nodes(x.render(),'HubCrateCard')[0].props.busy,true);
+ finish({hubCrateParts:17});await first;let tree=x.render();let reward=nodes(tree,'RewardModal').find(m=>m.props.title==='Fundkiste geöffnet');assert.equal(reward.props.visible,true);assert.ok(text(reward).includes('+17'));reward.props.onClose();assert.equal(nodes(x.render(),'RewardModal').find(m=>m.props.title==='Fundkiste geöffnet').props.visible,false);
+ const h=componentHarness('HubCrateCard.tsx',{'../assets/art/hub/crate-scene.jpg':{uri:'crate-scene'}});let card=h.render('HubCrateCard',{crates:{opened:1,max:3,nextAt:now+1458000,available:false},clock:now});assert.ok(text(card).includes('2 Stück'));assert.ok(text(card).includes('Öffnen in 24:18'));assert.equal(nodes(card,'Pressable')[0].props.disabled,true);
+ card=h.render('HubCrateCard',{crates:{opened:3,max:3,nextAt:now+1800000,available:false},clock:now});assert.ok(text(card).includes('0 Stück'));assert.ok(text(card).includes('Morgen wieder verfügbar'));
 });

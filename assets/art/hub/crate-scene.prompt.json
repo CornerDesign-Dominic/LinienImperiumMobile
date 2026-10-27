@@ -1,0 +1,7 @@
+{
+  "generator": "built-in image_gen",
+  "asset": "crate-scene.jpg",
+  "format": "960x480 JPEG, quality 85; opaque full scene",
+  "reference": "crates.png (closed shipping chest design)",
+  "prompt": "Use case: historical-scene. Final production illustration background for a compact 2:1 mobile-game clickable card, landscape wide canvas. Preserve the reference closed wooden shipping chest with dark leather straps, brass buckles, small blank cream tag. One such chest prominently on an old wooden counter inside a warm historical merchant distribution office, with two or three restrained cream shipping parcels behind it. Chest fully visible in a 2:1 crop. Painterly dimensional realism, neither cartoon nor photographic. Credible wood, leather and brass. Soft warm upper-left daylight, subtly darker background, quiet soft-focus shelves. Calm background along upper edge and lower 20 percent for technical UI overlays. No people, coins, modern objects, text, lettering, logo, frame, UI controls, glow or sparkles. Chest about half image width and middle 65 percent image height. Complete opaque scene."
+}

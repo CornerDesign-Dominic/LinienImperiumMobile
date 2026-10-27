@@ -1,4 +1,5 @@
 import {HubArt} from './HubArt';
+import {HubCrateCard} from './HubCrateCard';
 import {ItemArt,ItemAmount} from './ItemArt';
 import {HubVehicleDetail} from './HubVehicleDetail';
 import {HubEarnings} from './HubEarnings';
@@ -58,13 +59,17 @@ export function HubScreen({data,busy,clock,onCommand,onSell,modalBlocked=false}:
  </>;
 }
 export function HubParts({data,busy,clock,onCommand,modalBlocked=false}:any){
- const [found,setFound]=useState<number|null>(null),c=data.hubInfo.crates;
- return <Card>
-  <Row style={{flexWrap:'nowrap'}}><HubArt id="crates"/><View style={{flex:1}}><Txt style={s.title}>Fundkisten</Txt><Txt muted style={s.caption}>Noch {Math.max(0,c.max-c.opened)} heute</Txt></View></Row>
-  {!c.available&&<Txt muted style={s.caption}>{c.opened>=c.max?'Neue Fundkisten in':'Nächste Kiste in'} {remaining(c.nextAt,clock)}</Txt>}
-  <Btn disabled={busy||!c.available} onPress={async()=>{const next=await onCommand('hubCrate');if(next?.hubCrateParts)setFound(next.hubCrateParts);}}>Fundkiste öffnen</Btn>
+ const [found,setFound]=useState<number|null>(null),[opening,setOpening]=useState(false),inFlight=useRef(false),c=data.hubInfo.crates;
+ const open=async()=>{
+  if(busy||!c.available||inFlight.current)return;
+  inFlight.current=true;setOpening(true);
+  try{const next=await onCommand('hubCrate');if(next?.hubCrateParts)setFound(next.hubCrateParts);}
+  finally{inFlight.current=false;setOpening(false);}
+ };
+ return <>
+  <HubCrateCard crates={c} busy={busy||opening} opening={opening} clock={clock} onOpen={open}/>
   <ExpeditionPlaceModal visible={found!==null&&!modalBlocked} title={t('Fundkiste geöffnet')} onClose={()=>setFound(null)}><View style={{alignItems:'center',padding:12}}><ItemArt id="hubVehicleParts" size={120}/><Txt style={{fontSize:24,fontWeight:'700',marginTop:8}}>+{found}</Txt><Txt>{itemName('hubVehicleParts',2)}</Txt></View><Btn onPress={()=>setFound(null)}>Weiter</Btn></ExpeditionPlaceModal>
- </Card>;
+ </>;
 }
 export function HubVehicles({data,busy,onCommand,onSell,modalBlocked=false,error=false}:any){
  const [selected,setSelected]=useState<string|null>(null),[buyOpen,setBuyOpen]=useState(false);
