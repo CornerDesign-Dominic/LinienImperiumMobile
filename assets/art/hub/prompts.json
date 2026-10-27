@@ -1,0 +1,22 @@
+{
+  "generator": "built-in image_gen",
+  "format": "256x256 RGBA, alpha-trimmed and contained in 232px",
+  "illustrations": [
+    {
+      "id": "earnings",
+      "prompt": "Use case: stylized-concept. ONE final production miniature icon for historical merchant mobile game. Match reference cart painterly dimensional filled-color style, credible warm wood/leather/brass materials, neither cartoon nor photorealistic. Strong simple silhouette readable at 44px, restrained detail, three-quarter view, soft upper-left light, centered square canvas with 8% margin. No backdrop, no ground plane, no text, no lettering, no UI frame, no glow. Genuinely transparent background. Subject: an OPEN compact wooden merchant cashbox with dark leather reinforcement and brass hinges, lid raised behind it, a small handful of antique gold coins visible inside and two in front. Frontmost coin has simple winged sandal engraving and laurel edge matching coin reference. No jewels. Clear cashbox silhouette, not a treasure pile."
+    },
+    {
+      "id": "crates",
+      "prompt": "Use case: stylized-concept. ONE final production miniature icon for historical merchant mobile game. Match reference cart painterly dimensional filled-color style, credible warm wood/leather/brass materials, neither cartoon nor photorealistic. Strong simple silhouette readable at 44px, restrained detail, three-quarter view, soft upper-left light, centered square canvas with 8% margin. No backdrop, no ground plane, no text, no lettering, no UI frame, no glow. Genuinely transparent background. Subject: one CLOSED weathered wooden shipping chest with two broad dark leather straps, brass buckles and a small cream blank shipping tag tucked under a strap. Solid compact square chest silhouette. No coins, no tools protruding."
+    },
+    {
+      "id": "sales",
+      "prompt": "Use case: stylized-concept. ONE final production miniature icon for historical merchant mobile game. Match reference cart painterly dimensional filled-color style, credible warm wood/leather/brass materials, neither cartoon nor photorealistic. Strong simple silhouette readable at 44px, restrained detail, three-quarter view, soft upper-left light, centered square canvas with 8% margin. No backdrop, no ground plane, no text, no lettering, no UI frame, no glow. Genuinely transparent background. Subject: compact antique brass balance scale on dark wooden base, two broad simple bowls, two tied cream merchandise parcels beside its base and one short partly rolled parchment. Clear dominant scale silhouette; no people or writing."
+    },
+    {
+      "id": "vehicles",
+      "prompt": "Use case: stylized-concept. ONE final production miniature icon for historical merchant mobile game. Match reference cart painterly dimensional filled-color style, credible warm wood/leather/brass materials, neither cartoon nor photorealistic. Strong simple silhouette readable at 44px, restrained detail, three-quarter view, soft upper-left light, centered square canvas with 8% margin. No backdrop, no ground plane, no text, no lettering, no UI frame, no glow. Genuinely transparent background. Subject: one small sturdy historical wooden two-wheel delivery handcart, correctly built with two wheels on a single axle, short paired pulling shafts, open cargo bed carrying two tied cream parcels. No gears, no horse, no people. Entire cart visible."
+    }
+  ]
+}

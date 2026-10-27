@@ -5,7 +5,7 @@ const now=Date.UTC(2026,9,24,12);
 function fixture(){let r=execute(null,'start',{id:'hamburg'},now,()=>0);r.state.xp=50*30*29;r.state.coins=1e6;r=execute(r.state,'buyHub',{},now,()=>0);r=execute(r.state,'hubVehicleBuy',{},now,()=>0);return r.view;}
 function setup(name,extra={}){
  const ui={C:require('../src/palette.json'),Txt:'Txt',Card:'Card',Row:'Row',Btn:'Btn',Pill:'Pill',Bar:'Bar',n:String,remaining:()=> '00:30:00'};
- const h=componentHarness('HubVehicles.tsx',{'./ui':ui,'./HubVehicleDetail':{HubVehicleDetail:'HubVehicleDetail'},'./HubEarnings':{HubEarnings:'HubEarnings'}}),calls=[],props={data:fixture(),busy:false,clock:now,onCommand:async(...args)=>{calls.push(args);return {};},onSell:()=>{},...extra};
+ const h=componentHarness('HubVehicles.tsx',{'./ui':ui,'./HubArt':{HubArt:'HubArt'},'./HubVehicleDetail':{HubVehicleDetail:'HubVehicleDetail'},'./HubEarnings':{HubEarnings:'HubEarnings'}}),calls=[],props={data:fixture(),busy:false,clock:now,onCommand:async(...args)=>{calls.push(args);return {};},onSell:()=>{},...extra};
  return {h,props,calls,render:()=>h.render(name,props)};
 }
 const button=(tree,label)=>{const b=nodes(tree,'Btn').find(b=>text(b)===label);assert.ok(b,label);return b;};
