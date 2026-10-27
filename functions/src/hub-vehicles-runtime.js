@@ -76,20 +76,80 @@ function rollHubPart(h,at) {
  h.partsLastAttemptAt=at;h.partsAttempts++;
  if(Math.random()<.5)h.cashboxParts=(h.cashboxParts||0)+1;
 }
-const originalBeginHubCycle=beginHubCycle;
-beginHubCycle=h=>{originalBeginHubCycle(h);rollHubPart(h,h.nextCycleAt-HUB_CYCLE_MS);};
+// The 60-minute reference is continuous transport throughput, frozen at purchase.
+const hubWorkMs=level=>(40+20*clamp(level||0,0,25)/25)*60000;
+hubSalesPercent=level=>hubWorkMs(level)/HUB_CYCLE_MS*100;
+hubHourlyCapacity=()=>round2(hubTrucks().reduce((sum,t)=>sum+HUB_CYCLE_MS/1000/hubTripSeconds(t)*t.capacity,0));
+const legacyAccrueHubCycle=accrueHubCycle;
+beginHubCycle=h=>{
+ for(const t of hubTrucks())t.hubToursInCycle=0;
+ h.cycleVersion=2;h.cycleCapacity=hubHourlyCapacity();h.cycleSalesLevel=h.salesLevel;
+ h.cycleWorkMs=hubWorkMs(h.salesLevel);
+ h.cycleQuantity=round2(h.cycleCapacity*h.cycleWorkMs/HUB_CYCLE_MS);
+ h.cycleVehicles=hubTrucks().map(t=>({id:t.id,tripSeconds:hubTripSeconds(t)}));
+ h.cycleHintTotal=h.cycleQuantity>0?random(8,12):0;
+ h.cyclePaidCoins=0;h.cyclePaidHints=0;h.cyclePaidTons=0;
+ rollHubPart(h,h.nextCycleAt-HUB_CYCLE_MS);
+};
+accrueHubCycle=(h,at)=>{
+ if(h.cashboxCycles>=HUB_CASHBOX_CYCLES)return false;
+ // An already purchased legacy cycle retains its frozen quantity and duration.
+ if(h.cycleVersion!==2){
+  const sales=hubSalesPercent;hubSalesPercent=level=>75+(level||0);
+  try{return legacyAccrueHubCycle(h,at);}finally{hubSalesPercent=sales;}
+ }
+ const elapsed=clamp(at-(h.nextCycleAt-HUB_CYCLE_MS),0,h.cycleWorkMs);
+ const progress=elapsed/h.cycleWorkMs,quantity=h.cycleQuantity;
+ if(!(quantity>0))return false;
+ for(const snapshot of h.cycleVehicles||[]){
+  const t=truckById(snapshot.id);if(!t?.hubAssigned)continue;
+  const tours=Math.floor(elapsed/1000/snapshot.tripSeconds);
+  const additional=Math.max(0,tours-(t.hubToursInCycle||0));
+  t.hubToursInCycle=tours;t.kmDriven=(t.kmDriven||0)+additional*HUB_ROUTE_KM*2;
+  t.toursCompleted=(t.toursCompleted||0)+additional;
+ }
+ const coins=round2(quantity*(HUB_SALE_PER_TON-HUB_PURCHASE_PER_TON)*progress);
+ const hints=Math.floor(h.cycleHintTotal*progress),tons=round2(quantity*progress);
+ const dc=round2(coins-(h.cyclePaidCoins||0)),dh=hints-(h.cyclePaidHints||0),dt=round2(tons-(h.cyclePaidTons||0));
+ h.cyclePaidCoins=coins;h.cyclePaidHints=hints;h.cyclePaidTons=tons;
+ h.cashboxCoins=round2(h.cashboxCoins+dc);h.cashboxHints+=dh;h.totalTons=round2((h.totalTons||0)+dt);
+ return !!(dc||dh||dt);
+};
+settleHub=now=>{
+ const h=hub();if(!h)return false;
+ let changed=false;
+ if(h.cashboxCycles>=HUB_CASHBOX_CYCLES)return completeHubUpgrade(h,now);
+ while(h.nextCycleAt<=now){
+  changed=accrueHubCycle(h,h.nextCycleAt)||changed;
+  if((h.cycleCapacity??0)>0)h.cashboxCycles++;
+  if(h.cashboxCycles>=HUB_CASHBOX_CYCLES)return true;
+  h.nextCycleAt+=HUB_CYCLE_MS;
+  changed=completeHubUpgrade(h,h.nextCycleAt-HUB_CYCLE_MS)||changed;
+  beginHubCycle(h);changed=true;
+  if(!h.cycleQuantity){
+   h.nextCycleAt+=Math.max(0,Math.floor((now-h.nextCycleAt)/HUB_CYCLE_MS+1))*HUB_CYCLE_MS;
+   break;
+  }
+ }
+ changed=accrueHubCycle(h,now)||changed;
+ return completeHubUpgrade(h,now)||changed;
+};
 const originalCollectHub=collectHub;
 collectHub=()=>{
  const h=hub();if(!h)return false;
- settleHub(Date.now());const parts=h.cashboxParts||0;
+ const now=Date.now();settleHub(now);
+ const full=h.cashboxCycles>=HUB_CASHBOX_CYCLES,parts=h.cashboxParts||0;
  const summary={source:'Stadthub',coins:h.cashboxCoins||0,pickupHints:h.cashboxHints||0,hubVehicleParts:parts,gears:{},capacityModules:0,companyItems:0,supplierContacts:0};
  originalCollectHub();game.inventory.hubVehicleParts+=parts;h.cashboxParts=0;
+ if(full){h.cashboxCycles=0;h.nextCycleAt=now+HUB_CYCLE_MS;beginHubCycle(h);}
  return summary;
 };
 function hubCycleView(){
- const h=hub();
- return {durationMs:HUB_CYCLE_MS,workMs:HUB_WORK_SECONDS*1000,cashboxMax:HUB_CASHBOX_CYCLES,
-  quantity:h?round2((h.cycleCapacity??hubHourlyCapacity())*hubSalesPercent(h.cycleSalesLevel??h.salesLevel)/100):0};
+ const h=hub(),modern=h?.cycleVersion===2;
+ return {durationMs:HUB_CYCLE_MS,workMs:modern?h.cycleWorkMs:HUB_WORK_SECONDS*1000,cashboxMax:HUB_CASHBOX_CYCLES,
+  salesPercent:hubSalesPercent(h?.salesLevel||0),nextSalesPercent:hubSalesPercent(Math.min(25,(h?.salesLevel||0)+1)),
+  workMinutes:hubWorkMs(h?.salesLevel||0)/60000,
+  quantity:modern?h.cycleQuantity:h?round2((h.cycleCapacity??0)*(75+(h.cycleSalesLevel??h.salesLevel))/100):0};
 }
 function hubCrateView(now) {
  const c=game.hubCrates,opened=c.day===hubPartDay(now)?c.opened:0;

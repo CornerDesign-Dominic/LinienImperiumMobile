@@ -1,13 +1,21 @@
 # Stadthub-Erträge
 
-Die kompakte Ertragskarte zeigt ausschließlich Münzbild und Münzbetrag als gesammelte Beute. Die Kassenkapazität (abgeschlossene Stunden / 6 oder „Kasse voll“) ist von der aktuellen Einkaufsstunde getrennt. Der Sammelknopf holt weiterhin Münzen, Abholhinweise und Werkzeugkästen gemeinsam ab; eine serverseitige Zusammenfassung zeigt danach alle tatsächlich gutgeschriebenen Mengen im gemeinsamen Belohnungs-Zeilendialog.
+Die kompakte Ertragskarte zeigt Münzbild und Münzbetrag. Kassenfüllstand und Einkaufszyklus sind getrennt. Der Sammelknopf holt Münzen, Abholhinweise und Werkzeugkästen gemeinsam ab; der Belohnungsdialog zeigt die tatsächlich gutgeschriebenen Mengen als Zeilen.
 
-## Tatsächliche Zeitberechnung
+## Einkaufsleistung
 
-Der Hub besitzt keinen unabhängigen Warenlagerbestand. Die Serverlogik friert am Zyklusbeginn die mögliche Stundenkapazität und Vertriebsstufe ein. Die eingekaufte Menge beträgt diese Kapazität × (75 + eingefrorene Vertriebsstufe) %. Sie wird linear während `HUB_WORK_SECONDS` verteilt, derzeit 45 Minuten; der nächste Einkauf folgt nach `HUB_CYCLE_MS`, derzeit 60 Minuten. Der technische Warenfüllstand ist die verbleibende Fraktion dieser eingefrorenen Menge, kein neu eingeführtes Inventar.
+Die Stundenbasis ist die Summe `3600 / Tourdauer × Fahrzeugkapazität` aller eingesetzten Fahrzeuge. Eine Tour berücksichtigt beladene Hinfahrt und leere Rückfahrt. Die kontinuierliche Rechenleistung vermeidet Rundung auf ganze Touren; Kilometer und abgeschlossene Touren zählen weiterhin nur vollständig gefahrene Touren.
 
-Die Serveransicht liefert diese Konstanten und die eingefrorene Zyklusmenge. Die Anzeige verwendet 0 und 60 Minuten als Endpunkte, den aktuellen Minutenstand, einen mitlaufenden Punkt sowie den tatsächlichen Warenende-Marker bei Minute 45 und einen Einkaufskarren am Zyklusende. Der Leerlauf bis zum Einkauf ist dezent gestrichelt. Es gibt keine festen Viertelstundenmarkierungen. Die aktuelle Zeit steht separat über der Achse, damit Ereignis und aktuelle Zeit auch nahe beieinander lesbar bleiben.
+Vertrieb Stufe 0 kauft Ware für 40 Minuten dieser Leistung (66,67 %). Jede der 25 Stufen erhöht die Arbeitszeit um 48 Sekunden, bis Stufe 25 genau 60 Minuten bzw. 100 % erreicht. Eingekaufte Menge, Arbeitszeit und Fahrzeug-Tourdauern werden am Einkauf eingefroren. Ausbauten und neue Fahrzeuge wirken ab dem nächsten Einkauf. Es gibt keine Auslastung über 100 %.
 
-Bei voller Kasse pausiert die Anzeige, ohne Warenende vorauszusagen. Ohne eingekaufte Zyklusmenge erscheint keine erfundene Leerzeit. Fahrzeugänderungen/Ausbauten überschreiben den laufenden eingefrorenen Zyklus nicht. Keine Preise, Erträge oder Zeitschritte wurden geändert.
+Die Ware wird während der eingefrorenen Arbeitszeit verteilt; danach wird bis zum Ende der Stunde gewartet. Ein bestehender alter Zyklus behält seine zuvor eingekaufte Menge, 45-Minuten-Verteilung und bereits gutgeschriebenen Beträge. Erst der nächste Einkauf verwendet die neue Formel. Der bestehende Kasseninhalt bleibt erhalten.
 
-Validierung: TypeScript, vollständige Testsuite; gezielte Prüfung von eingefrorener Zyklusmenge/45-Minuten-Fenster und vollständiger einmaliger Sammlung. Tatsächliche Browserdarstellung 320/360/390/430 dp, Verteilung, Wartezeit, volle Kasse, leerer Zyklus und vollständiges Sammelmodal.
+## Volle Kasse
+
+Nach sechs vollständigen Einkaufszyklen pausiert der Hub. Während der Pause laufen weder die Arbeitsstatistik noch Teileversuche weiter. Volle Kasse abholen startet sofort einen neuen Einkauf bei Minute 0. Teilabholungen ändern Startzeit und bereits bezahlten Zyklusanteil nicht. Teileversuche bleiben auf einmal pro Stunde und 24 pro UTC-Tag begrenzt; ein Neustart umgeht die Sperre nicht.
+
+## Darstellung
+
+Die Achse zeigt nur 0 und 60 Minuten als feste Endpunkte. Der aktuelle Minutenstand steht separat über der Achse. Der Warenende-Marker nennt seine tatsächliche Minute (beispielsweise „Ware leer · 40 Min.“). Es gibt keine gelbe gestrichelte Leerlaufspur; der verbleibende Balken bleibt schlicht. Bei voller Kasse oder ohne eingekaufte Ware wird kein Warenende vorhergesagt. Am Maximum stehen Warenende und Einkauf am selben Zeitpunkt; die Beschriftungen sind versetzt.
+
+Validierung: gezielte Serverprüfungen für 40/48/60 Minuten, Fahrzeugleistung und eingefrorene Werte, volle und teilweise Abholung, Offline-Nachlauf, Teilelimits sowie kompatible Altzyklen; TypeScript, vollständige Tests und mobile Browseransichten.

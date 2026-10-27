@@ -35,7 +35,7 @@ export function HubScreen({data,busy,clock,onCommand,onSell,modalBlocked=false}:
    <HubEarnings hub={h} cycle={info.cycle} clock={clock} busy={locked} onCollect={()=>command('hubCollect')}/>
    <HubParts data={data} busy={locked} clock={clock} onCommand={command} modalBlocked={modalBlocked}/>
    <Card><Row><Txt style={s.title}>Vertrieb</Txt><Pill>Stufe {h.salesLevel} / 25</Pill></Row>
-    <Row style={{marginBottom:4}}><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{75+h.salesLevel} %</Txt></Row>
+    <Row style={{marginBottom:4}}><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{n(info.cycle.salesPercent,2)} %</Txt></Row>
     <Txt muted style={s.caption}>{n(info.hourlyCapacity,1)} t mögliche Verteilung pro Stunde</Txt>
     {h.construction?<Txt gold style={s.note}>Ausbau fertig in {remaining(h.construction.finishAt,clock)}</Txt>:h.salesLevel>=25?<Txt gold style={s.note}>Maximum erreicht</Txt>:null}
     <Btn secondary onPress={()=>{setError(false);setSalesOpen(true);}}>{h.construction?'Ausbau ansehen':h.salesLevel>=25?'Details':'Verbessern'}</Btn>
@@ -43,8 +43,8 @@ export function HubScreen({data,busy,clock,onCommand,onSell,modalBlocked=false}:
   </>:<HubVehicles data={data} busy={locked} onCommand={command} onSell={onSell} modalBlocked={modalBlocked} error={error}/>}
   <ExpeditionPlaceModal visible={salesOpen&&!modalBlocked} title={t('Vertrieb verbessern')} onClose={()=>setSalesOpen(false)}>
    <Row><Txt muted>Stufe</Txt><Txt>{h.salesLevel} / 25</Txt></Row>
-   <Row><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{75+h.salesLevel} %{h.salesLevel<25?` → ${76+h.salesLevel} %`:''}</Txt></Row>
-   <Txt muted style={s.caption}>Mehr Einkauf bei gleicher Verteilkapazität.</Txt>
+   <Row><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{n(info.cycle.salesPercent,2)} %{h.salesLevel<25?` → ${n(info.cycle.nextSalesPercent,2)} %`:''}</Txt></Row>
+   <Txt muted style={s.caption}>Mehr Einkauf und längere Auslastung bei gleicher Fahrzeugleistung.</Txt>
    {h.construction?<Txt gold style={s.note}>Ausbau fertig in {remaining(h.construction.finishAt,clock)}</Txt>:h.salesLevel>=25?<Txt gold style={s.note}>Maximum erreicht</Txt>:<View style={s.section}>
     <Txt muted style={s.caption}>Vorhanden / Benötigt</Txt>
     <Cost label="Münzen" owned={g.coins} need={info.upgradeCoins} unit=" M"/>
