@@ -15,7 +15,10 @@ test('List holding is a separate action, respects authoritative slots, and alway
  assert.deepEqual(pinned,[first.id]);assert.deepEqual(opened,[]);assert.equal(stopped,1);
  buttons.find(b=>b.props.testID===`order-open-${first.id}`).props.onPress();assert.deepEqual(opened,[first.id]);
  game=execute(game.state,'pin',{id:first.id},now,random);
+ assert.equal(game.view.silentSuccess,true,'successful holding needs no floating message');
  const held=game.view.state.orders.find(o=>o.id===first.id),other=game.view.state.orders.find(o=>o.status==='available'&&o.id!==first.id);
+ const rejected=execute(game.state,'pin',{id:other.id},now,random);
+ assert.equal(rejected.view.silentSuccess,false,'holding-limit feedback remains visible');assert.match(rejected.view.message,/nur.*halten/);
  pin=nodes(render(other),'Pressable').find(b=>b.props.testID===`order-pin-${other.id}`);assert.equal(pin.props.disabled,true);
  pin.props.onPress({stopPropagation(){}});assert.deepEqual(pinned,[first.id]);
  pin=nodes(render(held),'Pressable').find(b=>b.props.testID===`order-pin-${first.id}`);assert.equal(pin.props.disabled,false);assert.equal(pin.props['aria-pressed'],true);

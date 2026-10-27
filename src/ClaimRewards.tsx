@@ -7,7 +7,7 @@ import {itemName,rarityColor} from './items';
 import {C,Txt,n} from './ui';
 
 type Summary={
- count?:number;source?:string;pickupHints?:number;hubVehicleParts?:number;coins:number;gears:Record<string,number>;
+ count?:number;shards?:Record<string,number>;source?:string;pickupHints?:number;hubVehicleParts?:number;coins:number;gears:Record<string,number>;
  capacityModules:number;companyItems:number;supplierContacts:number;
 };
 type Reward={id:string;label:string;amount:number;icon:IconName;color:string};
@@ -19,6 +19,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
   const amount=summary.gears?.[rarity.id]||0;
   if(amount>0)rewards.push({id:`gear:${rarity.id}`,label:`${rarity.label}-${amount===1?'Zahnrad':'Zahnräder'}`,amount,icon:'gear',color:rarityColor(rarity.id)});
  }
+ for(const rarity of rarities){const amount=summary.shards?.[rarity.id]||0;if(amount>0)rewards.push({id:`shard:${rarity.id}`,label:`${rarity.label}-Splitter`,amount,icon:'cards',color:rarityColor(rarity.id)});}
  for(const [id,icon] of [['capacityModules','module'],['companyItems','company'],['supplierContacts','customers'],['pickupHints','document'],['hubVehicleParts','crafting']] as const){
   const amount=summary[id]||0;
   if(amount>0)rewards.push({id,label:itemName(id,amount),amount,icon,color:C.accent});

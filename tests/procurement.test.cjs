@@ -99,8 +99,8 @@ test('Current tour freezes speed; rank and donor changes only affect the followi
  const pending=out.state.procurement.pending.common;assert.equal(pending,5);
  const max=setup();max.state.expedition.characters.r4_common_2={level:10};max.state.expedition.characters.r1_rare={level:10};
  max.state.trucks=[{id:'fast',cardId:'r4_common_2',transportVersion:1,tier:2,model:'Tee-Maultiergespann',capacity:99,rarityLevel:50},{id:'donor',cardId:'r1_rare',transportVersion:1,tier:3,model:'Silberhirsch-Gespann',capacity:8.5,rarityLevel:0}];
- const view=cmd(max.state).view.procurement;assert.equal(view.vehicles.find(v=>v.id==='fast').durationMs,444445);
- const fast=view.vehicles.find(v=>v.id==='fast');assert.equal(fast.capacity,99);assert.equal(fast.speed,1.35);assert.equal(fast.durationMs,Math.ceil(600000/fast.speed));
+ const view=cmd(max.state).view.procurement;assert.equal(view.vehicles.find(v=>v.id==='fast').durationMs,442397);
+ const fast=view.vehicles.find(v=>v.id==='fast');assert.equal(fast.capacity,99);assert.equal(fast.speed,1.35625);assert.equal(fast.durationMs,Math.ceil(600000/fast.speed));
  assert.equal(out.view.procurement.vehicles.find(v=>v.id===truck).free,false);
 });
 test('Loot rolls are independent, no module/shard/XP side rewards, and budget inputs reject invalid values',()=>{

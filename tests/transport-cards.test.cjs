@@ -16,12 +16,30 @@ test('All 25 regional vehicles have independent capacity/speed and a single esca
   assert.equal(r.view.cardVehicles[c.id].capacity,c.baseCapacity);
   assert.ok(c.baseSpeed>0);assert.equal(c.bonusLevels.length,10);
   assert.ok(c.bonusLevels.every((v,i)=>i===0||v>c.bonusLevels[i-1]));
+  if(['cost','pay','speed','xp'].includes(c.stat)){
+   const cents=c.bonusLevels.map(value=>Math.round(value*100)),step=cents[1]-cents[0];
+   assert.ok([5,10,25,30,50,100,200,500].includes(step),c.id+' uses a simple step');
+   assert.ok(cents.every((value,index)=>value===cents[0]+index*step),c.id+' has a fixed real bonus increment');
+  }
   assert.ok(['self','garage','fleet'].includes(c.scope));
  }
  assert.equal(r.view.cardVehicles.navigator.speed,.75);
  assert.equal(r.view.cardVehicles.r1_uncommon_2.speed,1.55);
  assert.equal(r.view.cardVehicles.r4_epic.speed,.5);
  assert.ok(cards.filter(c=>c.artKey).length===25);
+});
+test('All card bonus levels match the catalog and active server effects exactly',()=>{
+ let r=setup();
+ for(let level=1;level<=10;level++){
+  for(const card of cards)own(r,card.id,level);
+  r=cmd(r.state);
+  for(const card of cards){
+   assert.deepEqual(r.view.catalog.cards.find(c=>c.id===card.id).bonusLevels,card.bonusLevels);
+   assert.equal(r.view.cardBonuses[card.id],card.bonusLevels[level-1]);
+  }
+  const city=r.view.state.trucks.find(t=>t.cardId==='navigator');
+  assert.equal(city.bonus.cost,cards.find(c=>c.id==='navigator').bonusLevels[level-1]);
+ }
 });
 test('Both point-capacity cards have the agreed nonlinear levels and affect different point types without granting stock',()=>{
  for(let level=1;level<=10;level++){
@@ -117,7 +135,7 @@ test('Capacity modules scale from each card base and current tours keep their or
 test('Garage-wide transport effects include non-card city vehicles and exclude fleets',()=>{
  let r=equip(setup(),'r5_epic',10);
  r.state.trucks.push({id:'CITY',tier:0,capacity:2,rarityLevel:0,hubSpeedLevel:0});
- r=cmd(r.state);assert.equal(r.view.state.trucks.find(t=>t.id==='CITY').bonus.speed,16);
+ r=cmd(r.state);assert.equal(r.view.state.trucks.find(t=>t.id==='CITY').bonus.speed,17);
  r=cmd(r.state,'seat',{id:'navigator',template:0,seat:0});
  assert.equal(r.view.fleetPreviews[0][0].bonuses.speed,0);
 });

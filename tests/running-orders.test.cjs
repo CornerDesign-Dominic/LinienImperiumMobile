@@ -22,3 +22,8 @@ test('A rewards-only running tab keeps collective collection without redundant c
  s.props.data.state.orders[0].completionReward.claimedAt=1;
  const empty=s.render();assert.equal(nodes(empty,'Btn').length,0);assert.equal(text(nodes(empty,'Empty')[0]),'Keine Aufträge unterwegs.');
 });
+
+test('Completed expedition vehicle jobs join the collective counter without completed cards',()=>{
+ const s=setup([]);s.props.data.state.expedition.missions=[{id:1,kind:'endless',status:'completed',completionReward:{coins:15,claimedAt:null}},{id:2,kind:'endless',status:'completed',completionReward:{claimedAt:1}}];
+ const tree=s.render();assert.equal(text(nodes(tree,'Btn')[0]),'Belohnungen abholen · 1');assert.equal(nodes(tree,'Empty').length,0);assert.equal(tileOrders(tree).length,0);
+});

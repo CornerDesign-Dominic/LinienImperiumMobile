@@ -1,3 +1,4 @@
+import {HubArt} from './HubArt';
 import {ItemArt,ItemAmount} from './ItemArt';
 import {HubVehicleDetail} from './HubVehicleDetail';
 import {HubEarnings} from './HubEarnings';
@@ -34,8 +35,8 @@ export function HubScreen({data,busy,clock,onCommand,onSell,modalBlocked=false}:
   {tab==='overview'?<>
    <HubEarnings hub={h} cycle={info.cycle} clock={clock} busy={locked} onCollect={()=>command('hubCollect')}/>
    <HubParts data={data} busy={locked} clock={clock} onCommand={command} modalBlocked={modalBlocked}/>
-   <Card><Row><Txt style={s.title}>Vertrieb</Txt><Pill>Stufe {h.salesLevel} / 25</Pill></Row>
-    <Row style={{marginBottom:4}}><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{75+h.salesLevel} %</Txt></Row>
+   <Card><Row><View style={s.artHeading}><HubArt id="sales"/><Txt style={s.title}>Vertrieb</Txt></View><Pill>Stufe {h.salesLevel} / 25</Pill></Row>
+    <Row style={{marginBottom:4}}><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{n(info.cycle.salesPercent,2)} %</Txt></Row>
     <Txt muted style={s.caption}>{n(info.hourlyCapacity,1)} t mögliche Verteilung pro Stunde</Txt>
     {h.construction?<Txt gold style={s.note}>Ausbau fertig in {remaining(h.construction.finishAt,clock)}</Txt>:h.salesLevel>=25?<Txt gold style={s.note}>Maximum erreicht</Txt>:null}
     <Btn secondary onPress={()=>{setError(false);setSalesOpen(true);}}>{h.construction?'Ausbau ansehen':h.salesLevel>=25?'Details':'Verbessern'}</Btn>
@@ -43,8 +44,8 @@ export function HubScreen({data,busy,clock,onCommand,onSell,modalBlocked=false}:
   </>:<HubVehicles data={data} busy={locked} onCommand={command} onSell={onSell} modalBlocked={modalBlocked} error={error}/>}
   <ExpeditionPlaceModal visible={salesOpen&&!modalBlocked} title={t('Vertrieb verbessern')} onClose={()=>setSalesOpen(false)}>
    <Row><Txt muted>Stufe</Txt><Txt>{h.salesLevel} / 25</Txt></Row>
-   <Row><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{75+h.salesLevel} %{h.salesLevel<25?` → ${76+h.salesLevel} %`:''}</Txt></Row>
-   <Txt muted style={s.caption}>Mehr Einkauf bei gleicher Verteilkapazität.</Txt>
+   <Row><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{n(info.cycle.salesPercent,2)} %{h.salesLevel<25?` → ${n(info.cycle.nextSalesPercent,2)} %`:''}</Txt></Row>
+   <Txt muted style={s.caption}>Mehr Einkauf und längere Auslastung bei gleicher Fahrzeugleistung.</Txt>
    {h.construction?<Txt gold style={s.note}>Ausbau fertig in {remaining(h.construction.finishAt,clock)}</Txt>:h.salesLevel>=25?<Txt gold style={s.note}>Maximum erreicht</Txt>:<View style={s.section}>
     <Txt muted style={s.caption}>Vorhanden / Benötigt</Txt>
     <Cost label="Münzen" owned={g.coins} need={info.upgradeCoins} unit=" M"/>
@@ -59,7 +60,7 @@ export function HubScreen({data,busy,clock,onCommand,onSell,modalBlocked=false}:
 export function HubParts({data,busy,clock,onCommand,modalBlocked=false}:any){
  const [found,setFound]=useState<number|null>(null),c=data.hubInfo.crates;
  return <Card>
-  <Row style={{flexWrap:'nowrap'}}><Icon name="reward" color={C.gold} size={24}/><View style={{flex:1}}><Txt style={s.title}>Fundkisten</Txt><Txt muted style={s.caption}>Noch {Math.max(0,c.max-c.opened)} heute</Txt></View></Row>
+  <Row style={{flexWrap:'nowrap'}}><HubArt id="crates"/><View style={{flex:1}}><Txt style={s.title}>Fundkisten</Txt><Txt muted style={s.caption}>Noch {Math.max(0,c.max-c.opened)} heute</Txt></View></Row>
   {!c.available&&<Txt muted style={s.caption}>{c.opened>=c.max?'Neue Fundkisten in':'Nächste Kiste in'} {remaining(c.nextAt,clock)}</Txt>}
   <Btn disabled={busy||!c.available} onPress={async()=>{const next=await onCommand('hubCrate');if(next?.hubCrateParts)setFound(next.hubCrateParts);}}>Fundkiste öffnen</Btn>
   <ExpeditionPlaceModal visible={found!==null&&!modalBlocked} title={t('Fundkiste geöffnet')} onClose={()=>setFound(null)}><View style={{alignItems:'center',padding:12}}><ItemArt id="hubVehicleParts" size={120}/><Txt style={{fontSize:24,fontWeight:'700',marginTop:8}}>+{found}</Txt><Txt>{itemName('hubVehicleParts',2)}</Txt></View><Btn onPress={()=>setFound(null)}>Weiter</Btn></ExpeditionPlaceModal>
@@ -72,7 +73,7 @@ export function HubVehicles({data,busy,onCommand,onSell,modalBlocked=false,error
  const tiles=[...vehicles,...(canBuy?[null]:[])],rows=Array.from({length:Math.ceil(tiles.length/3)},(_,i)=>tiles.slice(i*3,i*3+3));
  const failure=error?<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>:null;
  return <>
-  <Row><Txt style={s.title}>Stadttransporter · {vehicles.length} / {data.hubLimit}</Txt><View accessible accessibilityLabel={`${t('Werkzeugkästen')}: ${n(g.inventory.hubVehicleParts)}`} style={s.costValue}><ItemArt id="hubVehicleParts" size={28}/><Txt>{n(g.inventory.hubVehicleParts)}</Txt></View></Row>
+  <Row style={{flexWrap:'wrap'}}><View style={s.artHeading}><HubArt id="vehicles"/><Txt style={[s.title,{flexShrink:1}]}>Stadttransporter · {vehicles.length} / {data.hubLimit}</Txt></View><View accessible accessibilityLabel={`${t('Werkzeugkästen')}: ${n(g.inventory.hubVehicleParts)}`} style={s.costValue}><ItemArt id="hubVehicleParts" size={28}/><Txt>{n(g.inventory.hubVehicleParts)}</Txt></View></Row>
   {!canBuy&&<Txt muted style={[s.caption,{marginBottom:10}]}>{info.nextVehicleLevel?`${t('Nächster Fahrzeugplatz ab Level')} ${info.nextVehicleLevel}`:'Alle 20 Fahrzeugplätze freigeschaltet.'}</Txt>}
   {rows.map((row,i)=><View key={i} style={s.gridRow}>{row.map((vehicle:any,j:number)=>vehicle?<Pressable key={vehicle.id} accessibilityRole="button" accessibilityLabel={`${t(vehicle.model)}, ${vehicle.id}, ${n(vehicle.capacity,1)} t, ${n(vehicle.speed,2)} km/s, ${t(vehicle.hubAssigned?'Im Hub eingesetzt':'Nicht eingesetzt')}`} onPress={()=>{setSelected(vehicle.id);}} style={({pressed})=>[s.vehicle,pressed&&{opacity:.8}]}>
    <Txt style={s.vehicleName}>{vehicle.id}</Txt><View style={s.truckArt}><Icon name="truck" size={44} color={C.gold}/></View>
@@ -86,6 +87,7 @@ export function HubVehicles({data,busy,onCommand,onSell,modalBlocked=false,error
  </>;
 }
 const s=StyleSheet.create({
+ artHeading:{flexDirection:'row',alignItems:'center',gap:8,flexShrink:1},
  title:{fontSize:15,fontWeight:'700'},caption:{fontSize:10,lineHeight:16},note:{fontSize:11,lineHeight:17,marginTop:8},error:{color:C.red,fontSize:12,marginBottom:8},
  tabs:{flexDirection:'row',gap:6,marginBottom:12},tab:{flex:1,minHeight:44,borderWidth:1,borderBottomWidth:3,borderColor:C.line,borderRadius:5,backgroundColor:C.raised,justifyContent:'center',alignItems:'center'},activeTab:{backgroundColor:C.accent,borderColor:C.ink},tabLabel:{fontSize:13,fontWeight:'700'},
  metrics:{flexDirection:'row',gap:6,marginVertical:4},metric:{flex:1,minWidth:0,alignItems:'center',gap:3},metricValue:{fontSize:16,lineHeight:23,fontWeight:'700',textAlign:'center'},section:{borderTopWidth:1,borderTopColor:C.line,paddingTop:10,marginTop:10},
