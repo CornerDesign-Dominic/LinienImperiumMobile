@@ -292,7 +292,7 @@ const bridge = `
     sell(id) { if (!openSaleDialog(id)) return false; return confirmSale(); },
     claimSingleRewards() {
       const orders=game.orders.filter(o=>!PROJECT_DEADLINES[o.kind]&&o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt);
-      if(!orders.length)return false;
+      if(!orders.length&&!game.expedition.missions.some(pendingExpeditionOrder))return false;
       const summary={count:orders.length,coins:0,gears:{},capacityModules:0,companyItems:0,supplierContacts:0};
       for(const order of orders){
         const reward=order.completionReward;
@@ -301,6 +301,7 @@ const bridge = `
         summary.capacityModules+=Number(Boolean(reward.capacityModule));summary.companyItems+=reward.companyItems||0;summary.supplierContacts+=reward.supplierContacts||0;
         applyOrderReward(order);
       }
+      collectExpeditionOrderRewards(summary);
       mobileToast=summary.count+' Prämien abgeholt.';
       return summary;
     },

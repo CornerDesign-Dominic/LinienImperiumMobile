@@ -48,9 +48,33 @@ test('Expansion allocation resumes paused regeneration with retained progress in
  assert.equal(out.state.expedition.lastRegenAt,now-out.view.regeneration.expeditionIntervalMs*.5);
  assert.equal(out.state.expedition.points,50);assert.equal(out.view.expeditionCapacity,51);
 });
-test('New endless expedition loot is booked once and appears in the same persisted inbox',()=>{
- const r=initial();r.state.expedition.missions=[{...mission(1,'endless'),lootKind:'material',tier:1}];
- const out=cmd(r.state,'sync',{},now+15000),again=cmd(out.state,'sync',{},now+15001);
- assert.equal(out.state.coins,r.state.coins+15);assert.equal(again.state.coins,out.state.coins);
- assert.equal(out.view.expansion.notices[0].kind,'endless');assert.equal(again.view.expansion.notices.length,1);
+test('Repeatable expedition orders wait for collective single collection, with deterministic saved loot and no expedition popup',()=>{
+ let r=initial();r.state.expedition.missions=[{...mission(1,'endless'),lootKind:'material',tier:2},{...mission(2,'endless'),lootKind:'character',tier:1},mission(3)];
+ const before=structuredClone(r.state);
+ r=cmd(r.state,'sync',{},now+15000);
+ assert.equal(r.state.coins,before.coins);assert.deepEqual(r.state.inventory,before.inventory);assert.deepEqual(r.state.expedition.shards,before.expedition.shards);
+ assert.deepEqual(r.view.expansion.notices.map(n=>n.kind),['delivery']);assert.equal(r.state.expansion.available,1);
+ assert.equal(r.state.expedition.missions[0].completionReward.coins,15);assert.equal(r.state.expedition.missions[1].completionReward.coins,5);
+ const saved=structuredClone(r.state.expedition.missions.map(m=>m.completionReward));
+ r=cmd(r.state,'sync',{},now+15001);assert.deepEqual(r.state.expedition.missions.map(m=>m.completionReward),saved);
+ r=cmd(r.state,'claimMission',{id:1},now+15001);assert.equal(r.state.coins,before.coins,'legacy claimMission cannot bypass collective collection');
+ Object.assign(r.state.orders[0],{status:'completed',completionReward:{coins:7,gears:{common:3},claimedAt:null}});
+ r=cmd(r.state,'claimSingles',{},now+15002);
+ assert.equal(r.view.claimSummary.count,3);assert.equal(r.view.claimSummary.coins,27);assert.equal(r.state.coins,before.coins+27);assert.equal(r.view.claimSummary.gears.common,3);
+ assert.equal(Object.values(r.view.claimSummary.shards).reduce((a,b)=>a+b,0),2);assert.equal(Object.values(r.state.expedition.shards).reduce((a,b)=>a+b,0),2);
+ const claimed=structuredClone(r.state);r=cmd(r.state,'claimSingles',{},now+15003);
+ assert.equal(r.view.claimSummary,undefined);assert.equal(r.state.coins,claimed.coins);assert.deepEqual(r.state.inventory,claimed.inventory);assert.deepEqual(r.state.expedition.shards,claimed.expedition.shards);
+});
+test('Previously auto-paid endless jobs and their stale notices never become collectable again',()=>{
+ const r=initial();r.state.expedition.missions=[{...mission(1,'endless'),status:'completed',reward:'15 M',completionRecorded:true}];
+ r.state.expansion.notices=[{sequence:1,kind:'endless',missionId:1},{sequence:2,kind:'delivery',missionId:2}];r.state.expansion.nextNotice=3;
+ const out=cmd(r.state);assert.deepEqual(out.view.expansion.notices.map(n=>n.kind),['delivery']);assert.ok(out.state.expedition.missions[0].claimedAt);
+ assert.equal(cmd(out.state,'claimSingles').view.claimSummary,undefined);assert.equal(out.state.coins,r.state.coins);
+});
+test('More than the history limit of offline job completions retains every pending reward until collection',()=>{
+ const r=initial();r.state.expedition.missions=Array.from({length:125},(_,i)=>({...mission(i+1,'endless'),lootKind:'material',tier:1}));
+ const out=cmd(r.state,'sync',{},now+15000);
+ assert.equal(out.state.expedition.missions.filter(m=>m.completionReward&&!m.completionReward.claimedAt).length,125);
+ const claimed=cmd(out.state,'claimSingles',{},now+15001);assert.equal(claimed.view.claimSummary.count,125);assert.equal(claimed.view.claimSummary.coins,1875);
+ assert.equal(cmd(claimed.state,'claimSingles',{},now+15002).view.claimSummary,undefined);
 });

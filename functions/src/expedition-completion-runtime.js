@@ -1,4 +1,36 @@
-// Rewards are settled by the server; the persisted inbox is informational only.
+// Place milestones settle automatically; repeatable vehicle jobs join single-order collection.
+// Roll exactly once at arrival, but defer all inventory/currency changes until collection.
+awardExpeditionLoot=mission=>{
+ const coins=Math.round((mission.lootKind==='character'?5:15)*(mission.region+1));
+ const reward={coins,shards:{},capacityModule:false,companyItems:0,claimedAt:null};
+ const labels=[coins+' M'];
+ const shard=()=>{const rarity=rollExpeditionShard(expeditionJobTier(mission));reward.shards[rarity]=(reward.shards[rarity]||0)+1;labels.push('1 '+rarity+'-Shard');};
+ if(mission.lootKind==='character'||Math.random()<.2){const amount=1+(Math.random()<.2?1:0);for(let i=0;i<amount;i++)shard();}
+ if(mission.lootKind==='character')shard();
+ if(mission.lootKind==='material'&&Math.random()<.003){reward.capacityModule=true;labels.push('1 Kapazitätsmodul');}
+ if(mission.lootKind==='material'){
+  reward.companyItems=Math.random()<COMPANY_BALANCE.materialItemChance?COMPANY_BALANCE.materialItemsByTier[expeditionJobTier(mission)-1]:0;
+  if(reward.companyItems)labels.push(reward.companyItems+' Firmenausbau-Items');
+ }
+ mission.completionReward=reward;mission.reward=labels.join(' · ');
+};
+function pendingExpeditionOrder(mission){return mission.kind==='endless'&&mission.status==='completed'&&mission.completionReward&&!mission.completionReward.claimedAt;}
+function collectExpeditionOrderRewards(summary){
+ for(const mission of game.expedition.missions.filter(pendingExpeditionOrder)){
+  const reward=mission.completionReward;
+  game.coins=round2(game.coins+reward.coins);
+  game.stats.expeditionRevenue=round2((game.stats.expeditionRevenue||0)+reward.coins);
+  summary.coins=round2(summary.coins+reward.coins);summary.count++;
+  summary.shards??={};
+  for(const [rarity,amount] of Object.entries(reward.shards||{})){
+   game.expedition.shards[rarity]+=amount;summary.shards[rarity]=(summary.shards[rarity]||0)+amount;
+  }
+  if(reward.capacityModule){game.inventory.capacityModules++;summary.capacityModules++;}
+  game.inventory.companyItems=(game.inventory.companyItems||0)+reward.companyItems;summary.companyItems+=reward.companyItems;
+  mission.companyItemsAwarded=reward.companyItems;reward.claimedAt=Date.now();mission.claimedAt=Date.now();mission.completionRecorded=true;
+ }
+ return summary;
+}
 function expansionState(){
   if(!game.expansion){
     game.expansion={available:0,expedition:0,overtime:0,convertedDeliveries:0,nextNotice:1,notices:[]};
@@ -6,6 +38,9 @@ function expansionState(){
       if(mission.claimedAt||mission.status==='completed'&&mission.kind==='endless')mission.completionRecorded=true;
     }
   }
+  // Old endless completions were already paid. Never turn them into pending loot.
+  for(const mission of game.expedition.missions)if(mission.kind==='endless'&&mission.status==='completed'&&!mission.completionReward){mission.completionRecorded=true;mission.claimedAt??=mission.endsAt||Date.now();}
+  game.expansion.notices=game.expansion.notices.filter(notice=>notice.kind!=='endless');
   return game.expansion;
 }
 const beforeExpansionCapacity=expeditionCapacity,beforeExpansionOvertimeCapacity=overtimeCapacity;
@@ -13,7 +48,7 @@ expeditionCapacity=()=>{const e=expansionState();return beforeExpansionCapacity(
 overtimeCapacity=()=>beforeExpansionOvertimeCapacity()+expansionState().overtime;
 const beforeAutomaticClaimMission=claimExpeditionMission;
 function collectCompletedExpedition(mission){
-  if(mission.status!=='completed'||mission.completionRecorded)return false;
+  if(mission.kind==='endless'||mission.status!=='completed'||mission.completionRecorded)return false;
   const e=expansionState(),region=game.expedition.regions[mission.region];
   let points=0,modules=0,customerId=null;
   if(mission.kind==='delivery'){
@@ -42,6 +77,8 @@ settleExpeditions=(now=Date.now())=>{
   const missions=game.expedition.missions.slice();
   let changed=beforeAutomaticSettleExpeditions(now);
   for(const mission of missions.filter(m=>m.status==='completed').sort((a,b)=>a.endsAt-b.endsAt||a.id-b.id))changed=collectCompletedExpedition(mission)||changed;
+  // The legacy history limit must never discard rewards waiting for collection.
+  for(const mission of missions)if(pendingExpeditionOrder(mission)&&!game.expedition.missions.includes(mission))game.expedition.missions.push(mission);
   if(changed)save();
   return changed;
 };

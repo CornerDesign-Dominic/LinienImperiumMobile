@@ -4,8 +4,8 @@ Gesammelt im Branch `collect/transport-upgrades`, nicht veröffentlicht.
 
 ## Verhalten
 
-- Der Server schreibt Ortslieferungen, die erste Endlosort-Lieferung und wiederholbare Expeditionsaufträge bei Abschluss automatisch gut. Weitere Fahrten starten weiterhin nur auf Wunsch des Spielers.
-- Ortslieferungen geben jeweils einen freien **Erweiterungspunkt**. Die erste Endlosort-Lieferung schaltet den Stammkunden frei und gibt das einmalige Kapazitätsmodul, sofern noch nicht erhalten. Beute wiederholbarer Aufträge bleibt unverändert.
+- Der Server schreibt Ortslieferungen und die erste Endlosort-Lieferung bei Abschluss automatisch gut. Weitere Fahrten starten weiterhin nur auf Wunsch des Spielers.
+- Ortslieferungen geben jeweils einen freien **Erweiterungspunkt**. Die erste Endlosort-Lieferung schaltet den Stammkunden frei und gibt das einmalige Kapazitätsmodul, sofern noch nicht erhalten. Wiederholbare Material- und Fahrzeugkartenaufträge würfeln ihre unveränderte Beute einmal bei Ankunft aus, bewahren sie aber bis zum gemeinsamen Einsammeln unter Einzelaufträge auf. Sie erzeugen keine Expeditionsabschlussmeldung. Der Sammelzähler zählt diese Abschlüsse mit; fertige Einzelcards bleiben ausgeblendet. Das gemeinsame Belohnungsmodal zeigt auch Splitter nach Seltenheit.
 - Eine gespeicherte Abschlussübersicht fasst alle noch nicht bestätigten Meldungen zusammen. Beim App-Start, erneuten Einloggen und während des Spiels gilt derselbe Ablauf. X und „Punkte verteilen“ bestätigen die gezeigten Meldungen serverseitig; spätere Synchronisierungen und Neustarts zeigen sie nicht erneut. Ein verlorener Netzwerkaufruf lässt die Übersicht offen und zeigt den Verbindungsfehler, statt Meldungen still zu verlieren.
 - Die Übersicht enthält nur ein X oben rechts und unten „Punkte verteilen“. Ohne freie Erweiterungspunkte ist der untere Button deaktiviert. Neue, während einer bereits geöffneten Übersicht eintreffende Abschlüsse bleiben für die nächste Übersicht gespeichert.
 - Native Produktdialoge melden ihre Sichtbarkeit zentral über `AppModal`. Die Abschlussübersicht wartet bestehende Dialoge, Fahrzeugauswahl, Levelmeldungen und Hintergrundzustand der App ab, statt darüber aufzuspringen. Die reguläre Synchronisierung und der Timer für Missionsankünfte bleiben erhalten.
@@ -32,3 +32,9 @@ Die Kompatibilitätsaktion `claimMission` vergibt nichts doppelt. Bei wiederholt
 
 ![Gebündelter Abschluss](expedition-auto-summary.jpg)
 ![Dauerhafte Verteilung](expedition-auto-allocation.jpg)
+
+## Wiederholbare Aufträge und Altstände
+
+Der Sammelbefehl zahlt reguläre Einzelaufträge und wiederholbare Expeditionsaufträge zusammen aus. Münzen, Zahnräder, Splitter, Module und Firmenausbau-Items werden tatsächlich gutgeschrieben und gemeinsam angezeigt. Ausstehende Missionsbelohnungen überleben die gekürzte Missionshistorie. Wiederholtes Synchronisieren oder Einsammeln würfelt keine neue Beute und zahlt nichts doppelt.
+
+Bereits automatisch ausgezahlte Altaufträge ohne gespeichertes Beutepaket bleiben bezahlt; noch vorhandene Informationsmeldungen dieser Aufträge werden entfernt, ohne Belohnungen zurückzunehmen oder erneut anzubieten. Ortsboni und Kundenfreischaltungen behalten die automatische Verarbeitung.
