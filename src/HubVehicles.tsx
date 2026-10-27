@@ -11,6 +11,8 @@ import {itemName} from './items';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
 import {C,Txt,Card,Row,Btn,Bar,Pill,n,remaining} from './ui';
 
+const workTime=(minutes:number)=>`${Math.floor(minutes)}:${String(Math.round(minutes*60)%60).padStart(2,'0')}`;
+
 function Metric({icon,label,value}: {icon:IconName;label:string;value:string}){
  return <View accessible accessibilityLabel={`${t(label)}: ${value}`} style={s.metric}>{label==='Abholhinweise'?<ItemArt id="pickupHints" size={36}/>:label==='Werkzeugkästen'?<ItemArt id="hubVehicleParts" size={36}/>:<Icon name={icon} size={20} color={C.gold}/>}<Txt style={s.metricValue}>{value}</Txt><Txt muted style={s.caption}>{label}</Txt></View>;
 }
@@ -29,27 +31,27 @@ export function HubScreen({data,busy,clock,onCommand,onSell,modalBlocked=false}:
  };
  const failure=error?<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>:null;
  if(!h)return <Card><Txt muted>Stadttransporter verteilen jede Stunde selbstständig Waren. Erträge und Abholhinweise sammeln sich in der Kasse.</Txt>{!info.unlocked&&<Txt gold style={{marginTop:10}}>Stadthub ab Level 5 verfügbar.</Txt>}{failure}<Btn disabled={locked||!info.unlocked} onPress={()=>command('buyHub')}>Stadthub kostenlos eröffnen</Btn></Card>;
- const canUpgrade=h.salesLevel<25&&!h.construction&&g.coins>=info.upgradeCoins&&g.inventory.supplierContacts>=info.upgradeContacts&&g.inventory.companyItems>=info.upgradeItems;
+ const salesMax=info.cycle.salesMax??20;
+ const canUpgrade=h.salesLevel<salesMax&&!h.construction&&g.inventory.supplierContacts>=info.upgradeContacts&&g.inventory.companyItems>=info.upgradeItems;
  return <>
   <View accessibilityRole="tablist" accessibilityLabel={t('Stadthub')} style={s.tabs}>{[{id:'overview',label:'Übersicht'},{id:'vehicles',label:'Fahrzeuge'}].map(option=><Pressable key={option.id} accessibilityRole="tab" disabled={locked} accessibilityState={{selected:tab===option.id,disabled:locked}} aria-selected={tab===option.id} onPress={()=>setTab(option.id)} style={[s.tab,tab===option.id&&s.activeTab]}><Txt style={[s.tabLabel,tab===option.id&&{color:C.onInk}]}>{option.label}</Txt></Pressable>)}</View>
   {failure}
   {tab==='overview'?<>
    <HubEarnings hub={h} cycle={info.cycle} clock={clock} busy={locked} onCollect={()=>command('hubCollect')}/>
    <HubParts data={data} busy={locked} clock={clock} onCommand={command} modalBlocked={modalBlocked}/>
-   <Card><Row><View style={s.artHeading}><HubArt id="sales"/><Txt style={s.title}>Vertrieb</Txt></View><Pill>Stufe {h.salesLevel} / 25</Pill></Row>
-    <Row style={{marginBottom:4}}><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{n(info.cycle.salesPercent,2)} %</Txt></Row>
+   <Card><Row><View style={s.artHeading}><HubArt id="sales"/><Txt style={s.title}>Vertrieb</Txt></View><Pill>Stufe {h.salesLevel} / {salesMax}</Pill></Row>
+    <Row style={{marginBottom:4}}><Txt muted>Auslastung</Txt><Txt style={{fontWeight:'700'}}>{workTime(info.cycle.workMinutes)} Min.</Txt></Row>
     <Txt muted style={s.caption}>{n(info.hourlyCapacity,1)} t mögliche Verteilung pro Stunde</Txt>
-    {h.construction?<Txt gold style={s.note}>Ausbau fertig in {remaining(h.construction.finishAt,clock)}</Txt>:h.salesLevel>=25?<Txt gold style={s.note}>Maximum erreicht</Txt>:null}
-    <Btn secondary onPress={()=>{setError(false);setSalesOpen(true);}}>{h.construction?'Ausbau ansehen':h.salesLevel>=25?'Details':'Verbessern'}</Btn>
+    {h.construction?<Txt gold style={s.note}>Ausbau fertig in {remaining(h.construction.finishAt,clock)}</Txt>:h.salesLevel>=salesMax?<Txt gold style={s.note}>Maximum erreicht</Txt>:null}
+    <Btn secondary onPress={()=>{setError(false);setSalesOpen(true);}}>{h.construction?'Ausbau ansehen':h.salesLevel>=salesMax?'Details':'Verbessern'}</Btn>
    </Card>
   </>:<HubVehicles data={data} busy={locked} onCommand={command} onSell={onSell} modalBlocked={modalBlocked} error={error}/>}
   <ExpeditionPlaceModal visible={salesOpen&&!modalBlocked} title={t('Vertrieb verbessern')} onClose={()=>setSalesOpen(false)}>
-   <Row><Txt muted>Stufe</Txt><Txt>{h.salesLevel} / 25</Txt></Row>
-   <Row><Txt muted>Einkaufsmenge</Txt><Txt style={{fontWeight:'700'}}>{n(info.cycle.salesPercent,2)} %{h.salesLevel<25?` → ${n(info.cycle.nextSalesPercent,2)} %`:''}</Txt></Row>
+   <Row><Txt muted>Stufe</Txt><Txt>{h.salesLevel} / {salesMax}</Txt></Row>
+   <Row><Txt muted>Auslastung</Txt><Txt style={{fontWeight:'700'}}>{workTime(info.cycle.workMinutes)}{h.salesLevel<salesMax?` → ${workTime(info.cycle.nextWorkMinutes)}`:''} Min.</Txt></Row>
    <Txt muted style={s.caption}>Mehr Einkauf und längere Auslastung bei gleicher Fahrzeugleistung.</Txt>
-   {h.construction?<Txt gold style={s.note}>Ausbau fertig in {remaining(h.construction.finishAt,clock)}</Txt>:h.salesLevel>=25?<Txt gold style={s.note}>Maximum erreicht</Txt>:<View style={s.section}>
+   {h.construction?<Txt gold style={s.note}>Ausbau fertig in {remaining(h.construction.finishAt,clock)}</Txt>:h.salesLevel>=salesMax?<Txt gold style={s.note}>Maximum erreicht</Txt>:<View style={s.section}>
     <Txt muted style={s.caption}>Vorhanden / Benötigt</Txt>
-    <Cost label="Münzen" owned={g.coins} need={info.upgradeCoins} unit=" M"/>
     <Cost label={itemName('supplierContacts',2)} owned={g.inventory.supplierContacts} need={info.upgradeContacts}/>
     <Cost label={itemName('companyItems',2)} owned={g.inventory.companyItems} need={info.upgradeItems}/>
     <Txt muted style={s.note}>Ausbaudauer: {(h.salesLevel+1)*12} Stunden</Txt>

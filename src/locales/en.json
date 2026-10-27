@@ -1032,6 +1032,8 @@
   "Keine Stadttransporter im Einsatz": "No city transporters in use",
   "Ausbau ansehen": "View upgrade",
   "Vertrieb verbessern": "Upgrade sales",
+  "Auslastung": "Working time",
+  "Mehr Einkauf und längere Auslastung bei gleicher Fahrzeugleistung.": "Purchase more goods and work longer with the same vehicle performance.",
   "Mehr Einkauf bei gleicher Verteilkapazität.": "Purchase more goods with the same distribution capacity.",
   "Vorhanden / Benötigt": "Owned / Required",
   "Ausbaudauer: {0} Stunden": "Upgrade time: {0} hours",

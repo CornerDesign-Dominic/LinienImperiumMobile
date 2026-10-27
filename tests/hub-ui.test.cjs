@@ -18,6 +18,15 @@ test('Hub actions reject rapid duplicate taps, recover from failure, and retain 
  x.props.onCommand=async()=>({});await nodes(x.render(),'HubEarnings')[0].props.onCollect();assert.ok(!text(x.render()).includes('Aktion fehlgeschlagen'));
  nodes(x.render(),'Pressable').find(p=>text(p)==='Fahrzeuge').props.onPress();assert.ok(!text(x.render()).includes('Erträge abholen'));assert.ok(nodes(x.render(),'Pressable').find(p=>p.props.accessibilityState?.selected&&text(p)==='Fahrzeuge'));
 });
+test('Sales shows working time and allows item-funded upgrades without coins',()=>{
+ const x=setup('HubScreen');x.props.data.state.coins=0;
+ x.props.data.state.inventory.supplierContacts=5;x.props.data.state.inventory.companyItems=1;
+ let tree=x.render();assert.ok(text(tree).includes('40:00 → 40:30 Min.'));assert.ok(!text(tree).includes('Einkaufsmenge'));assert.ok(!text(tree).includes('%'));
+ assert.equal(button(tree,'Ausbau starten').props.disabled,false);
+ x.props.data.state.inventory.supplierContacts=4;assert.equal(button(x.render(),'Ausbau starten').props.disabled,true);
+ x.props.data.state.hubs[0].salesLevel=20;x.props.data.hubInfo.cycle.workMinutes=50;x.props.data.hubInfo.cycle.nextWorkMinutes=50;
+ tree=x.render();assert.ok(text(tree).includes('50:00 Min.'));assert.ok(!nodes(tree,'Btn').some(b=>text(b)==='Ausbau starten'));
+});
 test('Hub vehicles use resource and slot gates, exact upgrade commands, and keep destructive actions collapsed',async()=>{
  const x=setup('HubVehicles');let tree=x.render();press(tree,'Stadttransporter kaufen');tree=x.render();assert.equal(button(tree,`Kaufen · ${x.props.data.hubInfo.vehiclePrice} M`).props.disabled,false);
  const vehicle=x.props.data.state.trucks.find(t=>!t.cardId&&t.tier<=1);nodes(tree,'Pressable').find(p=>p.props.accessibilityLabel?.includes(vehicle.id)).props.onPress();tree=x.render();assert.ok(!nodes(tree,'Btn').some(b=>text(b).startsWith('Verkaufen')));

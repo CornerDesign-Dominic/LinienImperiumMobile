@@ -110,11 +110,12 @@ test('Hub collection reports all credited rewards exactly once without changing 
  r=run(r.state,'hubCollect',{},now+H);assert.equal(r.view.claimSummary.coins,0);assert.equal(r.view.claimSummary.pickupHints,0);assert.equal(r.view.claimSummary.hubVehicleParts,0);
 });
 
-test('Utilization purchases 40 to 60 minutes of frozen full-hour throughput and preserves paid partial claims',()=>{
- for(const [level,minutes] of [[0,40],[10,48],[25,60]]){
+test('Utilization purchases 40 to 50 minutes of frozen full-hour throughput and preserves paid partial claims',()=>{
+ for(const [level,minutes] of [[0,40],[1,40.5],[20,50]]){
   let r=hubbed();r.state.hubs[0].salesLevel=level;r=run(r.state,'sync',{},now+H);
   const h=r.state.hubs[0],cycle=r.view.hubInfo.cycle;
-  assert.equal(cycle.workMs,minutes*60000);assert.ok(Math.abs(cycle.salesPercent-minutes/60*100)<1e-9);
+  assert.equal(cycle.workMs,minutes*60000);assert.equal(cycle.workMinutes,minutes);assert.equal(cycle.salesMax,20);
+  assert.equal(cycle.nextWorkMinutes,Math.min(50,minutes+.5));
   assert.equal(cycle.quantity,Math.round(h.cycleCapacity*minutes/60*100)/100);
   // Capacity and speed upgrades cannot alter goods already bought.
   const previousCash=h.cashboxCoins,snapshot=structuredClone(cycle),t=r.state.trucks.find(t=>!t.cardId);
@@ -129,6 +130,38 @@ test('Utilization purchases 40 to 60 minutes of frozen full-hour throughput and 
   assert.equal(r.state.hubs[0].nextCycleAt,now+(minutes===60?3:2)*H);
   r=run(r.state,'sync',{},now+2*H);assert.ok(r.view.hubInfo.cycle.quantity>snapshot.quantity*2);
  }
+});
+test('Sales upgrades require only their exact items, preserve coins, and stop at stage twenty',()=>{
+ let r=hubbed();r.state.coins=0;r.state.inventory.supplierContacts=5;r.state.inventory.companyItems=1;
+ r=run(r.state,'hubUpgrade');assert.equal(r.state.coins,0);assert.equal(r.state.inventory.supplierContacts,0);assert.equal(r.state.inventory.companyItems,0);
+ assert.equal(r.state.hubs[0].construction.level,1);assert.equal(r.state.hubs[0].construction.finishAt,now+12*H);assert.equal(r.view.hubInfo.upgradeCoins,0);
+ assert.equal(r.state.stats.hubUpgradeSpent||0,0);
+ r=run(r.state,'hubUpgrade');assert.equal(r.state.inventory.supplierContacts,0);
+ r=run(r.state,'sync',{},now+12*H);assert.equal(r.state.hubs[0].salesLevel,1);
+ r.state.hubs[0].salesLevel=19;r.state.inventory.supplierContacts=99;r.state.inventory.companyItems=1;
+ r=run(r.state,'hubUpgrade',{},now+12*H);assert.equal(r.state.hubs[0].construction,null);assert.equal(r.state.inventory.supplierContacts,99);
+ r.state.inventory.supplierContacts=100;r.state.inventory.companyItems=0;
+ r=run(r.state,'hubUpgrade',{},now+12*H);assert.equal(r.state.hubs[0].construction,null);assert.equal(r.state.inventory.supplierContacts,100);
+ r.state.inventory.companyItems=1;r=run(r.state,'hubUpgrade',{},now+12*H);
+ assert.equal(r.state.hubs[0].construction.level,20);assert.equal(r.state.hubs[0].construction.finishAt,now+252*H);
+ r=run(r.state,'sync',{},now+252*H);assert.equal(r.state.hubs[0].salesLevel,20);
+ r.state.inventory.supplierContacts=1000;r.state.inventory.companyItems=100;
+ r=run(r.state,'hubUpgrade',{},now+252*H);assert.equal(r.state.hubs[0].construction,null);assert.equal(r.state.inventory.supplierContacts,1000);
+});
+test('Retired sales stages return paid materials once and cancel only over-cap construction without rewriting a purchased cycle',()=>{
+ let r=hubbed(),h=r.state.hubs[0];delete h.salesProgressionVersion;
+ h.salesLevel=23;h.construction={level:24,startedAt:now-H,finishAt:now+287*H};
+ h.cycleSalesLevel=23;h.cycleWorkMs=58.4*60000;h.cycleQuantity=100;h.cyclePaidCoins=0;
+ const before=structuredClone(r.state),contacts=before.inventory.supplierContacts,items=before.inventory.companyItems,coins=before.coins;
+ r=run(r.state);h=r.state.hubs[0];assert.equal(h.salesLevel,20);assert.equal(h.construction,null);
+ assert.equal(r.state.inventory.supplierContacts,contacts+5*(21+22+23+24));assert.equal(r.state.inventory.companyItems,items+4);
+ assert.equal(r.state.coins,coins+1700);assert.equal(h.cycleWorkMs,58.4*60000);assert.equal(h.cycleQuantity,100);assert.equal(h.cycleSalesLevel,23);
+ const once=structuredClone(r.state);r=run(r.state);assert.equal(r.state.coins,once.coins);assert.deepEqual(r.state.inventory,once.inventory);
+ r=run(r.state,'sync',{},now+H);assert.equal(r.view.hubInfo.cycle.workMs,50*60000);
+ let valid=hubbed();delete valid.state.hubs[0].salesProgressionVersion;valid.state.hubs[0].salesLevel=18;
+ valid.state.hubs[0].construction={level:19,startedAt:now-H,finishAt:now+H};
+ valid=run(valid.state);assert.equal(valid.state.hubs[0].construction.finishAt,now+H);
+ valid=run(valid.state,'sync',{},now+H);assert.equal(valid.state.hubs[0].salesLevel,19);
 });
 test('A full cashbox freezes until collection and restarts at zero without duplicate payouts or part rerolls',()=>{
  let r=hubbed();r=run(r.state,'sync',{},now+6*H+21*60000);
