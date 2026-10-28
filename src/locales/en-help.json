@@ -57,18 +57,18 @@
   ],
   "dealer": [
     [
-      "City transporter",
-      "Buy and upgrade the single transporter model directly in the city hub: 25,000 coins, starting capacity 2 t."
+      "Couriers",
+      "Recruit and upgrade Lastwombat couriers in the city hub: 25,000 coins, starting carrying capacity 2 t."
     ]
   ],
   "hub": [
     [
-      "City hub and vehicle parts",
-      "City hub unlocks at level 5, with one slot per five levels up to 20 at level 100. A transporter costs 25,000 coins and starts with 2 t. Upgrade cargo and drive in ten stages each with vehicle parts. Open three found crates daily, at least 30 minutes apart, resetting at 00:00 UTC. Each hourly purchase has one 50% chance for one vehicle part; no finds while the cashbox is full. Collect purchase parts with earnings."
+      "City hub and couriers",
+      "City hub unlocks at level 5, with one slot per five levels up to 20 at level 100. A Lastwombat courier costs 25,000 coins and starts with 2 t. Upgrade cargo and drive in ten stages each with vehicle parts. Open three found crates daily, at least 30 minutes apart, resetting at 00:00 UTC. Each hourly purchase has one 50% chance for one vehicle part; no finds while the cashbox is full. Collect purchase parts with earnings."
     ],
     [
       "Hourly cycle",
-      "A purchase starts every 60 minutes. Full-hour throughput sums 3600 seconds / trip duration × capacity across assigned vehicles, including loaded and empty travel. Sales starts with goods for 40 minutes of work; each of 20 levels adds 30 seconds, up to 50 minutes. Goods, working time and vehicle performance stay frozen until the next purchase."
+      "A purchase starts every 60 minutes. Full-hour throughput sums 3600 seconds / trip duration × capacity across assigned couriers, including loaded and empty travel. Sales starts with goods for 40 minutes of work; each of 20 levels adds 30 seconds, up to 50 minutes. Goods, working time and courier performance stay frozen until the next purchase."
     ],
     [
       "Cashbox",

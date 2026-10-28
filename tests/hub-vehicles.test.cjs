@@ -183,3 +183,15 @@ test('An existing legacy purchase finishes at its original payout then adopts th
  assert.equal(r.state.hubs[0].cashboxCoins,525);assert.equal(r.state.hubs[0].totalTons,75);assert.equal(r.view.hubInfo.cycle.workMs,45*60000);
  r=run(r.state,'sync',{},now+H);assert.equal(r.state.hubs[0].cashboxCoins,525);assert.equal(r.view.hubInfo.cycle.workMs,40*60000);
 });
+
+test('Courier presentation keeps persistent IDs, state and non-hub names intact',()=>{
+ const r=hubbed(),original=r.state.trucks.find(t=>!t.cardId),shown=r.view.state.trucks.find(t=>t.id===original.id);
+ assert.match(original.id,/^LKW-/);assert.equal(original.model,'Stadttransporter');
+ assert.equal(shown.displayName,original.id.replace('LKW-','Bote '));assert.equal(shown.displayModel,'Lastwombat');
+ assert.equal(shown.id,original.id);assert.equal(shown.capacity,original.capacity);
+ const {courierName,courierModel,courierText}=require('../functions/src/hub-courier.js');
+ assert.equal(courierName({...original,name:'Eigener Name'}),'Eigener Name');
+ assert.equal(courierModel({...original,model:'Eigenes Modell'}),'Eigenes Modell');
+ assert.equal(courierText(`${original.id} und LKW-999`,[original]),`${shown.displayName} und LKW-999`);
+ assert.equal(courierText(`Firma ${original.id} meldet ${original.id}`,[original],{companyName:`Firma ${original.id}`}),`Firma ${original.id} meldet ${shown.displayName}`);
+});

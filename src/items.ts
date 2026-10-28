@@ -15,7 +15,7 @@ export function stockItems(data:any):StockItem[]{
   material('capacityModules','Endlosorte und seltene Auftragsbeute.','Erhöht die Fahrzeugkapazität um 0,5 t.'),
   material('companyItems','Normale Aufträge und Materialaufträge.',`Für Firmenausbau. ${g.inventory.companyItemTkmRemainder||0} / 750.000 tkm zum nächsten Item.`,'company'),
   material('pickupHints','Kasse des Stadthubs.','Für die Herstellung von Privatabholungen.'),
-  material('hubVehicleParts','Fundkisten und Einkäufe des Stadthubs.','Für Laderaum und Antrieb der Stadttransporter.','hub'),
+  material('hubVehicleParts','Fundkisten und Einkäufe des Stadthubs.','Für Tragkraft und Tempo der Stadthub-Boten.','hub'),
   material('supplierContacts','Privatabholungen.','Für den Ausbau des Stadthub-Vertriebs.','hub'),
   ...c.rarities.map((r:any)=>({id:`gear:${r.id}`,name:`${r.label}-Zahnrad`,amount:g.inventory.gears[r.id]||0,source:'Abschlussprämien aus Aufträgen.',description:'Verbessert den Geschwindigkeitsrang eines Fahrzeugs.',color:rarityColor(r.id)})),
   ...c.rarities.filter((rarity:any)=>c.cards.some((card:any)=>card.rarity===rarity.id)).map((r:any)=>({id:`shard:${r.id}`,name:`${r.label}-Shard`,amount:g.expedition.shards[r.id]||0,source:'Materialaufträge, Fahrzeugkartenaufträge und doppelte Fahrzeugkarten.',description:'Für Kartenstufen und Fahrzeugboni.',recipe:recipeText(`shard:${r.id}`),craft:recipes.some((recipe:any)=>recipe.inputId===`shard:${r.id}`||recipe.outputId===`shard:${r.id}`),use:'cards',color:rarityColor(r.id)}))
