@@ -33,8 +33,8 @@ export function CollectionFacts({capacity,loadedSpeed,emptySpeed,costPerKm}:{cap
  const average=averageCardSpeed(loadedSpeed,emptySpeed);
  const row=(label:string,icon:React.ReactNode,value:React.ReactNode)=><View accessible accessibilityLabel={label} style={collectionStyles.row}>{icon}{value}</View>;
  return <View style={collectionStyles.facts}>
-  {row(`${t('Kapazität')}: ${n(capacity,1)} t`,<Icon name="orders" size={15} color={C.muted}/>,<Txt style={collectionStyles.value}>{n(capacity,1)} t</Txt>)}
-  {row(`${t('Durchschnittsgeschwindigkeit')}: ${average===undefined?'—':n(average,2)+' km/s'}`,<Icon name="timer" size={15} color={C.muted}/>,<Txt style={collectionStyles.value}>{average===undefined?'—':`${n(average,2)} km/s`}</Txt>)}
+  {row(`${t('Kapazität')}: ${n(capacity,1)} t`,<Icon name="capacity" size={18}/>,<Txt style={collectionStyles.value}>{n(capacity,1)} t</Txt>)}
+  {row(`${t('Durchschnittsgeschwindigkeit')}: ${average===undefined?'—':n(average,2)+' km/s'}`,<Icon name="speed" size={18}/>,<Txt style={collectionStyles.value}>{average===undefined?'—':`${n(average,2)} km/s`}</Txt>)}
   {row(`${t('Betriebskosten')}: ${costPerKm===undefined?'—':n(costPerKm,2)+' M/km'}`,<Icon name="coin" size={15} color={C.muted}/>,<Txt style={collectionStyles.value}>{costPerKm===undefined?'—':`${n(costPerKm,2)} M/km`}</Txt>)}
  </View>;
 }

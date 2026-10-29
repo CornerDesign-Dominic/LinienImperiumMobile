@@ -2,6 +2,8 @@ import React from 'react';
 import {Image,ImageStyle,StyleProp} from 'react-native';
 import {C} from './theme';
 const icons={
+ capacity:require('../assets/art/vehicle-stats/capacity.png'),
+ speed:require('../assets/art/vehicle-stats/speed.png'),
  location:require('../assets/icons/location.png'),
  pin:require('../assets/icons/pin.png'),
  pinFilled:require('../assets/icons/pinFilled.png'),
@@ -44,8 +46,9 @@ const icons={
 } as const;
 export type IconName=keyof typeof icons;
 export function Icon({name,size=24,color=C.text,style}:{name:IconName;size?:number;color?:string;style?:StyleProp<ImageStyle>}){
- // Currency is a full-colour illustration; functional icons retain their tint.
- return <Image testID={name==='coin'?'coin-art':undefined} source={icons[name]} accessible={false} importantForAccessibility="no" resizeMode="contain" fadeDuration={0} style={[{width:size,height:size,flexShrink:0},name!=='coin'&&{tintColor:color},style]}/>;
+ // Illustrations retain their painted colours; functional icons retain their tint.
+ const illustrated=name==='coin'||name==='capacity'||name==='speed';
+ return <Image testID={illustrated?`${name}-art`:undefined} source={icons[name]} accessible={false} importantForAccessibility="no" resizeMode="contain" fadeDuration={0} style={[{width:size,height:size,flexShrink:0},!illustrated&&{tintColor:color},style]}/>;
 }
 export const screenIcons:Record<string,IconName>={procurement:'crafting',home:'home',fleet:'fleet',garage:'garage',orders:'orders',projects:'projects',expeditions:'expedition',cards:'cards',company:'company',hub:'hub',inventory:'inventory',crafting:'crafting',customers:'customers',wholesaler:'wholesaler',statistics:'statistics',account:'settings',events:'events',dealer:'truck'};
 export function stockIcon(id:string):IconName{
