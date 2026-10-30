@@ -55,9 +55,9 @@ export function CustomerDetail({data,id,busy,onSave}:any){
   <Card><Row><Txt muted>Ware</Txt><Txt>{customer.cargo}</Txt></Row><Row><Txt muted>Verkehr</Txt><Txt>{category?.label||customer.category}</Txt></Row><Row style={{marginBottom:0}}><Txt muted>Herkunft</Txt><Txt>{customer.regionName||region?.name||'Expedition'}</Txt></Row></Card>
  </>;
 }
-const styles=StyleSheet.create({summary:{backgroundColor:C.ink,borderColor:C.line,borderWidth:1,borderRadius:6,overflow:'hidden',marginBottom:12},
+const styles=StyleSheet.create({summary:{backgroundColor:C.ink,borderColor:C.line,borderWidth:1,borderRadius:6,overflow:'hidden',marginBottom:10},
  scene:{height:118,backgroundColor:C.ink,overflow:'hidden'},detailScene:{height:200},
  level:{position:'absolute',top:9,right:9,paddingHorizontal:8,paddingVertical:3,borderWidth:1,borderColor:C.brass,borderRadius:5,backgroundColor:'#F2E8D0'},
  levelText:{fontSize:11,lineHeight:16,fontWeight:'700',color:C.ink},pointDot:{position:'absolute',right:-4,top:-4,width:9,height:9,borderRadius:5,backgroundColor:C.accent,borderWidth:1.5,borderColor:'#F2E8D0'},
  caption:{position:'absolute',bottom:0,left:0,right:0,paddingHorizontal:11,paddingVertical:7,backgroundColor:'rgba(17,34,35,.82)'},
- name:{fontSize:14,lineHeight:18,fontWeight:'700',color:C.onInk},detailName:{fontSize:18,lineHeight:23},region:{fontSize:11,lineHeight:15,color:C.brassLight,marginTop:1},title:{fontSize:16,fontWeight:'700'},small:{fontSize:12,lineHeight:18},skill:{paddingVertical:14,borderBottomWidth:1,borderColor:C.line},plus:{minWidth:44,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:10}});
+ name:{fontSize:14,lineHeight:18,fontWeight:'700',color:C.onInk},detailName:{fontSize:18,lineHeight:23},region:{fontSize:11,lineHeight:15,color:C.brassLight,marginTop:1},title:{fontSize:16,fontWeight:'700'},small:{fontSize:12,lineHeight:17},skill:{paddingVertical:12,borderBottomWidth:1,borderColor:C.line},plus:{minWidth:44,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:10}});

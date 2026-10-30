@@ -45,6 +45,6 @@ export function Inventory({data,busy,onUseRefill,modalBlocked=false}:any){
  </>;
 }
 const styles=StyleSheet.create({
- row:{flexDirection:'row',gap:8,marginBottom:10},card:{flex:1,minWidth:0,alignItems:'center'},amount:{width:'100%',color:C.text,fontSize:14,lineHeight:21,fontWeight:'700',textAlign:'center',marginTop:4},
+ row:{flexDirection:'row',gap:8,marginBottom:8},card:{flex:1,minWidth:0,alignItems:'center'},amount:{width:'100%',color:C.text,fontSize:14,lineHeight:21,fontWeight:'700',textAlign:'center',marginTop:4},
  overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',paddingHorizontal:16,paddingVertical:16},detail:{width:'100%',maxWidth:440,maxHeight:'90%',backgroundColor:C.panel,borderRadius:12,borderWidth:1,borderColor:C.line,overflow:'hidden'},header:{flexDirection:'row',alignItems:'center',gap:10,padding:16,borderBottomWidth:1,borderBottomColor:C.line},title:{fontSize:18,lineHeight:25,fontWeight:'700',flex:1,minWidth:0},close:{flexShrink:0,marginTop:0},scroll:{flexShrink:1},content:{padding:16,paddingTop:12},identity:{alignItems:'center',gap:8,marginBottom:4},stock:{fontSize:15,lineHeight:22,fontWeight:'700'},label:{fontSize:11,fontWeight:'700',marginTop:14,marginBottom:4},copy:{fontSize:13,lineHeight:20},error:{color:C.red,fontSize:12,lineHeight:18,marginTop:12}
 });
