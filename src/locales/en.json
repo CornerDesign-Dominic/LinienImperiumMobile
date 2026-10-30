@@ -1110,5 +1110,9 @@
   "Boten verteilen jede Stunde selbstständig Waren. Erträge und Abholhinweise sammeln sich in der Kasse.": "Couriers distribute goods automatically every hour. Earnings and pickup clues collect in the cashbox.",
   "Lastwombat · 2 t Startkapazität": "Pack wombat · 2 t starting capacity",
   "Boten werden direkt im Stadthub angeworben und ausgebaut.": "Recruit and upgrade couriers directly in the city hub.",
-  "Für Tragkraft und Tempo der Stadthub-Boten.": "For city hub courier carrying capacity and speed."
+  "Für Tragkraft und Tempo der Stadthub-Boten.": "For city hub courier carrying capacity and speed.",
+  "Gehaltene Angebote bleiben bestehen.": "Held offers are kept.",
+  "Für {0} M wechseln": "Refresh for {0} M",
+  "Wird gewechselt …": "Refreshing …",
+  "Angebote konnten nicht gewechselt werden. Bitte erneut versuchen.": "Could not refresh offers. Please try again."
 }
