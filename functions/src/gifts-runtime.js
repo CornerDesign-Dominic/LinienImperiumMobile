@@ -10,8 +10,13 @@ function regionVehiclePool(region){
   chance:weights[card.rarity]/cards.filter(other=>other.rarity===card.rarity).length
  }));
 }
-function vehicleFromPool(region,roll){
- const pool=regionVehiclePool(region);
+// Temporary gift test odds: each of the five regional cards is equally likely.
+// Expedition rarity weights remain independent and unchanged.
+function regionGiftPool(region){
+ const cards=EXPEDITION_CHARACTERS.filter(card=>card.region===region);
+ return cards.map(card=>({...card,chance:1/cards.length}));
+}
+function vehicleFromPool(region,roll,pool=regionVehiclePool(region)){
  let total=0;
  return pool.find(card=>(total+=card.chance)>roll)||pool.at(-1);
 }
@@ -23,7 +28,7 @@ function awardVehicleCard(card){
 }
 function openRegionGift(region){
  if(!Number.isInteger(region)||region<0||region>=EXPEDITION_REGIONS.length||game.coins<GIFT_OPEN_COINS)return false;
- const card=vehicleFromPool(region,Math.random());
+ const card=vehicleFromPool(region,Math.random(),regionGiftPool(region));
  if(!card)return false;
  game.coins=round2(game.coins-GIFT_OPEN_COINS);
  const result=awardVehicleCard(card);

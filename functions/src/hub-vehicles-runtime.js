@@ -11,6 +11,7 @@ function initHubParts() {
 }
 function migrateHubVehicles() {
  initHubParts();
+ migrateHubSales();
  if(game.hubSystemVersion===1)return;
  for(const t of cityVehicles()){
   // Preserve attained performance. Convert speed ranks to the new ten-step track.
@@ -77,7 +78,39 @@ function rollHubPart(h,at) {
  if(Math.random()<.5)h.cashboxParts=(h.cashboxParts||0)+1;
 }
 // The 60-minute reference is continuous transport throughput, frozen at purchase.
-const hubWorkMs=level=>(40+20*clamp(level||0,0,25)/25)*60000;
+const HUB_SALES_STAGES=20;
+const hubWorkMs=level=>(40+.5*clamp(level||0,0,HUB_SALES_STAGES))*60000;
+function migrateHubSales(){
+ const h=hub();if(!h||h.salesProgressionVersion===1)return;
+ // Removed stages return their paid materials once. Purchased goods retain
+ // their frozen duration/quantity, even if the old stage exceeded the new cap.
+ for(let level=HUB_SALES_STAGES+1;level<=(h.salesLevel||0);level++){
+  game.inventory.supplierContacts+=hubUpgradeContactCost(level);
+  game.inventory.companyItems+=COMPANY_BALANCE.upgradeItems(level);
+ }
+ h.salesLevel=Math.min(HUB_SALES_STAGES,h.salesLevel||0);
+ if(h.construction?.level>HUB_SALES_STAGES){
+  const level=h.construction.level,coins=COMPANY_BALANCE.upgradeCoins(level);
+  game.inventory.supplierContacts+=hubUpgradeContactCost(level);
+  game.inventory.companyItems+=COMPANY_BALANCE.upgradeItems(level);
+  game.coins=round2(game.coins+coins);
+  game.stats.hubUpgradeSpent=Math.max(0,(game.stats.hubUpgradeSpent||0)-coins);
+  h.construction=null;
+ }
+ h.salesProgressionVersion=1;
+}
+startHubUpgrade=()=>{
+ const h=hub();if(!h)return false;
+ settleHub(Date.now());
+ if(h.construction||h.salesLevel>=HUB_SALES_STAGES)return false;
+ const level=h.salesLevel+1,contacts=hubUpgradeContactCost(level),items=COMPANY_BALANCE.upgradeItems(level);
+ if(game.inventory.supplierContacts<contacts||game.inventory.companyItems<items)return false;
+ game.inventory.supplierContacts-=contacts;game.inventory.companyItems-=items;
+ const startedAt=Date.now();
+ h.construction={level,startedAt,finishAt:startedAt+level*12*HUB_CYCLE_MS};
+ addEvent(`Stadthub: Vertrieb Stufe ${level} im Ausbau (${level*12} Stunden).`);
+ return true;
+};
 hubSalesPercent=level=>hubWorkMs(level)/HUB_CYCLE_MS*100;
 hubHourlyCapacity=()=>round2(hubTrucks().reduce((sum,t)=>sum+HUB_CYCLE_MS/1000/hubTripSeconds(t)*t.capacity,0));
 const legacyAccrueHubCycle=accrueHubCycle;
@@ -122,7 +155,7 @@ settleHub=now=>{
  while(h.nextCycleAt<=now){
   changed=accrueHubCycle(h,h.nextCycleAt)||changed;
   if((h.cycleCapacity??0)>0)h.cashboxCycles++;
-  if(h.cashboxCycles>=HUB_CASHBOX_CYCLES)return true;
+  if(h.cashboxCycles>=HUB_CASHBOX_CYCLES){completeHubUpgrade(h,now);return true;}
   h.nextCycleAt+=HUB_CYCLE_MS;
   changed=completeHubUpgrade(h,h.nextCycleAt-HUB_CYCLE_MS)||changed;
   beginHubCycle(h);changed=true;
@@ -147,8 +180,8 @@ collectHub=()=>{
 function hubCycleView(){
  const h=hub(),modern=h?.cycleVersion===2;
  return {durationMs:HUB_CYCLE_MS,workMs:modern?h.cycleWorkMs:HUB_WORK_SECONDS*1000,cashboxMax:HUB_CASHBOX_CYCLES,
-  salesPercent:hubSalesPercent(h?.salesLevel||0),nextSalesPercent:hubSalesPercent(Math.min(25,(h?.salesLevel||0)+1)),
-  workMinutes:hubWorkMs(h?.salesLevel||0)/60000,
+  salesMax:HUB_SALES_STAGES,workMinutes:hubWorkMs(h?.salesLevel||0)/60000,
+  nextWorkMinutes:hubWorkMs((h?.salesLevel||0)+1)/60000,
   quantity:modern?h.cycleQuantity:h?round2((h.cycleCapacity??0)*(75+(h.cycleSalesLevel??h.salesLevel))/100):0};
 }
 function hubCrateView(now) {

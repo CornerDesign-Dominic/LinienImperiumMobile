@@ -6,7 +6,7 @@ const {execute}=require('../functions/src/engine.cjs');
 const now=1800000000000;
 const initial=()=>execute(null,'foundCompany',{companyName:'Geschenktest',cityName:'Testhafen'},now,()=>.5);
 
-test('Every region has exactly five stable cards and the same disclosed gift and expedition pool',()=>{
+test('Every region discloses five equally likely gift cards while expedition weights remain unchanged',()=>{
  const game=initial(),{view}=game;
  assert.equal(view.catalog.cards.length,25);
  assert.equal(new Set(view.catalog.cards.map(c=>c.id)).size,25);
@@ -21,7 +21,9 @@ test('Every region has exactly five stable cards and the same disclosed gift and
   assert.deepEqual(gift.cards.map(c=>c.id),view.expeditionMap[gift.region].finds.cards.map(c=>c.id));
   for(const card of gift.cards){
    const expedition=view.expeditionMap[gift.region].finds.cards.find(c=>c.id===card.id);
-   assert.ok(Math.abs(expedition.chance-card.chance/10)<1e-8);
+   assert.equal(card.chance,20);
+   const weights={common:3,uncommon:3,rare:.9,epic:.1};
+   assert.ok(Math.abs(expedition.chance-weights[card.rarity])<1e-8);
    assert.ok(Number.isFinite(view.cardBonuses[card.id]));
    assert.ok(view.cardVehicles[card.id].capacity>0);
   }
@@ -42,7 +44,10 @@ test('Every advertised card can actually be opened and found in its expedition w
    assert.equal(giftResult.state.coins,state.coins-10);
    assert.equal(giftResult.state.expedition.points,50);
    assert.equal(JSON.stringify(state),saved,'Do not mutate the input save');
-   const found=execute(state,'draw',{region:gift.region},now,()=>roll*.1);
+   const expeditionCards=initialGame.view.expeditionMap[gift.region].finds.cards;
+   const expeditionStart=expeditionCards.slice(0,expeditionCards.findIndex(c=>c.id===card.id)).reduce((sum,c)=>sum+c.chance,0);
+   const expeditionChance=expeditionCards.find(c=>c.id===card.id).chance;
+   const found=execute(state,'draw',{region:gift.region},now,()=>(expeditionStart+expeditionChance/2)/100);
    assert.equal(found.view.expeditionFind.title,card.name);
    assert.equal(found.state.expedition.points,45);
    assert.ok(found.state.expedition.characters[card.id]);

@@ -11,7 +11,7 @@ function CustomerScene({customer,detail=false}:{customer:any;detail?:boolean}){
  const source=portraitForPlace(index,7),available=customer.points>0;
  return <View testID={`customer-scene-${customer.id}`} style={[styles.scene,detail&&styles.detailScene]}>
   {source&&<Image testID={`customer-place-${customer.id}`} source={source} resizeMode="cover" accessible={false} style={[StyleSheet.absoluteFill,{width:'100%',height:'100%'}]}/>}
-  <View accessible accessibilityLabel={`${translate(`Level ${customer.level}`)}${available?`, ${translate('Fähigkeitspunkte verfügbar')}`:''}`} style={styles.level}>
+  <View accessible accessibilityLabel={`${translate(`Level ${customer.level}`)}${available?`, ${translate('Verbesserungspunkte verfügbar')}`:''}`} style={styles.level}>
    <Txt style={styles.levelText}>Level {customer.level}</Txt>
    {available&&<View testID={`customer-points-${customer.id}`} style={styles.pointDot}/>}
   </View>
@@ -23,7 +23,7 @@ function CustomerScene({customer,detail=false}:{customer:any;detail?:boolean}){
 }
 export function CustomerList({data,onOpen}:any){
  if(!data.customers.length)return <Empty>Stammkunden über den Endlosort freischalten.</Empty>;
- return <>{data.customers.map((customer:any)=><Pressable key={customer.id} accessibilityRole="button" accessibilityLabel={`${translate(customer.name)}, ${translate(`Level ${customer.level}`)}${customer.points>0?`, ${translate('Fähigkeitspunkte verfügbar')}`:''}`} onPress={()=>onOpen(customer.id)} style={({pressed})=>[styles.summary,pressed&&{opacity:.8}]}>
+ return <>{data.customers.map((customer:any)=><Pressable key={customer.id} accessibilityRole="button" accessibilityLabel={`${translate(customer.name)}, ${translate(`Level ${customer.level}`)}${customer.points>0?`, ${translate('Verbesserungspunkte verfügbar')}`:''}`} onPress={()=>onOpen(customer.id)} style={({pressed})=>[styles.summary,pressed&&{opacity:.8}]}>
   <CustomerScene customer={customer}/>
  </Pressable>)}</>;
 }
@@ -39,7 +39,7 @@ export function CustomerDetail({data,id,busy,onSave}:any){
  const category=data.catalog.categories.find((c:any)=>c.id===customer.category);
  return <>
   <View style={styles.summary}><CustomerScene customer={customer} detail/></View>
-  <Card><Row><Txt style={styles.title}>Fähigkeiten</Txt>{editing&&<Pill gold>{Math.max(0,left)} {left===1?'Punkt':'Punkte'}</Pill>}</Row>
+  <Card><Row><Txt style={styles.title}>Verbesserungen</Txt>{editing&&<Pill gold>{Math.max(0,left)} {left===1?'Punkt':'Punkte'}</Pill>}</Row>
    {SKILLS.map(skill=>{const level=customer.skills[skill.kind]||0,extra=draft[skill.kind],next=level+extra;return <View key={skill.kind} style={styles.skill}>
     <Txt style={{fontWeight:'700',marginBottom:6}}>{skill.label}</Txt>
     <Row style={{marginBottom:0,flexWrap:'nowrap'}}><View style={{flex:1,minWidth:0}}><Txt gold style={styles.small}>{skill.kind==='pay'?'Vergütung':'Chance'} +{n(next*.1,1)} %</Txt>{editing&&next<skill.limit&&<Txt muted style={styles.small}>+0,1 % je Punkt</Txt>}<Txt muted style={styles.small}>Stufe {level}{extra?` → ${next}`:''} / {skill.limit}</Txt></View>
@@ -52,12 +52,12 @@ export function CustomerDetail({data,id,busy,onSave}:any){
    </View>;})}
    {assigned>0&&<Btn disabled={busy||!valid} onPress={async()=>{const result=await onSave(id,draft,customer.skills);if(result?.customerBatchApplied)setDraft({pay:0,special:0,referral:0});}}>Speichern</Btn>}
   </Card>
-  <Card><Row><Txt muted>Ware</Txt><Txt>{customer.cargo}</Txt></Row><Row><Txt muted>Verkehr</Txt><Txt>{category?.label||customer.category}</Txt></Row><Row style={{marginBottom:0}}><Txt muted>Herkunft</Txt><Txt>{customer.regionName||region?.name||'Expedition'}</Txt></Row></Card>
+  <Card><Row style={{alignItems:'flex-start',gap:12}}><Txt muted>Waren</Txt><View style={{flex:1,minWidth:0}}>{(customer.products||[customer.cargo]).map((product:string)=><Txt key={product} style={{textAlign:'right'}}>{product}</Txt>)}</View></Row><Row><Txt muted>Verkehr</Txt><Txt>{category?.label||customer.category}</Txt></Row><Row style={{marginBottom:0}}><Txt muted>Herkunft</Txt><Txt>{customer.regionName||region?.name||'Expedition'}</Txt></Row></Card>
  </>;
 }
-const styles=StyleSheet.create({summary:{backgroundColor:C.ink,borderColor:C.line,borderWidth:1,borderRadius:6,overflow:'hidden',marginBottom:12},
+const styles=StyleSheet.create({summary:{backgroundColor:C.ink,borderColor:C.line,borderWidth:1,borderRadius:6,overflow:'hidden',marginBottom:10},
  scene:{height:118,backgroundColor:C.ink,overflow:'hidden'},detailScene:{height:200},
  level:{position:'absolute',top:9,right:9,paddingHorizontal:8,paddingVertical:3,borderWidth:1,borderColor:C.brass,borderRadius:5,backgroundColor:'#F2E8D0'},
  levelText:{fontSize:11,lineHeight:16,fontWeight:'700',color:C.ink},pointDot:{position:'absolute',right:-4,top:-4,width:9,height:9,borderRadius:5,backgroundColor:C.accent,borderWidth:1.5,borderColor:'#F2E8D0'},
  caption:{position:'absolute',bottom:0,left:0,right:0,paddingHorizontal:11,paddingVertical:7,backgroundColor:'rgba(17,34,35,.82)'},
- name:{fontSize:14,lineHeight:18,fontWeight:'700',color:C.onInk},detailName:{fontSize:18,lineHeight:23},region:{fontSize:11,lineHeight:15,color:C.brassLight,marginTop:1},title:{fontSize:16,fontWeight:'700'},small:{fontSize:12,lineHeight:18},skill:{paddingVertical:14,borderBottomWidth:1,borderColor:C.line},plus:{minWidth:44,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:10}});
+ name:{fontSize:14,lineHeight:18,fontWeight:'700',color:C.onInk},detailName:{fontSize:18,lineHeight:23},region:{fontSize:11,lineHeight:15,color:C.brassLight,marginTop:1},title:{fontSize:16,fontWeight:'700'},small:{fontSize:12,lineHeight:17},skill:{paddingVertical:12,borderBottomWidth:1,borderColor:C.line},plus:{minWidth:44,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:10}});

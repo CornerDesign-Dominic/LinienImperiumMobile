@@ -57,26 +57,26 @@
   ],
   "dealer": [
     [
-      "City transporter",
-      "Buy and upgrade the single transporter model directly in the city hub: 25,000 coins, starting capacity 2 t."
+      "Couriers",
+      "Recruit and upgrade Lastwombat couriers in the city hub: 25,000 coins, starting carrying capacity 2 t."
     ]
   ],
   "hub": [
     [
-      "City hub and vehicle parts",
-      "City hub unlocks at level 5, with one slot per five levels up to 20 at level 100. A transporter costs 25,000 coins and starts with 2 t. Upgrade cargo and drive in ten stages each with vehicle parts. Open three found crates daily, at least 30 minutes apart, resetting at 00:00 UTC. Each hourly purchase has one 50% chance for one vehicle part; no finds while the cashbox is full. Collect purchase parts with earnings."
+      "City hub and couriers",
+      "City hub unlocks at level 5, with one slot per five levels up to 20 at level 100. A Lastwombat courier costs 25,000 coins and starts with 2 t. Upgrade cargo and drive in ten stages each with vehicle parts. Open three found crates daily, at least 30 minutes apart, resetting at 00:00 UTC. Each hourly purchase has one 50% chance for one vehicle part; no finds while the cashbox is full. Collect purchase parts with earnings."
     ],
     [
       "Hourly cycle",
-      "Opening is free. A cycle lasts 60 minutes: 45 minutes of trips and 15 minutes of rest. Trips cover 12 km loaded and 12 km empty. Hourly capacity sums floor(2700 seconds / trip duration) × capacity for each vehicle."
+      "A purchase starts every 60 minutes. Full-hour throughput sums 3600 seconds / trip duration × capacity across assigned couriers, including loaded and empty travel. Sales starts with goods for 40 minutes of work; each of 20 levels adds 30 seconds, up to 50 minutes. Goods, working time and courier performance stay frozen until the next purchase."
     ],
     [
       "Cashbox",
-      "Sales purchases 75% of hourly capacity, +1 percentage point per sales level, up to 100%. Each tonne earns 10 M sales − 3 M purchase. Each working hour yields 8–12 pickup clues. The cashbox fills after 6 uncollected cycles."
+      "Each tonne earns 10 M sales − 3 M purchase. Each working hour yields 8–12 pickup clues. The cashbox fills after 6 uncollected cycles, then work pauses. Collecting a full cashbox starts a fresh purchase at minute zero; partial collection keeps the current cycle. Collect coins, pickup clues and toolboxes together."
     ],
     [
       "Upgrades",
-      "Next sales level N costs 5 × N supplier contacts, 1 + floor((N−1)/25) company upgrade items and 500 + 50 × N M. Construction takes 12 × N hours. Maximum level: 25."
+      "Next sales level N costs 5 × N supplier contacts and one company upgrade item, with no coin cost. Construction takes 12 × N hours. Maximum level: 20. Completed upgrades affect the next purchase."
     ]
   ],
   "inventory": [

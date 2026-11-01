@@ -30,6 +30,6 @@ const a=StyleSheet.create({
  points:{alignSelf:'flex-start',flexDirection:'row',alignItems:'center',gap:5,marginTop:7,borderWidth:1,borderColor:C.brass,borderRadius:4,paddingVertical:3,paddingHorizontal:6,backgroundColor:'rgba(218,190,125,.12)'},pointsText:{fontSize:11,lineHeight:16,fontWeight:'700',color:C.brassLight},
  eyebrow:{fontSize:9,fontWeight:'700',letterSpacing:1.2,color:C.brassLight,marginBottom:2},
  company:{fontFamily:displayFont,fontSize:20,lineHeight:25,fontWeight:'700',color:C.onInk},city:{fontSize:12,lineHeight:17,color:C.mutedOnInk,marginTop:2},
- heading:{flexDirection:'row',alignItems:'center',gap:13,marginTop:4,marginBottom:20},atlasTitle:{fontFamily:displayFont,fontWeight:'700',fontSize:24,lineHeight:30,color:C.ink},detail:{fontSize:12,lineHeight:19,color:C.muted,marginTop:4},
+ heading:{flexDirection:'row',alignItems:'center',gap:13,marginTop:4,marginBottom:16},atlasTitle:{fontFamily:displayFont,fontWeight:'700',fontSize:24,lineHeight:30,color:C.ink},detail:{fontSize:12,lineHeight:19,color:C.muted,marginTop:4},
  seal:{width:45,height:51,borderWidth:1,borderBottomWidth:3,borderRadius:4,alignItems:'center',justifyContent:'center',backgroundColor:C.raised},sealNumber:{fontFamily:displayFont,fontSize:23,fontWeight:'700'},
 });

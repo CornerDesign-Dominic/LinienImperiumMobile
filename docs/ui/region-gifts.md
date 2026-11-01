@@ -21,14 +21,13 @@ Kein Gebiet überschreitet 1 Epic oder 2 Rare.
 
 Epic-Karten verwenden vorläufig 8 % Grundbonus und +2 Prozentpunkte pro Kartenstufe. Epic-Shards aus Duplikaten sind in Vorräten und Sammlung sichtbar und für Kartenstufen verwendbar; kein neuer Shard-Umtausch hinzugefügt.
 
-## Vorläufige Chancen
-Geschenke: Region 1 Common 60 %, Uncommon 30 %, Rare 10 %. Region 2–5 Common 60 %, Uncommon 30 %, Rare 9 %, Epic 1 %. Gleichverteilung innerhalb einer Seltenheit.
-Expeditionen verwenden exakt denselben Pool, bei unverändert insgesamt 10 % Fahrzeugchance. Daher pro Auslosung Region 1 6/3/1 %, Region 2–5 6/3/0,9/0,1 %. Bestehende Auftragswahrscheinlichkeiten unverändert.
-Diese Werte sind ein offener Balancevorschlag, keine finalen Echtgeldwahrscheinlichkeiten.
+## Testchancen (November 2026)
+Geschenke: Jede der fünf Karten eines Gebietes hat testweise exakt 20 % Chance. Gemeint sind die fünf tatsächlichen Karten, nicht fünf erfundene Seltenheiten. Der aktuelle Fahrzeugkatalog enthält je Gebiet zwei Common-, eine Uncommon-, eine Rare- und eine Epic-Karte.
+
+Expeditionen behalten ihre bisherigen Gewichte: insgesamt 10 % Kartenchance, pro Auslosung je Common-Karte 3 %, Uncommon 3 %, Rare 0,9 % und Epic 0,1 %. Die Auftragswahrscheinlichkeiten bleiben unverändert.
 
 ## Implementierung
-Gemeinsamer Fahrzeugpool und Vergabepfad in gifts-runtime.js, serverseitiger Preis und geprüfter Regionsindex. Neue Kommandos nutzen bestehende Firestore-Transaktionen und Anfragebelege; das Geschenkresultat wird für Wiederholungen gespeichert.
-Deutsche und englische Texte sowie Fundchancenhilfe ergänzt.
+`regionGiftPool` ist die gemeinsame Quelle für tatsächliche Geschenkziehung und sichtbare Einzelchancen im Geschenkmodal. `regionVehiclePool` bleibt ausschließlich für die bisher gewichteten Expeditionsfunde zuständig. Preis, Vergabe, Duplikate und transaktionale Anfragebelege bleiben unverändert.
 
 ## Validierung
 83 Backendtests bestanden:

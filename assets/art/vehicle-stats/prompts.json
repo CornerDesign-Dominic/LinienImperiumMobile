@@ -1,0 +1,9 @@
+{
+  "tool": "Built-in image_gen",
+  "reference": "Approved crate and pocket-watch sample, exec-b26904db-c1e9-4bbb-b5f6-26fa57a1450f.png",
+  "assets": {
+    "capacity.png": {"source": "exec-4f514cb4-dbc9-4999-b063-e5cb7459432f.png", "prompt": "Single closed warm brown wooden shipping crate in slight three-quarter view, two broad dark iron straps, strong silhouette, restrained painted shading, simplified for tiny mobile stat icon. Genuine transparent background. No ground shadow, text, frame or other object."},
+    "speed.png": {"source": "exec-5e2de025-89c0-4cc6-96bd-293cc3a0ccc4.png", "prompt": "Single front-facing antique brass pocket watch, cream dial, two thick dark petrol hands at ten and two, small crown, strong contour and broad painted shading. Genuine transparent background. No numbers, ticks, chain, text, ground shadow or frame."}
+  },
+  "processing": "Alpha bounds trimmed, aspect ratio preserved, scaled within 240px and centered on 256px transparent PNG. No creative postprocessing."
+}
