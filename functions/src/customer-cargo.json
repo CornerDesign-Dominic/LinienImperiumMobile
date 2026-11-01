@@ -1,0 +1,10 @@
+{
+  "basic": ["Holz", "Stein", "Getreide", "Erz", "Wolle"],
+  "customers": {
+    "nordbau": {"products": ["Mehl", "Werkzeuge", "Möbel"], "precious": "Goldschmuck"},
+    "frischgut": {"products": ["Leder", "Tuche", "Käse"], "precious": "Feine Wandteppiche"},
+    "stahlwerk": {"products": ["Gewürzmischungen", "Farbstoffe", "Räucherwerk"], "precious": "Kostbare Essenzen"},
+    "alpenhandel": {"products": ["Papier", "Teemischungen", "Porzellangeschirr"], "precious": "Jadekunstwerke"},
+    "eurolog": {"products": ["Trockenfisch", "Pelzkleidung", "Schmiedewaren"], "precious": "Bernsteinschnitzereien"}
+  }
+}

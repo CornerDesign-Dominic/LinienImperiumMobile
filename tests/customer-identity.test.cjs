@@ -45,7 +45,8 @@ test('Compact customer cards show end-place images and level hints only for unal
  for(const id of ['nordbau','frischgut']){
   const detail=renderToStaticMarkup(React.createElement(CustomerDetail,{data:view,id,busy:false,onSave:()=>{}}));
   assert.equal(detail.includes('customer-points-'+id),id==='frischgut');
-  assert.ok(detail.includes('Fähigkeiten'));assert.ok(!detail.includes('Beziehung'));
+  assert.ok(detail.includes('Verbesserungen'));assert.ok(!detail.includes('Beziehung'));
+  for(const product of view.customers.find(c=>c.id===id).products)assert.ok(detail.includes(product));
   assert.equal(detail.includes('Frachtvergütung hinzufügen'),id==='frischgut');
  }
 });

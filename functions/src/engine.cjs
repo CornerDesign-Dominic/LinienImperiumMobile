@@ -5,6 +5,8 @@ const vm = require('node:vm');
 const itemNames = require('./item-names.json');
 const {courierName,courierModel,courierText}=require('./hub-courier.js');
 const customerIdentities = require('./customer-identities.json');
+const customerCargo = require('./customer-cargo.json');
+const customerCargoRuntime = fs.readFileSync(path.join(__dirname, 'customer-cargo-runtime.js'), 'utf8');
 const normalizeCustomerNames = text => typeof text==='string'?customerIdentities.reduce((value,identity)=>value.split(identity.legacyName).join(identity.customer),text):text;
 // Rewrite presentation text only; player-selected names and persistent IDs stay intact.
 function normalizeTransportNames(text,profile){
@@ -36,6 +38,7 @@ const bridge = `
   const expeditionTestDuration = ${JSON.stringify(EXPEDITION_TEST_DURATION_MS)};
   const transportCards = ${JSON.stringify(transportCards)};
   const customerIdentities = ${JSON.stringify(customerIdentities)};
+  const customerCargo = ${JSON.stringify(customerCargo)};
   CATEGORIES.find(category=>category.id==='national').label='Nahverkehr';
   customerIdentities.forEach((identity,index)=>{
     const customer=CUSTOMERS.find(customer=>customer.id===identity.id);
@@ -43,6 +46,7 @@ const bridge = `
     EXPEDITION_REGIONS[index]=identity.title;
   });
   ${companyTransportRuntime}
+  ${customerCargoRuntime}
   ${giftsRuntime}
   ${progressionRuntime}
   const originalNewGame=newGame;
@@ -611,7 +615,8 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   for(const key of Object.keys(view.help)){const help=view.help[key];help[1]=help[1].map(([title,body])=>[normalizeNames(title),normalizeNames(body)]);}
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>title==='Fundchancen je Auslosung'?[title,'<p>Je Gebiet gibt es fünf Fahrzeugkarten. Insgesamt 10 % Kartenchance pro Expedition. Die Fahrzeugchancen und Auftragschancen stehen am Endlosort unter ?. Geschenke im Großhändler geben garantiert eine der fünf Gebietskarten; testweise hat jede Karte 20 % Chance. Die Expeditionschancen bleiben unverändert. Doppelte Karten geben 1 Shard derselben Seltenheit.</p>']:[title,body]);
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>[title,title==='Missionen'?'Jeder der sieben Orte hat eine einmalige Bonuslieferung. Ihr Abschluss gibt automatisch 1 Erweiterungspunkt. Die erste Endlosort-Lieferung schaltet den regionalen Stammkunden frei und gibt 1 Kapazitätsmodul, sofern noch nicht erhalten. Fahrzeuge kommen aus der Garage.':body]);
-  view.help.expeditions[1].push(['Automatische Abschlüsse','Abgeschlossene Expeditionslieferungen und Expeditionsaufträge werden automatisch gutgeschrieben. Ortslieferungen geben 1 Erweiterungspunkt statt einer festen Erhöhung des Expeditionsmaximums. Jeder Punkt erhöht wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1. Bestätigte Verteilungen sind nicht rückgängig zu machen. Unvergebene Punkte bleiben unter Firma verfügbar. Die Abschlussübersicht kann geschlossen werden; sie ist keine Abholung.']);
+  view.help.expeditions[1].push(['Automatische Abschlüsse','Ortslieferungen werden automatisch gutgeschrieben. Ausführbare Material- und Fahrzeugkartenaufträge aus Dauerexpeditionen werden dagegen gemeinsam über den Sammelbutton der Einzelaufträge eingesammelt. Ortslieferungen geben 1 Erweiterungspunkt statt einer festen Erhöhung des Expeditionsmaximums. Jeder Punkt erhöht wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1. Bestätigte Verteilungen sind nicht rückgängig zu machen. Unvergebene Punkte bleiben unter Firma verfügbar. Die Abschlussübersicht kann geschlossen werden; sie ist keine Abholung.']);
+  view.help.customers[1]=view.help.customers[1].map(([title,body])=>[title.replace(/Fähigkeit/g,'Verbesserung').replace(/fähigkeit/g,'verbesserung'),body.replace(/Fähigkeit/g,'Verbesserung').replace(/fähigkeit/g,'verbesserung')]);
   view.help.dashboard[1]=view.help.dashboard[1].map(([title,body])=>[title,title==='Spielerlevel'?'<p>Transportierte Tonnen geben XP: gelieferte Tonnen × bezahlte Richtungen × (1 + aktive Karten-XP-Boni / 100). Bei Dual Way zählen beide Richtungen. Jeder nächste Aufstieg benötigt 100 × aktuelles Level XP. Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 dauerhaft verteilbare Punkte. Ab Level 5 wird alle fünf Level ein weiterer Stadthub-Botenplatz freigeschaltet, maximal 20 bei Level 100.</p>':body]);
   view.help.company[1]=view.help.company[1].map(([title,body])=>title==='Transportsegmente'?[title,'Prämie: 1.000 Stufen, je +1 Prozentpunkt. Neue Stufe N kostet 1.000 × N M und 1 + abrunden((N−1)/25) Firmenausbau-Items. Regional- und Fernverkehr getrennt. Menge und Reichweite: je 100 Stufen; bisherige Endwerte und Gesamtkosten bleiben erhalten. Prämien wirken auf die Abschlussprämie der jeweiligen Kategorie, nicht auf Frachtvergütung oder Beute.']: [title,body]);
   view.help.development[1]=view.help.development[1].map(([title,body])=>title==='Herstellung'?[title,'100 Abholhinweise ergeben eine Privatabholung. Rahmensplitter lassen sich zur nächsthöheren Seltenheit kombinieren. Firmenausbau-Items werden vorerst nicht zur Herstellung verwendet.']:[title,body]);
