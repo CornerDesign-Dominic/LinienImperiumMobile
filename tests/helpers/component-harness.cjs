@@ -25,6 +25,7 @@ function componentHarness(file,imports={}){
   if(id==='./Icon')return {Icon:'Icon'};
   if(id==='./HubCourierArt')return {HubCourierArt:'HubCourierArt'};
   if(id==='../functions/src/hub-courier')return require('../../functions/src/hub-courier.js');
+  if(id==='./OrderArtwork')return {OrderArtwork:'OrderArtwork'};
   if(id==='./VehicleArt')return {VehicleArt:'VehicleArt'};
   if(id==='./ExpeditionPlaceModal')return {ExpeditionPlaceModal:'RewardModal'};
   if(id==='./giftReveal')return require('../../src/giftReveal.js');

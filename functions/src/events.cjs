@@ -69,7 +69,7 @@ function spendEventOvertime(state,id,run,amount,now){
 }
 function assignEventFleet(state,id,run,template,options,now){
  const event=currentEvent(state,id,run);if(event?.status!=='running')throw Error('Dieses Event läuft nicht.');if(event.project)throw Error('Für diesen Durchlauf ist bereits eine Flotte eingesetzt.');
- const option=options.find(o=>o.index===template);if(!option?.vehicles?.length)throw Error('Bitte zuerst mindestens eine Fahrzeugkarte in diese Flotte einsetzen.');
+ const option=options.find(o=>o.index===template);if(!option?.vehicles?.length)throw Error('Bitte zuerst mindestens eine Transportkarte in diese Flotte einsetzen.');
  event.project={template,assignedAt:now,distance:event.distance,delivered:event.priorDelivered||0,km:0,tonKm:0,tours:0,vehicles:JSON.parse(JSON.stringify(option.vehicles)).map(v=>({...v,completedTours:0,nextAt:now+v.cycleMs}))};return 'Flotte eingesetzt. Der Pyramidenbau läuft.';
 }
 function syncWorld(state,context){const e=state.eventTests?.[EVENT_ID];if(context.world&&e?.communityId===context.world.id){const score=e.project?.delivered||0;context.world.total+=Math.max(0,score-(context.reported||0));context.reported=Math.max(context.reported||0,score);}}

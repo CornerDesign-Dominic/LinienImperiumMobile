@@ -611,7 +611,7 @@ test('Legacy saves receive an empty expedition filler slot without retroactive r
 
 test('All expedition cards can start regional and long-distance orders while garage exclusivity and city vehicle restrictions remain',()=>{
  const initial=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
- assert.match(initial.view.help.fleet[1][0][1],/Alle gefundenen Fahrzeugkarten können Nahverkehr und Fernverkehr/);
+ assert.match(initial.view.help.fleet[1][0][1],/Alle gefundenen Transportkarten können Nahverkehr und Fernverkehr/);
  // Equip once per card and prepare both routes together. Actual starts still
  // cover all 25 cards in both categories; exclusivity is category-independent.
  for(const card of initial.view.catalog.cards){
