@@ -11,15 +11,15 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
 import {C,Txt,Card,Row,Btn,Pill,n} from './ui';
 type Allocation={expedition:number;overtime:number};
-export function DevelopmentCard({data,busy,onCommand,modalBlocked=false}:any){
+export function DevelopmentCard({data,busy,onCommand,onExpansion,modalBlocked=false}:any){
  const [open,setOpen]=useState(false),development=data.development;
  if(!development)return null;
  return <>
   <Card style={{padding:12,borderColor:development.points?C.accent:C.line}}>
    <Row style={{marginBottom:7,flexWrap:'nowrap'}}><Txt style={s.title}>Entwicklung</Txt><Pill>Verfügbare Punkte: {n(development.points)}</Pill></Row>
-   {(['overtime','expedition'] as const).map(kind=><Row key={kind} style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={{fontSize:12,flex:1}}>{kind==='overtime'?'Überstunden':'Expeditionspunkte'}</Txt><View accessible accessibilityLabel={`${translate(kind==='overtime'?'Überstunden':'Expeditionspunkte')}: ${translate('Basis')} ${n(development[kind].base)}, ${translate('Boni')} +${n(development[kind].bonus)}`} style={s.capacity}><Txt style={{fontWeight:'700'}}>{n(development[kind].base)}</Txt><Txt gold>+{n(development[kind].bonus)}</Txt></View></Row>)}
-   <Txt muted style={s.caption}>Basiswert + Boni</Txt>
+   {(['overtime','expedition'] as const).map(kind=><Row key={kind} style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={{fontSize:12,flex:1}}>{kind==='overtime'?'Überstunden':'Expeditionspunkte'}</Txt><View accessible accessibilityLabel={`${translate(kind==='overtime'?'Überstunden':'Expeditionspunkte')}: ${n(development[kind].base+development[kind].bonus)}, ${translate('Basis')} ${n(development[kind].base)}, ${translate('Boni')} +${n(development[kind].bonus)}`} style={s.capacity}><Txt style={{fontSize:17,fontWeight:'700'}}>{n(development[kind].base+development[kind].bonus)}</Txt><Txt muted style={{fontSize:11}}>{n(development[kind].base)} + {n(development[kind].bonus)}</Txt></View></Row>)}
    {development.points>0&&<Btn disabled={busy} onPress={()=>setOpen(true)}>Punkte verteilen</Btn>}
+   {data.expansion?.available>0&&onExpansion&&<Btn secondary disabled={busy} onPress={onExpansion}>Erweiterungspunkte verteilen · {n(data.expansion.available)}</Btn>}
   </Card>
   {open&&<DevelopmentModal data={data} busy={busy} onCommand={onCommand} onClose={()=>setOpen(false)} modalBlocked={modalBlocked}/>}
  </>;

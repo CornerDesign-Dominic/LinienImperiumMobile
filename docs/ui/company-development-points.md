@@ -6,7 +6,7 @@ Veröffentlicht am 24.10.2026 mit Release `bd678df7b4e82278b18dba33447b7ece0c5bf
 
 Der große Punkteverteiler entfällt auf Home. Die erste Firmen-Card Dein Handelsimperium zeigt ausschließlich bei unverteilten Punkten einen goldenen Hinweis mit Anzahl. Der bestehende Firmen-Einstieg bleibt erhalten.
 
-Ganz oben auf der Firmenseite steht die kompakte Card Entwicklung. Sie zeigt Verfügbare Punkte sowie Überstunden und Expeditionspunkte mit je zwei Zahlen: Basiswert inklusive dauerhaft zugewiesener Punkte und zusätzlich +Boni. Eine Gesamtsumme und die Anzahl bisher vergebener Punkte werden nicht angezeigt. Die Gesamtkapazitäten im Header bleiben erhalten.
+Die Seite heißt Handelsimperium. Ganz oben steht die kompakte Card Entwicklung. Sie zeigt verfügbare Levelpunkte sowie Überstunden und Expeditionspunkte mit großem Gesamtmaximum und kleiner Basis-plus-Bonus-Rechnung. Der Hinweis „Basiswert + Boni“ entfällt. Die separate Erweiterungspunkte-Karte entfällt; bei unvergebenen Erweiterungspunkten öffnet ein direkter Einstieg mit Bestand in Entwicklung den bestehenden Verteiler. Im Verteiler bleiben verfügbarer Bestand, Vorschau und Bestätigung erhalten. Die Gesamtkapazitäten im Header bleiben unverändert.
 
 Die Basis für Expedition ist 50 plus levelCapacityBonus; erkundete/gelieferte Orte und ausgerüstete Karten zählen zu Boni. Für Überstunden ist die gespeicherte overtimeCapacity die Basis; die Kapazitätsboni der Garage sind zusätzlich. Die neue Serveransicht development liefert diesen Unterschied aus dem unveränderten gespeicherten Zustand, bevor der bestehende Header die wirksamen Gesamtwerte erhält.
 
@@ -26,3 +26,7 @@ Lokaler Sperrverweis und gesperrte Controls verhindern Doppelsenden. Fehlgeschla
 - Zusammengefasster Hinweis für vier neue Level, gemeinsame Ansammlung und englische Oberfläche geprüft. Screenshots visuell geprüft. Kein physischer Gerätetest.
 
 Nur im Sammelbranch gespeichert, nicht veröffentlicht. Bei späterer Veröffentlichung den Server vor dem Client ausrollen.
+
+## Handelsimperium und Ausbauhinweise (aktuell, unveröffentlicht)
+
+Die Transportkarte und ihre Detailseite heißen Imperiumsausbau. Ein dezenter goldener Punkt am Titel erscheint nur, wenn mindestens eine nächste Stufe mit dem tatsächlichen Talerbestand und den Firmenausbau-Items bezahlt werden kann. Maximal ausgebaute Optionen oder fehlende Preise erzeugen keinen Punkt. Die Kategorie und die jeweiligen Einträge tragen denselben Hinweis; Zusammenfassung und Editor verwenden dieselbe Prüfung. Diese Transportausbauten sind sofortig und haben im bestehenden Server keine zusätzlichen Freischalt-/Bauzeitbedingungen. Wirtschaft, gespeicherte IDs und Punkteverteilung bleiben unverändert.

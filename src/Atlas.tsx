@@ -9,7 +9,7 @@ import {C,displayFont,regionInks} from './theme';
 
 export function Compass({size=48,color=C.brass}:{size?:number;color?:string}){return <Icon name="expedition" size={size} color={color}/>;}
 export function CompanySummary({company,city,onOpen,points=0}:{company:string;city:string;onOpen:()=>void;points?:number}){
- return <Pressable accessibilityRole="button" accessibilityLabel={translate('Firma öffnen')+(points?`, ${translate(`Punkte verfügbar · ${points}`)}`:'')} onPress={onOpen} style={({pressed})=>[a.companySummary,pressed&&{opacity:.8}]}>
+ return <Pressable accessibilityRole="button" accessibilityLabel={translate('Handelsimperium öffnen')+(points?`, ${translate(`Punkte verfügbar · ${points}`)}`:'')} onPress={onOpen} style={({pressed})=>[a.companySummary,pressed&&{opacity:.8}]}>
   <MenuArt id="company" size={60}/>
   <View style={{flex:1,minWidth:0}}><Text numberOfLines={1} style={a.eyebrow}>DEIN HANDELSIMPERIUM</Text><Text literal numberOfLines={1} style={a.company}>{company}</Text><Text literal numberOfLines={1} style={a.city}>{city}</Text>{points>0&&<View style={a.points}><Icon name="plus" size={12} color={C.brassLight}/><Text style={a.pointsText}>Punkte verfügbar · {points}</Text></View>}</View>
   <Icon name="chevron" size={17} color={C.brassLight}/>

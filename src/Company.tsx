@@ -14,6 +14,11 @@ export const upgradeKey=(o:any)=>`${o.category}:${o.kind}`;
 export function upgradeQuote(options:any[],draft:UpgradeDraft){
  return options.reduce((sum,o)=>o.costs.slice(0,draft[upgradeKey(o)]||0).reduce((s:any,c:any)=>({coins:s.coins+c.coins,items:s.items+c.items}),sum),{coins:0,items:0});
 }
+export function canImproveTransport(data:any,option:any){
+ const cost=option?.costs?.[0];
+ return !!cost&&option.level<option.limit&&data.state.coins>=cost.coins&&(data.state.inventory.companyItems??0)>=cost.items;
+}
+function AvailableDot(){return <View accessible accessibilityLabel={translate('Ausbau verfügbar')} style={styles.availableDot}/>;}
 const effectNumber=(value:number)=>n(value,Number.isInteger(value)?0:1);
 function effect(o:any,level:number){
  if(o.kind==='premium')return `+${level} % Prämie`;
@@ -22,10 +27,10 @@ function effect(o:any,level:number){
 }
 export function TransportSummary({data,onImprove}:any){
  return <Card style={styles.summary}>
-  <Txt style={styles.title}>Transport</Txt>
+  <Row style={{marginBottom:0}}><Txt style={styles.title}>Imperiumsausbau</Txt>{data.transportUpgradeOptions.some((o:any)=>canImproveTransport(data,o))&&<AvailableDot/>}</Row>
   {['national','international'].map(category=><View key={category} style={styles.group}>
-   <Txt style={styles.title}>{categoryName(category)}</Txt>
-   {data.transportUpgradeOptions.filter((o:any)=>o.category===category).map((o:any)=><Row key={o.kind} style={{marginTop:7,marginBottom:0}}><Txt muted>{LABELS[o.kind]}</Txt><Txt>{effect(o,o.level)}</Txt></Row>)}
+   <Row style={{marginBottom:0}}><Txt style={styles.title}>{categoryName(category)}</Txt>{data.transportUpgradeOptions.some((o:any)=>o.category===category&&canImproveTransport(data,o))&&<AvailableDot/>}</Row>
+   {data.transportUpgradeOptions.filter((o:any)=>o.category===category).map((o:any)=><Row key={o.kind} style={{marginTop:7,marginBottom:0}}><Txt muted>{LABELS[o.kind]}</Txt><View style={{flexDirection:'row',alignItems:'center',gap:8}}><Txt>{effect(o,o.level)}</Txt>{canImproveTransport(data,o)&&<AvailableDot/>}</View></Row>)}
   </View>)}
   <Btn onPress={onImprove}>Verbessern</Btn>
  </Card>;
@@ -60,13 +65,13 @@ export function TransportEditor({data,busy,onSave,onInventory}:any){
    <View style={styles.stockValue}><ItemArt id="companyItems" size={32}/><Txt gold style={{fontWeight:'700'}}>{n(items)}</Txt><Txt muted style={{fontSize:12}}>verfügbar</Txt></View>
    <Pressable accessibilityRole="button" onPress={onInventory} style={styles.stockLink}><Txt style={{fontSize:12}}>Vorräte</Txt><Icon name="chevron" size={14}/></Pressable>
   </View>
-  <View accessibilityRole="tablist" style={styles.tabs}>{['national','international'].map(value=><Pressable key={value} accessibilityRole="tab" accessibilityState={{selected:category===value}} onPress={()=>setCategory(value)} style={[styles.tab,category===value&&styles.tabActive]}><Txt style={[styles.tabText,category===value&&{color:C.onInk}]}>{categoryName(value)}</Txt></Pressable>)}</View>
+  <View accessibilityRole="tablist" style={styles.tabs}>{['national','international'].map(value=><Pressable key={value} accessibilityRole="tab" accessibilityState={{selected:category===value}} onPress={()=>setCategory(value)} style={[styles.tab,category===value&&styles.tabActive]}><Txt style={[styles.tabText,category===value&&{color:C.onInk}]}>{categoryName(value)}</Txt>{options.some((o:any)=>o.category===value&&canImproveTransport(data,o))&&<AvailableDot/>}</Pressable>)}</View>
   <Card style={{padding:0,overflow:'hidden'}}>{options.filter((o:any)=>o.category===category).map((o:any,index:number)=>{
-   const cost=o.costs[0],max=o.level>=o.limit||!cost,canImprove=!max&&g.coins>=cost.coins&&items>=cost.items;
+   const cost=o.costs[0],max=o.level>=o.limit||!cost,canImprove=canImproveTransport(data,o);
    return <Pressable key={upgradeKey(o)} accessibilityRole="button" accessibilityLabel={`${translate(LABELS[o.kind])}, ${translate(effect(o,o.level))}, ${translate(`Stufe ${o.level} / ${o.limit}`)}, ${translate(max?'Maximum':canImprove?'Verbesserung verfügbar':'Details')}`} onPress={()=>{setSelection({key:upgradeKey(o),level:o.level,count:1});setSaveError(false);}} style={({pressed})=>[styles.upgradeRow,index>0&&styles.divider,pressed&&{backgroundColor:C.raised}]}>
     <View style={styles.upgradeIcon}><Icon name={ICONS[o.kind]} size={25}/></View>
     <View style={{flex:1,minWidth:0}}><Txt style={{fontWeight:'700'}}>{LABELS[o.kind]}</Txt><Txt style={{fontSize:13,marginTop:2}}>{effect(o,o.level)}</Txt><Txt muted style={{fontSize:11}}>Stufe {o.level} / {o.limit}{max?' · Maximum':''}</Txt></View>
-    {canImprove&&<View style={styles.availableDot}/>}
+    {canImprove&&<AvailableDot/>}
     <Icon name="chevron" size={17} color={C.muted}/>
    </Pressable>;
   })}</Card>
@@ -94,8 +99,8 @@ export function TransportEditor({data,busy,onSave,onInventory}:any){
 const styles=StyleSheet.create({
  summary:{backgroundColor:C.panel,borderColor:C.line},title:{fontSize:16,fontWeight:'700'},group:{paddingVertical:12,borderBottomWidth:1,borderColor:C.line,marginBottom:4},
  stock:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginBottom:10},stockValue:{flexDirection:'row',alignItems:'center',gap:7,flexShrink:1,flexWrap:'wrap'},stockLink:{flexDirection:'row',alignItems:'center',gap:4,minHeight:44,paddingHorizontal:4},
- tabs:{flexDirection:'row',gap:6,marginBottom:10},tab:{flex:1,minHeight:44,padding:8,borderWidth:1,borderColor:C.line,borderRadius:6,justifyContent:'center',alignItems:'center',backgroundColor:C.raised},tabActive:{backgroundColor:C.accent,borderColor:C.ink},tabText:{fontSize:13,fontWeight:'700',textAlign:'center'},
- upgradeRow:{flexDirection:'row',alignItems:'center',gap:10,padding:14,minHeight:100},divider:{borderTopWidth:1,borderColor:C.line},upgradeIcon:{width:38,height:42,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderRadius:6},availableDot:{width:7,height:7,borderRadius:4,backgroundColor:C.accent,flexShrink:0},
+ tabs:{flexDirection:'row',gap:6,marginBottom:10},tab:{flex:1,flexDirection:'row',gap:6,minHeight:44,padding:8,borderWidth:1,borderColor:C.line,borderRadius:6,justifyContent:'center',alignItems:'center',backgroundColor:C.raised},tabActive:{backgroundColor:C.accent,borderColor:C.ink},tabText:{fontSize:13,fontWeight:'700',textAlign:'center'},
+ upgradeRow:{flexDirection:'row',alignItems:'center',gap:10,padding:14,minHeight:100},divider:{borderTopWidth:1,borderColor:C.line},upgradeIcon:{width:38,height:42,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderRadius:6},availableDot:{width:7,height:7,borderRadius:4,backgroundColor:C.gold,flexShrink:0},
  overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:16},modal:{width:'100%',maxWidth:460,maxHeight:'90%',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:12,overflow:'hidden'},modalHeader:{flexDirection:'row',alignItems:'center',gap:8,padding:18},modalFooter:{padding:18,paddingTop:4,borderTopWidth:1,borderColor:C.line},
  comparison:{flexDirection:'row',alignItems:'center',gap:8},effectColumn:{flex:1,minWidth:0,padding:10,borderRadius:6,backgroundColor:C.raised},after:{backgroundColor:C.greenWash},caption:{fontSize:11,marginBottom:4},effect:{fontSize:15,fontWeight:'700'},quantity:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginVertical:18},stepper:{flexDirection:'row',alignItems:'center',gap:8},costs:{flexDirection:'row',gap:12,flexWrap:'wrap',marginVertical:5},cost:{flexDirection:'row',alignItems:'center',gap:6,paddingVertical:6},error:{fontSize:12,color:C.red,marginTop:10}
 });
