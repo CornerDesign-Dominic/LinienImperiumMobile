@@ -1,7 +1,8 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {ItemArt,ItemAmount} from './ItemArt';
 import {t as translate} from './i18n';
 import React,{useEffect,useRef,useState} from 'react';
-import {View,Pressable,ScrollView,StyleSheet,AccessibilityInfo} from 'react-native';
+import {ScrollView,StyleSheet,AccessibilityInfo} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {Icon} from './Icon';
 import {VehicleArt} from './VehicleArt';

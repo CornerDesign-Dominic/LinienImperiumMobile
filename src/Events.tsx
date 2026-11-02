@@ -1,5 +1,6 @@
+import {MaterialPressable as Pressable} from './Material';
 import React,{useState} from 'react';
-import {Pressable,StyleSheet,TextInput} from 'react-native';
+import {StyleSheet,TextInput} from 'react-native';
 import {Btn,Card,Pill,Row,Txt,C,n} from './ui';
 export type TestSettings={target:number;distance:number;durationHours:number};
 type Reward=Record<string,number>;

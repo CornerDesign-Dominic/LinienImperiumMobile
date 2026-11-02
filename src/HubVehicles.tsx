@@ -1,3 +1,4 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {HubCourierArt} from './HubCourierArt';
 import {courierName,courierModel} from '../functions/src/hub-courier';
 import {HubSales} from './HubSales';
@@ -6,7 +7,7 @@ import {ItemArt} from './ItemArt';
 import {HubVehicleDetail} from './HubVehicleDetail';
 import {HubEarnings} from './HubEarnings';
 import React,{useRef,useState} from 'react';
-import {View,Pressable,StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {t} from './i18n';
 import {Icon,IconName} from './Icon';
 import {itemName} from './items';

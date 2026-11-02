@@ -1,8 +1,9 @@
+import {MaterialView as View} from './Material';
 import {ItemArt,ItemAmount} from './ItemArt';
 import {Text} from './Language';
 import {t as translate} from './i18n';
 import React from 'react';
-import {View,StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {stockItems} from './items';
 import {Icon} from './Icon';
 import {C,Txt,Card,Btn,n} from './ui';

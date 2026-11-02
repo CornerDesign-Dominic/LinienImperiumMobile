@@ -1,6 +1,7 @@
+import {MaterialPressable as Pressable,MaterialView as View} from './Material';
 import {ItemArt,ItemAmount} from './ItemArt';
 import React,{useState} from 'react';
-import {Image,ImageSourcePropType,Pressable,ScrollView,StyleSheet,View} from 'react-native';
+import {Image,ImageSourcePropType,ScrollView,StyleSheet} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {Text} from './Language';
 import {t} from './i18n';

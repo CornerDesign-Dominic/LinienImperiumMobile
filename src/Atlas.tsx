@@ -1,5 +1,6 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import React from 'react';
-import {View,Pressable,StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Icon,IconName} from './Icon';
 import {MenuArt} from './MenuArt';
 import {Text} from './Language';

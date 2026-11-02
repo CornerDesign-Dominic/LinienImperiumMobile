@@ -1,5 +1,6 @@
+import {MaterialPressable as Pressable,MaterialView as View} from './Material';
 import React,{useState} from 'react';
-import {Image,Pressable,ScrollView,StyleSheet,View} from 'react-native';
+import {Image,ScrollView,StyleSheet} from 'react-native';
 import {AppModal} from './AppModal';
 import {Icon} from './Icon';
 import {ItemArt} from './ItemArt';

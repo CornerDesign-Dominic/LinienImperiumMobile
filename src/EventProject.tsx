@@ -1,6 +1,7 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {ItemArt,ItemAmount} from './ItemArt';
 import React,{useState,useEffect} from 'react';
-import {View,StyleSheet,Pressable} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Bar,Btn,Card,Empty,Pill,Row,Txt,C,n,remaining,minutes} from './ui';
 import {TestEvent,legendaryStyle} from './Events';
 

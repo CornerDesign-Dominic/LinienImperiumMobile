@@ -1,6 +1,7 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import React from 'react';
 import {t as translate} from './i18n';
-import {View,Pressable,StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {LocationArt} from './LocationArt';
 import {Icon} from './Icon';
 import {C,Txt,Card,Row,Pill} from './ui';

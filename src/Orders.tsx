@@ -1,3 +1,4 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {ItemArt,ItemAmount} from './ItemArt';
 import {t as translate} from './i18n';
 import {Icon,IconName} from './Icon';
@@ -6,7 +7,7 @@ import {VehicleArt} from './VehicleArt';
 import React,{useState} from 'react';
 import {OrderVehiclePicker} from './OrderVehiclePicker';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
-import {View,Pressable,StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes} from './ui';
 const durationBand=(seconds:number)=>seconds<=300?'Kurz':seconds<=900?'Mittel':'Lang';
 const transportSummary=(o:any,seconds?:number)=>`${o.transportLabel||({international:'Fernverkehr',city:'Stadtverkehr',national:'Nahverkehr'} as Record<string,string>)[o.category]||'Nahverkehr'} · ${seconds!=null?durationBand(seconds):o.durationBand||durationBand(o.durationSeconds??o.forecast?.seconds??0)}`;

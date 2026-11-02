@@ -8,7 +8,7 @@ function render(width,height,index){
  const m=new Module(source,module);m.filename=source;m.paths=module.paths;
  m.require=id=>{
   if(id==='react')return {...React,useState:()=>[{width,height},()=>{}]};
-  if(id==='react-native')return {View:'View',Image:'Image',Pressable:'Pressable',StyleSheet:{create:x=>x}};
+  if(id==='./Material')return {MaterialView:'View',MaterialPressable:'Pressable',MaterialLayer:'MaterialLayer'};if(id==='react-native')return {View:'View',Image:'Image',Pressable:'Pressable',StyleSheet:{create:x=>x}};
   if(id==='./Language')return {Text:'Text'};
   if(id==='./i18n')return {t:x=>x};
   if(id==='./Icon')return {Icon:'Icon'};

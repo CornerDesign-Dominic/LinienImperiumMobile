@@ -1,0 +1,18 @@
+{
+  "generator": "Built-in image_gen",
+  "strength": "Between subtle and medium; texture should be noticeable without becoming the focus.",
+  "assets": [
+    {
+      "file": "parchment.jpg",
+      "source": "exec-8da40c86-d26b-4474-9b09-13af6c154363.png",
+      "prompt": "Use case: stylized-concept. Production UI MATERIAL TEXTURE ONLY for historical merchant game, no UI, no objects or text. Flat straight-on evenly lit full-bleed square warm ivory parchment (#F2E8D3) with fine paper fibers and gently aged very subtle tan mottling. Strength halfway between subtle and medium, visible tactile character but NOT focal. Fine grain, restrained natural variation, CLEAN LIGHT QUIET CENTER suitable for small dark text. No deep stains, tears, cracks, holes, symbols, borders, vignette, heavy dark corners, gradient or shadows. Edges blend seamlessly when tiled. Low contrast premium background texture.",
+      "processing": "Resized to 512 × 512 and JPEG compressed quality 82; no creative edits."
+    },
+    {
+      "file": "petrol.jpg",
+      "source": "exec-726a56dc-bcc0-4022-bdd3-eb6b5979290b.png",
+      "prompt": "Use case: stylized-concept. Production UI MATERIAL TEXTURE ONLY. Flat straight-on full-bleed square of matte weathered DARK PETROL BLUE GREEN (#315F59) painted surface for historical merchant game buttons and active tabs. Fine organic grain and very restrained irregular patina, tiny few desaturated warm brass abrasion specks. Subtle-to-medium strength, visibly tactile without becoming focal. Clean unobtrusive middle suitable for small ivory text. Overall dark muted blue-green, NOT olive or forest green, no large bright marks, no lettering, symbols, objects, UI, frames, borders, cracks, rust, torn areas, vignette, 3D lighting or shadows. Even illumination, same color across edges, seamless tiling. Premium fine texture, understated low contrast.",
+      "processing": "Resized to 512 × 512 and JPEG compressed quality 82; no creative edits."
+    }
+  ]
+}

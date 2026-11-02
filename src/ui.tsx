@@ -1,8 +1,9 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {t as translate} from './i18n';
 import {getLocale} from './i18n';
 import {Text} from './Language';
 import React from 'react';
-import {View,Pressable,StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Icon} from './Icon';
 import {C,displayFont} from './theme';
 export {C,displayFont} from './theme';
