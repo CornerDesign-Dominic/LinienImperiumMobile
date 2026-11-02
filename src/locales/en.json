@@ -1220,5 +1220,17 @@
   "Nicht genügend Hermes-Siegel.": "Not enough Hermes seals.",
   "Siegelpaket": "Seal pack",
   "Angebote erneuern": "Refresh offers",
-  "Transportkarten-\nAufträge": "Transport card\norders"
+  "Transportkarten-\nAufträge": "Transport card\norders",
+  "Empfehlung": "Referral",
+  "Keine verfügbar": "None available",
+  "Erkunden": "Explore",
+  "Entdeckt": "Discovered",
+  "Gebiet erkundet": "Area explored",
+  "Bonuslieferung starten": "Start bonus delivery",
+  "Gut gemacht! Sichere dir mit einer Bonuslieferung den Erweiterungspunkt dieses Ortes.": "Well done! Make a bonus delivery to earn this location’s expansion point.",
+  "Handelsimperium": "Trading empire",
+  "Handelsimperium öffnen": "Open trading empire",
+  "Imperiumsausbau": "Empire expansion",
+  "Ausbau verfügbar": "Upgrade available",
+  "Erweiterungspunkte verteilen · {0}": "Allocate expansion points · {0}"
 }
