@@ -22,6 +22,7 @@ function server(){
   if(name==='firebase-admin/app')return {initializeApp(){}};
   if(name==='firebase-admin/firestore')return {getFirestore:()=>db,Timestamp:{fromMillis:value=>value}};
   if(name==='./engine.cjs')return {execute:(state,action,payload,now,_random,context)=>engine.execute(state,action,payload,now,()=>.5,context)};
+  if(name==='./response-cache.cjs')return require('../functions/src/response-cache.cjs');
   if(name==='./event-store.cjs')return store;
   if(name==='node:zlib')return {gzipSync,gunzipSync};throw Error(name);
  };

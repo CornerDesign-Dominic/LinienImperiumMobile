@@ -1,13 +1,13 @@
 import React from 'react';
-import {Image,Pressable,StyleSheet,View,ViewProps} from 'react-native';
+import {Pressable,StyleSheet,View,ViewProps} from 'react-native';
+import {MaterialLayer} from './Material';
 import {Text} from './Language';
 import {C} from './theme';
 
 type Kind='paper'|'petrol';
-const surfaces={paper:require('../assets/art/materials/sales-parchment.jpg'),petrol:require('../assets/art/materials/sales-petrol.jpg')};
-/** Modal pilot: one edge-aged material fitted to each surface, never tiled. */
+/** Compatibility hosts for the approved pilot; now use the shared material source. */
 export function SalesMaterialLayer({kind}:{kind:Kind}){
- return <View pointerEvents="none" accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={StyleSheet.absoluteFill}><Image source={surfaces[kind]} accessible={false} resizeMode="stretch" fadeDuration={0} style={[StyleSheet.absoluteFill,{width:'100%',height:'100%',opacity:kind==='paper'?.72:.88}]}/></View>;
+ return <MaterialLayer kind={kind} surfaceStyle={{backgroundColor:kind==='paper'?C.panel:C.accent}}/>;
 }
 export function SalesMaterialView({kind='paper',children,style,...props}:ViewProps&{kind?:Kind}){
  return <View {...props} style={[style,{overflow:'hidden'}]}><SalesMaterialLayer kind={kind}/>{children}</View>;

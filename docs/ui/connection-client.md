@@ -1,0 +1,11 @@
+# Client-Anfragekoordination
+
+Hintergrundabgleiche nach 30 Sekunden, bei Rückkehr zur App und an fälligen Spielereignissen setzen keinen globalen Beschäftigt-Zustand mehr. Der erste Ladevorgang und manuelles Aktualisieren behalten eine sichtbare Ladeanzeige. Spieleraktionen setzen den Sperrzustand bereits beim Einreihen, auch wenn gerade ein Hintergrundabgleich läuft.
+
+Eine begrenzte serielle Warteschlange ersetzt das bisherige Überspringen bei belegter Verbindung. Spieleraktionen laufen vor einem wartenden Hintergrundabgleich. Identische noch ausstehende Aktionen teilen sich dieselbe Anfrage und dasselbe Ergebnis; nach Abschluss wird eine neue Aktion normal ausgeführt. Pro Konto gibt es höchstens einen wartenden Synchronisationsauftrag. Maximal 24 wartende unterschiedliche Spieleraktionen werden aufgenommen, danach erscheint eine ausdrückliche Rückmeldung. Fehler einer Anfrage blockieren die Warteschlange nicht. Es gibt keine lokale Vorabbuchung und keine dauerhafte Offline-Warteschlange.
+
+Alle Aufrufer erhalten weiterhin das Ergebnis genau ihrer Aktion. Die vorhandenen Serverbelege und Wiederholungen mit derselben Anfrage-ID bleiben wirksam. Vor Ausführung und vor Übernahme der Antwort wird das Konto geprüft; alte Konto-Antworten werden nicht auf ein neues Konto angewendet. Nach Kontoänderungen werden wartende alte Sync-Aufträge verworfen. Spieleraktionen mit alter Konto-ID werden abgewiesen.
+
+Die Einstellungen zeigen einen tatsächlichen Verbindungszustand: verbunden nach erfolgreichem Abgleich, unterbrochen nach Transportfehler, veraltet bei mehr als 90 Sekunden altem Stand beziehungsweise im Hintergrund. Abgelehnte Spielaktionen (z. B. ungültige Voraussetzungen) werden nicht als Netzwerkausfall dargestellt. Hintergrundfehler lösen bei bereits geladenem Spielstand keine störende Fehlermeldung aus; ausdrückliche Aktionen behalten ihre Rückmeldung. Serverseitige Daten bleiben maßgeblich.
+
+Vier gezielte Warteschlangentests prüfen Abgleichzusammenfassung und freie Bedienung, Aktionspriorität, Doppelklickschutz mit erneutem Befehl nach Abschluss, Fehlerfortsetzung, Kontotrennung, manuelles Aktualisieren und begrenzte Warteschlange. Die echte Mobilfunk-Latenz und Android-FPS werden dadurch nicht gemessen.

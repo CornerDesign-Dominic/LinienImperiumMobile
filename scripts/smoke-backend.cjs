@@ -1,15 +1,24 @@
 const assert=require('node:assert/strict'),crypto=require('node:crypto');
 const key='AIzaSyBfeWgspE82Mnu5D0S6m65-vwRcuWPtPJ0';
 const endpoint='https://europe-west3-linienimperium.cloudfunctions.net/game';
+const {createResponseCache}=require('../src/gameTransport');
 async function main(){
  const auth=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({returnSecureToken:true})}).then(r=>r.json());
  if(!auth.idToken)throw Error('Anonymous sign-in failed: '+JSON.stringify(auth.error));
- async function call(action,payload={},requestId=crypto.randomUUID()){
-  const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${auth.idToken}`},body:JSON.stringify({data:{action,payload,requestId}})});
+ async function call(action,payload={},requestId=crypto.randomUUID(),responseCache){
+  const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${auth.idToken}`},body:JSON.stringify({data:{action,payload,requestId,...(responseCache?{responseCache}:{})}})});
   const result=await response.json();if(result.error)throw Error(JSON.stringify(result.error));return result.result||result.data;
  }
  try {
-  const guest=await call('sync');assert.equal(guest.state.startCity,null);
+  const guest=await call('sync');assert.equal(guest.state.startCity,null);assert.ok(guest.catalog,'legacy client still receives full display chunks');
+  const displayCache=createResponseCache(),uid=auth.localId;
+  const first=await call('sync',{},crypto.randomUUID(),displayCache.request(uid));
+  assert.equal(first.responseCache.version,1);assert.ok(first.catalog);displayCache.hydrate(uid,first);
+  const lean=await call('sync',{},crypto.randomUUID(),displayCache.request(uid));
+  assert.equal(lean.catalog,undefined);assert.equal(lean.help,undefined);assert.equal(lean.transportUpgradeOptions,undefined);
+  const hydrated=displayCache.hydrate(uid,lean);
+  assert.equal(hydrated.catalog.cards.length,guest.catalog.cards.length);assert.deepEqual(hydrated.help,guest.help);assert.equal(hydrated.state.startCity,null);assert.ok(hydrated.serverTime>=guest.serverTime);
+  assert.deepEqual(displayCache.request('different-test-account').hashes,{},'display cache never carries fingerprints across accounts');
   const start=await call('foundCompany',{companyName:'Live Testfirma',cityName:'Testhafen'});assert.equal(start.state.coins,1000);assert.equal(start.state.profile.cityName,'Testhafen');assert.equal(start.state.startCity,'headquarters');
   const id=crypto.randomUUID();const once=await call('testCoins',{},id),twice=await call('testCoins',{},id);
   assert.equal(once.state.coins,51000);assert.equal(twice.state.coins,51000);
@@ -36,7 +45,7 @@ async function main(){
   const unauth=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{action:'sync'}})});
   assert.equal(unauth.status,401);
   await call('reset');
-  console.log('Live backend smoke test passed: guest auth, persistence, command deduplication, expedition map, test grants, level rewards, procurement prices/unlock guards/empty claims and authentication checks.');
+  console.log('Live backend smoke test passed: legacy and negotiated display responses, cache hydration and UID isolation, guest auth, persistence, command deduplication, expedition map, test grants, level rewards, procurement prices/unlock guards/empty claims and authentication checks.');
  }finally{await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:auth.idToken})});}
 }
 main().catch(e=>{console.error(e.message);process.exitCode=1;});

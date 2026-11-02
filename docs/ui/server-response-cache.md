@@ -1,0 +1,11 @@
+# Lean game responses
+
+The callable still calculates and persists the authoritative game state in the same Firestore transaction. A response adapter runs after the transaction and negotiates six large display chunks: `catalog`, `cardVehicles`, `expeditionMap`, `projectCatalog`, `transportUpgradeOptions`, and `help`. Each SHA-256 fingerprint covers the actual JSON content, so changed costs, ownership, region information, or catalog content are sent immediately. This is network-response reduction, not a claim that server simulation work is avoided.
+
+The new client sends protocol version 1 and up to six bounded fingerprints outside the gameplay payload. The server sends changed chunks and a manifest; the client hydrates the complete original view before returning from `command`. Existing installed clients send no protocol and continue receiving the full response. A new client talking to an older server also accepts its full response.
+
+The in-memory cache is scoped to the authenticated UID, resets on login/logout, and keeps private copies so consumer mutations cannot damage subsequent responses. State, server time, one-shot rewards, finds, level-ups, and other transient fields are never cached. Missing or inconsistent cached chunks trigger one full-response recovery using the exact same command request ID, preserving server receipt deduplication. Late replies after an account change are rejected. Recoverable network failures have one automatic retry after 400–800 ms jitter; permanent failures are not retried. The existing 60-second callable timeout is unchanged.
+
+A synthetic newly founded company followed by a 30-second sync measured 149,358 bytes of full JSON versus 21,257 bytes after hydration cache negotiation (about 86% less JSON). Local gzip estimates were 22,244 versus 3,660 bytes (about 84% less); these are serialization measurements, not measured handset transfer sizes or latency. First responses remain full, with a small fingerprint manifest. Cache is memory-only; reopening the app fetches a fresh full view.
+
+Tests cover legacy compatibility, actual-content invalidation, UID isolation, consumer mutation isolation, bounded malformed claims, missing-cache replay using the original receipt, network retry bounds, and an actual callable receipt retry preserving newly settled arrivals.

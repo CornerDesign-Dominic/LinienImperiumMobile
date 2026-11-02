@@ -7,7 +7,7 @@ function materialForColor(color){
  return null;
 }
 function materialOpacity(color,quiet=false){
- const strength=color===C.bg ? .14 : color===C.panel ? .44 : color===C.raised ? .24 : color===C.accent ? .48 : .18;
+ const strength=color===C.bg ? .24 : color===C.panel ? .72 : color===C.raised ? .55 : .88;
  return quiet?strength*.5:strength;
 }
 module.exports={materialForColor,materialOpacity};
