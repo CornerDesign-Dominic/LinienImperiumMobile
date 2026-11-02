@@ -1,0 +1,6 @@
+{
+  "tool": "image_gen.imagegen",
+  "purpose": "Materialbeschaffung Ortswahl, clean production background",
+  "prompt": "Use case: historical-scene. Production game background illustration for Linienimperium material procurement selection card, landscape 2:1 composition. A sturdy open wooden two-wheeled handcart correctly constructed with axle, two shafts extending toward foreground, resting in a sunny old European merchant courtyard. In the open cart visibly lie wooden, dark iron and silver gears in three material grades among small tied parcels. No horses, no modern truck. Timber-and-stone Kontor buildings, stacked wooden crates, open archway with distant green hills, warm afternoon daylight, realistic painterly premium historical fantasy game art. Cart large in central lower scene; upper fifth quiet architecture for a future UI title overlay. Muted petrol fabric detail, warm wood and cream stone. Entire scene fills frame, no border, no text, no logos, no UI, no watermark.",
+  "processing": "Only proportional downscale to 1024 px width and optimized JPEG quality 84; no creative edits."
+}
