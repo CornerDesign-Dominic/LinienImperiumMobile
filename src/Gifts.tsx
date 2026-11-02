@@ -74,7 +74,7 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
  };
  return <>
   {gifts.map((item:any)=><Pressable key={item.region} accessibilityRole="button" accessibilityLabel={translate('Geschenk')+', '+translate(regionName(item.region,item.name))} onPress={()=>{setFound(null);setHighlight(null);setFailed(false);positions.current={};setSelected(item.region);}}>
-   <Card style={styles.gift}><Icon name="reward" size={36} color={C.gold}/><View style={{flex:1}}><Txt style={styles.title}>{regionName(item.region,item.name)}</Txt><Txt muted style={styles.small}>{item.cards.length} Fahrzeuge</Txt></View><Txt gold>{n(item.cost)} M</Txt><Icon name="chevron" size={16} color={C.gold}/></Card>
+   <Card style={styles.gift}><Icon name="reward" size={36} color={C.gold}/><View style={{flex:1}}><Txt style={styles.title}>{regionName(item.region,item.name)}</Txt><Txt muted style={styles.small}>{item.cards.length} Fahrzeuge</Txt></View><Txt gold>{n(item.cost)} T</Txt><Icon name="chevron" size={16} color={C.gold}/></Card>
   </Pressable>)}
   <Modal visible={!!gift&&!modalBlocked&&!rewardOpen} transparent animationType="none" onRequestClose={close} onShow={()=>{if(highlight!==null)mark(highlight);}}>
    <View style={styles.overlay}><View style={styles.modal}>
@@ -89,7 +89,7 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
      </ScrollView>
      {opening&&<Txt gold style={{textAlign:'center',marginTop:8}}>Wird geöffnet …</Txt>}
      {failed&&<Txt style={{color:C.red,fontSize:12,marginTop:8}}>Geschenk konnte nicht geöffnet werden. Bitte erneut versuchen.</Txt>}
-     <Btn icon="reward" disabled={busy||opening||rewardPending||data.state.coins<gift.cost} onPress={open}>{card?'Nochmal öffnen':'Öffnen'} · {n(gift.cost)} M</Btn>
+     <Btn icon="reward" disabled={busy||opening||rewardPending||data.state.coins<gift.cost} onPress={open}>{card?'Nochmal öffnen':'Öffnen'} · {n(gift.cost)} T</Btn>
     </>}
    </View></View>
   </Modal>

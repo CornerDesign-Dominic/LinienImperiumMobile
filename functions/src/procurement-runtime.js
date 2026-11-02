@@ -54,7 +54,7 @@ function startProcurement(region,truckId,mode,amount) {
   if(!r||!expeditionRegionCompleted(r))throw Error('Beschaffung noch nicht freigeschaltet.');
   if(!truck?.cardId||!game.expedition.characters[truck.cardId]||!freeTrucks().some(t=>t.id===truckId))throw Error('Fahrzeug für Beschaffung nicht verfügbar.');
   const price=procurementPrice(region);
-  if(mode==='count'&&(!amount||game.coins<price*amount))throw Error('Nicht genügend Münzen für diese Tourenzahl.');
+  if(mode==='count'&&(!amount||game.coins<price*amount))throw Error('Nicht genügend Imperium-Taler für diese Tourenzahl.');
   if(mode==='reserve'&&game.coins-price<amount)throw Error('Reserve lässt keine weitere Tour zu.');
   const run={id:String(p.nextId++),region,truckId,model:truck.model,mode,price,requested:mode==='count'?amount:0,reserve:mode==='reserve'?amount:0,
     escrow:mode==='count'?price*amount:0,started:0,completed:0,status:'active',stopAfter:false,createdAt:Date.now()};
@@ -94,7 +94,7 @@ function startProcurementGroup(region,truckIds,mode,amount){
  const trucks=truckIds.map(id=>truckById(id));
  if(trucks.some(t=>!t?.cardId||!game.expedition.characters[t.cardId]||!free.has(t.id)))throw Error('Fahrzeug für Beschaffung nicht verfügbar.');
  const price=procurementPrice(region);
- if(mode==='count'&&(!amount||game.coins<price*amount))throw Error('Nicht genügend Münzen für diese Tourenzahl.');
+ if(mode==='count'&&(!amount||game.coins<price*amount))throw Error('Nicht genügend Imperium-Taler für diese Tourenzahl.');
  if(mode==='reserve'&&game.coins-price<amount)throw Error('Reserve lässt keine weitere Tour zu.');
  const at=Date.now(),group={id:'G'+p.nextGroupId++,region,mode,price,requested:mode==='count'?amount:0,reserve:mode==='reserve'?amount:0,
   escrow:mode==='count'?price*amount:0,started:0,completed:0,vehicleIds:[...truckIds],status:'active',stopAfter:false,createdAt:at};

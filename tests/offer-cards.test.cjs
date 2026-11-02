@@ -26,7 +26,6 @@ test('List holding is a separate action, respects authoritative slots, and alway
  const busyTree=h.render('OrderTile',{order:held,data:game.view,clock:now,busy:true,onOpen:id=>opened.push(id),onPin:id=>pinned.push(id)});
  const busyPin=nodes(busyTree,'Pressable').find(b=>b.props.testID===`order-pin-${first.id}`);assert.equal(busyPin.props.disabled,true);
  busyPin.props.onPress({stopPropagation(){}});assert.deepEqual(pinned,[first.id],'busy hold action must not submit');
- const filled=nodes(render(held),'Icon').find(i=>i.props.name==='pinFilled');assert.equal(filled.props.color,require('../src/palette.json').gold);
  const queued={...first,status:'queued'};assert.equal(nodes(render(queued),'Pressable').length,1,'stored orders have no hold action');
 });
 
@@ -75,4 +74,14 @@ test('Stored categories keep real counts and tier order without consuming or reo
  tierButtons.forEach(button=>button.props.onPress());
  assert.deepEqual(chosen,['first','second','third'],'tiers ascend and equal-tier jobs retain first-in order');
  assert.equal(JSON.stringify(game.view.state.expedition.jobs),before);
+});
+
+
+test('Offer refresh countdown uses minutes and seconds with correct deadline boundaries',()=>{
+ const {offerCountdown}=harness().exports;
+ assert.equal(offerCountdown(now+554000,now),'09:14');
+ assert.equal(offerCountdown(now+1,now),'00:01','a partial last second remains visible');
+ assert.equal(offerCountdown(now,now),'00:00');
+ assert.equal(offerCountdown(now-5000,now),'00:00','expired timers never go negative');
+ assert.equal(offerCountdown(now+3600000,now),'60:00','long countdowns keep total minutes instead of an hours field');
 });

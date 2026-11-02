@@ -81,7 +81,7 @@ export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,s
  const label=accessibilityLabel||[
   translate(card.name),translate(owned?`Stufe ${owned.level}`:'Nicht entdeckt'),`${n(stats.capacity,1)} t`,
   ornate&&owned?`${translate('Geschwindigkeitsrang')}: ${stats.rank.total}`:'',
-  showDetails?`${translate('Durchschnittsgeschwindigkeit')}: ${average===undefined?'—':n(average,2)+' km/s'}, ${translate('Betriebskosten')}: ${stats.costPerKm===undefined?'—':n(stats.costPerKm,2)+' M/km'}`:`${translate('Geschwindigkeitsrang')}: ${stats.rank.total}`,
+  showDetails?`${translate('Durchschnittsgeschwindigkeit')}: ${average===undefined?'—':n(average,2)+' km/s'}, ${translate('Betriebskosten')}: ${stats.costPerKm===undefined?'—':n(stats.costPerKm,2)+' T/km'}`:`${translate('Geschwindigkeitsrang')}: ${stats.rank.total}`,
   status?.label?translate(status.label):''
  ].filter(Boolean).join(', ');
  const values=facts??(showDetails?<CollectionFacts capacity={stats.capacity} loadedSpeed={stats.loadedSpeed} emptySpeed={stats.speed} costPerKm={stats.costPerKm}/>:<><Txt style={styles.rank}>Rang {stats.rank.total}</Txt><Txt style={styles.capacity}>{n(stats.capacity,1)} t</Txt></>);

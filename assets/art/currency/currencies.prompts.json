@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "transparent": true,
+  "approvedReferences": [
+    "exec-e6fde4b9-42ec-4024-9356-ae3e5a0b1007.png (left ordinary coin)",
+    "exec-17f1036b-c805-49fa-a695-b58ac48dce75.png (ornate premium coin)"
+  ],
+  "assets": [
+    {
+      "file": "imperium-taler.png",
+      "prompt": "Use case: background-extraction / game currency production icon. Reference image shows two currencies on parchment. Extract/recreate ONLY the LARGE LEFT coin, Imperium-Taler: one thick warm antique GOLD circular coin with ONLY a raised laurel wreath tied at bottom around an EMPTY unmarked gold center. No sandal, no foot, no green ring, no lettering, no numbers. Keep approved relief metal style and roughly frontal slight 3D thickness. Single isolated tightly framed coin centered filling 90% of square image. Background fully TRANSPARENT alpha, no parchment, no plate, no additional objects or ground shadow. Crisp recognisable laurel silhouettes suitable for small 24px game UI. Faithful to left reference coin."
+    },
+    {
+      "file": "hermes-siegel.png",
+      "prompt": "Use case: background-extraction / game currency production icon. Faithfully extract/recreate the LARGE ornate Hermes-Siegel GOLD coin from reference as ONE isolated transparent production UI asset. Maintain sculptural winged Hermes sandal facing left, ornate gold rim with four tiny green diamond jewel accents at cardinal directions, NARROW dark emerald green inner ring. Predominantly rich gold, restrainedgreen accents; same approved sumptuous high relief design, round coin with slight 3D thickness. Single centered coin filling 90% of square canvas. Fully TRANSPARENT alpha background outside coin. Remove ALL parchment, captions, border ornaments, small sample coin and numbers. No text, no extra objects, no ground shadow. Crisp silhouette, legible winged sandal at small game UI size."
+    }
+  ]
+}

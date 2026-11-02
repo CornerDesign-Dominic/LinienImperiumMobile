@@ -42,5 +42,13 @@
   "hubVehicleParts": [
     "Werkzeugkasten",
     "Werkzeugkästen"
+  ],
+  "coins": [
+    "Imperium-Taler",
+    "Imperium-Taler"
+  ],
+  "premium": [
+    "Hermes-Siegel",
+    "Hermes-Siegel"
   ]
 }
