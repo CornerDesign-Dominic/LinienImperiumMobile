@@ -1,5 +1,5 @@
 import React from 'react';
-import {View,StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {C,Txt,Row,Btn,Bar,n,remaining} from './ui';
 import {PlaceExtraDetails,PlaceRewards,PlaceStatus} from './ExpeditionPlaceModal';
 import {regionIdentities} from './regionIdentities';
@@ -14,36 +14,44 @@ export function ExpeditionPlaceDetails({data,region,selected,busy,clock,onComman
  const duration=mission?Math.max(0,mission.endsAt-mission.startedAt):isFinal?map.finalDurationMs:place.durationMs;
  const button=(label:string,action:string,payload:any,disabled=false,secondary=false)=><Btn secondary={secondary} disabled={busy||disabled} onPress={()=>onCommand(action,payload)}>{label}</Btn>;
  const rewardItems=isFinal?[{icon:'customers' as const,label:'Stammkunde',amount:'+1'},...(!state.moduleAwarded||done&&state.moduleAwarded?[{itemId:'capacityModules',icon:'module' as const,label:'Kapazitätsmodul',amount:'+1'}]:[])]:[{icon:'plus' as const,label:'Erweiterungspunkt',amount:'+1'}];
- return <>
-  <Row style={{marginBottom:0}}><PlaceStatus icon={done?'check':active?'timer':!known?'expedition':isFinal?'customers':'truck'}>{done?(isFinal?'Kunde freigeschaltet':'Abgeschlossen'):active?'Bonuslieferung unterwegs':!known?'Erkundung':isFinal?'Handelsplatz erreicht':'Bonuslieferung verfügbar'}</PlaceStatus>{active&&<Txt gold style={s.time}>{remaining(mission.endsAt,clock)}</Txt>}</Row>
+ // Ordinary places become a quiet discovered landmark after their one delivery.
+ // Final trading places retain their repeat expedition and customer actions below.
+ if(!isFinal)return <>
   {!known?<>
-   <Row style={{marginBottom:0}}><Txt muted style={s.small}>Erkundung</Txt><Txt style={s.small}>{n(place.invested/place.discoveryCost*100)} %</Txt></Row><Bar value={place.invested/place.discoveryCost*100}/>
-   <Txt muted style={s.small}>{n(place.invested)} / {n(place.discoveryCost)} Punkte investiert</Txt>
-
-   {button('Erkunden · 1 Punkt','discover',{region},g.expedition.points<1)}
+   <PlaceStatus icon="expedition">Erkundung</PlaceStatus>
+   <Row style={{marginBottom:0}}><Txt style={s.small}>{n(place.invested)}/{n(place.discoveryCost)}</Txt><Txt muted style={s.small}>{n(place.invested/place.discoveryCost*100)} %</Txt></Row>
+   <Bar value={place.invested/place.discoveryCost*100}/>
+   {button('Erkunden','discover',{region},g.expedition.points<1)}
    {g.expedition.points<1&&<Txt muted style={s.note}>Keine Expeditionspunkte verfügbar.</Txt>}
-  </>:<>
-   <PlaceRewards items={rewardItems} received={!!done}/>
-   {active&&<><Row style={{marginBottom:0}}><Txt muted style={s.small}>Bonuslieferung</Txt><Txt style={s.small}>{n(progress(mission,done,clock))} %</Txt></Row><Bar value={progress(mission,done,clock)} gold/></>}
-   {!isFinal?<>
-    {!done&&!mission&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'delivery',selected)}>Bonus liefern</Btn>}
+  </>:done?<Txt muted style={s.discovered}>Entdeckt</Txt>:<>
+   {active?<>
+    <Row style={{marginBottom:0}}><PlaceStatus icon="timer">Bonuslieferung unterwegs</PlaceStatus><Txt gold style={s.time}>{remaining(mission.endsAt,clock)}</Txt></Row>
+    <Bar value={progress(mission,false,clock)} gold/>
    </>:<>
-    <Txt style={s.customer}>{regionIdentities[region].customer}</Txt>
-    {!done&&!mission&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'final',0)}>Kunde freischalten</Btn>}
-    {button(`Expedition · ${map.finds.cost} Punkte`,'draw',{region},g.expedition.points<map.finds.cost,!done)}
-    {g.expedition.points<map.finds.cost&&<Txt muted style={s.note}>Nicht genügend Expeditionspunkte.</Txt>}
-    <Btn secondary icon="help" onPress={onChances}>Fundchancen</Btn>
+    <PlaceStatus icon="check">Gebiet erkundet</PlaceStatus>
+    <Txt style={s.invitation}>Gut gemacht! Sichere dir mit einer Bonuslieferung den Erweiterungspunkt dieses Ortes.</Txt>
    </>}
-   {!done&&!mission&&noTruck&&<Txt muted style={s.note}>Kein freies Fahrzeug verfügbar.</Txt>}
+   <PlaceRewards items={rewardItems}/>
+   {!mission&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'delivery',selected)}>Bonuslieferung starten</Btn>}
+   {!mission&&noTruck&&<Txt muted style={s.note}>Kein freies Fahrzeug verfügbar.</Txt>}
   </>}
+ </>;
+ return <>
+  <Row style={{marginBottom:0}}><PlaceStatus icon={done?'check':active?'timer':'customers'}>{done?'Kunde freigeschaltet':active?'Bonuslieferung unterwegs':'Handelsplatz erreicht'}</PlaceStatus>{active&&<Txt gold style={s.time}>{remaining(mission.endsAt,clock)}</Txt>}</Row>
+  <PlaceRewards items={rewardItems} received={!!done}/>
+  {active&&<><Row style={{marginBottom:0}}><Txt muted style={s.small}>Bonuslieferung</Txt><Txt style={s.small}>{n(progress(mission,done,clock))} %</Txt></Row><Bar value={progress(mission,done,clock)} gold/></>}
+  <Txt style={s.customer}>{regionIdentities[region].customer}</Txt>
+  {!done&&!mission&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'final',0)}>Kunde freischalten</Btn>}
+  {button(`Expedition · ${map.finds.cost} Punkte`,'draw',{region},g.expedition.points<map.finds.cost,!done)}
+  {g.expedition.points<map.finds.cost&&<Txt muted style={s.note}>Nicht genügend Expeditionspunkte.</Txt>}
+  <Btn secondary icon="help" onPress={onChances}>Fundchancen</Btn>
+  {!done&&!mission&&noTruck&&<Txt muted style={s.note}>Kein freies Fahrzeug verfügbar.</Txt>}
   <PlaceExtraDetails>
    <Row style={{marginBottom:0}}><Txt muted style={s.small}>Dauer der Bonuslieferung</Txt><Txt style={s.small}>{remaining(duration,0)}</Txt></Row>
-   {isFinal?<>
-    <Txt muted style={s.small}>Mit der ersten Bonuslieferung schaltest du den Stammkunden frei.</Txt>
-    <Txt muted style={s.small}>Erste Endloslieferung: Kunde und 1 Kapazitätsmodul. Bereits erhaltene Module werden nicht erneut vergeben.</Txt>
-    <Txt muted style={s.small}>Expeditionen bringen neue Funde aus dieser Region.</Txt>
-   </>:<Txt muted style={s.small}>{done?'Die Belohnung dieses Ortes wurde automatisch gutgeschrieben.':'Nach der Erkundung kannst du hier eine Bonuslieferung starten. Bei Abschluss erhältst du automatisch 1 Erweiterungspunkt für ein dauerhaft höheres Expeditions- oder Überstundenmaximum.'}</Txt>}
+   <Txt muted style={s.small}>Mit der ersten Bonuslieferung schaltest du den Stammkunden frei.</Txt>
+   <Txt muted style={s.small}>Erste Endloslieferung: Kunde und 1 Kapazitätsmodul. Bereits erhaltene Module werden nicht erneut vergeben.</Txt>
+   <Txt muted style={s.small}>Expeditionen bringen neue Funde aus dieser Region.</Txt>
   </PlaceExtraDetails>
  </>;
 }
-const s=StyleSheet.create({small:{fontSize:11,lineHeight:17},time:{fontSize:12,lineHeight:18,fontWeight:'600',marginBottom:9},note:{fontSize:11,lineHeight:17,marginTop:7},customer:{fontSize:12,lineHeight:18,fontWeight:'600',color:C.text,marginTop:4,marginBottom:5}});
+const s=StyleSheet.create({invitation:{fontSize:12,lineHeight:19,color:C.text,marginBottom:8},discovered:{fontSize:10,lineHeight:16},small:{fontSize:11,lineHeight:17},time:{fontSize:12,lineHeight:18,fontWeight:'600',marginBottom:9},note:{fontSize:11,lineHeight:17,marginTop:7},customer:{fontSize:12,lineHeight:18,fontWeight:'600',color:C.text,marginTop:4,marginBottom:5}});

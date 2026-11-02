@@ -24,3 +24,17 @@ The existing commands, vehicle chooser, exploration costs, bonus deliveries, rep
 - Native-device and emulator visual checks were not available; browser rendering and Android export do not replace those checks.
 
 Publication is performed through the existing Android preview update workflow.
+
+## Compact state presentation (November 2026)
+
+The location name and secondary region caption now sit in a fixed paper header above the portrait, with space reserved for the 44-point close control. The image and action body scroll together on short screens; the name and close control stay visible. Existing portraits and measured Android image dimensions are unchanged.
+
+Ordinary places now have three restrained presentations:
+
+- Exploration has one `Erkundung` heading, the exact invested/required point count above its progress bar, and an `Erkunden` button. There is no Details disclosure or repeated invested-point sentence.
+- A newly explored place shows `Gebiet erkundet`, a short invitation to earn its expansion point through the bonus delivery, the real reward chip and `Bonuslieferung starten`. The existing vehicle availability and busy guards still apply. During the delivery the invitation gives way to its remaining time and progress.
+- After the delivery the modal is a discovered landmark: image, identity and only a small `Entdeckt` caption. Received-reward chips, completed banners and the Details disclosure are absent.
+
+Final trading locations keep repeat expeditions, customer unlocks, drop chances and their existing explanation. Commands, costs, automatic expansion-point awards and once-only modules are unchanged.
+
+Validation for this revision: existing real-engine place-modal tests exercise exploration gating, delivery start/running/completion, final-place draws and once-only modules; the modal test also checks that its title and close control remain outside the scroll body. TypeScript and Android export were run. No native-device or browser visual layout check was available for this revision; earlier validation above describes the earlier implementation, not this revision.

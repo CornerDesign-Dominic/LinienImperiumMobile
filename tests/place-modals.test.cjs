@@ -13,20 +13,21 @@ function nodes(node,type){if(!node||typeof node!=='object')return [];return [...
 function render(data,selected,options={}){const commands=[],missions=[],chances=[];const tree=ExpeditionPlaceDetails({data,region:0,selected,busy:false,clock:now,onCommand:(...p)=>commands.push(p),onMission:(...p)=>missions.push(p),onChances:()=>chances.push(true),...options});return {tree,commands,missions,chances,buttons:nodes(tree,'Btn')};}
 const start=()=>execute(null,'foundCompany',{companyName:'Ortstest',cityName:'Testhafen'},now,random);
 function explored(count=1){const r=start();r.state.expedition.regions[0].discovered=count;r.state.expedition.regions[0].endlessUnlocked=count===7;r.state.expedition.points=100;return execute(r.state,'sync',{},now,random);}
+const text=node=>node==null||typeof node==='boolean'?'':typeof node==='string'||typeof node==='number'?String(node):Array.isArray(node)?node.map(text).join(''):text(node.props?.children);
 const click=(r,label)=>{const b=r.buttons.find(b=>b.props.children===label);assert.ok(b,label);assert.ok(!b.props.disabled,label+' is enabled');b.props.onPress();};
 test('Reachable exploration spends a single point, blocks inaccessible places and does not promise an early module',()=>{
- const game=start();let r=render(game.view,0);click(r,'Erkunden · 1 Punkt');assert.deepEqual(r.commands,[['discover',{region:0}]]);
+ const game=start();let r=render(game.view,0);assert.equal(nodes(r.tree,'PlaceExtraDetails').length,0);assert.ok(!text(r.tree).includes('Punkte investiert'));assert.ok(text(r.tree).includes('0/'+game.view.expeditionMap[0].places[0].discoveryCost));click(r,'Erkunden');assert.deepEqual(r.commands,[['discover',{region:0}]]);
  assert.equal(render(game.view,1).tree,null);assert.equal(render(game.view,'endless').tree,null);
- game.view.state.expedition.points=0;r=render(game.view,0);assert.equal(r.buttons.find(b=>b.props.children==='Erkunden · 1 Punkt').props.disabled,true);
+ game.view.state.expedition.points=0;r=render(game.view,0);assert.equal(r.buttons.find(b=>b.props.children==='Erkunden').props.disabled,true);
  r=render(explored(6).view,6);assert.equal(nodes(r.tree,'PlaceRewards').length,0,'Mobile grants the module on final collection, not discovery');
 });
 test('Bonus delivery starts normally and reports automatic expansion rewards after completion',()=>{
- let game=explored();let r=render(game.view,0);click(r,'Bonus liefern');assert.deepEqual(r.missions,[[0,'delivery',0]]);
+ let game=explored();let r=render(game.view,0);assert.ok(text(r.tree).includes('Gebiet erkundet'));assert.equal(nodes(r.tree,'PlaceExtraDetails').length,0);click(r,'Bonuslieferung starten');assert.deepEqual(r.missions,[[0,'delivery',0]]);
  assert.equal(nodes(r.tree,'PlaceRewards')[0].props.items[0].label,'Erweiterungspunkt');
  game=execute(game.state,'mission',{region:0,kind:'delivery',place:0,truck:game.view.state.trucks[0].id},now,random);
  r=render(game.view,0,{clock:now+7500});assert.equal(r.buttons.length,0);assert.equal(nodes(r.tree,'Bar')[0].props.value,50);
  game=execute(game.state,'sync',{},now+15001,random);const id=game.state.expedition.missions[0].id;r=render(game.view,0);assert.equal(r.buttons.length,0);assert.equal(game.view.expansion.available,1);
- game=execute(game.state,'claimMission',{id},now+15002,random);r=render(game.view,0);assert.equal(nodes(r.tree,'PlaceRewards')[0].props.received,true);assert.equal(r.buttons.length,0);assert.equal(game.state.expedition.regions[0].deliveries[0],true);
+ game=execute(game.state,'claimMission',{id},now+15002,random);r=render(game.view,0);assert.equal(nodes(r.tree,'PlaceRewards').length,0,'Discovered landmarks do not repeat received rewards');assert.equal(nodes(r.tree,'PlaceExtraDetails').length,0);assert.equal(r.buttons.length,0);assert.equal(game.state.expedition.regions[0].deliveries[0],true);
 });
 test('Final location retains discovery draws before customer completion and never promises a second module',()=>{
  for(const alreadyAwarded of [false,true]){
@@ -56,5 +57,5 @@ test('Modal images override Android intrinsic image sizes and the X remains outs
  });}
  for(const width of [286,326,356,396,458]){const {PlacePortrait}=modal(width),tree=PlacePortrait({source:{uri:'test',width:1536,height:1024}}),image=nodes(tree,'Image')[0];const frame={width:1536,height:1024,...image.props.style};assert.equal(frame.width,width);assert.ok(frame.height>=140&&frame.height<280);}
  const {ExpeditionPlaceModal,PlacePortrait}=modal(0);assert.equal(nodes(PlacePortrait({source:{uri:'test'}}),'Image').length,0);assert.equal(ExpeditionPlaceModal({visible:false,title:'Hidden',onClose:()=>{},children:null}),null);
- const tree=ExpeditionPlaceModal({visible:true,title:'Place',onClose:()=>{},children:null});assert.equal(nodes(tree,'Pressable').length,1);assert.equal(nodes(nodes(tree,'ScrollView')[0],'Pressable').length,0,'X does not scroll away');
+ const tree=ExpeditionPlaceModal({visible:true,title:'Place',onClose:()=>{},children:null});assert.equal(nodes(tree,'Pressable').length,1);assert.equal(nodes(nodes(tree,'ScrollView')[0],'Pressable').length,0,'X does not scroll away');assert.equal(nodes(nodes(tree,'ScrollView')[0],'Text').length,0,'Location title stays above the scrolling portrait and actions');assert.ok(nodes(tree,'Text').some(node=>text(node)==='Place'));
 });
