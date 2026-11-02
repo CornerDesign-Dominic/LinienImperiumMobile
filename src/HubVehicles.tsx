@@ -2,7 +2,7 @@ import {HubCourierArt} from './HubCourierArt';
 import {courierName,courierModel} from '../functions/src/hub-courier';
 import {HubArt} from './HubArt';
 import {HubCrateCard} from './HubCrateCard';
-import {ItemArt,ItemAmount} from './ItemArt';
+import {ItemArt} from './ItemArt';
 import {HubVehicleDetail} from './HubVehicleDetail';
 import {HubEarnings} from './HubEarnings';
 import React,{useRef,useState} from 'react';
@@ -11,7 +11,7 @@ import {t} from './i18n';
 import {Icon,IconName} from './Icon';
 import {itemName} from './items';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
-import {C,Txt,Card,Row,Btn,Bar,Pill,n,remaining} from './ui';
+import {C,Txt,Card,Row,Btn,Pill,n,remaining} from './ui';
 
 const workTime=(minutes:number)=>`${Math.floor(minutes)}:${String(Math.round(minutes*60)%60).padStart(2,'0')}`;
 
@@ -79,18 +79,21 @@ export function HubVehicles({data,busy,onCommand,onSell,modalBlocked=false,error
  const [selected,setSelected]=useState<string|null>(null),[buyOpen,setBuyOpen]=useState(false);
  const g=data.state,info=data.hubInfo,vehicles=g.trucks.filter((truck:any)=>!truck.cardId&&truck.tier<=1),truck=vehicles.find((truck:any)=>truck.id===selected);
  const slots=Math.min(data.hubLimit,info.vehicleMax),canBuy=vehicles.length<slots;
- const tiles=[...vehicles,...(canBuy?[null]:[])],rows=Array.from({length:Math.ceil(tiles.length/3)},(_,i)=>tiles.slice(i*3,i*3+3));
+ const tiles=[...vehicles,...(canBuy?[{slot:'buy'}]:info.nextVehicleLevel?[{slot:'locked'}]:[])],rows=Array.from({length:Math.ceil(tiles.length/3)},(_,i)=>tiles.slice(i*3,i*3+3));
  const failure=error?<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>:null;
  return <>
-  <Row style={{flexWrap:'wrap'}}><View style={s.artHeading}><HubCourierArt size={40}/><Txt style={[s.title,{flexShrink:1}]}>Boten · {vehicles.length} / {data.hubLimit}</Txt></View><View accessible accessibilityLabel={`${t('Werkzeugkästen')}: ${n(g.inventory.hubVehicleParts)}`} style={s.costValue}><ItemArt id="hubVehicleParts" size={28}/><Txt>{n(g.inventory.hubVehicleParts)}</Txt></View></Row>
-  {!canBuy&&<Txt muted style={[s.caption,{marginBottom:10}]}>{info.nextVehicleLevel?`${t('Nächster Botenplatz ab Level')} ${info.nextVehicleLevel}`:'Alle 20 Botenplätze freigeschaltet.'}</Txt>}
-  {rows.map((row,i)=><View key={i} style={s.gridRow}>{row.map((vehicle:any,j:number)=>vehicle?<Pressable key={vehicle.id} accessibilityRole="button" accessibilityLabel={`${t(courierModel(vehicle))}, ${t(courierName(vehicle))}, ${n(vehicle.capacity,1)} t, ${n(vehicle.speed,2)} km/s, ${t(vehicle.hubAssigned?'Im Hub eingesetzt':'Nicht eingesetzt')}`} onPress={()=>{setSelected(vehicle.id);}} style={({pressed})=>[s.vehicle,pressed&&{opacity:.8}]}>
-   <View style={s.truckArt}><HubCourierArt/></View><Txt style={s.vehicleName}>{courierName(vehicle)}</Txt>
-   <View style={s.tileFact}><Icon name="capacity" size={18}/><Txt style={s.tileValue}>{n(vehicle.capacity,1)} t</Txt></View><View style={s.tileFact}><Icon name="speed" size={18}/><Txt style={s.tileValue}>{n(vehicle.speed,2)} km/s</Txt></View>
-   <View accessible accessibilityLabel={`${t('Laderaum')} ${vehicle.hubCapacityLevel||0}/10`} style={s.level}><Icon name="module" size={11} color={C.muted}/><View style={{flex:1}}><Bar value={(vehicle.hubCapacityLevel||0)*10}/></View><Txt style={s.caption}>{vehicle.hubCapacityLevel||0}/10</Txt></View>
-   <View accessible accessibilityLabel={`${t('Antrieb')} ${vehicle.hubSpeedLevel||0}/10`} style={s.level}><Icon name="gear" size={11} color={C.muted}/><View style={{flex:1}}><Bar value={(vehicle.hubSpeedLevel||0)*10}/></View><Txt style={s.caption}>{vehicle.hubSpeedLevel||0}/10</Txt></View>
-   <Txt style={[s.caption,{color:vehicle.hubAssigned?C.accent:C.muted,textAlign:'center',marginTop:5}]}>{vehicle.hubAssigned?'Im Hub':'Nicht eingesetzt'}</Txt>
-  </Pressable>:<Pressable key={`buy-${j}`} accessibilityRole="button" accessibilityLabel={t('Boten anwerben')} onPress={()=>setBuyOpen(true)} style={[s.vehicle,s.emptySlot]}><Icon name="plus" size={30} color={C.gold}/><Txt style={s.vehicleName}>Anwerben</Txt><Txt muted style={s.caption}>2 t · {n(info.vehiclePrice)} M</Txt></Pressable>)}{row.length<3&&Array.from({length:3-row.length},(_,j)=><View key={`space-${j}`} style={{flex:1}}/>)}</View>)}
+  <Row style={{gap:8,marginBottom:10}}><Txt style={[s.title,{flexShrink:1}]}>Boten · {vehicles.length} / {data.hubLimit}</Txt><View accessible accessibilityLabel={`${t('Werkzeugkästen')}: ${n(g.inventory.hubVehicleParts)}`} style={s.costValue}><ItemArt id="hubVehicleParts" size={28}/><Txt>{n(g.inventory.hubVehicleParts)}</Txt></View></Row>
+  {rows.map((row,i)=><View key={i} style={s.gridRow}>{row.map((vehicle:any,j:number)=>!vehicle.slot?<Pressable key={vehicle.id} accessibilityRole="button" accessibilityLabel={`${t(courierModel(vehicle))}, ${t(courierName(vehicle))}, ${n(vehicle.capacity,1)} t, ${n(vehicle.speed,2)} km/s, ${t(vehicle.hubAssigned?'Im Hub eingesetzt':'Nicht eingesetzt')}`} onPress={()=>setSelected(vehicle.id)} style={({pressed})=>[s.vehicle,pressed&&{opacity:.8}]}>
+   <View style={s.truckArt}><HubCourierArt flush/><View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={[s.assignment,{backgroundColor:vehicle.hubAssigned?C.accent:C.muted}]}/></View>
+   <View style={s.tileDetails}>
+    <View style={s.tileFact}><Icon name="capacity" size={18}/><Txt style={s.tileValue}>{n(vehicle.capacity,1)} t</Txt></View><View style={s.tileFact}><Icon name="speed" size={18}/><Txt style={s.tileValue}>{n(vehicle.speed,2)} km/s</Txt></View>
+    <View style={s.tileUpgrades}>{(['capacity','speed'] as const).map(kind=>{
+     const q=vehicle.hubUpgrades?.[kind],level=q?.level??vehicle[kind==='capacity'?'hubCapacityLevel':'hubSpeedLevel']??0,max=q?.max??10;
+     const available=q&&level<max&&g.coins>=q.coins&&g.inventory.hubVehicleParts>=q.parts;
+     return <View key={kind} accessible accessibilityLabel={`${t(kind==='capacity'?'Laderaum':'Antrieb')}: ${level} / ${max}${available?`, ${t('Verbesserung verfügbar')}`:''}`} style={s.level}><Icon name={kind==='capacity'?'module':'gear'} size={16} color={C.gold}/><Txt style={s.tileValue}>{level} / {max}</Txt><View style={[s.upgradeDot,!available&&{opacity:0}]}/></View>;
+    })}</View>
+   </View>
+  </Pressable>:vehicle.slot==='buy'?<Pressable key="buy" accessibilityRole="button" accessibilityLabel={t('Boten anwerben')} disabled={busy} onPress={()=>setBuyOpen(true)} style={[s.vehicle,s.emptySlot]}><Icon name="plus" size={30} color={C.gold}/><Txt style={s.slotTitle}>Anwerben</Txt><Txt muted style={s.slotCaption}>2 t · {n(info.vehiclePrice)} M</Txt></Pressable>:<View key="locked" testID="hub-locked-slot" accessible accessibilityLabel={`${t('Nächster Botenplatz ab Level')} ${info.nextVehicleLevel}`} style={[s.vehicle,s.emptySlot,s.lockedSlot]}><Icon name="lock" size={36} color={C.gold}/><Txt style={s.slotTitle}>Nächster Botenplatz</Txt><Txt muted style={s.slotCaption}>Ab Level {info.nextVehicleLevel}</Txt></View>)}{row.length<3&&Array.from({length:3-row.length},(_,j)=><View key={`space-${j}`} style={{flex:1}}/>)}</View>)}
   <ExpeditionPlaceModal visible={buyOpen&&!modalBlocked} title={t('Boten anwerben')} onClose={()=>setBuyOpen(false)}><View style={{width:150,alignSelf:'center',marginBottom:12}}><HubCourierArt/></View><Txt>Lastwombat · 2 t Startkapazität</Txt><View style={s.section}><Txt muted style={s.caption}>Vorhanden / Benötigt</Txt><Cost label="Münzen" owned={g.coins} need={info.vehiclePrice} unit=" M"/>{failure}<Btn disabled={busy||!canBuy||g.coins<info.vehiclePrice} onPress={async()=>{if(await onCommand('hubVehicleBuy'))setBuyOpen(false);}}>Anwerben · {n(info.vehiclePrice)} M</Btn></View></ExpeditionPlaceModal>
   {truck&&!modalBlocked&&<HubVehicleDetail key={truck.id} truck={truck} inventory={g.inventory} coins={g.coins} busy={busy} error={error} onCommand={onCommand} onClose={()=>setSelected(null)} onSell={onSell}/>}
  </>;
@@ -100,5 +103,5 @@ const s=StyleSheet.create({
  title:{fontSize:15,fontWeight:'700'},caption:{fontSize:10,lineHeight:16},note:{fontSize:11,lineHeight:17,marginTop:8},error:{color:C.red,fontSize:12,marginBottom:8},
  tabs:{flexDirection:'row',gap:6,marginBottom:10},tab:{flex:1,minHeight:44,borderWidth:1,borderBottomWidth:3,borderColor:C.line,borderRadius:5,backgroundColor:C.raised,justifyContent:'center',alignItems:'center'},activeTab:{backgroundColor:C.accent,borderColor:C.ink},tabLabel:{fontSize:13,fontWeight:'700'},
  metrics:{flexDirection:'row',gap:6,marginVertical:4},metric:{flex:1,minWidth:0,alignItems:'center',gap:3},metricValue:{fontSize:16,lineHeight:23,fontWeight:'700',textAlign:'center'},section:{borderTopWidth:1,borderTopColor:C.line,paddingTop:9,marginTop:9},
- cost:{flexDirection:'row',alignItems:'center',gap:6,marginTop:5},costValue:{flexDirection:'row',alignItems:'center',gap:5,flexShrink:1},gridRow:{flexDirection:'row',gap:4.5,marginBottom:5},vehicle:{flex:1,minWidth:0,borderWidth:1,borderTopWidth:3,borderColor:C.line,borderRadius:6,backgroundColor:C.panel,padding:7},vehicleName:{fontSize:13,lineHeight:19,fontWeight:'700',textAlign:'center'},truckArt:{width:'100%',aspectRatio:1,marginBottom:5,overflow:'hidden',borderRadius:5},tileFact:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:3,marginBottom:5},tileValue:{fontSize:10,lineHeight:16,fontWeight:'700',textAlign:'right',flexShrink:1},level:{flexDirection:'row',alignItems:'center',gap:3,marginTop:3},emptySlot:{borderStyle:'dashed',justifyContent:'center',alignItems:'center',gap:12,minHeight:205},toggle:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',minHeight:44}
+ cost:{flexDirection:'row',alignItems:'center',gap:6,marginTop:5},costValue:{flexDirection:'row',alignItems:'center',gap:5,flexShrink:1},gridRow:{flexDirection:'row',gap:4.5,marginBottom:6},vehicle:{flex:1,minWidth:0,minHeight:230,borderWidth:1,borderColor:C.line,borderRadius:6,backgroundColor:C.panel,overflow:'hidden'},truckArt:{width:'100%',aspectRatio:1,position:'relative'},assignment:{position:'absolute',right:6,top:6,width:8,height:8,borderRadius:4,borderWidth:1,borderColor:C.onInk},tileDetails:{paddingHorizontal:7,paddingVertical:7},tileFact:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:3,minHeight:24},tileValue:{fontSize:10,lineHeight:16,fontWeight:'600',textAlign:'right',flexShrink:1},tileUpgrades:{borderTopWidth:1,borderTopColor:C.line,marginTop:4,paddingTop:4},level:{flexDirection:'row',alignItems:'center',gap:5,minHeight:23},upgradeDot:{width:5,height:5,borderRadius:3,backgroundColor:C.brass,marginLeft:'auto'},emptySlot:{justifyContent:'center',alignItems:'center',gap:10,padding:7,minHeight:230},lockedSlot:{backgroundColor:C.raised},slotTitle:{fontSize:12,lineHeight:17,fontWeight:'600',textAlign:'center'},slotCaption:{fontSize:10,lineHeight:16,textAlign:'center'},toggle:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',minHeight:44}
 });
