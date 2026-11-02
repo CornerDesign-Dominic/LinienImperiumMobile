@@ -1,6 +1,6 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const {componentHarness,nodes,text}=require('./helpers/component-harness.cjs');
-const imports={'../assets/art/hub/sales-desk.jpg':1,'./ui':{C:require('../src/palette.json'),Txt:'Txt',Btn:'Btn',n:(v,d=0)=>Number(v).toLocaleString('de-DE',{maximumFractionDigits:d}),remaining:()=> '00:12:00',displayFont:'serif'}};
+const imports={'./SalesMaterial':{SalesMaterialView:'View',SalesMaterialButton:'Btn'},'../assets/art/hub/sales-desk.jpg':1,'./ui':{C:require('../src/palette.json'),Txt:'Txt',Btn:'Btn',n:(v,d=0)=>Number(v).toLocaleString('de-DE',{maximumFractionDigits:d}),remaining:()=> '00:12:00',displayFont:'serif'}};
 function setup(){const h=componentHarness('HubSales.tsx',imports);let commands=0;const p={hub:{salesLevel:0},info:{cycle:{salesMax:20,workMinutes:40,nextWorkMinutes:40.5},hourlyCapacity:1544.2,upgradeContacts:5,upgradeItems:1},inventory:{supplierContacts:4,companyItems:8},clock:0,onCommand:()=>commands++};return {h,p,render:()=>h.render('HubSales',p),commands:()=>commands};}
 const button=tree=>nodes(tree,'Btn').find(n=>text(n)==='Ausbau starten');
 test('Sales upgrade previews actual next throughput, gates missing materials and keeps modal open on error',()=>{

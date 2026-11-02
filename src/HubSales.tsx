@@ -1,11 +1,12 @@
 import {MaterialPressable as Pressable,MaterialView as View} from './Material';
 import React,{useState} from 'react';
+import {SalesMaterialView,SalesMaterialButton} from './SalesMaterial';
 import {Image,ScrollView,StyleSheet} from 'react-native';
 import {AppModal} from './AppModal';
 import {Icon} from './Icon';
 import {ItemArt} from './ItemArt';
 import {t} from './i18n';
-import {C,Txt,Btn,n,remaining,displayFont} from './ui';
+import {C,Txt,n,remaining,displayFont} from './ui';
 
 const scene=require('../assets/art/hub/sales-desk.jpg');
 const workTime=(minutes:number)=>{const seconds=Math.round(minutes*60);return `${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;};
@@ -31,8 +32,8 @@ export function HubSales({hub,info,inventory,busy,error,clock,onOpen,onCommand,m
    <View style={s.cardInfo}><Txt style={s.workTime}>{workTime(current)} Min.</Txt><Txt style={s.cardCaption}>Verteilung je Stunde</Txt><Txt style={s.cardBonus}>{!atMax&&delta>0?`+${n(extra,1)} ${t('t pro Stunde nach Ausbau')}`:`${n(info.hourlyCapacity*current/60,1)} ${t('t Verteilung pro Stunde')}`}</Txt>{building&&<Txt style={s.cardCaption}>Ausbau fertig in {remaining(hub.construction.finishAt,clock)}</Txt>}{atMax&&<Txt style={s.cardCaption}>Maximum erreicht</Txt>}</View>
    <View style={s.action}><Txt style={s.actionText}>{action}</Txt></View>
   </Pressable>
-  <AppModal visible={open&&!modalBlocked} transparent animationType="none" onRequestClose={close}><View style={s.overlay}><View testID="hub-sales-modal" style={s.modal}>
-   <View style={s.modalHeading}><Txt style={s.modalTitle}>Vertrieb verbessern</Txt><Pressable testID="hub-sales-close" accessibilityRole="button" accessibilityLabel={t('Schließen')} accessibilityState={{disabled:!!busy}} disabled={busy} onPress={close} style={s.close}><Icon name="close" size={20} color={C.onInk}/></Pressable></View>
+  <AppModal visible={open&&!modalBlocked} transparent animationType="none" onRequestClose={close}><View style={s.overlay}><SalesMaterialView testID="hub-sales-modal" style={s.modal}>
+   <SalesMaterialView kind="petrol" style={s.modalHeading}><Txt style={s.modalTitle}>Vertrieb verbessern</Txt><Pressable testID="hub-sales-close" accessibilityRole="button" accessibilityLabel={t('Schließen')} accessibilityState={{disabled:!!busy}} disabled={busy} onPress={close} style={s.close}><Icon name="close" size={20} color={C.onInk}/></Pressable></SalesMaterialView>
    <ScrollView style={{flexShrink:1}} contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled">
     <View style={s.banner}><Image source={scene} accessible={false} resizeMode="cover" fadeDuration={0} style={s.image}/></View>
     <View style={s.content}>
@@ -48,8 +49,8 @@ export function HubSales({hub,info,inventory,busy,error,clock,onOpen,onCommand,m
      </View>}
     </View>
    </ScrollView>
-   {!atMax&&!building&&<View style={s.footer}>{!enough&&<Txt style={s.missing}>{missing}</Txt>}{error&&<Txt style={s.missing}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}<Btn disabled={busy||!canUpgrade} onPress={()=>onCommand('hubUpgrade')}>{busy?'Wird gestartet …':'Ausbau starten'}</Btn></View>}
-  </View></View></AppModal>
+   {!atMax&&!building&&<View style={s.footer}>{!enough&&<Txt style={s.missing}>{missing}</Txt>}{error&&<Txt style={s.missing}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}<SalesMaterialButton disabled={busy||!canUpgrade} onPress={()=>onCommand('hubUpgrade')}>{busy?'Wird gestartet …':'Ausbau starten'}</SalesMaterialButton></View>}
+  </SalesMaterialView></View></AppModal>
  </>;
 }
 const s=StyleSheet.create({
