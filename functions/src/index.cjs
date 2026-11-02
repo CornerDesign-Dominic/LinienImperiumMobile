@@ -4,6 +4,7 @@ const { initializeApp } = require('firebase-admin/app');
 const { getFirestore, Timestamp } = require('firebase-admin/firestore');
 const { gzipSync, gunzipSync } = require('node:zlib');
 const { execute } = require('./engine.cjs');
+const {compactResponse}=require('./response-cache.cjs');
 const {readEventContext,refreshRanking}=require('./event-store.cjs');
 initializeApp();
 const db=getFirestore();
@@ -15,7 +16,7 @@ exports.game = onCall({region:'europe-west3', serviceAccount:'mobile-game-runtim
   const gameRef=db.doc(`players/${request.auth.uid}`);
   const receipt=action==='sync'?null:gameRef.collection('commands').doc(requestId);
   try {
-    return await db.runTransaction(async tx=>{
+    const view=await db.runTransaction(async tx=>{
       const saved=await tx.get(gameRef);
       const previous=receipt?await tx.get(receipt):null;
       const record=saved.exists?saved.data():{};
@@ -37,5 +38,6 @@ exports.game = onCall({region:'europe-west3', serviceAccount:'mobile-game-runtim
       if(receipt&&!previous?.exists)tx.set(receipt,{action,...(result.view.expansionAllocationApplied?{expansionAllocationApplied:true}:{}),...(result.view.customerBatchApplied?{customerBatchApplied:true}:{}),...(result.view.levelUps?{levelUps:result.view.levelUps}:{}),...(result.view.claimSummary?{claimSummary:result.view.claimSummary}:{}),...(result.view.hubCrateParts?{hubCrateParts:result.view.hubCrateParts}:{}),...(result.view.giftFind?{giftFind:result.view.giftFind}:{}),...(result.view.expeditionFind?{expeditionFind:result.view.expeditionFind}:{}),createdAt:Timestamp.fromMillis(now),expireAt:Timestamp.fromMillis(now+7*86400000)});
       return result.view;
     });
+    return compactResponse(view,request.data?.responseCache);
   } catch(error){if(error instanceof HttpsError)throw error;console.error('Game transaction failed',error);throw new HttpsError('internal','Spielstand konnte nicht geladen werden. Bitte erneut versuchen.');}
 });
