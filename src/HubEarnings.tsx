@@ -1,39 +1,50 @@
 import React from 'react';
-import {Image,View,StyleSheet} from 'react-native';
+import {Image,Pressable,Text,View,StyleSheet} from 'react-native';
 import {Icon} from './Icon';
 import {MenuArt} from './MenuArt';
-import {C,Txt,Card,Btn,n,remaining} from './ui';
+import {C,Txt,n,remaining} from './ui';
 import {hubCycle} from './hubCycle';
 
 export function HubEarnings({hub,cycle,clock,busy,onCollect}:any){
  const state=hubCycle(hub,cycle,clock),full=state?.full??hub.cashboxCycles>=6;
- const max=cycle?.cashboxMax??6;
- return <Card style={s.card}>
-  <View testID="hub-earnings-yard" style={s.hero}>
-   <Image source={require('../assets/art/hub/earnings-yard.jpg')} accessible={false} resizeMode="cover" fadeDuration={0} style={s.image}/>
-   <View style={s.cashbox}><Txt style={s.cashboxText}>{full?'Kasse voll':`${hub.cashboxCycles} / ${max} Std. Kasse`}</Txt></View>
-   <View style={s.earnings}><Txt style={s.title}>Erträge</Txt><View style={s.amountRow}><Icon name="coin" size={24}/><Txt testID="hub-earnings-amount" adjustsFontSizeToFit minimumFontScale={.7} numberOfLines={1} style={s.amount}>{n(hub.cashboxCoins,2)} M</Txt></View></View>
+ const max=cycle?.cashboxMax??6,disabled=!!busy||!hub.cashboxCoins&&!hub.cashboxHints&&!hub.cashboxParts;
+ const active=!!state&&!state.paused;
+ const status=full?'Verteilung pausiert':!state?.hasGoods?'Keine Ware im Zyklus':state.waiting?'Warte auf Einkauf':'Verteilung läuft';
+ return <View testID="hub-earnings-yard" style={s.card}>
+  <Image source={require('../assets/art/hub/earnings-yard.jpg')} accessible={false} resizeMode="cover" fadeDuration={0} style={s.image}/>
+  <View style={s.heading}><Txt style={s.title}>Erträge</Txt><Txt style={s.cashboxText}>{full?'Kasse voll':`${hub.cashboxCycles} / ${max} Std. Kasse`}</Txt></View>
+  <View style={s.amountRow}><Icon name="coin" size={32}/><Text testID="hub-earnings-amount" adjustsFontSizeToFit minimumFontScale={.6} numberOfLines={1} style={s.amount}>{n(hub.cashboxCoins,2)} M</Text></View>
+  <View style={s.scenery}/>
+  <View style={s.cycle}>
+   <View style={s.statusArea}><Txt style={s.status}>{status}</Txt><Txt style={s.small}>{full?'Erträge abholen, um fortzufahren':state?`Einkauf in ${remaining(hub.nextCycleAt,clock)}`:'Warte auf den nächsten Einkauf'}</Txt></View>
+   <View testID="hub-earnings-timeline" style={s.timeline} accessible accessibilityLabel={active?`Einkaufszyklus: ${state.minutes} von ${cycle.durationMs/60000} Minuten. Ware leer nach ${cycle.workMs/60000} Minuten.`:status}>
+    <View style={[s.markerArea,!active&&s.hidden]}>
+     {active&&state.emptyAt!==null&&<View style={[s.event,{left:`${state.emptyAt*100}%`,transform:[{translateX:state.emptyAt>.85?-104:-52}]}]}><Icon name="orders" size={18} color={C.onInk}/><Txt style={s.eventText}>Ware leer · {n(cycle.workMs/60000,1)} Min.</Txt></View>}
+     {active&&<View style={s.purchase}><MenuArt id="procurement" size={28}/></View>}
+    </View>
+    <View style={[s.track,!active&&s.dimTrack]}>
+     {active&&<><View style={[s.progress,{width:`${Math.min(state.progress,state.emptyAt??1)*100}%`}]}/>
+      {state.emptyAt!==null&&<View style={[s.eventLine,{left:`${state.emptyAt*100}%`}]}/>}
+      <View style={[s.cursor,{left:`${state.progress*100}%`}]}/></>}
+    </View>
+    <View style={[s.ends,!active&&s.dimTrack]}><Txt style={s.small}>0</Txt><Txt style={s.small}>{(cycle?.durationMs??3600000)/60000} Min.</Txt></View>
+    <View style={s.noteArea}><Txt style={s.note}>{full?'Kasse voll':active?`${state.minutes} Min. im Zyklus${state.idleMs>0?` · ${n(state.idleMs/60000,1)} Min. ohne Ware`:''}`:'Verteilung pausiert'}</Txt></View>
+   </View>
   </View>
-  {state&&<View style={s.cycle}>
-   <View style={s.goodsRow}><View accessible accessibilityLabel={`Warenrest ${Math.round(state.remaining*100)} %`} style={s.crate}><View style={[s.crateFill,{height:`${state.remaining*100}%`}]}/><Icon name="orders" size={27} color={C.gold}/></View><View style={{flex:1,minWidth:0}}><Txt style={s.status}>{full?'Verteilung pausiert':!state.hasGoods?'Keine Ware im Zyklus':state.waiting?'Warte auf Einkauf':'Verteilung läuft'}</Txt><Txt muted style={s.small}>{full?'Erträge abholen, um fortzufahren':`Einkauf in ${remaining(hub.nextCycleAt,clock)}`}</Txt></View></View>
-   {!state.paused&&<View accessible accessibilityLabel={`Einkaufszyklus: ${state.minutes} von ${cycle.durationMs/60000} Minuten. Ware leer nach ${cycle.workMs/60000} Minuten.`}>
-    <View style={s.timelineHead}><Txt muted style={s.small}>{state.minutes} Min. im Zyklus</Txt></View>
-    <View style={[s.markerArea,(state.emptyAt??0)>.9&&{height:68}]}>
-     {state.emptyAt!==null&&<View style={[s.event,{bottom:(state.emptyAt??0)>.9?32:12,left:`${state.emptyAt*100}%`,transform:[{translateX:(state.emptyAt??0)>.9?-104:-52}]}]}><Icon name="orders" size={18} color={C.gold}/><Txt muted style={s.eventText}>Ware leer · {n(cycle.workMs/60000,1)} Min.</Txt></View>}
-     <View style={s.purchase}><MenuArt id="procurement" size={28}/></View>
-    </View>
-    <View style={s.track}>
-     <View style={[s.progress,{width:`${Math.min(state.progress,state.emptyAt??1)*100}%`}]}/>
-     {state.emptyAt!==null&&<View style={[s.eventLine,{left:`${state.emptyAt*100}%`}]}/>}
-     <View style={[s.cursor,{left:`${state.progress*100}%`}]}/>
-    </View>
-    <View style={s.ends}><Txt muted style={s.small}>0</Txt><Txt muted style={s.small}>{cycle.durationMs/60000} Min.</Txt></View>
-    {state.idleMs>0&&<Txt muted style={s.idleNote}>{state.idleMs/60000} Min. ohne Ware bis zum Einkauf</Txt>}
-   </View>}
-  </View>}
-  <Btn disabled={busy||!hub.cashboxCoins&&!hub.cashboxHints&&!hub.cashboxParts} onPress={onCollect}>Erträge abholen</Btn>
- </Card>;
+  <Pressable testID="hub-earnings-collect" accessibilityRole="button" accessibilityLabel="Erträge abholen" accessibilityState={{disabled,busy:!!busy}} disabled={disabled} onPress={onCollect} style={({pressed})=>[s.action,pressed&&!disabled&&s.pressed]}><Txt style={[s.actionText,disabled&&s.disabledText]}>{busy?'Wird abgeholt …':'Erträge abholen'}</Txt></Pressable>
+ </View>;
 }
 const s=StyleSheet.create({
- card:{overflow:'hidden'},hero:{height:124,marginHorizontal:-16,marginTop:-16,marginBottom:12,backgroundColor:C.ink},image:{position:'absolute',top:0,bottom:0,left:0,right:0,width:'100%',height:'100%'},cashbox:{alignSelf:'flex-end',margin:8,borderRadius:4,paddingHorizontal:7,paddingVertical:3,backgroundColor:'rgba(21,33,33,0.78)'},cashboxText:{fontSize:10,lineHeight:15,color:C.onInk},earnings:{marginTop:'auto',paddingHorizontal:12,paddingVertical:7,backgroundColor:'rgba(21,33,33,0.78)'},title:{fontSize:11,lineHeight:15,fontWeight:'600',color:C.onInk},amountRow:{flexDirection:'row',alignItems:'center',gap:7},amount:{fontSize:22,lineHeight:27,fontWeight:'700',color:C.onInk,flex:1,minWidth:0},small:{fontSize:10,lineHeight:16},cycle:{borderTopWidth:1,borderTopColor:C.line,paddingTop:10,marginTop:2},goodsRow:{flexDirection:'row',alignItems:'center',gap:10},crate:{width:38,height:38,borderWidth:1,borderColor:C.line,borderRadius:5,overflow:'hidden',alignItems:'center',justifyContent:'center',backgroundColor:C.panel},crateFill:{position:'absolute',bottom:0,left:0,right:0,backgroundColor:C.goldWash},status:{fontSize:12,lineHeight:18,fontWeight:'600'},timelineHead:{marginTop:10},markerArea:{height:48,position:'relative',marginRight:5,marginLeft:5},event:{position:'absolute',bottom:12,width:104,alignItems:'center'},eventText:{fontSize:8,lineHeight:12},purchase:{position:'absolute',right:-5,bottom:0},track:{height:7,backgroundColor:C.raised,borderRadius:4,position:'relative',marginHorizontal:5},progress:{position:'absolute',left:0,top:0,bottom:0,backgroundColor:C.accent,borderRadius:4},cursor:{position:'absolute',top:-3,width:13,height:13,borderRadius:7,borderWidth:2,borderColor:C.panel,backgroundColor:C.accent,transform:[{translateX:-6}]},eventLine:{position:'absolute',top:-8,bottom:-5,width:1,backgroundColor:C.brass},ends:{flexDirection:'row',justifyContent:'space-between',marginTop:6},idleNote:{fontSize:10,lineHeight:15,marginTop:2}
+ card:{height:350,width:'100%',borderWidth:1,borderColor:C.line,borderRadius:8,overflow:'hidden',backgroundColor:C.ink,marginBottom:10},
+ image:{position:'absolute',top:0,bottom:0,left:0,right:0,width:'100%',height:'100%'},
+ heading:{height:36,flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:8,paddingHorizontal:12,backgroundColor:'rgba(21,33,33,0.72)'},
+ title:{fontSize:14,lineHeight:20,fontWeight:'700',color:C.onInk},cashboxText:{fontSize:11,lineHeight:16,color:C.onInk,flexShrink:1},
+ amountRow:{height:52,flexDirection:'row',alignItems:'center',gap:8,paddingHorizontal:12,backgroundColor:'rgba(21,33,33,0.45)'},amount:{fontSize:27,lineHeight:34,fontWeight:'700',color:C.onInk,flex:1,minWidth:0},
+ scenery:{flex:1,backgroundColor:'rgba(21,33,33,0.08)'},
+ cycle:{height:166,paddingHorizontal:14,paddingTop:10,backgroundColor:'rgba(21,33,33,0.84)'},
+ statusArea:{height:43,alignItems:'center',justifyContent:'center'},status:{fontSize:13,lineHeight:19,fontWeight:'600',color:C.onInk,textAlign:'center'},small:{fontSize:10,lineHeight:16,color:C.onInk},
+ timeline:{height:108},markerArea:{height:44,position:'relative',marginHorizontal:5},event:{position:'absolute',bottom:4,width:104,alignItems:'center'},eventText:{fontSize:8,lineHeight:12,color:C.onInk},purchase:{position:'absolute',right:-5,bottom:0},
+ track:{height:6,backgroundColor:'rgba(240,229,201,0.25)',borderRadius:4,position:'relative',marginHorizontal:5},progress:{position:'absolute',left:0,top:0,bottom:0,backgroundColor:'#DEC58B',borderRadius:4},cursor:{position:'absolute',top:-3,width:12,height:12,borderRadius:6,borderWidth:2,borderColor:C.onInk,backgroundColor:C.brass,transform:[{translateX:-6}]},eventLine:{position:'absolute',top:-7,bottom:-5,width:1,backgroundColor:'#DEC58B'},
+ ends:{flexDirection:'row',justifyContent:'space-between',marginTop:6},noteArea:{height:24,justifyContent:'center'},note:{fontSize:9,lineHeight:14,color:C.onInk,textAlign:'center'},hidden:{opacity:0},dimTrack:{opacity:.35},
+ action:{height:46,justifyContent:'center',alignItems:'center',paddingHorizontal:10,backgroundColor:'rgba(21,33,33,0.9)',borderTopWidth:1,borderTopColor:C.brass},actionText:{color:C.onInk,fontSize:14,lineHeight:21,fontWeight:'700',textAlign:'center'},disabledText:{opacity:.45},pressed:{opacity:.8},
 });
