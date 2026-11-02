@@ -1,0 +1,7 @@
+{
+  "tool": "image_gen",
+  "use_case": "illustration-story",
+  "prompt": "Use case: illustration-story. Production fantasy merchant game category artwork, square composition, detailed painterly realism, warm historical trading office. Close-up of two merchants clasping hands in a confident handshake above a small wrapped parchment parcel with red wax seal bearing a tiny laurel wreath. Rich burgundy and deep petrol cloth sleeves, warm natural daylight, aged wooden desk, indistinct old ledger in background. Hands anatomically correct, exactly two hands with natural fingers, clear strong silhouette. Scene will be cropped as LEFT THIRTY PERCENT panel in a compact mobile parchment card, so keep handshake and wax-sealed parcel centrally stacked, visible at small size. No text, no letters, no UI, no border, no frame, no typography, no modern objects. Croppable full-bleed illustration, earthy gold, burgundy, warm ivory and muted petrol. Match high quality historic region landscape painterly art.",
+  "generated_source": "exec-496f6dda-2e4b-4fc8-9ebc-22deb4d71565.png",
+  "production": "512px optimized JPEG, quality85"
+}

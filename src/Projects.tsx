@@ -5,6 +5,7 @@ import {Text} from './Language';
 import {t as translate} from './i18n';
 import {Icon} from './Icon';
 import {LocationArt} from './LocationArt';
+import {ProjectCategoryArt} from './ProjectCategoryArt';
 import {itemName} from './items';
 import React,{useEffect,useState} from 'react';
 import {ScrollView,StyleSheet} from 'react-native';
@@ -26,11 +27,17 @@ export function Projects({data,onRunning,onType}:any){
  const orders=data.state.orders.filter((o:any)=>o.isProject),active=orders.filter((o:any)=>o.status==='active');
  return <>
   <Pressable accessibilityRole="button" accessibilityLabel={translate(`Laufende Großaufträge, ${active.length}`)} onPress={onRunning}><Card style={s.running}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700',flex:1}}>Laufende Großaufträge</Txt><Pill>{active.length}</Pill><Icon name="chevron" size={17} color={C.accent}/></Row></Card></Pressable>
-  {data.projectCatalog.map((info:any)=>{
-   const ready=orders.filter((o:any)=>o.status==='queued'&&o.projectInfo.key===info.key).length;
-   return <Pressable key={info.key} accessibilityRole="button" accessibilityLabel={translate(`${projectTitle(info.name,info.kind)}, ${info.kind==='referral'?'Alle Regionen':info.regionName}, Aufträge ${ready}`)} onPress={()=>onType(info.key)}><Card style={[s.tile,rarityStyle(info.kind)]}>
-    <Row><ItemArt id={info.kind==='referral'?'referral':'special'} size={52}/><Txt style={[s.title,{flex:1}]}>{projectTitle(info.name,info.kind)}</Txt><Icon name="chevron" size={17} color={C.muted}/></Row>
-    <Row style={{marginBottom:0,alignItems:'flex-start'}}><Txt muted style={[s.small,{flex:1}]}>{info.kind==='referral'?'Alle Stammkunden · alle Regionen':`${info.customer.name} · ${info.regionName}`}</Txt><Txt muted style={s.small}>Aufträge {ready}</Txt></Row>
+  {data.projectCatalog.map((info:any,index:number)=>({info,index,ready:orders.filter((o:any)=>o.status==='queued'&&o.projectInfo.key===info.key).length}))
+   .sort((a:any,b:any)=>Number(b.ready>0)-Number(a.ready>0)||a.index-b.index).map(({info,ready}:any)=>{
+   const referral=info.kind==='referral',name=(info.name||'').replace(/^(?:Großauftrag|Großprojekt|Sonderauftrag|Empfehlungsauftrag)\s+/,''),color=referral?C.epic:C.rare;
+   return <Pressable key={info.key} testID={`project-category-${info.key}`} accessibilityRole="button" accessibilityLabel={translate(`${projectTitle(info.name,info.kind)}, ${referral?'Alle Regionen':info.regionName}, Aufträge ${ready}`)} onPress={()=>onType(info.key)} style={({pressed})=>pressed&&{opacity:.8}}><Card style={[s.category,{borderColor:color}]}>
+    <View material={false} style={s.categoryArt}><ProjectCategoryArt region={info.region} referral={referral}/>{!referral&&<View material={false} style={s.regionLabel}><Txt style={s.regionName}>{info.regionName}</Txt></View>}</View>
+    <View style={s.categoryCopy}>
+     <Txt style={[s.categoryKind,{color}]}>{referral?'Empfehlung':'Sonderauftrag'}</Txt>
+     <Txt style={s.categoryTitle}>{name}</Txt>
+     <Txt muted style={s.categoryCustomer}>{referral?'Alle Stammkunden':info.customer.name}</Txt>
+     <View style={s.categoryFooter}>{ready>0?<View style={s.available}><Txt style={s.availableText}>{ready} verfügbar</Txt></View>:<Txt muted style={s.unavailable}>Keine verfügbar</Txt>}<Icon name="chevron" size={16} color={C.accent}/></View>
+    </View>
    </Card></Pressable>;
   })}
  </>;
@@ -88,4 +95,17 @@ export function ProjectDetail({data,id,busy,clock,onCommand,onExpedition,onCusto
   <Modal visible={overtime&&active&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setOvertime(false)}><View style={s.overlay}><SafeAreaView edges={[]} style={s.sheet}><MaterialLayer surfaceStyle={s.sheet}/><Row style={{flexWrap:'nowrap'}}><Txt style={[s.title,{flex:1,minWidth:0}]}>Überstunden</Txt><Btn icon="close" iconOnly secondary style={{marginTop:0}} onPress={()=>setOvertime(false)}>Schließen</Btn></Row><ScrollView keyboardShouldPersistTaps="handled">{points>0&&<><Row><Txt muted>Vorrat</Txt><Txt gold>{n(points)} Punkte</Txt></Row><View style={{flexDirection:'row',gap:6,marginVertical:12}}>{([1,5,10,'max'] as const).map(value=><Pressable key={value} accessibilityRole="button" accessibilityLabel={translate(value==='max'?'Max wählen':`${value} Punkte wählen`)} accessibilityState={{selected:amount===value,disabled:busy}} disabled={busy} onPress={()=>{setAmount(value);setOvertime(false);}} style={[s.preset,amount===value&&{borderColor:C.accent,backgroundColor:C.greenWash}]}><Txt>{value==='max'?'Max':value}</Txt></Pressable>)}</View><Txt muted style={s.small}>Max · {n(o.overtimeForDeadline)} Punkte bis zur Frist</Txt></>}<ItemAmount id="overtimeRefills" amount={data.state.inventory.overtimeRefills}/><Btn secondary disabled={busy||!data.state.inventory.overtimeRefills} onPress={()=>onCommand('refill',{})}>{itemName('overtimeRefills')} · {n(data.state.inventory.overtimeRefills)}</Btn></ScrollView></SafeAreaView></View></Modal>
  </>;
 }
-const s=StyleSheet.create({vehicle:{borderTopWidth:1,borderTopColor:C.line,paddingTop:10,marginTop:6,paddingBottom:6},title:{fontSize:15,fontWeight:'700'},small:{fontSize:12,lineHeight:18},section:{fontSize:13,fontWeight:'700',color:C.muted,marginVertical:10},running:{padding:12,backgroundColor:C.greenWash,borderColor:C.accent},tile:{padding:12,backgroundColor:C.panel,borderColor:C.line,marginBottom:9},loot:{fontSize:12,lineHeight:18,marginTop:7},times:{flexDirection:'row',gap:12,marginTop:8},image:{width:'100%',aspectRatio:16/9,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:12,marginBottom:4},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},sheet:{width:'100%',maxWidth:440,maxHeight:'80%',backgroundColor:C.panel,borderRadius:20,borderWidth:1,borderColor:C.line,padding:16},preset:{flex:1,minWidth:0,minHeight:44,borderRadius:10,borderWidth:1,borderColor:C.line,alignItems:'center',justifyContent:'center'}});
+const s=StyleSheet.create({
+ category:{flexDirection:'row',paddingHorizontal:0,paddingVertical:0,overflow:'hidden',minHeight:112,marginBottom:10,backgroundColor:C.panel,borderWidth:1},
+ categoryArt:{width:'31%',minWidth:88,position:'relative',overflow:'hidden'},
+ regionLabel:{position:'absolute',bottom:0,left:0,right:0,backgroundColor:'rgba(19,37,34,.70)',paddingHorizontal:6,paddingVertical:5},
+ regionName:{fontSize:11,lineHeight:14,color:C.onInk,fontWeight:'600'},
+ categoryCopy:{flex:1,minWidth:0,paddingHorizontal:10,paddingVertical:9},
+ categoryKind:{fontSize:9,lineHeight:12,fontWeight:'700',letterSpacing:.6,marginBottom:3},
+ categoryTitle:{fontSize:16,lineHeight:20,fontWeight:'700',marginBottom:3},
+ categoryCustomer:{fontSize:11,lineHeight:15},
+ categoryFooter:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:6,marginTop:7},
+ available:{backgroundColor:C.accent,borderColor:C.brass,borderWidth:1,borderRadius:3,paddingHorizontal:7,paddingVertical:3},
+ availableText:{color:C.onInk,fontSize:11,lineHeight:15,fontWeight:'700'},
+ unavailable:{fontSize:11,lineHeight:15},
+vehicle:{borderTopWidth:1,borderTopColor:C.line,paddingTop:10,marginTop:6,paddingBottom:6},title:{fontSize:15,fontWeight:'700'},small:{fontSize:12,lineHeight:18},section:{fontSize:13,fontWeight:'700',color:C.muted,marginVertical:10},running:{padding:12,backgroundColor:C.greenWash,borderColor:C.accent},tile:{padding:12,backgroundColor:C.panel,borderColor:C.line,marginBottom:9},loot:{fontSize:12,lineHeight:18,marginTop:7},times:{flexDirection:'row',gap:12,marginTop:8},image:{width:'100%',aspectRatio:16/9,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:12,marginBottom:4},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},sheet:{width:'100%',maxWidth:440,maxHeight:'80%',backgroundColor:C.panel,borderRadius:20,borderWidth:1,borderColor:C.line,padding:16},preset:{flex:1,minWidth:0,minHeight:44,borderRadius:10,borderWidth:1,borderColor:C.line,alignItems:'center',justifyContent:'center'}});
