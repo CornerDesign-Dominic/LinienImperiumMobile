@@ -1,0 +1,34 @@
+{
+  "tool": "built-in image_gen",
+  "purpose": "Frameless transparent single-order cargo and category illustrations",
+  "assets": [
+    {
+      "file": "wood.png",
+      "prompt": "Use case: stylized-concept. Production transparent miniature illustration for historical fantasy merchant mobile game, one centered square asset. Subject: A compact stack of five cut timber logs, visible growth rings and bark. Adult hand-painted dimensional realism, believable tactile material, warm subtle light upper left, natural subdued colors, simplified clear silhouette legible at 60px, whole object visible with 8% empty margin. No text, no letters or numerals, no borders, UI frames, backplate, labels, ground plane, scenery, watermark, photorealism or cartoon styling. Genuinely transparent background."
+    },
+    {
+      "file": "stone.png",
+      "prompt": "Use case: stylized-concept. Production transparent miniature illustration for historical fantasy merchant mobile game, one centered square asset. Subject: Three neatly stacked rough-cut grey building stone blocks. Adult hand-painted dimensional realism, believable tactile material, warm subtle light upper left, natural subdued colors, simplified clear silhouette legible at 60px, whole object visible with 8% empty margin. No text, no letters or numerals, no borders, UI frames, backplate, labels, ground plane, scenery, watermark, photorealism or cartoon styling. Genuinely transparent background."
+    },
+    {
+      "file": "grain.png",
+      "prompt": "Use case: stylized-concept. Production transparent miniature illustration for historical fantasy merchant mobile game, one centered square asset. Subject: One tied golden wheat sheaf with a little grain spilling at its base. Adult hand-painted dimensional realism, believable tactile material, warm subtle light upper left, natural subdued colors, simplified clear silhouette legible at 60px, whole object visible with 8% empty margin. No text, no letters or numerals, no borders, UI frames, backplate, labels, ground plane, scenery, watermark, photorealism or cartoon styling. Genuinely transparent background."
+    },
+    {
+      "file": "ore.png",
+      "prompt": "Use case: stylized-concept. Production transparent miniature illustration for historical fantasy merchant mobile game, one centered square asset. Subject: A small pile of dark grey iron ore rocks with subtle metallic veins. Adult hand-painted dimensional realism, believable tactile material, warm subtle light upper left, natural subdued colors, simplified clear silhouette legible at 60px, whole object visible with 8% empty margin. No text, no letters or numerals, no borders, UI frames, backplate, labels, ground plane, scenery, watermark, photorealism or cartoon styling. Genuinely transparent background."
+    },
+    {
+      "file": "wool.png",
+      "prompt": "Use case: stylized-concept. Production transparent miniature illustration for historical fantasy merchant mobile game, one centered square asset. Subject: Two cream raw wool bundles tied with simple twine. Adult hand-painted dimensional realism, believable tactile material, warm subtle light upper left, natural subdued colors, simplified clear silhouette legible at 60px, whole object visible with 8% empty margin. No text, no letters or numerals, no borders, UI frames, backplate, labels, ground plane, scenery, watermark, photorealism or cartoon styling. Genuinely transparent background."
+    },
+    {
+      "file": "material-orders.png",
+      "prompt": "Use case: stylized-concept. Production transparent miniature illustration for historical fantasy merchant mobile game, one centered square asset. Subject: Three large recognizable toothed gears, warm wood, dark iron and silver, with a small rolled parchment and red wax seal at their base. Adult hand-painted dimensional realism, believable tactile material, warm subtle light upper left, natural subdued colors, simplified clear silhouette legible at 60px, whole object visible with 8% empty margin. No text, no letters or numerals, no borders, UI frames, backplate, labels, ground plane, scenery, watermark, photorealism or cartoon styling. Genuinely transparent background."
+    },
+    {
+      "file": "card-orders.png",
+      "prompt": "Use case: stylized-concept. Production transparent miniature illustration for historical fantasy merchant mobile game, one centered square asset. Subject: A fan of three antique cream and brass transport collectible cards, foremost card showing a simple horse silhouette, with a small rolled parchment and red wax seal at their base. Adult hand-painted dimensional realism, believable tactile material, warm subtle light upper left, natural subdued colors, simplified clear silhouette legible at 60px, whole object visible with 8% empty margin. No text, no letters or numerals, no borders, UI frames, backplate, labels, ground plane, scenery, watermark, photorealism or cartoon styling. Genuinely transparent background."
+    }
+  ]
+}

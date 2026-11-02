@@ -1154,5 +1154,7 @@
   "Lieferantenkontakt fehlt": "supplier contact missing",
   "Lieferantenkontakte fehlen": "supplier contacts missing",
   "Firmenausbau-Item fehlt": "company upgrade item missing",
-  "Firmenausbau-Items fehlen": "company upgrade items missing"
+  "Firmenausbau-Items fehlen": "company upgrade items missing",
+  "Nach Stufe sortiert": "Sorted by tier",
+  "Unterwegs · {0}": "En route · {0}"
 }

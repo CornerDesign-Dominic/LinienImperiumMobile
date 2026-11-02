@@ -55,3 +55,24 @@ test('Nahverkehr is canonical in mobile categories, orders and help without rena
  assert.equal(view.state.events.at(-1).text,'Regionalverkehr AG fährt Nahverkehr ab Regionalverkehr Stadt.');
  assert.equal(initial.state.events.at(-1).text,'Regionalverkehr AG fährt Regionalverkehr ab Regionalverkehr Stadt.');
 });
+
+test('Stored categories keep real counts and tier order without consuming or reordering saved jobs',()=>{
+ const h=harness(),game=setup(),chosen=[],opened=[];
+ game.view.state.expedition.jobs=[
+  {id:'third',kind:'material',tier:3},{id:'first',kind:'material',tier:1},
+  {id:'second',kind:'material',tier:2},{id:'another-first',kind:'material',tier:1},
+  {id:'card-job',kind:'character',tier:2}
+ ];
+ const before=JSON.stringify(game.view.state.expedition.jobs);
+ const props={data:game.view,clock:now,busy:false,onOpen:()=>{},onJob:job=>chosen.push(job.id),onType:key=>opened.push(key)};
+ const categories=h.render('SavedOrders',props),buttons=nodes(categories,'Pressable');
+ assert.equal(buttons.length,2);
+ assert.match(buttons[0].props.accessibilityLabel,/material, Anzahl 4/);
+ assert.match(buttons[1].props.accessibilityLabel,/character, Anzahl 1/);
+ buttons[1].props.onPress();assert.deepEqual(opened,['character']);
+ const tiers=h.render('SavedOrders',{...props,typeKey:'material'}),tierButtons=nodes(tiers,'Pressable');
+ assert.equal(tierButtons.length,3);
+ tierButtons.forEach(button=>button.props.onPress());
+ assert.deepEqual(chosen,['first','second','third'],'tiers ascend and equal-tier jobs retain first-in order');
+ assert.equal(JSON.stringify(game.view.state.expedition.jobs),before);
+});
