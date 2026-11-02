@@ -1,0 +1,12 @@
+{
+  "tool": "image_gen.imagegen",
+  "prompt": "Use case: historical-scene. Asset type: background illustration for a historical fantasy trading game's Vertrieb card and modal banner. A warmly sunlit merchant's Kontor procurement desk in a timber warehouse: open leather-bound ledger in foreground with indistinct handwritten marks, elegant brass balance scale to the right, parcels and wrapped bundles, supplier papers and quill, shelves behind, window to the left showing a distant old harbour town. Rich painterly realism matching premium historical mobile-game illustrations, natural wood, parchment cream, brass, subdued petrol accents. Wide landscape composition 3:2, main ledger and scales centrally grouped, readable silhouette at small mobile size, warm afternoon light. Image only, NO UI, NO frame, NO labels or legible words, NO modern objects, NO coins or treasure chest as focus, NO watermark.",
+  "source": "exec-a99c747f-aca8-4ee9-b742-8c9ab6a62604.png",
+  "production": {
+    "file": "sales-desk.jpg",
+    "width": 1152,
+    "height": 768,
+    "quality": 86
+  },
+  "purpose": "Shared decorative background for the Vertrieb overview card and upgrade modal. All labels and values remain native UI."
+}

@@ -1,5 +1,6 @@
+import {MaterialView as View} from './Material';
 import React from 'react';
-import {View,StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {C,Txt,n} from './ui';
 export function Statistics({state:g}:any){
  const rows=[

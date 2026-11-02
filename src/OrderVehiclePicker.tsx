@@ -1,5 +1,6 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import React,{useRef,useState} from 'react';
-import {View,Pressable,ScrollView,StyleSheet} from 'react-native';
+import {ScrollView,StyleSheet} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {C,Txt,Row,Btn,Empty,n,remaining,minutes} from './ui';

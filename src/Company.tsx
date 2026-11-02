@@ -1,8 +1,9 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {ItemArt} from './ItemArt';
 import {t as translate} from './i18n';
 import {Icon,IconName} from './Icon';
 import React,{useEffect,useRef,useState} from 'react';
-import {ScrollView,View,Pressable,StyleSheet} from 'react-native';
+import {ScrollView,StyleSheet} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {C,Txt,Card,Row,Btn,n} from './ui';
 const LABELS:Record<string,string>={premium:'Abschlussprämie',volume:'Auftragsmenge',range:'Reichweite'};

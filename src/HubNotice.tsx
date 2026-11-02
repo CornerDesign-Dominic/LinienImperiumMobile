@@ -1,7 +1,8 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {t as translate} from './i18n';
 import {Icon} from './Icon';
 import React from 'react';
-import {View,Pressable,StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {C,Txt} from './ui';
 export function HubNotice({data,onOpen}:any){
  const hub=data.state.hubs[0];

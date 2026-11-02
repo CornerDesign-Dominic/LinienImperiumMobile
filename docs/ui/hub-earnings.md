@@ -16,10 +16,14 @@ Nach sechs vollständigen Einkaufszyklen pausiert der Hub. Während der Pause la
 
 ## Darstellung
 
-Die Achse zeigt nur 0 und 60 Minuten als feste Endpunkte. Der aktuelle Minutenstand steht separat über der Achse. Der Warenende-Marker nennt seine tatsächliche Minute (beispielsweise „Ware leer · 40 Min.“). Es gibt keine gelbe gestrichelte Leerlaufspur; der verbleibende Balken bleibt schlicht. Bei voller Kasse oder ohne eingekaufte Ware wird kein Warenende vorhergesagt. Am Maximum bleiben zehn Minuten Pause bis zum nächsten Einkauf.
+Die Achse zeigt nur 0 und 60 Minuten als feste Endpunkte. Der aktuelle Minutenstand steht separat unter der Achse. Der Warenende-Marker nennt seine tatsächliche Minute (beispielsweise „Ware leer · 40 Min.“). Es gibt keine gelbe gestrichelte Leerlaufspur; der verbleibende Balken bleibt schlicht. Bei voller Kasse oder ohne eingekaufte Ware wird kein Warenende vorhergesagt. Am Maximum bleiben zehn Minuten Pause bis zum nächsten Einkauf.
 
 Validierung: gezielte Serverprüfungen für 40/40,5/50 Minuten, Fahrzeugleistung und eingefrorene Werte, volle und teilweise Abholung, Offline-Nachlauf, Teilelimits sowie kompatible Altzyklen; TypeScript, vollständige Tests und mobile Browseransichten.
 
 ## Wechsel auf 20 Vertriebsstufen
 
 Vorhandene Stufen oberhalb von 20 werden einmalig auf 20 begrenzt; die dafür bezahlten Lieferantenkontakte und Firmenausbau-Items werden zurückgegeben. Ein noch laufender Ausbau oberhalb des neuen Maximums wird beendet und vollständig einschließlich seiner bisherigen Münzkosten erstattet. Zulässige laufende Ausbauten behalten ihre Restdauer. Abgeschlossene Münzkosten werden nicht rückwirkend erstattet. Eingefrorene Zyklusmengen, Arbeitszeit und bereits gutgeschriebene Beträge bleiben unangetastet bis zum nächsten Einkauf.
+
+## Durchgehende Bildkarte
+
+Die Ertragskarte verwendet den vorhandenen Handelshof als vollflächigen Hintergrund mit dunklen transparenten Textflächen. Kopfzeile, Münzbetrag, Statusbereich und untere Abholfläche behalten feste Positionen. Die gesamte Karte ist in jedem Zustand 350 dp hoch: laufende Verteilung, Wartephase, volle Kasse und fehlende Ware. Der Zeitstrahl reserviert immer denselben Platz; bei Pause bleibt nur die abgedunkelte Achse ohne aktive Zeit- oder Warenmarker sichtbar. Die Hermes-Münze bleibt erhalten. Der Abholstreifen ist ein eigener 46-dp-Button mit unveränderter Sammellogik und Sperre während laufender Anfragen.

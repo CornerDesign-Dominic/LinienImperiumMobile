@@ -1,8 +1,9 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {ItemArt,ItemAmount} from './ItemArt';
 import {Text} from './Language';
 import {t as translate} from './i18n';
 import React,{useState} from 'react';
-import {View,Pressable,StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {C,Txt,Empty,n} from './ui';
 import {Icon} from './Icon';
 import {displayFont} from './theme';

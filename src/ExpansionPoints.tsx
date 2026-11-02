@@ -1,5 +1,6 @@
+import {MaterialView as View} from './Material';
 import React,{useEffect,useRef,useState} from 'react';
-import {View,ScrollView,StyleSheet} from 'react-native';
+import {ScrollView,StyleSheet} from 'react-native';
 import {AppModal} from './AppModal';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
 import {regionIdentities} from './regionIdentities';

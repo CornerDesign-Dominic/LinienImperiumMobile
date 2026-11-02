@@ -1,7 +1,8 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {t as translate} from './i18n';
 import {Icon} from './Icon';
 import React,{useEffect,useState} from 'react';
-import {Image,View,Pressable,StyleSheet} from 'react-native';
+import {Image,StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Pill,Empty,Btn,n} from './ui';
 import {regionIdentities} from './regionIdentities';
 import {portraitForPlace} from './placePortraits';

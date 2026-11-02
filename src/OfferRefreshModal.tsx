@@ -1,5 +1,6 @@
+import {MaterialView as View} from './Material';
 import React,{useRef,useState} from 'react';
-import {View,ScrollView,StyleSheet} from 'react-native';
+import {ScrollView,StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AppModal} from './AppModal';
 import {Icon} from './Icon';

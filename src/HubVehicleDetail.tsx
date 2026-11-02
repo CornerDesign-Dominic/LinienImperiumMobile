@@ -1,7 +1,8 @@
+import {MaterialPressable as Pressable,MaterialView as View} from './Material';
 import {HubCourierArt} from './HubCourierArt';
 import {courierName,courierModel} from '../functions/src/hub-courier';
 import React,{useRef,useState} from 'react';
-import {Pressable,ScrollView,StyleSheet,View} from 'react-native';
+import {ScrollView,StyleSheet} from 'react-native';
 import {AppModal} from './AppModal';
 import {Icon} from './Icon';
 import {ItemArt} from './ItemArt';

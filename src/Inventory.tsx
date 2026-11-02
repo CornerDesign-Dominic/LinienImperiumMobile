@@ -1,8 +1,9 @@
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {ItemArt} from './ItemArt';
 import {Text} from './Language';
 import {t as translate} from './i18n';
 import React,{useRef,useState} from 'react';
-import {View,Pressable,ScrollView,StyleSheet,useWindowDimensions} from 'react-native';
+import {ScrollView,StyleSheet,useWindowDimensions} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {C,Txt,Btn,Empty,n} from './ui';

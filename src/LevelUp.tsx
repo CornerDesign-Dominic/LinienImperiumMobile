@@ -1,9 +1,11 @@
+import {MaterialLayer} from './Material';
+import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {ItemArt,ItemAmount} from './ItemArt';
 import {t as translate} from './i18n';
 import {Icon} from './Icon';
 import {itemName} from './items';
 import React,{useEffect,useRef,useState} from 'react';
-import {View,Pressable,StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
@@ -54,7 +56,7 @@ function DevelopmentModal({data,busy,onCommand,onClose,modalBlocked}:any){
 }
 export function LevelUpNotice({levels,onClose}:{levels:number[];onClose:()=>void}){
  const level=levels.at(-1),count=levels.length;
- return <Modal visible={count>0} transparent animationType="none" onRequestClose={onClose}><View style={s.overlay}><SafeAreaView edges={[]} style={s.modal}>
+ return <Modal visible={count>0} transparent animationType="none" onRequestClose={onClose}><View style={s.overlay}><SafeAreaView edges={[]} style={s.modal}><MaterialLayer surfaceStyle={s.modal}/>
   <Txt style={s.congrats}>Herzlichen Glückwunsch!</Txt><Txt style={s.level}>Level {level}</Txt>
   <ItemAmount id="expeditionRefills" label={itemName('expeditionRefills',count)} amount={count}/>
   <ItemAmount id="overtimeRefills" label={itemName('overtimeRefills',count)} amount={count}/>

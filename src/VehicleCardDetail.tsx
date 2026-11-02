@@ -1,6 +1,7 @@
+import {MaterialView as View} from './Material';
 import {t as translate} from './i18n';
 import React,{useState} from 'react';
-import {View,StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {C,Txt,Card,Row,Btn,Empty,n} from './ui';
 import {Text} from './Language';
 import {averageCardSpeed,rankNumeral} from './collectionStats';

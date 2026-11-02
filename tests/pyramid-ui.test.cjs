@@ -5,7 +5,7 @@ const load=Module._load;
 Module._load=function(name,parent,isMain){
  if(name==='react-native')return load.call(this,'react-native-web',parent,isMain);
  if(name==='@react-native-async-storage/async-storage')return {getItem:async()=>null,setItem:async()=>{}};
- if(name.endsWith('.png'))return {uri:'data:image/png;base64,iVBORw0KGgo='};
+ if(/\.(png|jpg)$/.test(name))return {uri:'data:image/png;base64,iVBORw0KGgo='};
  return load.call(this,name,parent,isMain);
 };
 for(const extension of ['.ts','.tsx'])require.extensions[extension]=(module,filename)=>module._compile(ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true,target:ts.ScriptTarget.ES2022}}).outputText,filename);

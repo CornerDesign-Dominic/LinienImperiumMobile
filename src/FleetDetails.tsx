@@ -1,5 +1,6 @@
+import {MaterialView as View} from './Material';
 import React,{useState} from 'react';
-import {View,ScrollView,StyleSheet,TextInput} from 'react-native';
+import {ScrollView,StyleSheet,TextInput} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {t as translate} from './i18n';

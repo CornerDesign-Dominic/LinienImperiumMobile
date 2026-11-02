@@ -5,7 +5,7 @@ const now=1800000000000,random=()=>.5;
 function compile(file,override){const full=path.resolve(__dirname,'../src/'+file),m=new Module(full,module);m.filename=full;m.paths=module.paths;m.require=override;const code=ts.transpileModule(fs.readFileSync(full,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.React,esModuleInterop:true}}).outputText;m._compile(code,full);return m.exports;}
 const ui={C:require('../src/palette.json'),Txt:'Text',Row:'Row',Btn:'Btn',Bar:'Bar',n:String,remaining:(at,clock)=>String(at-clock)};
 const {ExpeditionPlaceDetails}=compile('ExpeditionPlaceDetails.tsx',id=>{
- if(id==='react')return React;if(id==='react-native')return {View:'View',StyleSheet:{create:x=>x}};
+ if(id==='react')return React;if(id==='./Material')return {MaterialView:'View',MaterialPressable:'Pressable',MaterialLayer:'MaterialLayer'};if(id==='react-native')return {View:'View',StyleSheet:{create:x=>x}};
  if(id==='./ui')return ui;if(id==='./ExpeditionPlaceModal')return {PlaceStatus:'PlaceStatus',PlaceRewards:'PlaceRewards',PlaceExtraDetails:'PlaceExtraDetails'};
  if(id==='./regionIdentities')return {regionIdentities:Array.from({length:5},()=>({customer:'Customer'}))};throw Error(id);
 });
@@ -43,7 +43,7 @@ test('Final location retains discovery draws before customer completion and neve
  const missing=explored();missing.view.state.trucks=[];assert.equal(render(missing.view,0).buttons[0].props.disabled,true);
 });
 test('Every agreed place has a unique bundled close-up and invalid indices have no portrait',()=>{
- const {portraitForPlace}=compile('placePortraits.ts',id=>{if(id==='react-native')return {};if(id.endsWith('.jpg'))return {uri:id};throw Error(id);});const hashes=new Set();
+ const {portraitForPlace}=compile('placePortraits.ts',id=>{if(id==='./Material')return {MaterialView:'View',MaterialPressable:'Pressable',MaterialLayer:'MaterialLayer'};if(id==='react-native')return {};if(id.endsWith('.jpg'))return {uri:id};throw Error(id);});const hashes=new Set();
  for(let region=0;region<5;region++)for(let place=0;place<8;place++){
   const image=portraitForPlace(region,place);assert.ok(image?.uri.includes('/places/'));const file=path.resolve(__dirname,'../src',image.uri),bytes=fs.readFileSync(file);assert.ok(bytes.length>50000);assert.equal(bytes[0],255);assert.equal(bytes[1],216);hashes.add(crypto.createHash('sha256').update(bytes).digest('hex'));
  }
@@ -51,7 +51,7 @@ test('Every agreed place has a unique bundled close-up and invalid indices have 
 });
 test('Modal images override Android intrinsic image sizes and the X remains outside scrolling content',()=>{
  function modal(width){return compile('ExpeditionPlaceModal.tsx',id=>{
-  if(id==='react')return {...React,useState:()=>[width,()=>{}]};if(id==='react-native')return {View:'View',Image:'Image',Modal:'Modal',Pressable:'Pressable',ScrollView:'ScrollView',StyleSheet:{create:x=>x}};
+  if(id==='react')return {...React,useState:()=>[width,()=>{}]};if(id==='./Material')return {MaterialView:'View',MaterialPressable:'Pressable',MaterialLayer:'MaterialLayer'};if(id==='react-native')return {View:'View',Image:'Image',Modal:'Modal',Pressable:'Pressable',ScrollView:'ScrollView',StyleSheet:{create:x=>x}};
   if(id==='./AppModal')return {AppModal:'Modal'};if(id==='./ItemArt')return {ItemArt:'ItemArt',ItemAmount:'ItemAmount'};if(id==='./Language')return {Text:'Text'};if(id==='./i18n')return {t:x=>x};if(id==='./Icon')return {Icon:'Icon'};if(id==='./theme')return {C:ui.C,displayFont:'serif'};throw Error(id);
  });}
  for(const width of [286,326,356,396,458]){const {PlacePortrait}=modal(width),tree=PlacePortrait({source:{uri:'test',width:1536,height:1024}}),image=nodes(tree,'Image')[0];const frame={width:1536,height:1024,...image.props.style};assert.equal(frame.width,width);assert.ok(frame.height>=140&&frame.height<280);}
