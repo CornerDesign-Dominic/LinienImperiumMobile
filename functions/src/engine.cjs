@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const itemNames = require('./item-names.json');
+const {premiumState,purchaseSkin,equipSkin,premiumShopView}=require('./premium-shop.cjs');
 const {courierName,courierModel,courierText}=require('./hub-courier.js');
 const customerIdentities = require('./customer-identities.json');
 const customerCargo = require('./customer-cargo.json');
@@ -519,6 +520,7 @@ const companyProfile = p => {
 };
 function execute(state, action='sync', p={}, now=Date.now(), random=Math.random, eventContext={}) {
   const a=session(state,now,random);
+  premiumState(a.state);
   touchEvent(a.state,now);
   syncWorld(a.state,eventContext);
   const before=JSON.stringify(a.state);
@@ -545,6 +547,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     eventFleet:()=>assignEventFleet(a.state,id(p.id),num(p.run),num(p.template,2),a.eventFleetOptions(distance()),now),
     singleVehicle:()=>a.queueSingleVehicle(id(p.order),id(p.truck)),
     sync:()=>{},start:()=>a.chooseStartCity(id(p.id)),foundCompany:()=>a.foundCompany(companyProfile(p)),
+    skinBuy:()=>purchaseSkin(a.state,id(p.id)),skinEquip:()=>equipSkin(a.state,id(p.id)),
     garageAdd:()=>a.addCardToGarage(id(p.id)),garageRemove:()=>a.removeCardFromGarage(id(p.id)),
     garageReplace:()=>a.replaceGarageCard(id(p.id),id(p.replacement)),
     seat:()=>a.assignCharacterSeat(id(p.id),num(p.seat,4),num(p.template,2)),
@@ -590,7 +593,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     customerSkill:()=>a.allocateCustomerSkill(id(p.id),choice(p.kind,['pay','special','referral'])),
     pin:()=>a.toggleOrderPin(id(p.id)),refresh:()=>a.manualRefreshOrders(),level:()=>a.allocateLevel(num(p.expedition,3),p.overtime===undefined?3-num(p.expedition,3):num(p.overtime,3)),
     levelBatch:()=>a.allocateLevelBatch(num(p.expedition,300000),num(p.overtime,300000),num(p.points,300000)),
-    testCoins:()=>a.grantTestCoins(),testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>a.reset()
+    testCoins:()=>a.grantTestCoins(),testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>{const wallet=a.state.premiumShop; a.reset();a.state.premiumShop=wallet;}
   };
   if(!Object.hasOwn(calls,action))throw Error('Unbekannte Aktion');
   if(!a.state.startCity&&!['sync','start','foundCompany','reset'].includes(action))throw Error('Bitte zuerst deine Firma gründen.');
@@ -605,6 +608,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   a.refreshTourStarts(now);
   syncWorld(a.state,eventContext);
   const view=a.view();
+  view.premiumShop=premiumShopView(a.state);
   for(const truck of view.state.trucks)if(!truck.cardId&&truck.tier<=1){truck.displayName=courierName(truck);truck.displayModel=courierModel(truck);}
   view.testEvents=eventViews(a.state,a.eventFleetOptions(a.state.eventTests?.['large-project-own-overtime']?.distance||240),eventContext.world,eventContext.ranking);
   if(action.startsWith('event'))view.message=ok;

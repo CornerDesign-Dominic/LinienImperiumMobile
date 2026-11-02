@@ -178,7 +178,7 @@ function Game(){
    case 'crafting':return <Crafting data={data} busy={busy} onCommand={act}/>;
    case 'customers':return <CustomerList data={data} onOpen={(id:string)=>{setCustomerId(id);go('customerDetail');}}/>;
    case 'customerDetail':return <CustomerDetail key={customerId} data={data} id={customerId} busy={busy} onSave={(id:string,points:any,base:any)=>act('customerBatch',{id,points,base})}/>;
-   case 'wholesaler':return <Wholesaler onGifts={()=>go('gifts')}/>;
+   case 'wholesaler':return <Wholesaler onGifts={()=>go('gifts')} shop={data.premiumShop} busy={busy} onCommand={run}/>;
    case 'gifts':return <Gifts data={data} busy={busy} onCommand={act} modalBlocked={!!sheet||levelNotices.length>0}/>;
    case 'statistics':return <Statistics state={g}/>;
    case 'events':return <Events events={data.testEvents||[]} busy={busy}

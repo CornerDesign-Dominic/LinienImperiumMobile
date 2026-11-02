@@ -1,20 +1,26 @@
 import {MaterialView as View,MaterialPressable as Pressable} from './Material';
-import React from 'react';
-import {t as translate} from './i18n';
+import React,{useState} from 'react';
 import {StyleSheet} from 'react-native';
+import {t as translate,getLocale} from './i18n';
 import {LocationArt} from './LocationArt';
+import {HubCourierArt} from './HubCourierArt';
 import {Icon} from './Icon';
-import {C,Txt,Card,Row,Pill} from './ui';
-// Other shop entries remain price ideas; region gifts use the test coin price.
-const IDEAS:{id:string;title:string;detail:string;limit?:number;price:string;priceNote?:string}[]=[
- {id:'offers',title:'+1 Standardauftrag',detail:'Mehr Platz in der Auftragsliste',limit:10,price:'2,99 €'},
- {id:'pins',title:'+1 Auftrag festhalten',detail:'Mehr Angebote dauerhaft halten',limit:4,price:'3,99 €'},
- {id:'coins',title:'Echtgeld-Münzen',detail:'Menge X',price:'Preis offen'},
- {id:'vehicle-crate',title:'Transportkartenkiste',detail:'',price:'X',priceNote:'Echtgeld-Münzen'}
-];
-export function Wholesaler({onGifts}:{onGifts:()=>void}){
- return <><View style={{alignItems:'center',marginBottom:12}}><LocationArt name="wholesaler" width={138}/></View><Pressable accessibilityRole="button" accessibilityLabel={translate('Geschenke')} onPress={onGifts}><Card style={s.card}><View style={s.row}><Icon name="reward" size={28} color={C.gold}/><Txt style={[s.title,{flex:1}]}>Geschenke</Txt><Icon name="chevron" size={17} color={C.gold}/></View></Card></Pressable><Row><Pill>Preisideen</Pill></Row>{IDEAS.map(idea=><Card key={idea.id} style={s.card}>
-  <View style={s.row}><Icon name={idea.id==='coins'?'coin':idea.id==='vehicle-crate'?'reward':'orders'} size={28} color={C.gold}/><View style={{flex:1}}><Txt style={s.title}>{idea.title}</Txt>{!!idea.detail&&<Txt muted style={s.small}>{idea.detail}</Txt>}{idea.limit!==undefined&&<Txt muted style={s.small}>Bis zu {idea.limit}×</Txt>}</View><View style={{alignItems:'flex-end'}}><Txt gold style={s.price}>{idea.price}</Txt>{(idea.priceNote||idea.limit!==undefined)&&<Txt muted style={s.small}>{idea.priceNote??'je Kauf'}</Txt>}</View></View>
- </Card>)}</>;
+import {C,Txt,Card,Row,Pill,Btn,n} from './ui';
+
+type Skin={id:string;name:string;description:string;price:number;art:string};
+type Shop={balance:number;name:string;skinPrice:number;ownedSkins:string[];equippedSkin:string;skins:Skin[];packs:{id:string;amount:number;referencePriceCents:number;currency:string}[];purchasesAvailable:boolean};
+export function Wholesaler({onGifts,shop,busy=false,onCommand}:{onGifts:()=>void;shop?:Shop;busy?:boolean;onCommand:(action:string,payload:Record<string,unknown>)=>Promise<any>}){
+ const [tab,setTab]=useState<'gifts'|'skins'|'topup'>('gifts');
+ const [selected,setSelected]=useState<string|null>(null);
+ return <>
+  <Row style={s.wallet}><Txt muted>{shop?.name||'Premium-Münzen'}</Txt><View style={s.balance}><Txt style={s.token}>✦</Txt><Txt style={s.balanceText}>{n(shop?.balance||0)}</Txt></View></Row>
+  <View accessibilityRole="tablist" style={s.tabs}>{([{id:'gifts',label:'Geschenke'},{id:'skins',label:'Skins'},{id:'topup',label:'Aufladen'}] as const).map(item=><Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={translate(item.label)} accessibilityState={{selected:tab===item.id}} onPress={()=>{setTab(item.id);setSelected(null);}} style={[s.tab,tab===item.id&&s.activeTab]}><Txt style={[s.tabText,tab===item.id&&{color:C.onInk}]}>{item.label}</Txt></Pressable>)}</View>
+  {tab==='gifts'&&<><View style={{alignItems:'center',marginBottom:12}}><LocationArt name="wholesaler" width={138}/></View><Pressable accessibilityRole="button" accessibilityLabel={translate('Geschenke')} onPress={onGifts}><Card><View style={s.row}><Icon name="reward" size={28} color={C.gold}/><View style={{flex:1}}><Txt style={s.title}>Geschenke</Txt><Txt muted style={s.small}>Regionale Transportkarten entdecken</Txt></View><Icon name="chevron" size={17} color={C.gold}/></View></Card></Pressable></>}
+  {tab==='skins'&&<><Txt muted style={s.intro}>Ein neuer Look für deine Boten. Ihre Werte bleiben gleich.</Txt>{!shop&&<Card><Txt muted>Skins werden geladen …</Txt></Card>}{shop?.skins.map(skin=>{
+   const owned=shop.ownedSkins.includes(skin.id),equipped=shop.equippedSkin===skin.id;
+   return <Card key={skin.id}><View style={s.row}><HubCourierArt size={96}/><View style={{flex:1}}><Txt style={s.title}>{skin.name}</Txt><Txt muted style={s.small}>{skin.description}</Txt><View style={{alignItems:'flex-start',marginTop:6}}><Pill>{equipped?'Ausgewählt':owned?'Im Besitz':`${n(skin.price)} Premium-Münzen`}</Pill></View></View></View>{owned?<Btn secondary disabled={busy||equipped} onPress={()=>onCommand('skinEquip',{id:skin.id})}>{equipped?'Ausgewählt':'Für Boten verwenden'}</Btn>:selected===skin.id?<><Txt style={s.small}>Kaufen für {n(skin.price)} Premium-Münzen?</Txt><Row style={{marginBottom:0}}><Btn secondary disabled={busy} style={{flex:1}} onPress={()=>setSelected(null)}>Abbrechen</Btn><Btn disabled={busy||shop.balance<skin.price} style={{flex:1}} onPress={async()=>{if(await onCommand('skinBuy',{id:skin.id}))setSelected(null);}}>Kaufen</Btn></Row></>:<Btn disabled={busy||shop.balance<skin.price} onPress={()=>setSelected(skin.id)}>{`Kaufen · ${n(skin.price)} Premium-Münzen`}</Btn>}</Card>;
+  })}<Card><Txt style={s.title}>Weitere Skins folgen</Txt><Txt muted style={s.small}>{`Neue Boten-Skins kosten ${n(shop?.skinPrice||250)} Premium-Münzen.`}</Txt></Card></>}
+  {tab==='topup'&&<><Txt muted style={s.intro}>Wähle dein Münzpaket.</Txt><Card><Txt style={s.title}>Noch nicht verfügbar</Txt><Txt muted style={s.small}>Echtgeldkäufe werden vorbereitet. Die angezeigten Preise dienen als Vorschau.</Txt></Card>{shop?.packs.map(pack=><Card key={pack.id}><View style={s.row}><Txt style={[s.token,{fontSize:32}]}>✦</Txt><View style={{flex:1}}><Txt style={s.title}>{n(pack.amount)} Premium-Münzen</Txt><Txt muted style={s.small}>{new Intl.NumberFormat(getLocale(),{style:'currency',currency:pack.currency}).format(pack.referencePriceCents/100)}</Txt></View><Btn disabled style={{marginTop:0}}>Bald verfügbar</Btn></View></Card>)}</>}
+ </>;
 }
-const s=StyleSheet.create({card:{padding:12,backgroundColor:C.panel,borderColor:C.line},row:{flexDirection:'row',alignItems:'center',gap:12},title:{fontSize:14,fontWeight:'700'},small:{fontSize:11,lineHeight:17,marginTop:3},price:{fontSize:17,fontWeight:'700'}});
+const s=StyleSheet.create({wallet:{marginBottom:10},balance:{flexDirection:'row',alignItems:'center',gap:6},balanceText:{fontSize:20,fontWeight:'700'},token:{fontSize:22,color:C.accent},tabs:{flexDirection:'row',gap:6,marginBottom:14},tab:{flex:1,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:5},activeTab:{backgroundColor:C.accent,borderColor:C.ink},tabText:{fontSize:13,fontWeight:'700'},row:{flexDirection:'row',alignItems:'center',gap:12},title:{fontSize:16,fontWeight:'700'},small:{fontSize:12,lineHeight:18,marginTop:4},intro:{fontSize:13,lineHeight:19,marginBottom:12}});
