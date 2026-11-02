@@ -44,7 +44,7 @@
   "fleet": [
     [
       "Garage",
-      "10 slots for card vehicles; each owned card may occupy one garage slot. It may also be used in fleets. City vehicles are managed at the city hub. Every expedition vehicle card can handle local and long-distance contracts."
+      "10 slots for card vehicles; each owned card may occupy one garage slot. It may also be used in fleets. City vehicles are managed at the city hub. Every expedition transport card can handle local and long-distance contracts."
     ],
     [
       "Speed and upgrades",
@@ -86,7 +86,7 @@
     ],
     [
       "Items",
-      "Gears improve vehicle speed ranks; capacity modules increase capacity. Pickup clues craft private pickups. Supplier contacts upgrade city hub sales. Company upgrade items improve the company. Stored contracts remain here until started. Vehicle cards belong in the collection; shards stay here."
+      "Gears improve vehicle speed ranks; capacity modules increase capacity. Pickup clues craft private pickups. Supplier contacts upgrade city hub sales. Company upgrade items improve the company. Stored contracts remain here until started. Transport cards belong in the collection; shards stay here."
     ],
     [
       "Sources",
@@ -123,7 +123,7 @@
   ],
   "personnel": [
     [
-      "Vehicle cards",
+      "Transport cards",
       "25 regional land transports, each with its own base capacity, speed and exactly one bonus. Every region has two Common, one Uncommon, one Rare and one Epic. Card details show the bonus at the current level and level 10."
     ],
     [
@@ -142,7 +142,7 @@
     ],
     [
       "Discovery chances",
-      "Each region contains five vehicle cards. An endless expedition has a 10% total card chance. Region 1: 6% Common, 3% Uncommon, 1% Rare. Regions 2–5: 6% Common, 3% Uncommon, 0.9% Rare, 0.1% Epic. Cards of the same rarity are equally likely. The question mark at each endless location shows individual chances. Gifts at the wholesaler use the same regional pool and guarantee one card: 60% Common, 30% Uncommon and 10% Rare in region 1; 60% Common, 30% Uncommon, 9% Rare and 1% Epic in regions 2–5. Duplicates yield one shard of the same rarity. Contract chances remain unchanged."
+      "Each region contains five transport cards. An endless expedition has a 10% total card chance. Region 1: 6% Common, 3% Uncommon, 1% Rare. Regions 2–5: 6% Common, 3% Uncommon, 0.9% Rare, 0.1% Epic. Cards of the same rarity are equally likely. The question mark at each endless location shows individual chances. Gifts at the wholesaler use the same regional pool and guarantee one card: 60% Common, 30% Uncommon and 10% Rare in region 1; 60% Common, 30% Uncommon, 9% Rare and 1% Epic in regions 2–5. Duplicates yield one shard of the same rarity. Contract chances remain unchanged."
     ],
     [
       "Locations and bonuses",

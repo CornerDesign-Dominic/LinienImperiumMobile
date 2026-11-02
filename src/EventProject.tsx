@@ -42,7 +42,7 @@ export function EventProject({event,busy,clock,onFleet,onManage,onEnd,onCommand,
     {option.vehicles?.map(vehicle=><View key={vehicle.cardId} style={{marginBottom:8}}>
      <Row style={{marginBottom:0}}><Txt style={{flex:1}}>{vehicle.model}</Txt><Txt muted>{n(vehicle.capacity,1)} t</Txt></Row>
      <Txt muted style={{fontSize:12}}>{minutes(vehicle.cycleMs/1000)} je Tour</Txt>
-    </View>)||<Txt muted>Keine Fahrzeugkarten eingesetzt.</Txt>}
+    </View>)||<Txt muted>Keine Transportkarten eingesetzt.</Txt>}
     <Btn disabled={busy||!option.vehicles?.length} onPress={()=>onFleet(option.index)}>Flotte {option.index+1} einsetzen</Btn>
    </Card>)}
    <Btn secondary onPress={onManage}>Flotten bearbeiten</Btn>

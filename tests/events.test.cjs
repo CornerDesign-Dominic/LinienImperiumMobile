@@ -106,10 +106,10 @@ test('Only an owned, nonempty fleet can be assigned to the current running event
  const base=initial();
  assert.throws(()=>execute(base.state,'eventFleet',{id,run:0,template:0},now,fixed),/läuft nicht/);
  const started=execute(base.state,'eventStart',{id,run:0},now,fixed);
- assert.throws(()=>execute(started.state,'eventFleet',{id,run:1,template:0},now,fixed),/Fahrzeugkarte/);
+ assert.throws(()=>execute(started.state,'eventFleet',{id,run:1,template:0},now,fixed),/Transportkarte/);
  assert.throws(()=>execute(started.state,'eventFleet',{id,run:1,template:3},now,fixed),/Ungültige/);
  started.state.expedition.seats[0]='unowned-card';
- assert.throws(()=>execute(started.state,'eventFleet',{id,run:1,template:0},now,fixed),/Fahrzeugkarte/);
+ assert.throws(()=>execute(started.state,'eventFleet',{id,run:1,template:0},now,fixed),/Transportkarte/);
  const assigned=assignedFixture();
  assert.throws(()=>execute(assigned.state,'eventFleet',{id,run:1,template:0},now,fixed),/bereits/);
  assert.throws(()=>execute(assigned.state,'eventFleet',{id,run:0,template:0},now,fixed),/aktualisieren/);

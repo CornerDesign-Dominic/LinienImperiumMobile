@@ -13,7 +13,7 @@ test('Gift result waits after the wheel stops, returns to the open crate and rep
  await Promise.all([open(),open()]);assert.equal(calls.length,1,'rapid taps buy only once');
  let tree=render();for(let steps=0;!text(crate(tree)).includes('Geschenk geöffnet');steps++){assert.ok(steps<30);h.next();tree=render();}
  assert.equal(reward(tree).props.visible,false);assert.equal(button(crate(tree),'Nochmal öffnen · 10 M').props.disabled,true);
- h.advance(349);assert.equal(reward(render()).props.visible,false);h.advance(1);tree=render();assert.equal(reward(tree).props.visible,true);assert.equal(crate(tree).props.visible,false);assert.ok(text(reward(tree)).includes('Neue Fahrzeugkarte'));assert.ok(!text(crate(tree)).includes('1 Fahrzeugkarte'));
+ h.advance(349);assert.equal(reward(render()).props.visible,false);h.advance(1);tree=render();assert.equal(reward(tree).props.visible,true);assert.equal(crate(tree).props.visible,false);assert.ok(text(reward(tree)).includes('Neue Transportkarte'));assert.ok(!text(crate(tree)).includes('1 Transportkarte'));
  reward(tree).props.onClose();tree=render();assert.equal(crate(tree).props.visible,true);assert.equal(button(crate(tree),'Nochmal öffnen · 10 M').props.disabled,false);
  await button(crate(tree),'Nochmal öffnen · 10 M').props.onPress();h.advance(10000);tree=render();assert.equal(calls.length,2);assert.ok(text(reward(tree)).includes('+1 Common-Shard'));assert.ok(!text(crate(tree)).includes('+1 Common-Shard'));
  button(reward(tree),'Weiter').props.onPress();assert.equal(crate(render()).props.visible,true);h.unmount();assert.equal(h.pendingTimers(),0);

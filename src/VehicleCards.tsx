@@ -45,7 +45,7 @@ export function VehicleCardPicker({data,context,template=0,busy,onSelect}:any){
  const ordered=[...matching.filter((card:any)=>!used.has(card.id)),...matching.filter((card:any)=>used.has(card.id))];
  return <>
   <RarityFilter data={data} rarity={rarity} onChange={setRarity}/>
-  {ordered.length?<VehicleCardGrid data={data} cards={ordered} showDetails disabled={busy} statusForCard={(id:string)=>({disabled:used.has(id),label:used.has(id)?(context==='garage'?'In Garage':'In dieser Flotte'):''})} onOpen={(id:string)=>{if(!busy&&!used.has(id))onSelect(id);}}/>:<Empty>{owned.length?'Keine Fahrzeugkarten dieser Seltenheit.':'Noch keine Fahrzeugkarten entdeckt.'}</Empty>}
+  {ordered.length?<VehicleCardGrid data={data} cards={ordered} showDetails disabled={busy} statusForCard={(id:string)=>({disabled:used.has(id),label:used.has(id)?(context==='garage'?'In Garage':'In dieser Flotte'):''})} onOpen={(id:string)=>{if(!busy&&!used.has(id))onSelect(id);}}/>:<Empty>{owned.length?'Keine Transportkarten dieser Seltenheit.':'Noch keine Transportkarten entdeckt.'}</Empty>}
  </>;
 }
 
@@ -70,7 +70,7 @@ export const VehicleCards=React.memo(function VehicleCards({data,onOpen}:any){
   {matching.length?<>
    {group('Freigeschaltet',unlocked,unlockedOpen,()=>setUnlockedOpen(value=>!value))}
    {group('Gesperrt',locked,lockedOpen,()=>setLockedOpen(value=>!value))}
-  </>:<Empty>Keine Fahrzeugkarten dieser Seltenheit.</Empty>}
+  </>:<Empty>Keine Transportkarten dieser Seltenheit.</Empty>}
  </>;
 });
 

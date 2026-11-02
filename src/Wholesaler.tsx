@@ -10,7 +10,7 @@ const IDEAS:{id:string;title:string;detail:string;limit?:number;price:string;pri
  {id:'offers',title:'+1 Standardauftrag',detail:'Mehr Platz in der Auftragsliste',limit:10,price:'2,99 €'},
  {id:'pins',title:'+1 Auftrag festhalten',detail:'Mehr Angebote dauerhaft halten',limit:4,price:'3,99 €'},
  {id:'coins',title:'Echtgeld-Münzen',detail:'Menge X',price:'Preis offen'},
- {id:'vehicle-crate',title:'Fahrzeugkartenkiste',detail:'',price:'X',priceNote:'Echtgeld-Münzen'}
+ {id:'vehicle-crate',title:'Transportkartenkiste',detail:'',price:'X',priceNote:'Echtgeld-Münzen'}
 ];
 export function Wholesaler({onGifts}:{onGifts:()=>void}){
  return <><View style={{alignItems:'center',marginBottom:12}}><LocationArt name="wholesaler" width={138}/></View><Pressable accessibilityRole="button" accessibilityLabel={translate('Geschenke')} onPress={onGifts}><Card style={s.card}><View style={s.row}><Icon name="reward" size={28} color={C.gold}/><Txt style={[s.title,{flex:1}]}>Geschenke</Txt><Icon name="chevron" size={17} color={C.gold}/></View></Card></Pressable><Row><Pill>Preisideen</Pill></Row>{IDEAS.map(idea=><Card key={idea.id} style={s.card}>

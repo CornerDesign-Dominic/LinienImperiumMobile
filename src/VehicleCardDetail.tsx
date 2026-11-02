@@ -18,7 +18,7 @@ function DetailSection({compact,first=false,style,children}:any){
 export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade,compact=false,actions,extra,modalBlocked=false}:any){
  const [bonusOpen,setBonusOpen]=useState(false),[upgradeOpen,setUpgradeOpen]=useState(false);
  const {state:g,catalog:c}=data,card=c.cards.find((item:any)=>item.id===id);
- if(!card)return <Empty>Fahrzeugkarte nicht verfügbar.</Empty>;
+ if(!card)return <Empty>Transportkarte nicht verfügbar.</Empty>;
  const own=g.expedition.characters[id],stats=data.cardVehicles[id];
  const level=own?.level||0;
  const modules=stats.capacityLevel||0,maxModules=stats.maxCapacityLevel??c.models[card.vehicleTier].maxCapacityLevel;
