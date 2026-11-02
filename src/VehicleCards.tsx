@@ -1,6 +1,6 @@
 import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {ItemArt,ItemAmount} from './ItemArt';
-import {Text} from './Language';
+import {Text,useLanguage} from './Language';
 import {t as translate} from './i18n';
 import React,{useState} from 'react';
 import {StyleSheet} from 'react-native';
@@ -49,7 +49,10 @@ export function VehicleCardPicker({data,context,template=0,busy,onSelect}:any){
  </>;
 }
 
-export function VehicleCards({data,onOpen}:any){
+// Collection values do not depend on the global one-second countdown clock.
+// Preserve this subtree until server data, navigation callback or language changes.
+export const VehicleCards=React.memo(function VehicleCards({data,onOpen}:any){
+ useLanguage();
  const {state:g,catalog:c}=data;
  const [rarity,setRarity]=useState('all');
  const [unlockedOpen,setUnlockedOpen]=useState(true),[lockedOpen,setLockedOpen]=useState(false);
@@ -69,7 +72,7 @@ export function VehicleCards({data,onOpen}:any){
    {group('Gesperrt',locked,lockedOpen,()=>setLockedOpen(value=>!value))}
   </>:<Empty>Keine Fahrzeugkarten dieser Seltenheit.</Empty>}
  </>;
-}
+});
 
 export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,showDetails=false,ornate=false,accessibilityLabel,facts}:any){
  const owned=data.state.expedition.characters[card.id],unavailable=!!status?.disabled,locked=disabled||unavailable;
