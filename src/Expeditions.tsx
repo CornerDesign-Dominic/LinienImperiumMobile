@@ -3,7 +3,6 @@ import React,{useState} from 'react';
 import {View,StyleSheet} from 'react-native';
 import {Txt,Row,n} from './ui';
 import {C} from './theme';
-import {AtlasHeading} from './Atlas';
 import {ExpeditionRegionCard} from './ExpeditionRegionCard';
 import {ExpeditionJourney} from './ExpeditionJourney';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
@@ -14,7 +13,7 @@ import {regionRoutes} from './regionRoutes';
 import {rarityColor} from './items';
 export function Expeditions(props:any){
  const {data,region,onSelectRegion}=props;
- if(region===null)return <><AtlasHeading title="Reiseatlas" detail="Erschließe Regionen, entdecke Orte und gewinne Verbündete."/>{data.expeditionMap.map((map:any)=><ExpeditionRegionCard key={map.index} map={map} onOpen={onSelectRegion}/>)}</>;
+ if(region===null)return <>{data.expeditionMap.map((map:any)=><ExpeditionRegionCard key={map.index} map={map} onOpen={onSelectRegion}/>)}</>;
  if(!data.expeditionMap[region]?.open||!regionRoutes[region])return null;
  return <OpenedExpedition key={region} {...props}/>;
 }
