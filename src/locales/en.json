@@ -1139,5 +1139,18 @@
   "Feine Wandteppiche": "Fine tapestries",
   "Kostbare Essenzen": "Precious essences",
   "Jadekunstwerke": "Jade artworks",
-  "Bernsteinschnitzereien": "Amber carvings"
+  "Bernsteinschnitzereien": "Amber carvings",
+  "Verteilung je Stunde": "Distribution per hour",
+  "t pro Stunde nach Ausbau": "t per hour after upgrade",
+  "t Verteilung pro Stunde": "t distributed per hour",
+  "+{0} t pro Stunde nach Ausbau": "+{0} t per hour after upgrade",
+  "+{0} Sek. Verteilung pro Stunde": "+{0} sec. distribution per hour",
+  "Wirkt ab dem nächsten Einkauf nach Ausbauabschluss.": "Applies from the next purchase after the upgrade completes.",
+  "Ausbaukosten": "Upgrade costs",
+  "Ausbau läuft": "Upgrade in progress",
+  "Wird gestartet …": "Starting …",
+  "Lieferantenkontakt fehlt": "supplier contact missing",
+  "Lieferantenkontakte fehlen": "supplier contacts missing",
+  "Firmenausbau-Item fehlt": "company upgrade item missing",
+  "Firmenausbau-Items fehlen": "company upgrade items missing"
 }
