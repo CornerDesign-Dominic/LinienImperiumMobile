@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const itemNames = require('./item-names.json');
+const {currencyText}=require('./currency-names.cjs');
 const {premiumState,purchaseSkin,equipSkin,premiumShopView}=require('./premium-shop.cjs');
 const {courierName,courierModel,courierText}=require('./hub-courier.js');
 const customerIdentities = require('./customer-identities.json');
@@ -266,7 +267,7 @@ const bridge = `
           coins+=price.coins;items+=price.items;
         }
       }
-      if(game.coins<coins||game.inventory.companyItems<items)throw Error('Münzen oder Firmenausbau-Items fehlen.');
+      if(game.coins<coins||game.inventory.companyItems<items)throw Error('Imperium-Taler oder Firmenausbau-Items fehlen.');
       game.coins=round2(game.coins-coins);game.inventory.companyItems-=items;
       game.stats.transportUpgradeSpent=(game.stats.transportUpgradeSpent||0)+coins;
       for(const {category,kind,count} of upgrades)companyFor().transportUpgrades[category][kind+'Level']+=count;
@@ -311,7 +312,7 @@ const bridge = `
       mobileToast=summary.count+' Prämien abgeholt.';
       return summary;
     },
-    grantTestCoins() { game.coins += TEST_COINS_GRANT; game.stats.testCoinsGranted += TEST_COINS_GRANT; addEvent('Testmünzen: +50.000 M'); },
+    grantTestCoins() { game.coins += TEST_COINS_GRANT; game.stats.testCoinsGranted += TEST_COINS_GRANT; addEvent('Test-Taler: +50.000 M'); },
     grantTestResource(kind, amount) {
       if (kind === 'xp') awardTransportXp(amount);
       else if (kind === 'expedition') { game.expedition.points += amount; if(game.expedition.points>=expeditionCapacity())game.expedition.lastRegenAt = Date.now(); }
@@ -627,14 +628,19 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   view.help.inventory[1]=view.help.inventory[1].map(([title,body])=>[title,body.replace('Firmenausbau-Items dienen Firmenausbauten und Kundenaufträgen.','Firmenausbau-Items dienen Firmenausbauten.')]);
   view.help.personnel[1]=[['Transportkarten','25 regionale Landtransporter: zwei Common, eine Uncommon, eine Rare und eine Epic pro Region. Jede Karte hat eigene Grundkapazität und Grundgeschwindigkeit sowie genau einen Bonus. Die Staffel bis Stufe 10 steht im Kartendetail.'],['Wirkungsbereiche','Eigenboni unterstützen nur das Fahrzeug. Flottenboni unterstützen alle Fahrzeuge derselben Flotte einschließlich des Bonusgebers. Garagenboni gelten, solange die Karte in der Garage eingesetzt ist, auch während Einzelaufträgen und Beschaffung. Gleiche Transportboni verschiedener Karten addieren sich. Laufende Touren behalten ihre Werte bis zur nächsten Abfahrt.'],['Punkteboni','Königliche Postkutsche: mehr Überstundenmaximum. Oasenkarawane: mehr Expeditionsmaximum. Jeweils +5/10/15/20/25/30/40/50/60/70 Punkte. Jade-Kundschaftergespann: Expeditionsintervall um 10/20/30/40/50/60/75/90/105/120 Sekunden kürzer. Nur in der Garage aktiv. Das Einsetzen füllt keine Punkte auf. Überschuss bleibt nach dem Entfernen erhalten; Regeneration pausiert bis unter das Maximum. Timerwechsel erhalten den anteiligen Fortschritt.']];
   view.help.fleet[1]=view.help.fleet[1].map(([title,body])=>[title,title==='Tempo und Ausbauten'?'Tempo = individuelles Basistempo × (1 + 0,005 × Rangstufen) × (1 + Tempoboni / 100) × (1 − 0,01 × Ladung in t). Je Kapazitätsmodul +5 % der Grundkapazität, zehn Ausbaustufen. Bereits investierte Module und Ränge bleiben erhalten.':title==='Einsetzen und Herausnehmen'?'Kartenbesitz, Ausbau und Statistik bleiben beim Herausnehmen erhalten. Laufende Einzelaufträge, Expeditionen, Beschaffung und reservierte Ersatzfahrzeuge verhindern das Herausnehmen. Laufende Touren behalten ihre Werte; die nächste Abfahrt übernimmt Änderungen.':body]);
-  view.help.dealer[1]=[['Boten','Lastwombat-Boten werden direkt im Stadthub angeworben und ausgebaut. Ein Bote kostet 25.000 Münzen und startet mit 2 t Tragkraft.']];
+  view.help.dealer[1]=[['Boten','Lastwombat-Boten werden direkt im Stadthub angeworben und ausgebaut. Ein Bote kostet 25.000 Imperium-Taler und startet mit 2 t Tragkraft.']];
   view.help.dealer[1]=view.help.dealer[1].map(([title,body])=>[title,body.replace('max(1, abrunden(Spielerlevel × 0,75))','abrunden(Spielerlevel / 5)').replace('Vor dem Kauf muss der Stadthub eröffnet sein.','Der Stadthub wird ab Level 5 eröffnet. Alle fünf Level wird ein weiterer Fahrzeugplatz freigeschaltet. Bestehende Fahrzeuge bleiben erhalten.')]);
-  view.help.hub[1]=[['Zyklus und Leistung','Ein Einkauf alle 60 Minuten. Die mögliche Stundenmenge folgt aus Kapazität und beladener sowie leerer Fahrgeschwindigkeit aller eingesetzten Fahrzeuge. Vertrieb Stufe 0 kauft Ware für 40 Minuten ein; jede der 20 Stufen erhöht die Auslastung um 30 Sekunden bis auf 50 Minuten. Danach warten Boten bis zum nächsten Einkauf. Laufende Einkäufe behalten ihre Werte.'],['Kasse und Abholung','Die Kasse fasst sechs abgeschlossene Einkaufszyklen. Bei voller Kasse pausiert der Hub. Volle Kasse abholen startet sofort einen neuen Einkauf bei Minute 0. Teilabholungen verändern den laufenden Zyklus nicht. Münzen und sämtliche weiteren Erträge werden gemeinsam eingesammelt.'],['Vertrieb','Lieferantenkontakte und Firmenausbau-Items erweitern die Einkaufsmenge. 20 Stufen von 40 bis 50 Minuten Auslastung. Der Ausbau kostet nur Lieferantenkontakte und Firmenausbau-Items und dauert je Zielstufe zwölf Stunden.']];
-  view.help.hub[1].unshift(['Freischaltung','Stadthub ab Level 5. Alle fünf Level ein Platz, maximal 20 bei Level 100. Ein Lastwombat-Bote kostet 25.000 Münzen und startet mit 2 t. Werkzeugkästen verbessern Kapazität und Antrieb in je zehn Stufen. Drei Fundkisten täglich, mindestens 30 Minuten Abstand; Tageswechsel um 00:00 UTC. Beim stündlichen Einkauf: einmal 50 % Chance auf einen Werkzeugkasten, keine Funde bei voller Kasse. Werkzeugkästen aus Einkäufen mit den Erträgen abholen.']);
+  view.help.hub[1]=[['Zyklus und Leistung','Ein Einkauf alle 60 Minuten. Die mögliche Stundenmenge folgt aus Kapazität und beladener sowie leerer Fahrgeschwindigkeit aller eingesetzten Fahrzeuge. Vertrieb Stufe 0 kauft Ware für 40 Minuten ein; jede der 20 Stufen erhöht die Auslastung um 30 Sekunden bis auf 50 Minuten. Danach warten Boten bis zum nächsten Einkauf. Laufende Einkäufe behalten ihre Werte.'],['Kasse und Abholung','Die Kasse fasst sechs abgeschlossene Einkaufszyklen. Bei voller Kasse pausiert der Hub. Volle Kasse abholen startet sofort einen neuen Einkauf bei Minute 0. Teilabholungen verändern den laufenden Zyklus nicht. Imperium-Taler und sämtliche weiteren Erträge werden gemeinsam eingesammelt.'],['Vertrieb','Lieferantenkontakte und Firmenausbau-Items erweitern die Einkaufsmenge. 20 Stufen von 40 bis 50 Minuten Auslastung. Der Ausbau kostet nur Lieferantenkontakte und Firmenausbau-Items und dauert je Zielstufe zwölf Stunden.']];
+  view.help.hub[1].unshift(['Freischaltung','Stadthub ab Level 5. Alle fünf Level ein Platz, maximal 20 bei Level 100. Ein Lastwombat-Bote kostet 25.000 Imperium-Taler und startet mit 2 t. Werkzeugkästen verbessern Kapazität und Antrieb in je zehn Stufen. Drei Fundkisten täglich, mindestens 30 Minuten Abstand; Tageswechsel um 00:00 UTC. Beim stündlichen Einkauf: einmal 50 % Chance auf einen Werkzeugkasten, keine Funde bei voller Kasse. Werkzeugkästen aus Einkäufen mit den Erträgen abholen.']);
   view.help.inventory[1].unshift(['Auffüller','Pro Levelaufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 verteilbare Punkte. Beide Auffüller geben beim Benutzen 50 Punkte.']);
   for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[title,body.replace(/Je Aufstieg: sofort 50 Expeditionspunkte, ein speicherbares Refill-Paket für 50 Überstundenpunkte sowie 5 dauerhaft verteilbare Punkte/g,'Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller sowie 3 dauerhaft verteilbare Punkte').replace(/Pro Level-up erhältst du ein speicherbares Überstundenauffüller für (?:50|100) Punkte\./g,'Auffüller werden in den Vorräten aufbewahrt.')]);
   for(const mission of view.state.expedition.missions)mission.reward=normalizeNames(mission.reward);
   view.message=normalizeTransportNames(view.message,view.state.profile);
+  view.message=currencyText(view.message,view.state.profile);
+  for(const event of view.state.events)event.text=currencyText(event.text,view.state.profile);
+  for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(text=>currencyText(text));
+  for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[currencyText(title),currencyText(body)]);
+  for(const mission of view.state.expedition.missions)mission.reward=currencyText(mission.reward,view.state.profile);
   for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[normalizeTransportNames(title),normalizeTransportNames(body)]);
   for(const mission of view.state.expedition.missions)mission.reward=normalizeTransportNames(mission.reward,view.state.profile);
   const knownLevels=new Set(state?.pendingLevelUps||[]);

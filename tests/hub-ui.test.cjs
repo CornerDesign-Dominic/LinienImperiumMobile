@@ -19,7 +19,7 @@ test('Hub actions reject rapid duplicate taps, recover from failure, and retain 
  nodes(x.render(),'Pressable').find(p=>text(p)==='Boten').props.onPress();assert.ok(!text(x.render()).includes('Erträge abholen'));assert.ok(nodes(x.render(),'Pressable').find(p=>p.props.accessibilityState?.selected&&text(p)==='Boten'));
 });
 test('Hub vehicles use resource and slot gates, exact upgrade commands, and keep destructive actions collapsed',async()=>{
- const x=setup('HubVehicles');let tree=x.render();press(tree,'Boten anwerben');tree=x.render();assert.equal(button(tree,`Anwerben · ${x.props.data.hubInfo.vehiclePrice} M`).props.disabled,false);
+ const x=setup('HubVehicles');let tree=x.render();press(tree,'Boten anwerben');tree=x.render();assert.equal(button(tree,`Anwerben · ${x.props.data.hubInfo.vehiclePrice} T`).props.disabled,false);
  const vehicle=x.props.data.state.trucks.find(t=>!t.cardId&&t.tier<=1);nodes(tree,'Pressable').find(p=>p.props.accessibilityLabel?.includes(vehicle.displayName)).props.onPress();tree=x.render();assert.ok(!nodes(tree,'Btn').some(b=>text(b).startsWith('Verkaufen')));
  const detail=nodes(tree,'HubVehicleDetail')[0];assert.equal(detail.props.truck.id,vehicle.id);assert.equal(detail.props.inventory,x.props.data.state.inventory);
  x.props.data.hubLimit=1;assert.ok(!nodes(x.render(),'Pressable').some(p=>p.props.accessibilityLabel==='Boten anwerben'));

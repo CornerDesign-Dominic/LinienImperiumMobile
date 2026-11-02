@@ -38,11 +38,11 @@ export function OrderVehiclePicker({data,choices,summary,busy,clock,onStart,onCl
     {rows.map((row,i)=><View key={i} style={s.row}>{row.map((q:any)=>{
      const card=cardFor(q),chosen=selected?.id===q.id;
      const status=q.free?(chosen?'Ausgewählt':'Verfügbar'):q.availableAt&&q.availableAt>clock?`${t('Frei in')} ${remaining(q.availableAt,clock)}`:q.availableAt?'Wird aktualisiert …':q.unavailableReason||'Im Einsatz';
-     return <VehicleCardTile key={q.id} data={data} card={card} stats={q} showDetails disabled={locked} status={{disabled:!q.free,selected:chosen,label:q.free&&!chosen?'':status}} accessibilityLabel={`${t(q.model)}, ${q.id}, ${t('Touren')}: ${q.trips}, ${t('Dauer')}: ${minutes(q.seconds)}, ${t('Gewinn')}: ${n(q.totalProfit,2)} M, ${t(status)}`} onPress={()=>{if(q.free&&!locked){setSelectedId(q.id);setFailed(false);}}} facts={<View style={s.facts}>{metric('Touren','arrow',n(q.trips))}{metric('Dauer','timer',minutes(q.seconds))}{metric('Gewinn','coin',`${n(q.totalProfit,2)} M`,true)}</View>}/>;
+     return <VehicleCardTile key={q.id} data={data} card={card} stats={q} showDetails disabled={locked} status={{disabled:!q.free,selected:chosen,label:q.free&&!chosen?'':status}} accessibilityLabel={`${t(q.model)}, ${q.id}, ${t('Touren')}: ${q.trips}, ${t('Dauer')}: ${minutes(q.seconds)}, ${t('Gewinn')}: ${n(q.totalProfit,2)} T, ${t(status)}`} onPress={()=>{if(q.free&&!locked){setSelectedId(q.id);setFailed(false);}}} facts={<View style={s.facts}>{metric('Touren','arrow',n(q.trips))}{metric('Dauer','timer',minutes(q.seconds))}{metric('Gewinn','coin',`${n(q.totalProfit,2)} T`,true)}</View>}/>;
     })}{row.length<3&&Array.from({length:3-row.length},(_,j)=><View key={`empty-${j}`} style={{flex:1}}/>)}</View>)}
     {!rows.length&&<Empty>{choices.length?'Keine Transportkarten dieser Seltenheit.':'Kein geeignetes Fahrzeug in der Garage.'}</Empty>}
    </ScrollView>
-   {selected&&<View style={s.floating}><Txt style={s.chosen}>{selected.model} · {minutes(selected.seconds)} · {n(selected.totalProfit,2)} M</Txt><Btn disabled={locked} onPress={start} style={{marginTop:4}}>{starting?'Auftrag startet …':'Auftrag starten'}</Btn></View>}
+   {selected&&<View style={s.floating}><Txt style={s.chosen}>{selected.model} · {minutes(selected.seconds)} · {n(selected.totalProfit,2)} T</Txt><Btn disabled={locked} onPress={start} style={{marginTop:4}}>{starting?'Auftrag startet …':'Auftrag starten'}</Btn></View>}
   </View></SafeAreaView>
  </Modal>;
 }

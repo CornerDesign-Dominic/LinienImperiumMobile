@@ -13,7 +13,7 @@ export function HubEarnings({hub,cycle,clock,busy,onCollect}:any){
  return <View testID="hub-earnings-yard" style={s.card}>
   <Image source={require('../assets/art/hub/earnings-yard.jpg')} accessible={false} resizeMode="cover" fadeDuration={0} style={s.image}/>
   <View style={s.heading}><Txt style={s.title}>Erträge</Txt><Txt style={s.cashboxText}>{full?'Kasse voll':`${hub.cashboxCycles} / ${max} Std.`}</Txt></View>
-  <View style={s.amountRow}><Icon name="coin" size={32}/><Text testID="hub-earnings-amount" adjustsFontSizeToFit minimumFontScale={.6} numberOfLines={1} style={s.amount}>{n(hub.cashboxCoins,2)} M</Text></View>
+  <View style={s.amountRow}><Icon name="coin" size={32}/><Text testID="hub-earnings-amount" adjustsFontSizeToFit minimumFontScale={.6} numberOfLines={1} style={s.amount}>{n(hub.cashboxCoins,2)} T</Text></View>
   <View style={s.scenery}/>
   <View style={s.cycle}>
    <View style={s.statusArea}><Txt style={s.status}>{status}</Txt>{full&&<Txt style={s.small}>Erträge abholen, um fortzufahren</Txt>}</View>

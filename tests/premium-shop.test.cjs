@@ -11,6 +11,7 @@ test('Premium shop migrates old saves without awarding money and discloses disab
  assert.equal(result.state.premiumShop.balance,0);
  assert.deepEqual(result.state.premiumShop.ownedSkins,['wombat-standard']);
  assert.equal(result.view.premiumShop.purchasesAvailable,false);
+ assert.equal(result.view.premiumShop.name,'Hermes-Siegel');
  assert.equal(result.view.premiumShop.skinPrice,250);
  assert.deepEqual(result.view.premiumShop.packs.map(p=>[p.amount,p.referencePriceCents]),[[250,250],[500,500],[1000,1000],[2500,2500],[5000,5000]]);
  assert.equal(result.view.premiumShop.skins.filter(s=>s.price>0).length,0,'Never sell an unapproved image');
@@ -44,4 +45,17 @@ test('Premium balance and purchased entitlements survive save reload and test re
  const reset=execute(synced.state,'reset',{},now);
  assert.deepEqual(reset.state.premiumShop,synced.state.premiumShop);
  assert.throws(()=>execute(synced.state,'skinEquip',{id:'retired-skin'},now),/Skin nicht verfügbar/);
+});
+
+test('Currency presentation updates legacy labels while preserving player names and monetary state',()=>{
+ const {currencyText}=require('../functions/src/currency-names.cjs');
+ const profile={companyName:'Münzen Express',cityName:'250 M'};
+ assert.equal(currencyText('Münzen Express in 250 M: +500 Münzen',profile),'Münzen Express in 250 M: +500 Imperium-Taler');
+ assert.equal(currencyText('25.000 M · 0,62 M/km'),'25.000 T · 0,62 T/km');
+ assert.equal(currencyText('250 Premium-Münzen'),'250 Hermes-Siegel');
+ const base=initial();base.state.premiumShop.balance=750;
+ const next=execute(base.state,'sync',{},now);
+ assert.equal(next.state.coins,base.state.coins);assert.equal(next.state.premiumShop.balance,750);
+ assert.ok(next.view.help.hub[1].some(([,body])=>body.includes('Imperium-Taler')));
+ assert.ok(next.view.help.hub[1].every(([,body])=>!body.includes('Münzen')));
 });

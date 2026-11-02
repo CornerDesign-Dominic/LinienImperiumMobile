@@ -37,7 +37,7 @@ test('Module moves to the first final-delivery claim and cannot be awarded twice
 });
 test('Fixed count escrows all money, cannot overspend and returns only unstarted tours on immediate cancellation in tour seven',()=>{
  const {state,truck}=setup();state.coins=80000;
- assert.throws(()=>start(state,truck,'count',11),/Münzen/);
+ assert.throws(()=>start(state,truck,'count',11),/Imperium-Taler/);
  let out=start(state,truck);assert.equal(out.state.coins,0);assert.equal(out.state.procurement.runs[0].escrow,72000);
  out=cmd(out.state,'procurementStop',{id:'1',immediate:true},now+6*600000+100);
  assert.equal(out.state.coins,24000);assert.equal(out.state.procurement.completed,6);assert.equal(out.state.procurement.spent,56000);

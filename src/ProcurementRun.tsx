@@ -15,7 +15,7 @@ function VehicleRow({vehicle,data,clock}:any){
  return <View style={s.vehicleRow}><VehicleArt card={card} style={{width:50}}/><View style={s.vehicleCopy}><View style={s.vehicleHeading}><Txt style={s.vehicleName}>{vehicle.model}</Txt><Txt gold style={s.timer}>{remaining(vehicle.nextAt,clock)}</Txt></View><Bar value={progress}/></View></View>;
 }
 function Facts({run}:any){
- return <View style={s.facts}><View style={s.fact}><Txt muted style={s.caption}>{run.mode==='count'?'Hinterlegt':'Kontoreserve'}</Txt><View style={s.money}><Icon name="coin" size={17}/><Txt style={s.factValue}>{n(run.mode==='count'?run.escrow:run.reserve)} M</Txt></View></View><View style={[s.fact,s.factDivider]}><Txt muted style={s.caption}>Je Tour</Txt><Txt style={s.factValue}>{n(run.price)} M</Txt></View></View>;
+ return <View style={s.facts}><View style={s.fact}><Txt muted style={s.caption}>{run.mode==='count'?'Hinterlegt':'Kontoreserve'}</Txt><View style={s.money}><Icon name="coin" size={17}/><Txt style={s.factValue}>{n(run.mode==='count'?run.escrow:run.reserve)} T</Txt></View></View><View style={[s.fact,s.factDivider]}><Txt muted style={s.caption}>Je Tour</Txt><Txt style={s.factValue}>{n(run.price)} T</Txt></View></View>;
 }
 export function ProcurementRunCard({run,title,data,clock,onOpen}:any){
  const vehicles=running(run);

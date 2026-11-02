@@ -31,7 +31,7 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
     <Txt style={s.sectionTitle}>Kosten</Txt>
     <Txt muted style={s.caption}>Benötigt / Vorhanden</Txt>
     <View style={s.cost}><ItemArt id="hubVehicleParts" size={36}/><View style={{flex:1}}><Txt style={s.label}>Werkzeugkästen</Txt><Txt style={[s.costValue,{color:inventory.hubVehicleParts>=q.parts?C.accent:C.red}]}>{n(q.parts)} / {n(inventory.hubVehicleParts)}</Txt></View></View>
-    <View style={s.cost}><Icon name="coin" size={36}/><View style={{flex:1}}><Txt style={s.label}>Münzen</Txt><Txt style={[s.costValue,{color:coins>=q.coins?C.accent:C.red}]}>{n(q.coins,2)} / {n(coins,2)} M</Txt></View></View>
+    <View style={s.cost}><Icon name="coin" size={36}/><View style={{flex:1}}><Txt style={s.label}>Imperium-Taler</Txt><Txt style={[s.costValue,{color:coins>=q.coins?C.accent:C.red}]}>{n(q.coins,2)} / {n(coins,2)} T</Txt></View></View>
     <Txt muted style={s.note}>Ausbauten wirken ab dem nächsten Stundenzyklus.</Txt>
     {(failed||error)&&<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}
     <Btn disabled={locked||!enough||q.level>=q.max} onPress={()=>command('hubVehicleUpgrade',{id:truck.id,kind})}>{pending?'Wird verbessert …':`${t(label)} ${t('ausbauen')}`}</Btn>
@@ -47,7 +47,7 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
     <Txt muted style={s.note}>Ausbauten wirken ab dem nächsten Stundenzyklus.</Txt>
     {(failed||error)&&<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}
     <Btn secondary disabled={locked} onPress={()=>command('hubTruck',{id:truck.id})}>{truck.hubAssigned?'Aus Hub nehmen':'Im Hub einsetzen'}</Btn>
-    {!!truck.sale&&<View style={s.actions}><Pressable accessibilityRole="button" accessibilityLabel={t('Weitere Aktionen')} accessibilityState={{expanded:actions}} disabled={locked} onPress={()=>setActions(value=>!value)} style={s.toggle}><Txt muted style={s.label}>Weitere Aktionen</Txt><Icon name="chevron" size={16} style={{transform:[{rotate:actions?'90deg':'0deg'}]}}/></Pressable>{actions&&<Btn secondary disabled={locked} onPress={()=>{onClose();onSell(truck);}}>Verkaufen · {n(truck.sale.coins,2)} M</Btn>}</View>}
+    {!!truck.sale&&<View style={s.actions}><Pressable accessibilityRole="button" accessibilityLabel={t('Weitere Aktionen')} accessibilityState={{expanded:actions}} disabled={locked} onPress={()=>setActions(value=>!value)} style={s.toggle}><Txt muted style={s.label}>Weitere Aktionen</Txt><Icon name="chevron" size={16} style={{transform:[{rotate:actions?'90deg':'0deg'}]}}/></Pressable>{actions&&<Btn secondary disabled={locked} onPress={()=>{onClose();onSell(truck);}}>Verkaufen · {n(truck.sale.coins,2)} T</Btn>}</View>}
    </>}
   </ScrollView>
  </View></View></AppModal>;

@@ -82,11 +82,11 @@ export function TransportEditor({data,busy,onSave,onInventory}:any){
       <Btn iconOnly secondary icon="plus" disabled={busy||!canAdd} onPress={()=>{setSelection(previous=>previous?{...previous,count:previous.count+1}:null);setSaveError(false);}}>Stufen erhöhen</Btn>
      </View></View>
      <Txt muted style={styles.caption}>Gesamtkosten</Txt>
-     <View style={styles.costs}><View style={styles.cost}><Icon name="coin" size={22} color={g.coins<quote.coins?C.red:C.gold}/><Txt style={{color:g.coins<quote.coins?C.red:C.text,fontWeight:'700'}}>{n(quote.coins)} M</Txt></View><View style={styles.cost}><ItemArt id="companyItems" size={36}/><Txt style={{color:items<quote.items?C.red:C.text,fontWeight:'700'}}>{quote.items} / {n(items)}</Txt></View></View>
-     {!affordable&&!stale&&<Txt style={styles.error}>{g.coins<quote.coins?'Nicht genügend Münzen.':'Nicht genügend Firmenausbau-Items.'}</Txt>}
+     <View style={styles.costs}><View style={styles.cost}><Icon name="coin" size={22} color={g.coins<quote.coins?C.red:C.gold}/><Txt style={{color:g.coins<quote.coins?C.red:C.text,fontWeight:'700'}}>{n(quote.coins)} T</Txt></View><View style={styles.cost}><ItemArt id="companyItems" size={36}/><Txt style={{color:items<quote.items?C.red:C.text,fontWeight:'700'}}>{quote.items} / {n(items)}</Txt></View></View>
+     {!affordable&&!stale&&<Txt style={styles.error}>{g.coins<quote.coins?'Nicht genügend Imperium-Taler.':'Nicht genügend Firmenausbau-Items.'}</Txt>}
      {saveError&&<Txt style={styles.error}>Ausbau nicht bestätigt. Bitte erneut versuchen.</Txt>}</>}
      {maximum&&<Txt style={{color:C.accent,marginTop:14}}>Maximale Stufe erreicht.</Txt>}
-    </ScrollView><View style={styles.modalFooter}><Btn disabled={busy||maximum||!affordable} onPress={save}>{busy?'Wird verbessert …':maximum?'Maximum':`Für ${n(quote.coins)} M verbessern`}</Btn></View></>}
+    </ScrollView><View style={styles.modalFooter}><Btn disabled={busy||maximum||!affordable} onPress={save}>{busy?'Wird verbessert …':maximum?'Maximum':`Für ${n(quote.coins)} T verbessern`}</Btn></View></>}
    </View></View>
   </Modal>
  </>;

@@ -14,7 +14,7 @@ type Reward={id:string;label:string;amount:number;icon:IconName;color:string};
 export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:string;label:string}[]}){
  const [contentWidth,setContentWidth]=useState(240);
  const rewards:Reward[]=[];
- if(summary.coins>0)rewards.push({id:'coins',label:'Münzen',amount:summary.coins,icon:'coin',color:C.gold});
+ if(summary.coins>0)rewards.push({id:'coins',label:'Imperium-Taler',amount:summary.coins,icon:'coin',color:C.gold});
  for(const rarity of rarities){
   const amount=summary.gears?.[rarity.id]||0;
   if(amount>0)rewards.push({id:`gear:${rarity.id}`,label:`${rarity.label}-${amount===1?'Zahnrad':'Zahnräder'}`,amount,icon:'gear',color:rarityColor(rarity.id)});

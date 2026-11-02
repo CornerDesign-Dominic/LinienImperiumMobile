@@ -16,7 +16,7 @@ function purchaseSkin(state,id,catalogue=SKINS){
  if(!skin||!Number.isSafeInteger(skin.price)||skin.price<0)throw Error('Skin nicht verfügbar.');
  const wallet=premiumState(state);
  if(wallet.ownedSkins.includes(id))return false;
- if(wallet.balance<skin.price)throw Error('Nicht genügend Premium-Münzen.');
+ if(wallet.balance<skin.price)throw Error('Nicht genügend Hermes-Siegel.');
  wallet.balance-=skin.price;wallet.ownedSkins.push(id);
  return true;
 }
@@ -28,6 +28,6 @@ function equipSkin(state,id){
 }
 function premiumShopView(state){
  const wallet=premiumState(state);
- return {...wallet,name:'Premium-Münzen',skinPrice:250,skins:SKINS,packs:PACKS,purchasesAvailable:false};
+ return {...wallet,name:'Hermes-Siegel',skinPrice:250,skins:SKINS,packs:PACKS,purchasesAvailable:false};
 }
 module.exports={premiumState,purchaseSkin,equipSkin,premiumShopView};

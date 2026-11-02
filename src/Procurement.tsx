@@ -69,7 +69,7 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
      {dialog==='sites'&&p.sites.map((s:any)=>{const shown=expanded.includes(s.region);return <Card key={s.region} style={!s.unlocked&&styles.lockedSite}>
       <Pressable accessibilityRole="button" accessibilityLabel={translate('{0} als Beschaffungsort wählen').replace('{0}',translate(regionTitle(s.region)))} accessibilityState={{disabled:busy||!s.unlocked}} disabled={busy||!s.unlocked} onPress={()=>open(s.region)} style={[styles.siteChoice,!s.unlocked&&{minHeight:0}]}>
        <Row style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={[styles.heading,{flex:1,marginBottom:0},!s.unlocked&&{fontSize:15}]}>{regionTitle(s.region)}</Txt><Icon name={s.unlocked?'chevron':'lock'} size={s.unlocked?18:15} color={s.unlocked?C.gold:C.muted}/></Row>
-       <Row style={{marginBottom:0}}><Txt gold style={!s.unlocked&&{fontSize:12}}>{translate('{0} M je Tour').replace('{0}',n(s.price))}</Txt>{!s.unlocked&&<Txt muted style={{fontSize:11}}>Gesperrt</Txt>}</Row>
+       <Row style={{marginBottom:0}}><Txt gold style={!s.unlocked&&{fontSize:12}}>{translate('{0} T je Tour').replace('{0}',n(s.price))}</Txt>{!s.unlocked&&<Txt muted style={{fontSize:11}}>Gesperrt</Txt>}</Row>
       </Pressable>
       {!s.unlocked&&<Txt muted style={styles.lockedProgress}>{translate('Orte {0}/7 · Lieferungen {1}/7 · Endloslieferung {2}/1').replace('{0}',String(s.discovered)).replace('{1}',String(s.deliveries)).replace('{2}',String(Number(s.finalClaimed)))}</Txt>}
       <View style={!s.unlocked&&styles.lockedActions}>
@@ -87,12 +87,12 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
     {picker&&<View style={styles.grid}>{available.map((v:any)=>vehicleTile(v,false))}</View>}
     {!freeVehicles.length&&<Txt muted>Kein freies Garagenfahrzeug</Txt>}
     <Row style={{flexWrap:'nowrap'}}><Btn style={{flex:1}} secondary={mode!=='count'} onPress={()=>{setMode('count');setValue('1');}}>Feste Tourenzahl</Btn><Btn style={{flex:1}} secondary={mode!=='reserve'} onPress={()=>{setMode('reserve');setValue('0');}}>Bis Reserve</Btn></Row>
-    <Txt>{mode==='count'?'Anzahl Touren':'Kontoreserve in Münzen'}</Txt>
+    <Txt>{mode==='count'?'Anzahl Touren':'Kontoreserve in Imperium-Taler'}</Txt>
     <View style={styles.amountRow}>
-     <TextInput accessibilityLabel={translate(mode==='count'?'Anzahl Touren':'Kontoreserve in Münzen')} keyboardType="number-pad" value={value} onChangeText={setValue} style={[styles.input,{flex:1,minWidth:0}]}/>
+     <TextInput accessibilityLabel={translate(mode==='count'?'Anzahl Touren':'Kontoreserve in Imperium-Taler')} keyboardType="number-pad" value={value} onChangeText={setValue} style={[styles.input,{flex:1,minWidth:0}]}/>
      <Btn secondary disabled={busy} style={{marginTop:0,minWidth:96}} onPress={()=>setValue(String(mode==='count'?max:Math.min(1000000000,(Number.isSafeInteger(amount)?amount:0)+10000)))}>{mode==='count'?'Max':'+10.000'}</Btn>
     </View>
-    <Txt muted>{translate('Verfügbar: {0} M').replace('{0}',n(g.coins))}</Txt>
+    <Txt muted>{translate('Verfügbar: {0} T').replace('{0}',n(g.coins))}</Txt>
     <Btn disabled={busy||!valid} onPress={async()=>{
      setSaveFailed(false);
      const trucks=selectedVehicles.map((v:any)=>v.id);

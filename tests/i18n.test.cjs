@@ -32,7 +32,7 @@ test('Procurement messages and help localize in English',()=>{
  assert.equal(t('Materialbeschaffung'),'Material procurement');
  assert.equal(t('Freigeschaltet'),'Unlocked');assert.equal(t('Fahrzeug einsetzen'),'Assign vehicle');
  assert.equal(t('Beschaffung 3'),'Procurement 3');
- assert.equal(t('Bis Reserve von 10.000 M'),'Until reserve of 10.000 coins');
+ assert.equal(t('Bis Reserve von 10.000 T'),'Until reserve of 10.000 Imperium thalers');
  assert.equal(t('Nach laufender Tour beenden'),'Finish after current trip');
  assert.ok(localizedHelp('procurement',[]).some(row=>row[1].includes('8,000')));
  setLanguage('de');

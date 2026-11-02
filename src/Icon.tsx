@@ -15,7 +15,8 @@ const icons={
  check:require('../assets/icons/check.png'),
  chevron:require('../assets/icons/chevron.png'),
  close:require('../assets/icons/close.png'),
- coin:require('../assets/art/currency/coin.png'),
+ coin:require('../assets/art/currency/imperium-taler.png'),
+ hermes:require('../assets/art/currency/hermes-siegel.png'),
  company:require('../assets/icons/company.png'),
  crafting:require('../assets/icons/crafting.png'),
  customers:require('../assets/icons/customers.png'),
@@ -47,7 +48,7 @@ const icons={
 export type IconName=keyof typeof icons;
 export function Icon({name,size=24,color=C.text,style}:{name:IconName;size?:number;color?:string;style?:StyleProp<ImageStyle>}){
  // Illustrations retain their painted colours; functional icons retain their tint.
- const illustrated=name==='coin'||name==='capacity'||name==='speed';
+ const illustrated=name==='coin'||name==='hermes'||name==='capacity'||name==='speed';
  return <Image testID={illustrated?`${name}-art`:undefined} source={icons[name]} accessible={false} importantForAccessibility="no" resizeMode="contain" fadeDuration={0} style={[{width:size,height:size,flexShrink:0},!illustrated&&{tintColor:color},style]}/>;
 }
 export const screenIcons:Record<string,IconName>={procurement:'crafting',home:'home',fleet:'fleet',garage:'garage',orders:'orders',projects:'projects',expeditions:'expedition',cards:'cards',company:'company',hub:'hub',inventory:'inventory',crafting:'crafting',customers:'customers',wholesaler:'wholesaler',statistics:'statistics',account:'settings',events:'events',dealer:'truck'};

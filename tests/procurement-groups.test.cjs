@@ -124,7 +124,7 @@ test('Invalid, duplicate, locked, unavailable and unaffordable selections fail b
  for(const bad of [0,-1,1.5,'10',Infinity,100001])assert.throws(()=>start(state,trucks,'count',bad));
  assert.throws(()=>start(state,trucks,'count',1,1),/freigeschaltet/);
  const poor=structuredClone(state);poor.coins=7999;
- assert.throws(()=>start(poor,trucks,'count',1),/Münzen/);
+ assert.throws(()=>start(poor,trucks,'count',1),/Imperium-Taler/);
  assert.throws(()=>start(poor,trucks,'reserve',0),/Reserve/);
  assert.equal(JSON.stringify(state),saved);
  const begun=start(state,trucks);

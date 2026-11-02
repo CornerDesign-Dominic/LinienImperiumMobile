@@ -9,25 +9,25 @@ function giftSetup(overrides={}){
  return {h,props,calls,render,crate,reward};
 }
 test('Gift result waits after the wheel stops, returns to the open crate and repeats with the real duplicate reward',async()=>{
- const {h,calls,render,crate,reward}=giftSetup();const open=button(crate(render()),'Öffnen · 10 M').props.onPress;
+ const {h,calls,render,crate,reward}=giftSetup();const open=button(crate(render()),'Öffnen · 10 T').props.onPress;
  await Promise.all([open(),open()]);assert.equal(calls.length,1,'rapid taps buy only once');
  let tree=render();for(let steps=0;!text(crate(tree)).includes('Geschenk geöffnet');steps++){assert.ok(steps<30);h.next();tree=render();}
- assert.equal(reward(tree).props.visible,false);assert.equal(button(crate(tree),'Nochmal öffnen · 10 M').props.disabled,true);
+ assert.equal(reward(tree).props.visible,false);assert.equal(button(crate(tree),'Nochmal öffnen · 10 T').props.disabled,true);
  h.advance(349);assert.equal(reward(render()).props.visible,false);h.advance(1);tree=render();assert.equal(reward(tree).props.visible,true);assert.equal(crate(tree).props.visible,false);assert.ok(text(reward(tree)).includes('Neue Transportkarte'));assert.ok(!text(crate(tree)).includes('1 Transportkarte'));
- reward(tree).props.onClose();tree=render();assert.equal(crate(tree).props.visible,true);assert.equal(button(crate(tree),'Nochmal öffnen · 10 M').props.disabled,false);
- await button(crate(tree),'Nochmal öffnen · 10 M').props.onPress();h.advance(10000);tree=render();assert.equal(calls.length,2);assert.ok(text(reward(tree)).includes('+1 Common-Shard'));assert.ok(!text(crate(tree)).includes('+1 Common-Shard'));
+ reward(tree).props.onClose();tree=render();assert.equal(crate(tree).props.visible,true);assert.equal(button(crate(tree),'Nochmal öffnen · 10 T').props.disabled,false);
+ await button(crate(tree),'Nochmal öffnen · 10 T').props.onPress();h.advance(10000);tree=render();assert.equal(calls.length,2);assert.ok(text(reward(tree)).includes('+1 Common-Shard'));assert.ok(!text(crate(tree)).includes('+1 Common-Shard'));
  button(reward(tree),'Weiter').props.onPress();assert.equal(crate(render()).props.visible,true);h.unmount();assert.equal(h.pendingTimers(),0);
 });
 test('Gift request failure can be retried; skip uses the received result and leaving cancels delayed presentation',async()=>{
  const {h,props,calls,render,crate,reward}=giftSetup();props.onCommand=async()=>{throw Error('offline');};
- await button(crate(render()),'Öffnen · 10 M').props.onPress();let tree=render();assert.ok(text(crate(tree)).includes('Geschenk konnte nicht geöffnet werden.'));assert.equal(reward(tree).props.visible,false);assert.equal(h.pendingTimers(),0);
- props.onCommand=async()=>{calls.push('retry');return {giftFind:{cardId:'card-2',duplicate:false}};};await button(crate(render()),'Öffnen · 10 M').props.onPress();button(crate(render()),'Überspringen').props.onPress();tree=render();assert.ok(text(crate(tree)).includes('Geschenk geöffnet'));assert.equal(reward(tree).props.visible,false);assert.equal(calls.length,1);
+ await button(crate(render()),'Öffnen · 10 T').props.onPress();let tree=render();assert.ok(text(crate(tree)).includes('Geschenk konnte nicht geöffnet werden.'));assert.equal(reward(tree).props.visible,false);assert.equal(h.pendingTimers(),0);
+ props.onCommand=async()=>{calls.push('retry');return {giftFind:{cardId:'card-2',duplicate:false}};};await button(crate(render()),'Öffnen · 10 T').props.onPress();button(crate(render()),'Überspringen').props.onPress();tree=render();assert.ok(text(crate(tree)).includes('Geschenk geöffnet'));assert.equal(reward(tree).props.visible,false);assert.equal(calls.length,1);
  h.unmount();assert.equal(h.pendingTimers(),0);h.advance(10000);assert.equal(h.pendingTimers(),0);
 });
 test('Reduced motion keeps the short gift reveal pause and insufficient balance keeps repeat visible but disabled',async()=>{
  const native={View:'View',Pressable:'Pressable',Modal:'Modal',ScrollView:'ScrollView',StyleSheet:{create:x=>x},AccessibilityInfo:{isReduceMotionEnabled:async()=>true}};
- const {h,props,render,crate,reward}=giftSetup({'react-native':native});await Promise.resolve();await button(crate(render()),'Öffnen · 10 M').props.onPress();assert.ok(text(crate(render())).includes('Geschenk geöffnet'));h.advance(349);assert.equal(reward(render()).props.visible,false);h.advance(1);assert.equal(reward(render()).props.visible,true);
- reward(render()).props.onClose();props.data.state.coins=0;assert.equal(button(crate(render()),'Nochmal öffnen · 10 M').props.disabled,true);h.unmount();
+ const {h,props,render,crate,reward}=giftSetup({'react-native':native});await Promise.resolve();await button(crate(render()),'Öffnen · 10 T').props.onPress();assert.ok(text(crate(render())).includes('Geschenk geöffnet'));h.advance(349);assert.equal(reward(render()).props.visible,false);h.advance(1);assert.equal(reward(render()).props.visible,true);
+ reward(render()).props.onClose();props.data.state.coins=0;assert.equal(button(crate(render()),'Nochmal öffnen · 10 T').props.disabled,true);h.unmount();
 });
 test('Development modal stages all levels without saving on close and commits one bounded allocation only on confirmation',async()=>{
  const data={development:{points:6,overtime:{base:100,bonus:10},expedition:{base:50,bonus:7}}};
