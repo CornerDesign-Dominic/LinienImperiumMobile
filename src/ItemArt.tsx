@@ -12,12 +12,13 @@ type Props=ItemOptions&{id:string;size?:number;style?:StyleProp<ViewStyle>;frame
 export function ItemArt({id,size=44,style,framed=true,label,...options}:Props){
  const visual=itemVisual(id,options),source=visual&&itemAssets[visual.asset];
  const color=visual?.rarity?itemColors[visual.rarity]:'#8B8378',numeral=romanTier(visual?.tier);
+ const illustratedType=visual?.kind==='material'||visual?.kind==='character';
  return <View testID={`item-art-${id}`} accessible={!!label} accessibilityLabel={label?t(label):undefined} accessibilityElementsHidden={!label} importantForAccessibility={label?'yes':'no-hide-descendants'} style={[s.tile,{width:size,height:size,borderRadius:Math.max(3,size*.1)},framed?{borderWidth:size>=48?1.5:1,borderColor:'#191B1B',backgroundColor:'#242A2D'}:{backgroundColor:'transparent'},style]}>
   {framed&&<View pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:color,opacity:.24}]}/>}
   {source?<Image source={source} accessible={false} resizeMode="contain" fadeDuration={0} style={{width:'94%',height:'94%'}}/>:<Icon name={stockIcon(id)} size={size*.65} color={color}/>}
-  {visual?.kind&&source&&<View testID="item-type-badge" pointerEvents="none" style={s.typeBadge}>
-   {[[0,-1],[0,1],[-1,0],[1,0]].map(([x,y],i)=><Image key={i} source={sealAssets[visual.kind!]} accessible={false} resizeMode="contain" style={[s.typeIcon,{tintColor:'#242A2D',transform:[{translateX:x*.6},{translateY:y*.6}]}]}/>)}
-   <Image source={sealAssets[visual.kind!]} accessible={false} resizeMode="contain" style={[s.typeIcon,{tintColor:'#FFF3D8'}]}/>
+  {visual?.kind&&source&&<View testID="item-type-badge" pointerEvents="none" style={[s.typeBadge,illustratedType&&{width:'32%',height:'32%'}]}>
+   {!illustratedType&&[[0,-1],[0,1],[-1,0],[1,0]].map(([x,y],i)=><Image key={i} source={sealAssets[visual.kind!]} accessible={false} resizeMode="contain" style={[s.typeIcon,{tintColor:'#242A2D',transform:[{translateX:x*.6},{translateY:y*.6}]}]}/>)}
+   <Image source={sealAssets[visual.kind!]} accessible={false} resizeMode="contain" fadeDuration={0} style={[s.typeIcon,!illustratedType&&{tintColor:'#FFF3D8'}]}/>
   </View>}
   {!!numeral&&<Text allowFontScaling={false} style={[s.rank,{fontSize:Math.max(9,size*.2),lineHeight:Math.max(11,size*.24),paddingHorizontal:Math.max(2,size*.04)}]}>{numeral}</Text>}
  </View>;
