@@ -69,3 +69,7 @@ Noch nicht veröffentlicht; Veröffentlichung erst nach neuer Freigabe. Orts- un
 - Akzeptierter Entwurf umgesetzt: aktive Karten oben, abgeschlossene mit offener Prämie unten in einer gemeinsamen Liste. Ruhige Pergamentfläche, neutraler Rand, schmaler Seltenheitsstreifen und vorhandene Kundenwarenbilder; Titel/Kunde/Menge/Strecke, Fortschritt und echte Serverprognose bei aktiven Karten.
 - Fertige ohne Timer, mit technisch erzeugtem grünem ERLEDIGT-Stempel in reserviertem Platz und direkter Abholtaste. Bestehender autoritativer Claim, Doppeltippschutz, sichtbare Fehler, echte Belohnungsausgabe; nach Bestätigung verschwindet nur die Listenkarte, nicht die Historie. Kategorienreihenfolge und Reiterzähler bleiben erhalten.
 - Vier gezielte Status-/Sortier-/Abholprüfungen erfolgreich. Komponentenprüfungen für Abholung, Fehler, Doppeltipps und Prognosegrenzen ergänzt, lokal mangels React/TypeScript nicht ausführbar. Kein neuer App-Export oder Gerätetest. Weiterhin Veröffentlichung erst nach erneuter Freigabe. Details: [Großauftragsübersicht](docs/ui/project-category-overview.md).
+
+## Season – gesammelt, nicht veröffentlicht
+
+Neuer Einstieg auf Start mit 30 aufsteigenden Stufen (1 oben, 30 unten), mittiger Timeline, Free links und Premium rechts. Alle Belohnungen sind eine vorläufige Vorschau aus vorhandenen Ressourcen. Kein Live-Fortschritt, Abholen oder Premiumkauf aktiviert. Vor Freischaltung sind Fortschrittsregeln, Laufzeit/Reset und Premiumzugang festzulegen. Details und Prüfumfang: [Season](docs/ui/season.md).

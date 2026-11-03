@@ -18,6 +18,8 @@ Diese Dokumentation beschreibt **Linien Imperium Online / Projekt 117**, die nat
 
 ## Spielmechaniken im Detail
 
+- [Season mit Free- und Premium-Weg](ui/season.md)
+
 - [Regionale Transportkarten](gameplay/regional-transport-cards.md) und [Kartenboni](ui/card-bonus-steps.md)
 - [Firmen-Transportausbau](transport-upgrades.md) und [Entwicklungspunkte](ui/company-development-points.md)
 - [Einzelauftragsnavigation](single-orders-flow.md), [Reiter und Zuweisung](ui/single-order-tabs-and-assignment.md)

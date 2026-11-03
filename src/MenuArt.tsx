@@ -10,6 +10,7 @@ export const menuAssets:Record<string,number>={
  orders:require('../assets/art/menu/orders.png'),
  projects:require('../assets/art/menu/projects.png'),
  events:require('../assets/art/menu/events.png'),
+ season:require('../assets/art/menu/events.png'),
  expeditions:require('../assets/art/menu/expeditions.png'),
  procurement:require('../assets/art/menu/procurement.png'),
  cards:require('../assets/art/menu/cards.png'),
