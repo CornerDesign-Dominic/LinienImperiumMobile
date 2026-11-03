@@ -150,7 +150,7 @@
     ],
     [
       "Automatic completions",
-      "Location-delivery milestones are credited automatically. Repeatable material and transport-card contracts are collected together using the single-contract collection button. A single completion summary batches location arrivals and milestones. Close it with X or open point allocation. Upgrade points permanently raise either expedition or overtime maximum by 1 each, without refilling energy. Confirmed allocations cannot be reversed; unspent points remain available under Development in the Trading empire."
+      "Location deliveries and the first trading-place delivery settle automatically in the background, without a completion popup. Upgrade points are immediately available for manual allocation under Development in the Trading empire. Each point permanently raises either the expedition or overtime maximum by 1, without refilling energy. Confirmed allocations cannot be reversed. Rewards from repeatable material and transport-card contracts still wait for collective collection under Single orders."
     ]
   ],
   "statistics": [
@@ -196,4 +196,3 @@
     ]
   ]
 }
-

@@ -31,3 +31,7 @@ Die Tabelle hält belegte Restpunkte fest; sie beauftragt keine neue Spielfunkti
 - Code in `main`, geprüfter Build und tatsächlich ausgerolltes Backend/OTA sind unterschiedliche Zustände. Bei einer Veröffentlichung Commit und erfolgreichen Workflow verlinken.
 - Nach Abschluss den Eintrag entfernen oder mit Nachweis in die Historie übernehmen; keine vollständigen Modulbeschreibungen hier duplizieren.
 - Spielveröffentlichungen erfolgen weiterhin auf ausdrücklichen Wunsch über den dokumentierten Workflow. Dokumentationspflege startet keinen manuellen Release und setzt keinen Veröffentlichungsmarker.
+
+## Gesammelt: stille Expeditionsabschlüsse
+
+Noch nicht veröffentlicht; Veröffentlichung erst nach neuer Freigabe. Orts- und Regionsabschluss laufen ohne automatischen Dialog ab. Freie Ausbaupunkte stehen sofort im Handelsimperium zur manuellen Verteilung bereit. Alte reine Informationsmeldungen werden still entfernt; wiederholbare Expeditionsaufträge behalten ihre gemeinsame Lootabholung unter Einzelaufträge. Acht gezielte Backendtests erfolgreich; kein vollständiger App-/Gerätetest behauptet.

@@ -1,8 +1,7 @@
 import {PageHeader} from './PageHeader';
 import {MaterialLayer} from './Material';
 import {MaterialView as View,MaterialPressable as Pressable} from './Material';
-import {useOpenModalCount} from './AppModal';
-import {ExpeditionCompletionNotice,ExpansionPointsModal} from './ExpansionPoints';
+import {ExpansionPointsModal} from './ExpansionPoints';
 import {VehicleArt} from './VehicleArt';
 import {ItemArt} from './ItemArt';
 import {LANGUAGES,t as translate,localizedHelp} from './i18n';
@@ -60,8 +59,7 @@ function Game(){
  const [ordersTab,setOrdersTab]=useState('offers'),[jobId,setJobId]=useState<number|null>(null);
  const [cardId,setCardId]=useState<string|null>(null);
  const [customerId,setCustomerId]=useState<string|null>(null);
- const [completionNotice,setCompletionNotice]=useState<any>(null),[expansionOpen,setExpansionOpen]=useState(false),[appActive,setAppActive]=useState(AppState.currentState!=='background'&&AppState.currentState!=='inactive');
- const openModalCount=useOpenModalCount();
+ const [expansionOpen,setExpansionOpen]=useState(false),[appActive,setAppActive]=useState(AppState.currentState!=='background'&&AppState.currentState!=='inactive');
  const [levelNotices,setLevelNotices]=useState<number[]>([]);
  const levelHistory=useRef<{uid:string;level:number}|null>(null),announcedLevels=useRef(new Set<number>());
  const [refreshing,setRefreshing]=useState(false),[connection,setConnection]=useState({lastSuccess:0,failed:false});
@@ -71,7 +69,7 @@ function Game(){
  executeRequest.current=async(task:any)=>{
   const {action,payload}=task,startUid=auth.currentUser?.uid||'';
   if(task.scope&&task.scope!==startUid){const changed:any=Error('Konto gewechselt.');changed.code='client/account-changed';throw changed;}
-  try{const next=await command(action,payload);const uid=auth.currentUser?.uid||'';if(startUid&&uid!==startUid){const changed:any=Error('Konto gewechselt.');changed.code='client/account-changed';throw changed;}const previous=levelHistory.current;const sameUser=previous?.uid===uid;if(!sameUser||action==='reset'||(previous&&next.level.level<previous.level)){announcedLevels.current.clear();setLevelNotices([]);setCompletionNotice(null);setExpansionOpen(false);}const gained=new Set<number>(next.levelUps||[]);if(sameUser&&previous)for(let level=previous.level+1;level<=next.level.level;level++)gained.add(level);const fresh=[...gained].filter(level=>!announcedLevels.current.has(level)).sort((a,b)=>a-b);fresh.forEach(level=>announcedLevels.current.add(level));if(fresh.length)setLevelNotices(queue=>[...queue,...fresh]);levelHistory.current={uid,level:next.level.level};offset.current=next.serverTime-Date.now();setData(next);setClock(Date.now()+offset.current);if(!task.background)setError('');setConnection({lastSuccess:Date.now(),failed:false});if(next.silentSuccess||action==='overtime'||(action==='giftOpen'&&next.giftFind))setMessage('');else if(action!=='sync')setMessage(next.message||'Gespeichert.');if((action==='claimSingles'||action==='hubCollect')&&next.claimSummary)showClaimSummary(next);if(action==='draw'&&next.expeditionFind)showExpeditionFind(next);return next;}
+  try{const next=await command(action,payload);const uid=auth.currentUser?.uid||'';if(startUid&&uid!==startUid){const changed:any=Error('Konto gewechselt.');changed.code='client/account-changed';throw changed;}const previous=levelHistory.current;const sameUser=previous?.uid===uid;if(!sameUser||action==='reset'||(previous&&next.level.level<previous.level)){announcedLevels.current.clear();setLevelNotices([]);setExpansionOpen(false);}const gained=new Set<number>(next.levelUps||[]);if(sameUser&&previous)for(let level=previous.level+1;level<=next.level.level;level++)gained.add(level);const fresh=[...gained].filter(level=>!announcedLevels.current.has(level)).sort((a,b)=>a-b);fresh.forEach(level=>announcedLevels.current.add(level));if(fresh.length)setLevelNotices(queue=>[...queue,...fresh]);levelHistory.current={uid,level:next.level.level};offset.current=next.serverTime-Date.now();setData(next);setClock(Date.now()+offset.current);if(!task.background)setError('');setConnection({lastSuccess:Date.now(),failed:false});if(next.silentSuccess||action==='overtime'||(action==='giftOpen'&&next.giftFind))setMessage('');else if(action!=='sync')setMessage(next.message||'Gespeichert.');if((action==='claimSingles'||action==='hubCollect')&&next.claimSummary)showClaimSummary(next);if(action==='draw'&&next.expeditionFind)showExpeditionFind(next);return next;}
   catch(e:any){
    if(e.code==='client/account-changed')throw e;
    setConnection(previous=>({...previous,failed:!e.code||isNetworkFailure(e)||['functions/internal','functions/unavailable','functions/deadline-exceeded','functions/not-found','auth/network-request-failed'].includes(e.code)}));
@@ -94,21 +92,10 @@ function Game(){
   scroll.current?.scrollTo({y:0,animated:false});
  },[data,screen,orderId]);
  useEffect(()=>{if(!message)return;const timer=setTimeout(()=>setMessage(''),5000);return()=>clearTimeout(timer);},[message]);
- const closeCompletion=async(distribute=false)=>{
-  if(!completionNotice||busy)return;
-  if(completionNotice.uid!==(auth.currentUser?.uid||'')){setCompletionNotice(null);return;}
-  const next=await run('expeditionNoticeAck',{through:completionNotice.notices.at(-1).sequence});
-  if(next){setCompletionNotice(null);if(distribute&&next.expansion?.available>0)setExpansionOpen(true);}
- };
- useEffect(()=>{
-  if(!data?.expansion?.notices?.length||completionNotice||expansionOpen||openModalCount||busy||sheet||levelNotices.length||jobId!==null||!appActive)return;
-  const timer=setTimeout(()=>setCompletionNotice({uid:auth.currentUser?.uid||'',notices:data.expansion.notices.slice()}),200);
-  return()=>clearTimeout(timer);
- },[data,completionNotice,expansionOpen,openModalCount,busy,sheet,levelNotices.length,jobId,appActive]);
  const go=useCallback((next:string)=>{if(next==='runningOrders'||next==='savedOrders'){setOrdersTab(next==='runningOrders'?'running':'saved');setSavedType(null);next='orders';}if(next==='expeditions'&&screen!=='expeditions')setRegion(null);if(screen!==next)setTrail(v=>[...v,screen]);setScreen(next);scroll.current?.scrollTo({y:0,animated:false});},[screen]);
  const openCollectionCard=useCallback((id:string)=>{setCardId(id);go('cardDetail');},[go]);
- const back=()=>{if(completionNotice){closeCompletion();return true;}if(expansionOpen){setExpansionOpen(false);return true;}if(levelNotices.length){setLevelNotices(queue=>queue.slice(1));return true;}if(sheet){setSheet(null);return true;}if(screen==='orders'&&ordersTab==='saved'&&savedType){setSavedType(null);return true;}if(screen==='expeditions'&&region!==null){setRegion(null);scroll.current?.scrollTo({y:0,animated:false});return true;}if(trail.length){if(screen==='cardDetail')scroll.current?.scrollTo({y:0,animated:false});setScreen(trail[trail.length-1]);setTrail(v=>v.slice(0,-1));return true;}if(screen!=='home'){setScreen('home');return true;}return false;};
- useEffect(()=>{const handler=BackHandler.addEventListener('hardwareBackPress',back);return()=>handler.remove();},[screen,trail,sheet,projectId,region,levelNotices,ordersTab,savedType,completionNotice,expansionOpen,busy]);
+ const back=()=>{if(expansionOpen){setExpansionOpen(false);return true;}if(levelNotices.length){setLevelNotices(queue=>queue.slice(1));return true;}if(sheet){setSheet(null);return true;}if(screen==='orders'&&ordersTab==='saved'&&savedType){setSavedType(null);return true;}if(screen==='expeditions'&&region!==null){setRegion(null);scroll.current?.scrollTo({y:0,animated:false});return true;}if(trail.length){if(screen==='cardDetail')scroll.current?.scrollTo({y:0,animated:false});setScreen(trail[trail.length-1]);setTrail(v=>v.slice(0,-1));return true;}if(screen!=='home'){setScreen('home');return true;}return false;};
+ useEffect(()=>{const handler=BackHandler.addEventListener('hardwareBackPress',back);return()=>handler.remove();},[screen,trail,sheet,projectId,region,levelNotices,ordersTab,savedType,expansionOpen,busy]);
  const act=(action:string,payload:Record<string,unknown>={})=>run(action,payload);
  const confirm=(title:string,body:string,onConfirm:()=>void)=>setSheet({title,body,centered:true,items:[{title:'Bestätigen',primary:true,onPress:onConfirm}]});
  const choose=(title:string,items:any[],body?:string)=>setSheet({title,items,body});
@@ -206,7 +193,6 @@ function Game(){
  {message?<View pointerEvents="none" accessibilityLiveRegion="polite" style={[v.notice,{bottom:76+insets.bottom}]}><Txt style={{color:C.accent,fontSize:12}}>{message}</Txt></View>:null}
  {jobId!==null&&data&&g.expedition.jobs.some((job:any)=>job.id===jobId)&&<OrderVehiclePicker key={`job-${jobId}`} data={data} choices={data.jobChoices?.[jobId]||[]} summary={(()=>{const job=g.expedition.jobs.find((entry:any)=>entry.id===jobId);return `${itemName(job.kind==='character'?'character':'material')} · ${c.regionNames[job.region]} · ${job.tier||1}`;})()} busy={busy} clock={clock} modalBlocked={!!sheet||levelNotices.length>0} onClose={()=>setJobId(null)} onStart={async(truck:string)=>{const job=g.expedition.jobs.find((entry:any)=>entry.id===jobId);if(!job)return false;const next=await act('mission',{region:job.region,kind:'endless',place:job.id,truck});const started=next?.state.expedition.missions.some((m:any)=>m.jobId===job.id&&m.status==='active');if(started){setJobId(null);if(screen!=='orders')go('runningOrders');}return !!started;}}/>}
  <Modal visible={!!sheet&&!levelNotices.length} transparent animationType="none" onRequestClose={()=>setSheet(null)}><View style={[v.overlay,sheet?.centered&&v.centeredOverlay]}><SafeAreaView edges={sheet?.centered?[]:['bottom']} style={[v.sheet,sheet?.centered&&v.centeredSheet]}><MaterialLayer surfaceStyle={[v.sheet,sheet?.centered&&v.centeredSheet]}/><Row style={{flexWrap:'nowrap'}}><Txt style={[v.cardTitle,{flex:1,minWidth:0,flexShrink:1}]}>{sheet?.title}</Txt><Btn icon="close" iconOnly secondary style={{flexShrink:0,marginTop:0}} onPress={()=>setSheet(null)}>Schließen</Btn></Row>{sheet?.rewardSummary?<ClaimRewards summary={sheet.rewardSummary} rarities={sheet.rarities}/>:<>{sheet?.itemId&&<View style={{alignItems:'center',marginBottom:14}}><ItemArt id={sheet.itemId} rarity={sheet.itemRarity} label={sheet.itemLabel} size={136}/></View>}{!sheet?.itemId&&sheet?.foundCardId&&<VehicleArt card={c.cards.find((card:any)=>card.id===sheet.foundCardId)} style={{width:136,alignSelf:'center',marginBottom:14}}/>}{sheet?.body&&<Txt muted>{sheet.body}</Txt>}<ScrollView keyboardShouldPersistTaps="handled">{!sheet?.items?.length&&sheet?.emptyText!==''&&<Txt muted style={{paddingVertical:20}}>Keine passende Auswahl verfügbar.</Txt>}{sheet?.items?.map((item:any,i:number)=><Pressable key={i} accessibilityRole="button" style={[v.sheetItem,item.primary&&{backgroundColor:C.accent,borderRadius:10,paddingHorizontal:14,marginTop:12}]} onPress={()=>{setSheet(null);item.onPress();}}><Txt style={{fontWeight:'700',...(item.primary?{color:C.onInk}:{})}}>{item.title}</Txt>{item.detail&&<Txt muted style={{fontSize:12}}>{item.detail}</Txt>}</Pressable>)}</ScrollView></>}</SafeAreaView></View></Modal>
- {completionNotice&&data&&<ExpeditionCompletionNotice notices={completionNotice.notices} points={data.expansion?.available||0} busy={busy} error={error} onClose={()=>closeCompletion()} onDistribute={()=>closeCompletion(true)}/>}
  {expansionOpen&&data&&<ExpansionPointsModal data={data} busy={busy} onCommand={act} onClose={()=>setExpansionOpen(false)}/>}
  {refreshOffersOpen&&<OfferRefreshModal visible={!levelNotices.length} cost={data.refreshCost} coins={g.coins} busy={busy} error={error} onClose={()=>setRefreshOffersOpen(false)} onConfirm={()=>act('refresh')}/>}
  <LevelUpNotice levels={levelNotices} onClose={()=>setLevelNotices([])}/>

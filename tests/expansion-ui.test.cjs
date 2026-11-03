@@ -1,13 +1,6 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const {componentHarness,nodes,text}=require('./helpers/component-harness.cjs');
-function setup(){return componentHarness('ExpansionPoints.tsx',{'./regionIdentities':{regionIdentities:[{title:'Kronenlande',customer:'Kontor'}]},'./regionRoutes':{regionRoutes:[{places:[{name:'Lindenweiler'}]}]}});}
-test('Completion modal is information only with exactly X and distribution, and no available points disables distribution',()=>{
- const h=setup(),props={notices:[{sequence:1,region:0,place:0,kind:'delivery',expansionPoints:1}],points:1,busy:false,onClose(){},onDistribute(){}};
- let tree=h.render('ExpeditionCompletionNotice',props),buttons=nodes(tree,'Btn');
- assert.deepEqual(buttons.map(text),['Schließen','Punkte verteilen']);assert.ok(text(tree).includes('Lindenweiler'));assert.ok(text(tree).includes('Ausbaupunkt'));
- assert.equal(nodes(tree,'Modal')[0].props.trackActivity,false);assert.equal(nodes(tree,'Icon')[0].props.name,'expansion');
- props.points=0;tree=h.render('ExpeditionCompletionNotice',props);assert.equal(nodes(tree,'Btn')[1].props.disabled,true);
-});
+function setup(){return componentHarness('ExpansionPoints.tsx');}
 test('Expansion draft closes without spending and only an explicit confirmation sends a permanent bounded allocation',async()=>{
  const h=setup(),calls=[];let closed=0;
  const props={data:{expansion:{available:2,expeditionMaximum:50,overtimeMaximum:100}},busy:false,onClose:()=>closed++,onCommand:async(action,payload)=>{calls.push([action,payload]);return {expansionAllocationApplied:true,expansion:{available:payload.points-payload.expedition-payload.overtime}};}};

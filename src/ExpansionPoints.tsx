@@ -1,29 +1,10 @@
 import {MaterialView as View} from './Material';
 import React,{useEffect,useRef,useState} from 'react';
-import {ScrollView,StyleSheet} from 'react-native';
-import {AppModal} from './AppModal';
+import {StyleSheet} from 'react-native';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
-import {regionIdentities} from './regionIdentities';
-import {regionRoutes} from './regionRoutes';
 import {C,Txt,Row,Btn,Pill,n} from './ui';
 import {Icon} from './Icon';
 
-export function ExpeditionCompletionNotice({notices,points,busy,error,onClose,onDistribute}:any){
- return <AppModal visible={!!notices?.length} trackActivity={false} transparent animationType="none" onRequestClose={()=>{if(!busy)onClose();}}>
-  <View style={s.overlay}><View style={s.modal}>
-   <Row style={{flexWrap:'nowrap'}}><Txt style={[s.title,{flex:1}]}>Expeditionen abgeschlossen</Txt><Btn icon="close" iconOnly secondary disabled={busy} onPress={onClose}>Schließen</Btn></Row>
-   <ScrollView style={{flexShrink:1}}>{notices?.map((notice:any)=><View key={notice.sequence} style={s.result}>
-    <Txt muted style={s.small}>{regionIdentities[notice.region]?.title}</Txt>
-    <Txt style={{fontWeight:'700',marginVertical:4}}>{notice.kind==='endless'?'Expeditionsauftrag':regionRoutes[notice.region]?.places[notice.place]?.name}</Txt>
-    {notice.customerId?null:notice.expansionPoints>0?<Row style={{justifyContent:'flex-start',marginBottom:0,gap:8}}><Icon name="expansion" size={32}/><Txt gold>+{notice.expansionPoints} {notice.expansionPoints===1?'Ausbaupunkt':'Ausbaupunkte'}</Txt></Row>:<Txt>{notice.reward}</Txt>}
-    {notice.customerId&&<><Txt style={{color:C.accent,marginTop:4}}>Stammkunde freigeschaltet</Txt><Txt>{regionIdentities[notice.region]?.customer}</Txt></>}
-    {notice.capacityModules>0&&<Txt gold>+{notice.capacityModules} Kapazitätsmodul</Txt>}
-   </View>)}</ScrollView>
-   {!!error&&<Txt style={{color:C.red,fontSize:12,marginTop:8}}>{error}</Txt>}
-   <Btn disabled={busy||points<=0} onPress={onDistribute}>Punkte verteilen</Btn>
-  </View></View>
- </AppModal>;
-}
 export function ExpansionPointsCard({data,busy,onOpen}:any){
  const e=data.expansion;if(!e)return null;
  return <View style={s.card}><Row><Row style={{justifyContent:'flex-start',marginBottom:0,gap:8}}><Icon name="expansion" size={32}/><Txt style={s.title}>Ausbaupunkte</Txt></Row><Pill gold={e.available>0}>{n(e.available)}</Pill></Row>
@@ -54,5 +35,5 @@ export function ExpansionPointsModal({data,busy,onCommand,onClose}:any){
   <Btn disabled={busy||!total||free<0} onPress={confirm}>Verteilung bestätigen</Btn>
  </ExpeditionPlaceModal>;
 }
-const s=StyleSheet.create({overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:16},modal:{width:'100%',maxWidth:460,maxHeight:'90%',backgroundColor:C.panel,borderColor:C.line,borderWidth:1,borderRadius:12,padding:16},title:{fontSize:17,lineHeight:23,fontWeight:'700'},result:{paddingVertical:12,borderBottomWidth:1,borderBottomColor:C.line},small:{fontSize:12,lineHeight:18},controls:{flexDirection:'row',alignItems:'center',gap:4},card:{padding:12,backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:10,marginBottom:12}});
+const s=StyleSheet.create({title:{fontSize:17,lineHeight:23,fontWeight:'700'},result:{paddingVertical:12,borderBottomWidth:1,borderBottomColor:C.line},small:{fontSize:12,lineHeight:18},controls:{flexDirection:'row',alignItems:'center',gap:4},card:{padding:12,backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:10,marginBottom:12}});
 

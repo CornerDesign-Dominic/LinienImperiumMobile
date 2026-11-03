@@ -4,20 +4,18 @@ const now=1800000000000,random=()=>.5;
 const cmd=(s,a='sync',p={},at=now)=>execute(s,a,p,at,random);
 function initial(){const r=cmd(null,'start',{id:'hamburg'});r.state.expedition.regions[0].discovered=7;r.state.expedition.regions[0].endlessUnlocked=true;return r;}
 const mission=(id,kind='delivery',place=id-1)=>({id,kind,region:0,place,status:'active',truckId:'test',startedAt:now,endsAt:now+15000});
-test('Online and offline arrivals credit rewards and milestones once and batch their persisted notices',()=>{
+test('Online and offline arrivals silently credit rewards and milestones once without a confirmation inbox',()=>{
  let r=initial();r.state.expedition.missions=[mission(1),mission(2),mission(3,'final',0)];
  r=cmd(r.state,'sync',{},now+15000);
  assert.equal(r.state.expansion.available,2);assert.equal(r.view.expeditionCapacity,50);
  assert.equal(r.state.expedition.regions[0].deliveries.filter(Boolean).length,2);
  assert.equal(r.state.expedition.regions[0].customerUnlocked,true);assert.equal(r.state.inventory.capacityModules,1);
- assert.deepEqual(r.view.expansion.notices.map(n=>n.kind),['delivery','delivery','final']);
+ assert.deepEqual(r.view.expansion.notices,[]);
  const saved=structuredClone(r.state);
  for(const action of ['sync','sync','claimMission'])r=cmd(r.state,action,action==='claimMission'?{id:1}:{},now+15001);
  assert.deepEqual(r.state.expansion,saved.expansion);assert.equal(r.state.inventory.capacityModules,1);
  assert.equal(r.state.expedition.missions.filter(m=>m.status==='active').length,0,'completion never starts a next journey');
- r=cmd(r.state,'expeditionNoticeAck',{through:2},now+15002);assert.deepEqual(r.view.expansion.notices.map(n=>n.sequence),[3]);
- r=cmd(r.state,'expeditionNoticeAck',{through:3},now+15003);assert.equal(cmd(r.state).view.expansion.notices.length,0,'fresh session/login cannot replay closed notices');
- assert.throws(()=>cmd(r.state,'expeditionNoticeAck',{through:4}),/Ungültige/);
+
 });
 test('Legacy collected bonuses remain assigned, pending deliveries become free points, old loot is not replayed',()=>{
  const r=initial();delete r.state.expansion;
@@ -25,7 +23,7 @@ test('Legacy collected bonuses remain assigned, pending deliveries become free p
  r.state.expedition.missions=[{...mission(1),status:'completed',claimedAt:now-1},{...mission(2),status:'completed'}, {...mission(3,'endless'),status:'completed',reward:'15 M'}];
  const out=cmd(r.state);
  assert.equal(out.view.expeditionCapacity,55);assert.equal(out.view.expansion.available,1);
- assert.equal(out.view.expansion.notices.length,1);assert.equal(out.view.expansion.notices[0].missionId,2);
+ assert.deepEqual(out.view.expansion.notices,[]);
  assert.equal(out.state.coins,r.state.coins);assert.equal(out.state.expedition.levelCapacityBonus,4);
  assert.equal(cmd(out.state).view.expeditionCapacity,55);
 });
@@ -53,7 +51,7 @@ test('Repeatable expedition orders wait for collective single collection, with d
  const before=structuredClone(r.state);
  r=cmd(r.state,'sync',{},now+15000);
  assert.equal(r.state.coins,before.coins);assert.deepEqual(r.state.inventory,before.inventory);assert.deepEqual(r.state.expedition.shards,before.expedition.shards);
- assert.deepEqual(r.view.expansion.notices.map(n=>n.kind),['delivery']);assert.equal(r.state.expansion.available,1);
+ assert.deepEqual(r.view.expansion.notices,[]);assert.equal(r.state.expansion.available,1);
  assert.equal(r.state.expedition.missions[0].completionReward.coins,15);assert.equal(r.state.expedition.missions[1].completionReward.coins,5);
  const saved=structuredClone(r.state.expedition.missions.map(m=>m.completionReward));
  r=cmd(r.state,'sync',{},now+15001);assert.deepEqual(r.state.expedition.missions.map(m=>m.completionReward),saved);
@@ -68,8 +66,10 @@ test('Repeatable expedition orders wait for collective single collection, with d
 test('Previously auto-paid endless jobs and their stale notices never become collectable again',()=>{
  const r=initial();r.state.expedition.missions=[{...mission(1,'endless'),status:'completed',reward:'15 M',completionRecorded:true}];
  r.state.expansion.notices=[{sequence:1,kind:'endless',missionId:1},{sequence:2,kind:'delivery',missionId:2}];r.state.expansion.nextNotice=3;
- const out=cmd(r.state);assert.deepEqual(out.view.expansion.notices.map(n=>n.kind),['delivery']);assert.ok(out.state.expedition.missions[0].claimedAt);
+ const out=cmd(r.state);assert.deepEqual(out.view.expansion.notices,[]);assert.ok(out.state.expedition.missions[0].claimedAt);
  assert.equal(cmd(out.state,'claimSingles').view.claimSummary,undefined);assert.equal(out.state.coins,r.state.coins);
+ const ack=cmd(out.state,'expeditionNoticeAck',{through:2});assert.deepEqual(ack.state.expansion,out.state.expansion,'legacy acknowledgement cannot change points or revive a notice');
+ assert.throws(()=>cmd(out.state,'expeditionNoticeAck',{through:3}),/Ungültige/);
 });
 test('More than the history limit of offline job completions retains every pending reward until collection',()=>{
  const r=initial();r.state.expedition.missions=Array.from({length:125},(_,i)=>({...mission(i+1,'endless'),lootKind:'material',tier:1}));
