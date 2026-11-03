@@ -1,16 +1,18 @@
 # Offene Arbeiten und Veröffentlichungsstand
 
-Stand der Bestandsaufnahme: 03.11.2026, Mobile-Commit `22aa4dad756df65e71dd89dde98afdc6558f4b61`.
+Stand nach Veröffentlichung: 03.11.2026, Mobile-Commit `ca6f08d621f6f11aee0f57078dced1434fc6ffab`.
 
 ## Veröffentlichte Grundlage
 
-Der [Mobile-preview-Lauf 41690415508](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/41690415508) hat für diesen Commit Prüfung, Firebase-Deployment, Live-API-Prüfung und Android-OTA erfolgreich abgeschlossen. Eine neue APK wurde in diesem Lauf nicht gebaut.
+Der [Mobile-preview-Lauf 41715219750](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/41715219750) hat für diesen Commit Prüfung, Firebase-Deployment, Live-API-Prüfung und Android-OTA erfolgreich abgeschlossen. Eine neue APK wurde in diesem Lauf nicht gebaut.
 
 Die bis dahin vorhandenen Sammelnotizen sind [archiviert](docs/archive/mobile-update-history.md). Alte Branch- oder „noch nicht veröffentlicht“-Vermerke darin sind keine offenen Freigaben. Bestehende Entwicklungsbranches bleiben erhalten; aus ihrem Namen allein wird kein offenes Paket abgeleitet.
 
-## Zur Veröffentlichung freigegeben: Ausbaupunkte
+## Veröffentlicht: Ausbaupunkte
 
-Die globale Umbenennung und das Bauplan-/Säulenmotiv werden mit der bereits bereinigten Dokumentation veröffentlicht. Interne Speicherfelder und Spielwerte bleiben erhalten. Nach diesem Paket werden neue Änderungen wieder gesammelt, bis eine weitere ausdrückliche Veröffentlichung freigegeben wird. Status und Nachweis werden nach erfolgreichem Workflow ergänzt.
+Die globale Umbenennung zu Ausbaupunkte (englisch Upgrade points) und das Bauplan-/Säulenmotiv sind mit der bereits bereinigten Dokumentation veröffentlicht. Abschluss: 03.11.2026, 21:51 Uhr Europe/Berlin. Der obige Lauf bestätigt 273 Tests, Typprüfung, Android-Export, Firebase/Regeln, Live-API-Test und Android-OTA. Interne Speicherfelder und Spielwerte bleiben erhalten. Details: [Name und Bild](docs/ui/ausbaupunkte.md).
+
+Weitere Änderungen werden wieder gesammelt. Eine neue Spielveröffentlichung erfolgt erst nach der nächsten ausdrücklichen Freigabe; dieser Nachweis startet keinen weiteren Release.
 
 ## Noch offene Punkte
 

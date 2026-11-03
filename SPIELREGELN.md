@@ -1,6 +1,6 @@
 # Linien Imperium Online – aktuelle Mobile-Spielregeln
 
-Stand: 03.11.2026, abgeglichen mit Mobile-Quellstand `22aa4dad756df65e71dd89dde98afdc6558f4b61`. Beschrieben ist der implementierte Mobile-Stand, einschließlich ausdrücklich gekennzeichneter Testwerte; daraus folgt keine Freigabe für echte Spieler. Veröffentlichung und Prüfstand werden getrennt dokumentiert.
+Stand: 03.11.2026, abgeglichen mit Mobile-Quellstand `ca6f08d621f6f11aee0f57078dced1434fc6ffab`. Beschrieben ist der implementierte Mobile-Stand, einschließlich ausdrücklich gekennzeichneter Testwerte; daraus folgt keine Freigabe für echte Spieler. Veröffentlichung und Prüfstand werden getrennt dokumentiert.
 
 Maßgeblich ist die vom Server ausgeführte Kombination aus [Engine](functions/src/engine.cjs), deren Runtime-Modulen und Katalogen. Die [archivierten Web-Spielregeln](docs/archive/web-game-rules.md) erklären die alte Basis; Werte daraus gelten nur, soweit sie mobil nicht ersetzt wurden. Produktbegriffe und interne IDs dürfen sich unterscheiden: Nahverkehr heißt intern weiterhin `national`, Imperium-Taler weiterhin `coins`.
 

@@ -1,6 +1,6 @@
 # Gestaltung: Handel und Entdeckung
 
-Gestaltungsreferenz der mobilen App. Mit dem Quellstand `22aa4dad756df65e71dd89dde98afdc6558f4b61` vom 03.11.2026 abgeglichen. Moduldetails stehen unter [docs/ui](docs/ui); Spielregeln unter [SPIELREGELN.md](SPIELREGELN.md). Frühere Entwurfsbilder und Testzahlen belegen ihren damaligen Stand, nicht automatisch die heutige Darstellung.
+Gestaltungsreferenz der mobilen App. Mit dem Quellstand `ca6f08d621f6f11aee0f57078dced1434fc6ffab` vom 03.11.2026 abgeglichen. Moduldetails stehen unter [docs/ui](docs/ui); Spielregeln unter [SPIELREGELN.md](SPIELREGELN.md). Frühere Entwurfsbilder und Testzahlen belegen ihren damaligen Stand, nicht automatisch die heutige Darstellung.
 
 ## Welt und Bildsprache
 
