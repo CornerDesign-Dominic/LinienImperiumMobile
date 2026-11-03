@@ -31,6 +31,6 @@ test('A retried allocation cannot spend twice and still persists newly settled e
  assert.equal(result.catalog,undefined,'receipt retry still negotiates unchanged display chunks');
  const persisted=JSON.parse(gunzipSync(records.get('players/test').snapshot));
  assert.equal(result.expansionAllocationApplied,true);assert.equal(result.expansion.available,1);assert.equal(persisted.expansion.available,1);
- assert.equal(persisted.expansion.overtime,1);assert.equal(persisted.expansion.notices.length,1);
+ assert.equal(persisted.expansion.overtime,1);assert.equal(persisted.expansion.notices.length,0,'settled arrivals award points silently without completion notices');
  assert.equal(persisted.expedition.regions[0].deliveries[0],true);
 });
