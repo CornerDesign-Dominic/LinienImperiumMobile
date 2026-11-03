@@ -10,7 +10,7 @@ function setup(name,extra={}){
 }
 const button=(tree,label)=>{const b=nodes(tree,'Btn').find(b=>text(b)===label);assert.ok(b,label);return b;};
 const press=(tree,label)=>{const b=nodes(tree,'Pressable').find(b=>b.props.accessibilityLabel===label);assert.ok(b,label);b.props.onPress();};
-test('Hub actions reject rapid duplicate taps, recover from failure, and retain overview/vehicles selection',async()=>{
+test('Botenstation actions reject rapid duplicate taps, recover from failure, and retain overview/vehicles selection',async()=>{
  let finish;const x=setup('HubScreen',{onCommand:()=>new Promise(resolve=>finish=resolve)});let tree=x.render();
  assert.ok(nodes(tree,'HubEarnings').length);const open=nodes(tree,'HubEarnings')[0].props.onCollect;
  const first=open();assert.equal(await open(),undefined);assert.equal(nodes(x.render(),'HubEarnings')[0].props.busy,true);
@@ -18,13 +18,13 @@ test('Hub actions reject rapid duplicate taps, recover from failure, and retain 
  x.props.onCommand=async()=>({});await nodes(x.render(),'HubEarnings')[0].props.onCollect();assert.ok(!text(x.render()).includes('Aktion fehlgeschlagen'));
  nodes(x.render(),'Pressable').find(p=>text(p)==='Boten').props.onPress();assert.ok(!text(x.render()).includes('Erträge abholen'));assert.ok(nodes(x.render(),'Pressable').find(p=>p.props.accessibilityState?.selected&&text(p)==='Boten'));
 });
-test('Hub vehicles use resource and slot gates, exact upgrade commands, and keep destructive actions collapsed',async()=>{
+test('Botenstation vehicles use resource and slot gates, exact upgrade commands, and keep destructive actions collapsed',async()=>{
  const x=setup('HubVehicles');let tree=x.render();press(tree,'Boten anwerben');tree=x.render();assert.equal(button(tree,`Anwerben · ${x.props.data.hubInfo.vehiclePrice}`).props.disabled,false);
  const vehicle=x.props.data.state.trucks.find(t=>!t.cardId&&t.tier<=1);nodes(tree,'Pressable').find(p=>p.props.accessibilityLabel?.includes(vehicle.displayName)).props.onPress();tree=x.render();assert.ok(!nodes(tree,'Btn').some(b=>text(b).startsWith('Verkaufen')));
  const detail=nodes(tree,'HubVehicleDetail')[0];assert.equal(detail.props.truck.id,vehicle.id);assert.equal(detail.props.inventory,x.props.data.state.inventory);
  x.props.data.hubLimit=1;assert.ok(!nodes(x.render(),'Pressable').some(p=>p.props.accessibilityLabel==='Boten anwerben'));
 });
-test('Hub vehicle detail gates upgrades, rejects duplicate taps and returns to overview',async()=>{
+test('Botenstation vehicle detail gates upgrades, rejects duplicate taps and returns to overview',async()=>{
  const data=fixture(),truck=data.state.trucks.find(t=>!t.cardId&&t.tier<=1),calls=[];
  const h=componentHarness('HubVehicleDetail.tsx'),props={truck,inventory:{hubVehicleParts:0},coins:1e6,busy:false,onClose:()=>{},onSell:()=>{},onCommand:async(...args)=>{calls.push(args);return {};}};
  const render=()=>h.render('HubVehicleDetail',props);
@@ -36,11 +36,11 @@ test('Hub vehicle detail gates upgrades, rejects duplicate taps and returns to o
  const upgrade=button(render(),'Laderaum ausbauen').props.onPress,first=upgrade();await upgrade();assert.equal(calls.length,1);assert.deepEqual(JSON.parse(JSON.stringify(calls[0])),['hubVehicleUpgrade',{id:truck.id,kind:'capacity'}]);
  finish(null);await first;assert.ok(text(render()).includes('Aktion fehlgeschlagen'));
  props.onCommand=async()=>({});await button(render(),'Laderaum ausbauen').props.onPress();assert.ok(text(render()).includes('Verbesserungen'));
- assert.ok(!nodes(render(),'Btn').some(b=>text(b).startsWith('Verkaufen')||text(b)==='Aus Hub nehmen'));
+ assert.ok(!nodes(render(),'Btn').some(b=>text(b).startsWith('Verkaufen')||text(b)==='Aus der Botenstation nehmen'));
  assert.ok(!nodes(render(),'Pressable').some(b=>b.props.accessibilityLabel==='Weitere Aktionen'));
- truck.hubAssigned=false;assert.ok(button(render(),'Im Hub einsetzen'));
+ truck.hubAssigned=false;assert.ok(button(render(),'In der Botenstation einsetzen'));
 });
-test('Hub crates respect cooldown, show received parts separately and return after closing',async()=>{
+test('Botenstation crates respect cooldown, show received parts separately and return after closing',async()=>{
  const x=setup('HubParts');let finish;x.props.onCommand=()=>new Promise(resolve=>finish=resolve);
  const open=nodes(x.render(),'HubCrateCard')[0].props.onOpen,first=open();await open();assert.equal(nodes(x.render(),'HubCrateCard')[0].props.busy,true);
  finish({hubCrateParts:17});await first;let tree=x.render();let reward=nodes(tree,'RewardModal').find(m=>m.props.title==='Fundkiste geöffnet');assert.equal(reward.props.visible,true);assert.ok(text(reward).includes('+17'));reward.props.onClose();assert.equal(nodes(x.render(),'RewardModal').find(m=>m.props.title==='Fundkiste geöffnet').props.visible,false);

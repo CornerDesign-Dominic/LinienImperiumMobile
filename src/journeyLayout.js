@@ -31,4 +31,15 @@ function adjacentJourneyRegion(maps,region,direction){
  const index=region+direction;
  return index>=0&&index<maps.length&&maps[index]?.open?index:null;
 }
-module.exports={visibleJourneyPlaces,journeyGeometry,journeyOffset,journeyFocus,adjacentJourneyRegion};
+// A sign marks an optional trip only after discovery and before it starts.
+function journeyPlaceState(index,state,missions=[]){
+ const final=index===7,complete=!!(final?state.finalClaimed:state.deliveries?.[index]);
+ const discovered=final?state.discovered>=7:index<state.discovered;
+ const mission=missions.find(m=>final?m.kind==='final':m.kind==='delivery'&&m.place===index);
+ if(complete)return {status:'Abgeschlossen',icon:null};
+ if(mission?.status==='active')return {status:'Unterwegs',icon:'timer'};
+ if(mission?.status==='completed')return {status:'Bonus bereit',icon:'reward'};
+ return discovered?{status:'Bonuslieferung verfügbar',icon:'plus'}:{status:'Erkunden',icon:null};
+}
+module.exports={visibleJourneyPlaces,journeyGeometry,journeyOffset,journeyFocus,adjacentJourneyRegion,journeyPlaceState};
+

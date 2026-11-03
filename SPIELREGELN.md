@@ -7,7 +7,7 @@ Maßgeblich ist die vom Server ausgeführte Kombination aus [Engine](functions/s
 ## 1. Start, Spielstand und Ablauf
 
 - Firmengründung mit Firmen- und Fantasiestadtnamen. Die Namen sind Anzeigenamen; sie verändern weder Streckenprofil noch Vergütung.
-- Start: Spielerlevel 1, 1.000 Imperium-Taler, Eselkarren auf Kartenstufe I mit 2 t in der Garage, fünf Angebote, 50 Expeditions- und 100 Überstundenpunkte. Der Stadthub ist ab Level 5 verfügbar.
+- Start: Spielerlevel 1, 1.000 Imperium-Taler, Eselkarren auf Kartenstufe I mit 2 t in der Garage, fünf Angebote, 50 Expeditions- und 100 Überstundenpunkte. Die Botenstation ist ab Level 5 verfügbar.
 - Die App verwendet Firebase-Konten: zunächst anonym, optional mit E-Mail/Passwort gesichert. Der serverseitige Spielstand und die Serverzeit bestimmen Fortschritt, Besitz und Auszahlungen. Der lokale Browser-Spielstand ist keine Beschreibung der mobilen Speicherung.
 - Fällige Transporte werden bei Synchronisierung und vor Änderungen nachberechnet. Offline-Zeit ist keine zusätzliche Aktion und erzeugt keine wiederholten Abholungen.
 
@@ -59,7 +59,7 @@ Die letzte Tour nimmt nur die tatsächliche Restmenge mit. Grundtempo in km/s:
 
 `individuelles Basistempo × (1 + 0,005 × Rang) × (1 + Tempoboni / 100) × (1 − 0,01 × geladene Tonnen)`.
 
-Grundvergütung: 1 Taler je beladenem tkm, Lastkosten: 0,10 Taler je beladenem tkm; zusätzlich Fahrzeugkosten für die tatsächlich gefahrenen Kilometer. Kundenvergütung und Kartenboni verändern die entsprechenden Anteile. Die Abschlussprämie beträgt grundsätzlich 1 Taler je vergüteter Tonne zuzüglich des Firmen-Prämienbonus; Privatabholungen haben keine solche Prämie. Transport-XP entsprechen den vergüteten Tonnen, gegebenenfalls mit XP-Boni. Stadthub und Expeditionsmissionen geben keine Spieler-XP.
+Grundvergütung: 1 Taler je beladenem tkm, Lastkosten: 0,10 Taler je beladenem tkm; zusätzlich Fahrzeugkosten für die tatsächlich gefahrenen Kilometer. Kundenvergütung und Kartenboni verändern die entsprechenden Anteile. Die Abschlussprämie beträgt grundsätzlich 1 Taler je vergüteter Tonne zuzüglich des Firmen-Prämienbonus; Privatabholungen haben keine solche Prämie. Transport-XP entsprechen den vergüteten Tonnen, gegebenenfalls mit XP-Boni. Botenstation und Expeditionsmissionen geben keine Spieler-XP.
 
 Touren buchen Transportertrag; Abschlussbeute und Prämien werden anschließend abgeholt. Der Sammelbutton der Einzelaufträge zahlt auch fertige wiederholbare Expeditionsaufträge aus. Beute wird einmal ermittelt und bis zum Einsammeln gespeichert.
 
@@ -77,7 +77,7 @@ Touren buchen Transportertrag; Abschlussbeute und Prämien werden anschließend 
 
 Jede Region hat sieben Orte und einen Endlosort. Erkundung investiert je Klick 1 Expeditionspunkt. Die Kosten pro Ort sind `3 + 9 × Regionsindex + floor(Ortsindex / 2)` bei nullbasierten Indizes. Nach Entdeckung aller sieben Orte wird der Endlosort sichtbar und die nächste Region zugänglich; die Bonuslieferungen sind keine Voraussetzung für diesen Zugang.
 
-Jeder entdeckte Ort bietet eine einmalige optionale Lieferung mit Garagenfahrzeug. Sie vergibt automatisch 1 Ausbaupunkt. Die erste Endlosort-Lieferung schaltet den regionalen Stammkunden frei und gibt einmalig 1 Kapazitätsmodul. Abschlusshinweise bestätigen nur die Information und zahlen nichts erneut aus. Für die Beschaffungsfreischaltung müssen zusätzlich alle Ortslieferungen und der Endlosort-Abschluss erledigt sein.
+Jeder entdeckte Ort bietet eine einmalige optionale Lieferung mit Garagenfahrzeug. Sie vergibt automatisch 1 Ausbaupunkt. Die erste Endlosort-Lieferung schaltet den regionalen Stammkunden frei und gibt einmalig 1 Kapazitätsmodul. Abschlüsse geschehen still im Hintergrund, ohne Popup. Der freie Ausbaupunkt steht automatisch im Handelsimperium zur manuellen Verteilung bereit. Für die Beschaffungsfreischaltung müssen zusätzlich alle Ortslieferungen und der Endlosort-Abschluss erledigt sein.
 
 Eine Auslosung am Endlosort kostet 5 Expeditionspunkte. 10 % geben direkt eine regionale Karte; innerhalb dieser Kartenchance gelten insgesamt 60 % Common, 30 % Uncommon, 9 % Rare und 1 % Epic. Die übrigen 90 % verteilen sich auf Transportkartenaufträge (20 %), Materialaufträge (75 %), Sonderaufträge (4,5 %) und Empfehlungsaufträge (0,5 %). Diese vier Anteile sind bedingt auf den Nicht-Kartenfund. Wiederholbare Transportaufträge verwenden freie Garagenfahrzeuge; ihre Beute wird bei Ankunft einmal ausgewürfelt und gemeinsam unter Einzelaufträge abgeholt.
 
@@ -87,7 +87,7 @@ Quellen: [Identitäten](functions/src/customer-identities.json), [Auslosungen](f
 
 ## 6. Großaufträge und Überstunden
 
-Sonder- und Empfehlungsaufträge werden mit einer gewählten Flottenvorlage gestartet. Kategorie-Fragezeichen erklären Herkunft und tatsächliche Beutechancen; vorhandene Aufträge verlangen eine ausdrückliche Startbestätigung. Abgeschlossene Kategorienverläufe entfallen aus der Ansicht, ausstehende Prämien und kumulative Statistiken bleiben erhalten.
+Sonder- und Empfehlungsaufträge werden mit einer gewählten Flottenvorlage gestartet. Die fünf Sonderauftragskategorien heißen Schmuck der Krone, Edle Webwaren, Kostbare Essenzen, Kunst aus Jade und Schätze des Nordens; die Zuordnung und Altauftragsdarstellung stehen in der [Kategorieübersicht](docs/ui/project-category-overview.md). Kategorie-Fragezeichen erklären Herkunft und tatsächliche Beutechancen; vorhandene Aufträge verlangen eine ausdrückliche Startbestätigung. Abgeschlossene Kategorienverläufe entfallen aus der Ansicht, ausstehende Prämien und kumulative Statistiken bleiben erhalten.
 
 Ein Überstundenpunkt entspricht 1.000 tkm. Passive Lieferung und Überstunden verwenden dieselbe zugrunde liegende Transportabrechnung. Bei endlichen Aufträgen werden nur noch lieferbare Teilmengen gebucht. Sonderaufträge haben grundsätzlich eine Stunde, Empfehlungen drei Stunden Frist; maßgeblich sind die gespeicherten Werte des konkreten Auftrags. Bereits gestartete Touren behalten ihre Snapshots.
 
@@ -113,12 +113,12 @@ Jede vollständige Tour gibt aktuell 5 Common-Zahnräder, unabhängig zusätzlic
 
 Quelle: [procurement-runtime.js](functions/src/procurement-runtime.js); Details: [Gruppenregeln](docs/ui/procurement-groups.md), [aktuelle Übersicht](docs/ui/procurement-overview.md).
 
-## 8. Stadthub und Boten
+## 8. Botenstation und Boten
 
 - Ab Level 5 ein Botenplatz, danach alle fünf Level ein weiterer; maximal 20 bei Level 100. Bestehende Fahrzeuge über dem neuen Limit bleiben erhalten.
 - Ein Lastwombat-Bote kostet 25.000 Taler und startet mit 2 t. Es gibt ein Stadtmodell, keinen zweiten Händlerkauf. Kapazität und Antrieb haben jeweils zehn Stufen: +0,2 t bzw. +2,5 % Grundtempo je Stufe. Zielstufe N kostet `14 × N` Werkzeugkästen und `2.500 × N` Taler. Neue Boten verwenden keine Karten-Shards, Zahnradränge oder Kapazitätsmodule.
 - Ein Einkaufszyklus dauert 60 Minuten. Vertrieb Stufe 0 verwendet davon 40 Minuten, jede der 20 Stufen zusätzlich 30 Sekunden, maximal 50 Minuten. Laufende Zyklen behalten ihre eingefrorenen Werte.
-- Die Kasse fasst sechs abgeschlossene Einkaufszyklen; volle Kasse pausiert den Hub. Vollständige Kasse abholen startet einen neuen Zyklus bei Minute 0, Teilabholung verschiebt den Zyklus nicht.
+- Die Kasse fasst sechs abgeschlossene Einkaufszyklen; volle Kasse pausiert den Botenstation. Vollständige Kasse abholen startet einen neuen Zyklus bei Minute 0, Teilabholung verschiebt den Zyklus nicht.
 - Vertriebsausbau kostet Lieferantenkontakte und Firmenausbau-Items, keine zusätzlichen Taler; Dauer `12 Stunden × Zielstufe`. Die zusätzliche Warenmenge gilt für den nächsten Einkauf nach Fertigstellung.
 - Drei Fundkisten je UTC-Tag, mindestens 30 Minuten zwischen tatsächlichen Öffnungen, je 10–20 Werkzeugkästen. Keine angesammelten Tagesöffnungen.
 - Bei stündlichem Einkauf ein 50-%-Versuch auf 1 Werkzeugkasten, maximal 24 Versuche pro UTC-Tag, nicht je Fahrzeug. Keine neuen Versuche bei voller Kasse oder ohne eingesetzte Boten. Diese Funde werden mit den Erträgen abgeholt.

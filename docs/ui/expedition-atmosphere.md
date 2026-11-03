@@ -2,7 +2,7 @@
 
 Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
 
-Die bisherigen rechteckigen Pfeiltasten und die kräftige Titelplakette lagen optisch schwer auf der Landschaft. Die neue Fassung reduziert den Regionstitel von 21 auf 18, verwendet eine ruhigere Schriftstärke und ersetzt Rahmen und Kartenhintergrund durch einen transparenten Pergamentschimmer mit weich auslaufendem Lichtsaum.
+Der Regionsname ist im neuen Sammelstand in den zentralen Seitenkopf verschoben; die frühere schwebende Titelplakette mit Pergamentschimmer entfällt vollständig. Auf der Landschaft bleiben nur Ortsmarkierungen und Regionspfeile. Die untenstehenden Einführungsprüfungen des weicheren Nebels enthielten noch den früheren Kartentitel; aktueller Funktionsumfang: [Reisekarten](expedition-journeys.md).
 
 Die Regionspfeile liegen auf kleinen runden Flächen mit 54 % Deckkraft. Die sichtbare Fläche misst 34 × 34, die antippbare Fläche weiterhin 48 × 48. Nicht verfügbare Richtungen werden vollständig ausgeblendet; unsichtbare Platzhalter halten die jeweils andere Richtung am richtigen Rand und lassen Gesten zur Karte durch.
 

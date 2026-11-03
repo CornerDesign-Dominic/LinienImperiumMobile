@@ -1,4 +1,4 @@
-// City hub vehicles use their own parts-based progression; card vehicles are unchanged.
+// Courier Station vehicles use their own parts-based progression; card vehicles are unchanged.
 const HUB_VEHICLE_PRICE=25000, HUB_VEHICLE_MAX=20, HUB_PART_STEP=14;
 const isCityVehicle=t=>!!t&&!t.cardId&&t.tier<=1;
 const hubPartDay=at=>Math.floor(at/86400000);
@@ -108,7 +108,7 @@ startHubUpgrade=()=>{
  game.inventory.supplierContacts-=contacts;game.inventory.companyItems-=items;
  const startedAt=Date.now();
  h.construction={level,startedAt,finishAt:startedAt+level*12*HUB_CYCLE_MS};
- addEvent(`Stadthub: Vertrieb Stufe ${level} im Ausbau (${level*12} Stunden).`);
+ addEvent(`Botenstation: Vertrieb Stufe ${level} im Ausbau (${level*12} Stunden).`);
  return true;
 };
 hubSalesPercent=level=>hubWorkMs(level)/HUB_CYCLE_MS*100;
@@ -172,7 +172,7 @@ collectHub=()=>{
  const h=hub();if(!h)return false;
  const now=Date.now();settleHub(now);
  const full=h.cashboxCycles>=HUB_CASHBOX_CYCLES,parts=h.cashboxParts||0;
- const summary={source:'Stadthub',coins:h.cashboxCoins||0,pickupHints:h.cashboxHints||0,hubVehicleParts:parts,gears:{},capacityModules:0,companyItems:0,supplierContacts:0};
+ const summary={source:'Botenstation',coins:h.cashboxCoins||0,pickupHints:h.cashboxHints||0,hubVehicleParts:parts,gears:{},capacityModules:0,companyItems:0,supplierContacts:0};
  originalCollectHub();game.inventory.hubVehicleParts+=parts;h.cashboxParts=0;
  if(full){h.cashboxCycles=0;h.nextCycleAt=now+HUB_CYCLE_MS;beginHubCycle(h);}
  return summary;
@@ -197,3 +197,4 @@ function openHubCrate() {
  c.opened++;c.lastOpenedAt=now;game.inventory.hubVehicleParts+=amount;
  return amount;
 }
+

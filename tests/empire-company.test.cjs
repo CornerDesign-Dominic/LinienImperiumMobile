@@ -21,14 +21,14 @@ test('Empire upgrade availability agrees with actual server costs, item shortage
  h.unmount();
 });
 
-test('Development uses maximum totals rather than current energy and keeps unspent expansion points reachable',()=>{
+test('Development shows permanent bases and keeps each point pool reachable',()=>{
  const initial=execute(null,'start',{id:'hamburg'},now,()=>.5);
  initial.state.overtimePoints=1;initial.state.expedition.points=2;
  const data=execute(initial.state,'sync',{},now,()=>.5).view;data.expansion.available=2;
  let opened=0;const h=componentHarness('LevelUp.tsx'),tree=h.render('DevelopmentCard',{data,busy:false,onExpansion:()=>opened++});
- const readouts=nodes(tree,'View').filter(node=>node.props.accessible&&node.props.accessibilityLabel);
- assert.ok(readouts.some(node=>node.props.accessibilityLabel.startsWith('Überstunden: '+data.state.overtimeCapacity+',')));
- assert.ok(readouts.some(node=>node.props.accessibilityLabel.startsWith('Expeditionspunkte: '+data.expeditionCapacity+',')));
+ assert.ok(text(tree).includes(String(data.development.overtime.base)));assert.ok(text(tree).includes(String(data.development.expedition.base)));
+ assert.ok(!text(tree).includes(' + '));
  const entry=nodes(tree,'Btn').find(node=>text(node)==='Ausbaupunkte verteilen · 2');assert.ok(entry);entry.props.onPress();assert.equal(opened,1);
  assert.ok(!text(tree).includes('Basiswert + Boni'));h.unmount();
 });
+

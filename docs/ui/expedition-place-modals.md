@@ -15,7 +15,7 @@ Alle 40 Orte haben eine eigene Nahansicht: sieben Haltepunkte und ein Endlos-/Ha
 | Bonuslieferung unterwegs | Restzeit, Fortschritt und tatsächliche Belohnung |
 | Automatisch abgeschlossen | Bild, Identität und kleines Entdeckt; keine redundanten 100-%- oder Belohnungsblöcke |
 
-Normale Orte besitzen keinen Details-Expander mehr. Fahrzeugwahl und vorhandene Frei-/Busy-Prüfungen bleiben erhalten. Die Bonuslieferung vergibt ihren Ausbaupunkt automatisch; die einmalige Abschlussübersicht und Verteilung sind unter [Expeditionsabschlüsse](expedition-completions.md) beschrieben. Kein erneutes manuelles Abholen am Ort.
+Normale Orte besitzen keinen Details-Expander mehr. Fahrzeugwahl und vorhandene Frei-/Busy-Prüfungen bleiben erhalten. Die Bonuslieferung vergibt ihren Ausbaupunkt automatisch; der stille Abschluss und die manuelle Verteilung sind unter [Expeditionsabschlüsse](expedition-completions.md) beschrieben. Kein erneutes manuelles Abholen am Ort.
 
 ## Endlos-/Handelsort
 

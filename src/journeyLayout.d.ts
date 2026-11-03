@@ -4,3 +4,5 @@ export function journeyGeometry(width:number,height:number,places:{x:number;y:nu
 export function journeyOffset(geometry:JourneyGeometry,width:number,index:number,saved?:number|null):number;
 export function journeyFocus(discovered:number,deliveries:boolean[],finalClaimed:boolean):number;
 export function adjacentJourneyRegion(maps:{open:boolean}[],region:number,direction:number):number|null;
+
+export function journeyPlaceState(index:number,state:{discovered:number;deliveries?:boolean[];finalClaimed?:boolean},missions?:{kind:string;place?:number;status:string}[]):{status:string;icon:'timer'|'reward'|'plus'|null};

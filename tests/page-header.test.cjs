@@ -2,7 +2,7 @@ const {test}=require('node:test'),assert=require('node:assert/strict');
 const {componentHarness,nodes,text}=require('./helpers/component-harness.cjs');
 const setup=()=>componentHarness('PageHeader.tsx',{'./Language':{Text:'Text'},'./theme':{C:require('../src/palette.json'),displayFont:'serif'}});
 test('Page header routes back/help actions and home reserves the back position without a button',()=>{
- const h=setup();let back=0,help=0;const props={title:'Stadthub',onBack:()=>back++,onHelp:()=>help++};
+ const h=setup();let back=0,help=0;const props={title:'Botenstation',onBack:()=>back++,onHelp:()=>help++};
  let tree=h.render('PageHeader',props),buttons=nodes(tree,'Pressable');assert.equal(buttons.length,2);
  buttons.find(b=>b.props.accessibilityLabel==='Zurück').props.onPress();buttons.find(b=>b.props.accessibilityLabel==='Spielhilfe').props.onPress();assert.deepEqual([back,help],[1,1]);
  tree=h.render('PageHeader',{...props,title:'Start',home:true});buttons=nodes(tree,'Pressable');assert.equal(buttons.length,1);assert.equal(buttons[0].props.accessibilityLabel,'Spielhilfe');

@@ -10,6 +10,23 @@ const customerIdentities = require('./customer-identities.json');
 const customerCargo = require('./customer-cargo.json');
 const customerCargoRuntime = fs.readFileSync(path.join(__dirname, 'customer-cargo-runtime.js'), 'utf8');
 const normalizeCustomerNames = text => typeof text==='string'?customerIdentities.reduce((value,identity)=>value.split(identity.legacyName).join(identity.customer),text):text;
+
+// Rename complete special-contract titles only; generic transport terms and saved state stay intact.
+const legacySpecialProjectTitles={nordbau:'Stadtversorgung',frischgut:'Baustellenlogistik',stahlwerk:'Materialbergung',alpenhandel:'Ferntransport',eurolog:'Handelsroute'};
+function normalizeSpecialProjectText(text,profile){
+ if(typeof text!=='string')return text;
+ const saved=[];
+ for(const name of [profile?.companyName,profile?.cityName].filter(Boolean)){
+  const token='\u0000project'+saved.length+'\u0000';
+  if(text.includes(name)){text=text.split(name).join(token);saved.push([token,name]);}
+ }
+ customerIdentities.forEach(identity=>{
+  for(const prefix of ['Großauftrag','Sonderauftrag'])text=text.split(prefix+' '+legacySpecialProjectTitles[identity.id]).join(prefix+' '+identity.specialProjectTitle);
+ });
+ for(const [token,name]of saved)text=text.split(token).join(name);
+ return text;
+}
+
 // Rewrite presentation text only; player-selected names and persistent IDs stay intact.
 function normalizeTransportNames(text,profile){
  if(typeof text!=='string')return text;
@@ -107,9 +124,16 @@ const bridge = `
     return true;
   };
   const mobileProjectNames = {
-    special:['Großauftrag Stadtversorgung','Großauftrag Baustellenlogistik','Großauftrag Materialbergung','Großauftrag Ferntransport','Großauftrag Handelsroute'],
+    special:EXPEDITION_CUSTOMER_IDS.map(id=>'Großauftrag '+customerIdentities.find(identity=>identity.id===id).specialProjectTitle),
     referral:['Großprojekt Hafenverbund','Großprojekt Versorgungskette','Großprojekt Industrieanlage','Großprojekt Fernkorridor','Großprojekt Kontinentalnetz']
   };
+  function mobileSpecialProjectRegion(order,fallback=0){
+    const customerRegion=EXPEDITION_CUSTOMER_IDS.indexOf(order.customer);
+    return customerRegion>=0?customerRegion:Number.isInteger(order.projectRegion)&&order.projectRegion>=0&&order.projectRegion<EXPEDITION_CUSTOMER_IDS.length?order.projectRegion:fallback;
+  }
+  function mobileSpecialProjectName(order,region=0){
+    return mobileProjectNames.special[mobileSpecialProjectRegion(order,region)]||order.projectName;
+  }
   function normalizeReferral(order){
     if(order.kind!=='referral'||order.status!=='queued')return;
     order.projectName=mobileProjectNames.referral[0];
@@ -118,7 +142,7 @@ const bridge = `
     order.category='national';order.routeType='single';order.deadlineMs=PROJECT_DEADLINES.referral;
   }
   const originalQueueCustomerTrip=queueCustomerTrip;
-  queueCustomerTrip=(source,kind)=>{const order=originalQueueCustomerTrip(source,kind);normalizeReferral(order);return order;};
+  queueCustomerTrip=(source,kind)=>{const order=originalQueueCustomerTrip(source,kind);normalizeReferral(order);if(kind==='special')order.projectName=mobileSpecialProjectName(order);return order;};
   function normalizeQueuedReferrals(){game.orders.forEach(normalizeReferral);}
   function mobileProjectInfo(kind,region,existing=null){
     const customer=customerById(EXPEDITION_CUSTOMER_IDS[region]),balance=PROJECT_BALANCE[kind];
@@ -126,7 +150,7 @@ const bridge = `
     const distance=existing?.distance ?? balance.distance+region*balance.distancePerRegion;
     const order={kind,category:customer.category,customer:customer.id,volume,distance,routeType:'single',...existing};
     const loot=GEAR_LOOT[kind],rules=SPECIAL_CHANCES[order.category];
-    return {key:kind==='referral'?'referral':kind+':'+region,rarity:kind==='referral'?'epic':'rare',kind,region,regionName:EXPEDITION_REGIONS[region],name:existing?.projectName||mobileProjectNames[kind][region],customer,
+    return {key:kind==='referral'?'referral':kind+':'+region,rarity:kind==='referral'?'epic':'rare',kind,region,regionName:EXPEDITION_REGIONS[region],name:kind==='special'?mobileSpecialProjectName(existing||{customer:customer.id},region):existing?.projectName||mobileProjectNames[kind][region],customer,
       volume,distance,deadlineMs:existing?.deadlineMs||PROJECT_DEADLINES[kind],
       premium:completionPremium(order),freight:freightRevenue(order),baseXp:volume,relationship:TRUST_REWARDS[kind],
       expeditionChance:round2((1-EXPEDITION_CARD_CHANCES.reduce((sum,c)=>sum+c.chance,0))*EXPEDITION_JOB_WEIGHTS.find(w=>w.kind===kind).chance*100),
@@ -398,6 +422,7 @@ const bridge = `
         const durationSeconds=project?null:orderDuration({...o,delivered:0},durationTruck);
         const possibleRewards = project ? [] : o.kind==='private' ? ['1–2 Lieferantenkontakte'] : ['Common-Zahnräder','Uncommon-Zahnräder',...(o.customer?['Rare-Zahnräder']:[]),...(o.kind==='normal'&&TRANSPORT_BASE[o.category]?['Fortschritt für Firmenausbau-Items']:[]),...(o.customer&&o.kind==='normal'?[round2(customerTripChance(o,'award')*100)+' % Chance auf Sonderauftrag']:[])];
         return { ...o, isProject: project,
+          projectName:o.kind==='special'?mobileSpecialProjectName(o):o.projectName,
           project:o.project?{...o.project,vehicles:o.project.vehicles.filter(v=>v.cardId).map(v=>({...v,
             pendingCardId:(fleetTemplate(o.project.template)||[])[v.slot]||null,
             pendingModel:vehicleCardById((fleetTemplate(o.project.template)||[])[v.slot])?.name||null}))}:undefined,
@@ -410,7 +435,7 @@ const bridge = `
           replacementChoices:assigned?game.trucks.filter(t=>canTruckTakeOrder(t,o)&&(free.has(t.id)||o.pendingTruckId===t.id)).map(t=>({id:t.id,model:t.model,capacity:t.capacity})):[],
           pendingTruckName:o.pendingTruckId?truckById(o.pendingTruckId)?.model:null,
           projection,
-          projectInfo:project?mobileProjectInfo(o.kind,o.projectRegion??Math.max(0,EXPEDITION_CUSTOMER_IDS.indexOf(o.customer)),o):null,
+          projectInfo:project?mobileProjectInfo(o.kind,o.kind==='special'?mobileSpecialProjectRegion(o):o.projectRegion??Math.max(0,EXPEDITION_CUSTOMER_IDS.indexOf(o.customer)),o):null,
           baseXp:round2(o.volume*paidLegs(o)), premium:completionPremium(o),
           possibleRewards, relationshipReward:o.customer?(TRUST_REWARDS[o.kind]||0):0,
           tripEndsAt:assigned?o.tripSnapshot?.endsAt:null,
@@ -625,27 +650,30 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   for(const key of Object.keys(view.help)){const help=view.help[key];help[1]=help[1].map(([title,body])=>[normalizeNames(title),normalizeNames(body)]);}
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>title==='Fundchancen je Auslosung'?[title,'<p>Je Gebiet gibt es fünf Transportkarten. Insgesamt 10 % Kartenchance pro Expedition. Die Fahrzeugchancen und Auftragschancen stehen am Endlosort unter ?. Geschenke im Großhändler geben garantiert eine der fünf Gebietskarten; testweise hat jede Karte 20 % Chance. Die Expeditionschancen bleiben unverändert. Doppelte Karten geben 1 Shard derselben Seltenheit.</p>']:[title,body]);
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>[title,title==='Missionen'?'Jeder der sieben Orte hat eine einmalige Bonuslieferung. Ihr Abschluss gibt automatisch 1 Ausbaupunkt. Die erste Endlosort-Lieferung schaltet den regionalen Stammkunden frei und gibt 1 Kapazitätsmodul, sofern noch nicht erhalten. Fahrzeuge kommen aus der Garage.':body]);
-  view.help.expeditions[1].push(['Automatische Abschlüsse','Ortslieferungen werden automatisch gutgeschrieben. Ausführbare Material- und Transportkartenaufträge aus Dauerexpeditionen werden dagegen gemeinsam über den Sammelbutton der Einzelaufträge eingesammelt. Ortslieferungen geben 1 Ausbaupunkt statt einer festen Erhöhung des Expeditionsmaximums. Jeder Punkt erhöht wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1. Bestätigte Verteilungen sind nicht rückgängig zu machen. Unvergebene Punkte bleiben im Handelsimperium unter Entwicklung verfügbar. Die Abschlussübersicht kann geschlossen werden; sie ist keine Abholung.']);
+  view.help.expeditions[1].push(['Automatische Abschlüsse','Ortslieferungen werden automatisch gutgeschrieben. Ausführbare Material- und Transportkartenaufträge aus Dauerexpeditionen werden dagegen gemeinsam über den Sammelbutton der Einzelaufträge eingesammelt. Ortslieferungen geben 1 Ausbaupunkt statt einer festen Erhöhung des Expeditionsmaximums. Jeder Punkt erhöht wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1. Bestätigte Verteilungen sind nicht rückgängig zu machen. Unvergebene Punkte bleiben im Handelsimperium unter Entwicklung verfügbar. Der Abschluss passiert still im Hintergrund. Die Punkte stehen anschließend unter Entwicklung zur manuellen Verteilung bereit.']);
   view.help.customers[1]=view.help.customers[1].map(([title,body])=>[title.replace(/Fähigkeit/g,'Verbesserung').replace(/fähigkeit/g,'verbesserung'),body.replace(/Fähigkeit/g,'Verbesserung').replace(/fähigkeit/g,'verbesserung')]);
-  view.help.dashboard[1]=view.help.dashboard[1].map(([title,body])=>[title,title==='Spielerlevel'?'<p>Transportierte Tonnen geben XP: gelieferte Tonnen × bezahlte Richtungen × (1 + aktive Karten-XP-Boni / 100). Bei Dual Way zählen beide Richtungen. Jeder nächste Aufstieg benötigt 100 × aktuelles Level XP. Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 dauerhaft verteilbare Punkte. Ab Level 5 wird alle fünf Level ein weiterer Stadthub-Botenplatz freigeschaltet, maximal 20 bei Level 100.</p>':body]);
+  view.help.dashboard[1]=view.help.dashboard[1].map(([title,body])=>[title,title==='Spielerlevel'?'<p>Transportierte Tonnen geben XP: gelieferte Tonnen × bezahlte Richtungen × (1 + aktive Karten-XP-Boni / 100). Bei Dual Way zählen beide Richtungen. Jeder nächste Aufstieg benötigt 100 × aktuelles Level XP. Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 dauerhaft verteilbare Punkte. Ab Level 5 wird alle fünf Level ein weiterer Botenplatz freigeschaltet, maximal 20 bei Level 100.</p>':body]);
   view.help.company[0]='Handelsimperium';
   view.help.company[1]=view.help.company[1].map(([title,body])=>title==='Transportsegmente'?[title,'Prämie: 1.000 Stufen, je +1 Prozentpunkt. Neue Stufe N kostet 1.000 × N M und 1 + abrunden((N−1)/25) Firmenausbau-Items. Regional- und Fernverkehr getrennt. Menge und Reichweite: je 100 Stufen; bisherige Endwerte und Gesamtkosten bleiben erhalten. Prämien wirken auf die Abschlussprämie der jeweiligen Kategorie, nicht auf Frachtvergütung oder Beute.']: [title,body]);
   view.help.development[1]=view.help.development[1].map(([title,body])=>title==='Herstellung'?[title,'100 Abholhinweise ergeben eine Privatabholung. Rahmensplitter lassen sich zur nächsthöheren Seltenheit kombinieren. Firmenausbau-Items werden vorerst nicht zur Herstellung verwendet.']:[title,body]);
   view.help.inventory[1]=view.help.inventory[1].map(([title,body])=>[title,body.replace('Firmenausbau-Items dienen Firmenausbauten und Kundenaufträgen.','Firmenausbau-Items dienen Firmenausbauten.')]);
   view.help.personnel[1]=[['Transportkarten','25 regionale Landtransporter: zwei Common, eine Uncommon, eine Rare und eine Epic pro Region. Jede Karte hat eigene Grundkapazität und Grundgeschwindigkeit sowie genau einen Bonus. Die Staffel bis Stufe 10 steht im Kartendetail.'],['Wirkungsbereiche','Eigenboni unterstützen nur das Fahrzeug. Flottenboni unterstützen alle Fahrzeuge derselben Flotte einschließlich des Bonusgebers. Garagenboni gelten, solange die Karte in der Garage eingesetzt ist, auch während Einzelaufträgen und Beschaffung. Gleiche Transportboni verschiedener Karten addieren sich. Laufende Touren behalten ihre Werte bis zur nächsten Abfahrt.'],['Punkteboni','Königliche Postkutsche: mehr Überstundenmaximum. Oasenkarawane: mehr Expeditionsmaximum. Jeweils +5/10/15/20/25/30/40/50/60/70 Punkte. Jade-Kundschaftergespann: Expeditionsintervall um 10/20/30/40/50/60/75/90/105/120 Sekunden kürzer. Nur in der Garage aktiv. Das Einsetzen füllt keine Punkte auf. Überschuss bleibt nach dem Entfernen erhalten; Regeneration pausiert bis unter das Maximum. Timerwechsel erhalten den anteiligen Fortschritt.']];
   view.help.fleet[1]=view.help.fleet[1].map(([title,body])=>[title,title==='Tempo und Ausbauten'?'Tempo = individuelles Basistempo × (1 + 0,005 × Rangstufen) × (1 + Tempoboni / 100) × (1 − 0,01 × Ladung in t). Je Kapazitätsmodul +5 % der Grundkapazität, zehn Ausbaustufen. Bereits investierte Module und Ränge bleiben erhalten.':title==='Einsetzen und Herausnehmen'?'Kartenbesitz, Ausbau und Statistik bleiben beim Herausnehmen erhalten. Laufende Einzelaufträge, Expeditionen, Beschaffung und reservierte Ersatzfahrzeuge verhindern das Herausnehmen. Laufende Touren behalten ihre Werte; die nächste Abfahrt übernimmt Änderungen.':body]);
-  view.help.dealer[1]=[['Boten','Lastwombat-Boten werden direkt im Stadthub angeworben und ausgebaut. Ein Bote kostet 25.000 Imperium-Taler und startet mit 2 t Tragkraft.']];
-  view.help.dealer[1]=view.help.dealer[1].map(([title,body])=>[title,body.replace('max(1, abrunden(Spielerlevel × 0,75))','abrunden(Spielerlevel / 5)').replace('Vor dem Kauf muss der Stadthub eröffnet sein.','Der Stadthub wird ab Level 5 eröffnet. Alle fünf Level wird ein weiterer Fahrzeugplatz freigeschaltet. Bestehende Fahrzeuge bleiben erhalten.')]);
-  view.help.hub[1]=[['Zyklus und Leistung','Ein Einkauf alle 60 Minuten. Die mögliche Stundenmenge folgt aus Kapazität und beladener sowie leerer Fahrgeschwindigkeit aller eingesetzten Fahrzeuge. Vertrieb Stufe 0 kauft Ware für 40 Minuten ein; jede der 20 Stufen erhöht die Auslastung um 30 Sekunden bis auf 50 Minuten. Danach warten Boten bis zum nächsten Einkauf. Laufende Einkäufe behalten ihre Werte.'],['Kasse und Abholung','Die Kasse fasst sechs abgeschlossene Einkaufszyklen. Bei voller Kasse pausiert der Hub. Volle Kasse abholen startet sofort einen neuen Einkauf bei Minute 0. Teilabholungen verändern den laufenden Zyklus nicht. Imperium-Taler und sämtliche weiteren Erträge werden gemeinsam eingesammelt.'],['Vertrieb','Lieferantenkontakte und Firmenausbau-Items erweitern die Einkaufsmenge. 20 Stufen von 40 bis 50 Minuten Auslastung. Der Ausbau kostet nur Lieferantenkontakte und Firmenausbau-Items und dauert je Zielstufe zwölf Stunden.']];
-  view.help.hub[1].unshift(['Freischaltung','Stadthub ab Level 5. Alle fünf Level ein Platz, maximal 20 bei Level 100. Ein Lastwombat-Bote kostet 25.000 Imperium-Taler und startet mit 2 t. Werkzeugkästen verbessern Kapazität und Antrieb in je zehn Stufen. Drei Fundkisten täglich, mindestens 30 Minuten Abstand; Tageswechsel um 00:00 UTC. Beim stündlichen Einkauf: einmal 50 % Chance auf einen Werkzeugkasten, keine Funde bei voller Kasse. Werkzeugkästen aus Einkäufen mit den Erträgen abholen.']);
+  view.help.dealer[1]=[['Boten','Lastwombat-Boten werden direkt in der Botenstation angeworben und ausgebaut. Ein Bote kostet 25.000 Imperium-Taler und startet mit 2 t Tragkraft.']];
+  view.help.dealer[1]=view.help.dealer[1].map(([title,body])=>[title,body.replace('max(1, abrunden(Spielerlevel × 0,75))','abrunden(Spielerlevel / 5)').replace('Vor dem Kauf muss der Stadthub eröffnet sein.','Die Botenstation wird ab Level 5 eröffnet. Alle fünf Level wird ein weiterer Fahrzeugplatz freigeschaltet. Bestehende Fahrzeuge bleiben erhalten.')]);
+  view.help.hub[0]='Botenstation';
+  view.help.dealer[0]='Botenstation-Händler';
+  view.help.hub[1]=[['Zyklus und Leistung','Ein Einkauf alle 60 Minuten. Die mögliche Stundenmenge folgt aus Kapazität und beladener sowie leerer Fahrgeschwindigkeit aller eingesetzten Fahrzeuge. Vertrieb Stufe 0 kauft Ware für 40 Minuten ein; jede der 20 Stufen erhöht die Auslastung um 30 Sekunden bis auf 50 Minuten. Danach warten Boten bis zum nächsten Einkauf. Laufende Einkäufe behalten ihre Werte.'],['Kasse und Abholung','Die Kasse fasst sechs abgeschlossene Einkaufszyklen. Bei voller Kasse pausiert die Botenstation. Volle Kasse abholen startet sofort einen neuen Einkauf bei Minute 0. Teilabholungen verändern den laufenden Zyklus nicht. Imperium-Taler und sämtliche weiteren Erträge werden gemeinsam eingesammelt.'],['Vertrieb','Lieferantenkontakte und Firmenausbau-Items erweitern die Einkaufsmenge. 20 Stufen von 40 bis 50 Minuten Auslastung. Der Ausbau kostet nur Lieferantenkontakte und Firmenausbau-Items und dauert je Zielstufe zwölf Stunden.']];
+  view.help.hub[1].unshift(['Freischaltung','Botenstation ab Level 5. Alle fünf Level ein Platz, maximal 20 bei Level 100. Ein Lastwombat-Bote kostet 25.000 Imperium-Taler und startet mit 2 t. Werkzeugkästen verbessern Kapazität und Antrieb in je zehn Stufen. Drei Fundkisten täglich, mindestens 30 Minuten Abstand; Tageswechsel um 00:00 UTC. Beim stündlichen Einkauf: einmal 50 % Chance auf einen Werkzeugkasten, keine Funde bei voller Kasse. Werkzeugkästen aus Einkäufen mit den Erträgen abholen.']);
   view.help.inventory[1].unshift(['Auffüller','Pro Levelaufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 verteilbare Punkte. Beide Auffüller geben beim Benutzen 50 Punkte.']);
   for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[title,body.replace(/Je Aufstieg: sofort 50 Expeditionspunkte, ein speicherbares Refill-Paket für 50 Überstundenpunkte sowie 5 dauerhaft verteilbare Punkte/g,'Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller sowie 3 dauerhaft verteilbare Punkte').replace(/Pro Level-up erhältst du ein speicherbares Überstundenauffüller für (?:50|100) Punkte\./g,'Auffüller werden in den Vorräten aufbewahrt.')]);
   for(const mission of view.state.expedition.missions)mission.reward=normalizeNames(mission.reward);
   view.message=normalizeTransportNames(view.message,view.state.profile);
   view.message=currencyText(view.message,view.state.profile);
-  for(const event of view.state.events)event.text=currencyText(event.text,view.state.profile);
+  view.message=normalizeSpecialProjectText(view.message,view.state.profile);
+  for(const event of view.state.events)event.text=normalizeSpecialProjectText(currencyText(event.text,view.state.profile),view.state.profile);
   for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(text=>currencyText(text));
-  for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[currencyText(title),currencyText(body)]);
+  for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[normalizeSpecialProjectText(currencyText(title)),normalizeSpecialProjectText(currencyText(body))]);
   for(const mission of view.state.expedition.missions)mission.reward=currencyText(mission.reward,view.state.profile);
   for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[normalizeTransportNames(title),normalizeTransportNames(body)]);
   for(const mission of view.state.expedition.missions)mission.reward=normalizeTransportNames(mission.reward,view.state.profile);

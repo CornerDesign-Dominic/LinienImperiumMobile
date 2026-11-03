@@ -6,6 +6,7 @@ import React,{useEffect,useRef,useState} from 'react';
 import {ScrollView,StyleSheet} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {C,Txt,Card,Row,Btn,n} from './ui';
+import {pointInfoStyle} from './PointAllocation';
 const LABELS:Record<string,string>={premium:'Abschlussprämie',volume:'Auftragsmenge',range:'Reichweite'};
 const ICONS:Record<string,IconName>={premium:'reward',volume:'truck',range:'expedition'};
 const categoryName=(category:string)=>category==='national'?'Nahverkehr':'Fernverkehr';
@@ -29,8 +30,8 @@ export function TransportSummary({data,onImprove}:any){
  return <Card style={styles.summary}>
   <Row style={{marginBottom:0}}><Txt style={styles.title}>Imperiumsausbau</Txt>{data.transportUpgradeOptions.some((o:any)=>canImproveTransport(data,o))&&<AvailableDot/>}</Row>
   {['national','international'].map(category=><View key={category} style={styles.group}>
-   <Row style={{marginBottom:0}}><Txt style={styles.title}>{categoryName(category)}</Txt>{data.transportUpgradeOptions.some((o:any)=>o.category===category&&canImproveTransport(data,o))&&<AvailableDot/>}</Row>
-   {data.transportUpgradeOptions.filter((o:any)=>o.category===category).map((o:any)=><Row key={o.kind} style={{marginTop:7,marginBottom:0}}><Txt muted>{LABELS[o.kind]}</Txt><View style={{flexDirection:'row',alignItems:'center',gap:8}}><Txt>{effect(o,o.level)}</Txt>{canImproveTransport(data,o)&&<AvailableDot/>}</View></Row>)}
+   <Row style={{marginBottom:0}}><Txt style={styles.title}>{categoryName(category)}</Txt></Row>
+   {data.transportUpgradeOptions.filter((o:any)=>o.category===category).map((o:any)=><Row key={o.kind} style={{marginTop:7,marginBottom:0}}><Txt muted>{LABELS[o.kind]}</Txt><View style={{flexDirection:'row',alignItems:'center',gap:8}}><Txt>{effect(o,o.level)}</Txt></View></Row>)}
   </View>)}
   <Btn onPress={onImprove}>Verbessern</Btn>
  </Card>;
@@ -102,5 +103,5 @@ const styles=StyleSheet.create({
  tabs:{flexDirection:'row',gap:6,marginBottom:10},tab:{flex:1,flexDirection:'row',gap:6,minHeight:44,padding:8,borderWidth:1,borderColor:C.line,borderRadius:6,justifyContent:'center',alignItems:'center',backgroundColor:C.raised},tabActive:{backgroundColor:C.accent,borderColor:C.ink},tabText:{fontSize:13,fontWeight:'700',textAlign:'center'},
  upgradeRow:{flexDirection:'row',alignItems:'center',gap:10,padding:14,minHeight:100},divider:{borderTopWidth:1,borderColor:C.line},upgradeIcon:{width:38,height:42,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderRadius:6},availableDot:{width:7,height:7,borderRadius:4,backgroundColor:C.gold,flexShrink:0},
  overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:16},modal:{width:'100%',maxWidth:460,maxHeight:'90%',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:12,overflow:'hidden'},modalHeader:{flexDirection:'row',alignItems:'center',gap:8,padding:18},modalFooter:{padding:18,paddingTop:4,borderTopWidth:1,borderColor:C.line},
- comparison:{flexDirection:'row',alignItems:'center',gap:8},effectColumn:{flex:1,minWidth:0,padding:10,borderRadius:6,backgroundColor:C.raised},after:{backgroundColor:C.greenWash},caption:{fontSize:11,marginBottom:4},effect:{fontSize:15,fontWeight:'700'},quantity:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginVertical:18},stepper:{flexDirection:'row',alignItems:'center',gap:8},costs:{flexDirection:'row',gap:12,flexWrap:'wrap',marginVertical:5},cost:{flexDirection:'row',alignItems:'center',gap:6,paddingVertical:6},error:{fontSize:12,color:C.red,marginTop:10}
+ comparison:{flexDirection:'row',alignItems:'center',gap:8},effectColumn:{flex:1,minWidth:0,padding:10,borderRadius:6,backgroundColor:C.raised},after:pointInfoStyle,caption:{fontSize:11,marginBottom:4},effect:{fontSize:15,fontWeight:'700'},quantity:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginVertical:18},stepper:{flexDirection:'row',alignItems:'center',gap:8},costs:{flexDirection:'row',gap:12,flexWrap:'wrap',marginVertical:5},cost:{flexDirection:'row',alignItems:'center',gap:6,paddingVertical:6},error:{fontSize:12,color:C.red,marginTop:10}
 });

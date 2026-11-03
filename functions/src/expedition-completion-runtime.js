@@ -40,7 +40,9 @@ function expansionState(){
   }
   // Old endless completions were already paid. Never turn them into pending loot.
   for(const mission of game.expedition.missions)if(mission.kind==='endless'&&mission.status==='completed'&&!mission.completionReward){mission.completionRecorded=true;mission.claimedAt??=mission.endsAt||Date.now();}
-  game.expansion.notices=game.expansion.notices.filter(notice=>notice.kind!=='endless');
+  // Milestones settle silently. Discard legacy informational notices; rewards and
+  // allocation balances are persisted independently of this retired inbox.
+  game.expansion.notices=[];
   return game.expansion;
 }
 const beforeExpansionCapacity=expeditionCapacity,beforeExpansionOvertimeCapacity=overtimeCapacity;
@@ -50,24 +52,17 @@ const beforeAutomaticClaimMission=claimExpeditionMission;
 function collectCompletedExpedition(mission){
   if(mission.kind==='endless'||mission.status!=='completed'||mission.completionRecorded)return false;
   const e=expansionState(),region=game.expedition.regions[mission.region];
-  let points=0,modules=0,customerId=null;
   if(mission.kind==='delivery'){
     if(mission.claimedAt||region.deliveries[mission.place]){mission.completionRecorded=true;return false;}
     region.deliveries[mission.place]=true;
-    e.convertedDeliveries++;e.available++;points=1;
+    e.convertedDeliveries++;e.available++;
     mission.claimedAt=Date.now();mission.reward='1 Ausbaupunkt erhalten';
     addEvent(EXPEDITION_REGIONS[mission.region]+': '+mission.reward+'.');
   }else if(mission.kind==='final'){
     if(mission.claimedAt||region.finalClaimed){mission.completionRecorded=true;return false;}
-    const before=game.inventory.capacityModules;
     if(!beforeAutomaticClaimMission(mission.id))return false;
-    modules=game.inventory.capacityModules-before;
-    customerId=EXPEDITION_CUSTOMER_IDS[mission.region];
   }else if(mission.kind!=='endless')return false;
   mission.completionRecorded=true;
-  e.notices.push({sequence:e.nextNotice++,missionId:mission.id,kind:mission.kind,region:mission.region,
-    place:mission.kind==='final'?7:mission.place,completedAt:mission.endsAt,
-    reward:mission.reward,expansionPoints:points,capacityModules:modules,customerId});
   return true;
 }
 const beforeAutomaticSettleExpeditions=settleExpeditions;

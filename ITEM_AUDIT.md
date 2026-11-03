@@ -11,10 +11,10 @@ Die Vorräte zeigen vorhandenen Bestand, nach Kategorien geordnet. Karten selbst
 | Expeditionsauffüller | Levelaufstieg, entsprechende Gemeinschaftsevent-/Passbelohnungen | +50 Expeditionspunkte, auch über das Maximum hinaus |
 | Überstundenauffüller | Levelaufstieg, entsprechende Gemeinschaftsevent-/Passbelohnungen | +50 Überstundenpunkte, auch über das Maximum hinaus |
 | Kapazitätsmodul | Einmalige Regionsabschlüsse, seltene Auftragsbeute, entsprechende Gemeinschaftsevent-/Passbelohnungen | Kapazitätsausbau von Transportkarten; Zuwachs und Grenze gemäß Karte |
-| Firmenausbau-Item | Normale Aufträge, Materialaufträge, seltene Beschaffungsbeute | Imperiumsausbau und Stadthub-Vertrieb; kein aktives Kundenauftragsrezept |
-| Abholhinweis | Stadthub-Erträge | Privatabholung herstellen |
-| Werkzeugkasten (`hubVehicleParts`) | Tägliche Fundkisten, erfolgreiche Fundversuche bei Stadthub-Einkäufen | Tragkraft und Tempo der Stadthub-Boten; ersetzt dort Module und Zahnräder |
-| Lieferantenkontakt | Privatabholungen | Ausbau des Stadthub-Vertriebs |
+| Firmenausbau-Item | Normale Aufträge, Materialaufträge, seltene Beschaffungsbeute | Imperiumsausbau und Vertrieb der Botenstation; kein aktives Kundenauftragsrezept |
+| Abholhinweis | Botenstation-Erträge | Privatabholung herstellen |
+| Werkzeugkasten (`hubVehicleParts`) | Tägliche Fundkisten, erfolgreiche Fundversuche bei Botenstation-Einkäufen | Tragkraft und Tempo der Boten der Botenstation; ersetzt dort Module und Zahnräder |
+| Lieferantenkontakt | Privatabholungen | Vertriebsausbau der Botenstation |
 | Common-/Uncommon-/Rare-/Epic-/Legendär-Zahnrad | Auftragsbelohnungen; Beschaffung für Common/Uncommon/Rare; Gemeinschaftsevent für Common | Geschwindigkeitsrang von Transportkarten |
 | Shard der Kartenseltenheit | Material-/Transportkartenaufträge nach deren Lootpool; doppelte Karten geben einen Shard ihrer Seltenheit | Kartenstufen und dadurch Kartenboni; Common und Uncommon zusätzlich kombinierbar |
 
@@ -51,4 +51,4 @@ Dies sind die drei Rezepte im mobilen Serverkatalog. `craftCustomerOrder` wird s
 
 ## Pflege
 
-Bei Änderungen am Itemkatalog immer Serverquelle, `src/items.ts`, Inventarkategorien, Herstellungsansicht, Bildzuordnung und Übersetzungen gemeinsam abgleichen. Detailregeln und Quellen liegen in `functions/src/engine.cjs` sowie den Runtimes für Karten, Expeditionen, Beschaffung, Stadthub und Events. Neue Prüfergebnisse nur mit Datum und geprüftem Commit dokumentieren.
+Bei Änderungen am Itemkatalog immer Serverquelle, `src/items.ts`, Inventarkategorien, Herstellungsansicht, Bildzuordnung und Übersetzungen gemeinsam abgleichen. Detailregeln und Quellen liegen in `functions/src/engine.cjs` sowie den Runtimes für Karten, Expeditionen, Beschaffung, Botenstation und Events. Neue Prüfergebnisse nur mit Datum und geprüftem Commit dokumentieren.

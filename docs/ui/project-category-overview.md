@@ -1,9 +1,43 @@
 # Großaufträge: Kategorieübersicht
 
-Die vorhandenen Kategorien haben kompakte Papierkarten mit einem regionalen Bild links und Auftragsname, Stammkunde und tatsächlicher Anzahl rechts. Der Auftragsname erscheint ohne den doppelten Typpräfix. Sonderaufträge behalten einen blauen, Empfehlungen einen violetten Rand; die Fläche bleibt Papier.
+Die vorhandenen Kategorien haben kompakte Papierkarten mit einem regionalen Bild links und Auftragsname, Stammkunde und tatsächlicher Anzahl rechts. Der Auftragsname erscheint ohne den doppelten Typpräfix. Sonderaufträge tragen links einen markanten blauen Seltenheitsstreifen, Empfehlungen einen violetten. Der übrige Rahmen bleibt neutral und die Fläche Papier. Dieselbe Markierung gilt für konkrete laufende und fertige Großauftragskarten; legendäre Eventkarten verwenden die goldene Legendary-Farbe der gemeinsamen Palette. Bilder, Typbeschriftungen und Aktionen bleiben erhalten.
 
-Kategorien mit mindestens einem gespeicherten, startbereiten Großauftrag stehen zuerst. Innerhalb beider Gruppen bleibt die Katalogreihenfolge erhalten. Laufende, erledigte und Einzelaufträge zählen nicht als verfügbar. Auch leere Kategorien bleiben für Herkunft und Detailinformationen erreichbar. Die bestehende Schaltfläche für laufende Großaufträge bleibt erhalten.
+Die Reihenfolge bleibt unabhängig vom Vorrat fest: zuerst höhere Seltenheit, innerhalb einer Seltenheit spätere Expeditionsregionen vor früheren. Aktuell steht Empfehlung Hafenverbund vor den Sonderaufträgen aus Nordmark, Jadetal, Safranstraße, Weite Ebenen und Kronenlande. Sollte eine legendäre Kategorie tatsächlich im selben Katalog enthalten sein, steht sie vor Epic und Rare. Keine Sortierung nach Zeitstempel oder kürzlicher Aktivität. Laufende, erledigte und Einzelaufträge zählen nicht als verfügbar. Auch leere Kategorien bleiben für Herkunft und Detailinformationen erreichbar. Die bisherige große Laufend-Schaltfläche ist durch die beiden Reiter unten ersetzt.
 
-Die fünf vorhandenen Regionsbilder werden wiederverwendet. Das Empfehlungsmotiv zeigt eine geschlossene, prunkvolle Schatulle: dunkles Edelholz, Goldbeschläge, Schloss und Vertrauenssiegel. Die transparente Illustration steht ohne eigenen Rahmen direkt auf Papier und wird vollständig eingepasst statt angeschnitten. Sie kennzeichnet anvertraute wertvolle Fracht; die Fundkisten behalten ihr eigenes Motiv. Es wurde mit dem eingebauten ImageGen erzeugt; Produktionsdatei und Prompt liegen unter `assets/art/projects/`. Eine memo-isierte dekorative Art-Komponente verhindert unnötige statische Bild-Neuberechnung. Es ändern sich weder Spielwerte noch Navigation, Auftragsstart, Belohnungen oder Backend.
+Die vorhandenen Edelwarenbilder werden wiederverwendet. Das Empfehlungsmotiv zeigt eine geschlossene, prunkvolle Schatulle: dunkles Edelholz, Goldbeschläge, Schloss und Vertrauenssiegel. Die transparente Illustration steht ohne eigenen Rahmen direkt auf Papier und wird vollständig eingepasst statt angeschnitten. Sie kennzeichnet anvertraute wertvolle Fracht; die Fundkisten behalten ihr eigenes Motiv. Es wurde mit dem eingebauten ImageGen erzeugt; Produktionsdatei und Prompt liegen unter `assets/art/projects/`. Eine memo-isierte dekorative Art-Komponente verhindert unnötige statische Bild-Neuberechnung. Spielwerte, Auftragsstart und Belohnungen bleiben erhalten; die aktuellen Titel liefert das mobile Ansichtsmodell.
 
-Prüfung: Verhaltenstest für reale Anzahlen, stabile Priorisierung, unveränderte Spieldaten und korrekte Kategorie-/Laufendnavigation; TypeScript und Android-Export. Das Bild wurde visuell geprüft. Native Geräte- und Layoutprüfung ist in dieser Umgebung nicht verfügbar.
+## Regionale Sonderauftragstitel
+
+| Region | Titel | Englisch |
+| --- | --- | --- |
+| Kronenlande | Schmuck der Krone | Jewels of the Crown |
+| Weite Ebenen | Edle Webwaren | Fine Textiles |
+| Safranstraße | Kostbare Essenzen | Precious Essences |
+| Jadetal | Kunst aus Jade | Jade Art |
+| Nordmark | Schätze des Nordens | Treasures of the North |
+
+Die Zuordnung steht in `functions/src/customer-identities.json` unter der stabilen Kunden-ID. Der mobile Server verwendet sie für Katalog, Auslosungsinformationen und sämtliche Auftragsansichten. Neue Sonderaufträge erhalten den aktuellen Titel; vorhandene gespeicherte Aufträge zeigen ihn auch bereit, laufend, erledigt oder abgelaufen. Ihre gespeicherten Namen, IDs, Kunden, Mengen, Konditionen, Fortschritte und Belohnungen werden dadurch nicht umgerechnet. Eine alte abweichende Regionsposition überschreibt die Kundenidentität nicht. Empfehlungsaufträge bleiben unverändert.
+
+Komplette frühere Sonderauftragstitel in Nachrichten werden nur bei der Ausgabe normalisiert; frei gewählte Firmennamen und generische Transportbegriffe bleiben erhalten. Bilder werden weiterverwendet. Die Titeländerung ist gesammelt, noch nicht veröffentlicht.
+
+Historische Prüfung der Übersicht: Verhaltenstest für reale Anzahlen, stabile Priorisierung, unveränderte Spieldaten und korrekte Kategorie-/Laufendnavigation; TypeScript und Android-Export. Das Bild wurde visuell geprüft. Native Geräte- und Layoutprüfung ist in dieser Umgebung nicht verfügbar.
+
+
+## Laufende und Aufträge – gesammelt
+
+Zwei gleich breite Reiter verwenden Gestaltung und Auswahlzustand der Einzelaufträge. **Laufende** zählt nur aktive Großaufträge, **Aufträge** alle gespeicherten bereiten Großaufträge über sämtliche Kategorien. Mehrere Aufträge einer Kategorie zählen einzeln; Einzelaufträge, erledigte und abgelaufene Aufträge zählen nicht in diese beiden Zahlen. Der normale Einstieg öffnet Aufträge. Ein Startseiten-Einstieg für offene Großauftragsprämien öffnet Laufende; dort bleiben diese Prämien erreichbar, ohne als aktive Transporte zu zählen. Ein kleiner Hinweis am Reiter und die zugängliche Beschriftung zeigen offene Belohnungen an.
+
+Beide Reiter bleiben unter dem Seitenkopf Großaufträge. Tabwechsel setzt die Scrollposition zurück; Zurück aus einer Auftragsdetailansicht erhält den zuvor gewählten Reiter. Die Kategorien behalten Bilder, feste Regionssortierung, Fragezeichen und ausdrückliche Startbestätigung. `projectSections` ist die gemeinsame Statusklassifikation für Zähler und Laufend-/Prämienansicht.
+
+Prüfung dieses Sammelstands: gezielte Klassifikations- und Sortierprüfungen für Mehrfachaufträge, Statuswechsel, Prämien und leere Bestände erfolgreich. Bestehende Kategorien-/Start-Komponententests sind um Reiterwahl, Zahlen und Prämienzugang erweitert; lokal wegen fehlendem React/TypeScript nicht ausführbar. Kein neuer Android-Export oder Gerätetest. Veröffentlichung erst nach erneuter Freigabe.
+
+
+## Gemeinsame Laufend-Liste – gesammelt
+
+Aktive Transporte stehen vor abgeschlossenen Aufträgen mit noch abholbarer Prämie in einer gemeinsamen Liste ohne zusätzliche Prämienüberschrift. Beide Gruppen nutzen dieselben kompakten hellen Pergamentkarten mit schmalem Seltenheitsstreifen, vorhandener Kundenwarenillustration, Typ, aktuellem Titel, Kunde sowie tatsächlicher Menge und Strecke. Innerhalb jeder Gruppe gilt feste Seltenheits-/Regionspriorität; gleichartige Aufträge behalten ihre gespeicherte Reihenfolge. Sekündliche Timer beeinflussen diese Ordnung nicht.
+
+Aktive Karten zeigen gelieferte/Gesamttonnen, Fortschrittsbalken, Frist und Fertig-in-Zeit aus der bestehenden Serverprognose und der serverkorrigierten App-Uhr. Fehlende, nicht erreichbare oder bereits überschrittene Prognosen werden ehrlich gekennzeichnet; die Anzeige erteilt keine zusätzliche Abschlusszusage. Fertige Karten zeigen keine Timer. Ein leicht gedrehter grüner ERLEDIGT-Stempel entsteht aus nativen Views/Text/Rand in einem eigenen freien Bereich, ohne neues Bild.
+
+Belohnung abholen sendet die bestehende autoritative `claim`-Aktion über den App-Commandguard. Ein zusätzlicher synchroner Kartenschutz verhindert Doppeltipps. Fehler bleiben auf der Karte sichtbar und ermöglichen einen erneuten Versuch. Nur ein bestätigter Abholstatus öffnet die vorhandene Belohnungsausgabe mit den echten gespeicherten Beträgen. Nach dem erfolgreichen Snapshot verschwindet die Karte aus der Liste; historische Auftragsdaten und Statistiken bleiben erhalten. Der getrennte Kopfbereich öffnet weiter die Details; die Abholtaste ist kein Kind dieser Detail-Schaltfläche. Fehlgeschlagene/abgelaufene Aufträge erhalten weder Stempel noch erfundene Prämie; ihre bestehende Detaildarstellung bleibt erhalten.
+
+Vier gezielte Status-/Sortier-/Backend-Abholprüfungen erfolgreich (einschließlich einmaliger Auszahlung und erhaltener Historie). Komponentenprüfungen für Abholen/Fehler/Doppeltipp, Kartenzeiten und Tabnavigation ergänzt; lokal mangels React/TypeScript nicht ausführbar. Noch kein App-Export oder native Layoutprüfung dieses Entwurfs. Keine Veröffentlichung vor erneuter Freigabe.

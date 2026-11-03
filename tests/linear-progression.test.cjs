@@ -25,7 +25,7 @@ test('Legacy level floors survive migration, but do not leave a hidden XP catch-
  const result=sync(s);assert.equal(result.view.level.level,50);assert.equal(result.view.level.within,0);assert.equal(result.view.level.need,5000);assert.equal(result.state.levelFloor,undefined);
  const gained=execute(result.state,'testGrant',{kind:'xp',amount:1000},now,random);assert.equal(gained.view.level.within,1000);assert.equal(gained.view.level.need,5000);
 });
-test('Hub opening and vehicle purchases are server-gated at 5, 10, 15 independently from garage cards',()=>{
+test('Botenstation opening and vehicle purchases are server-gated at 5, 10, 15 independently from garage cards',()=>{
  for(const level of [1,4]){
   const s=at(level),r=execute(s,'buyHub',{},now,random);
   assert.equal(r.state.hubs.length,0);assert.equal(r.view.hubLimit,0);assert.equal(r.view.hubInfo.unlocked,false);assert.equal(r.view.hubInfo.nextVehicleLevel,5);

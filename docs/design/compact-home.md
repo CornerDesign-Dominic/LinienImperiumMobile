@@ -5,7 +5,7 @@ Aktueller Implementierungsbezug: `src/App.tsx`, `src/MenuArt.tsx` (Quellstand 03
 - Firmenkarte ohne großes Hafenbild; die Karte öffnet Handelsimperium und zeigt offene Levelpunkte an.
 - Startbereiche sind volle kompakte Zeilen mit farbiger Miniatur, Titel und einer kurzen Beschreibungszeile. Beschreibungen werden ohne Umbruch gekürzt.
 - Einzel-/Großaufträge zeigen laufende Arbeit und Belohnungen; Einzelaufträge zusätzlich den Angebotswechsel-Countdown.
-- Transportkarten zeigt den Besitzstand aus dem tatsächlichen Katalog. Stadthub zeigt Kassenfüllstand, Materialbeschaffung ausstehende Belohnungen.
+- Transportkarten zeigt den Besitzstand aus dem tatsächlichen Katalog. Botenstation zeigt Kassenfüllstand, Materialbeschaffung ausstehende Belohnungen.
 - Die fünf unteren Ziele verwenden nur ihre Bildmotive, gleich breite Tippflächen und zugängliche Namen/ausgewählten Zustand. Funktionale Pfeile und Statussymbole bleiben ergänzend erhalten.
 - Die frühere Hafenillustration bleibt im Assetbestand, ist keine aktuelle Startseitenvorgabe. Menü- und Navigationsbilder: [Menübilder](../ui/menu-art.md).
 

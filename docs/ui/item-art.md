@@ -21,7 +21,7 @@ Die Auftragsart liegt oben links frei über der Rolle, nicht im roten Wachssiege
 
 `itemVisual.js` trennt Item-ID, Art, Seltenheit und Rang. Der Rang eines Material-/Transportkartenauftrags steht römisch unten rechts; er erfindet keine Seltenheit. Projektgruppen übergeben ihre tatsächliche Art ausdrücklich. Reine Navigation, Fahrzeugwerte und Punktanzeigen verwenden ihre Funktionssymbole.
 
-Einsatz: Vorräte, Herstellung, Beschaffungsbeute, Auftragslisten und Prämien, Kartenverbesserungen/Splitter, Geschenkduplikate, Expeditionen, Level-/Eventbelohnungen und Stadthub. Prompts liegen neben den Assets, Quellen der kleineren Auftragssymbole unter `assets/art/items/seals`.
+Einsatz: Vorräte, Herstellung, Beschaffungsbeute, Auftragslisten und Prämien, Kartenverbesserungen/Splitter, Geschenkduplikate, Expeditionen, Level-/Eventbelohnungen und Botenstation. Prompts liegen neben den Assets, Quellen der kleineren Auftragssymbole unter `assets/art/items/seals`.
 
 ## Historische Prüfung bei Einführung
 

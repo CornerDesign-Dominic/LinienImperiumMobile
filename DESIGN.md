@@ -50,11 +50,15 @@ Die Sammlung verwendet die verzierte Variante von `VehicleCardTile`: Schild, Bil
 
 Fahrzeugdetails verwenden [VehicleCardDetail](src/VehicleCardDetail.tsx): Stufe, Bild/Name, Bonus mit Stufentabelle, Geschwindigkeit, Kapazität und Betriebskosten. Garage/Flotte nutzen den kompakten Modus mit Kontextaktionen; Verbesserungen erfolgen aus der Sammlung. Details: [Sammlungskarten](docs/ui/vehicle-collection-cards.md), [Filter](docs/ui/collection-filters.md), [gemeinsame Auswahl](docs/ui/shared-card-pickers.md).
 
-## Expedition und Stadthub
+## Auftragskarten
 
-Fünf Regionskarten führen in horizontal erkundbare Landschaften: Kronenlande, Weite Ebenen, Safranstraße, Jadetal und Nordmark. Je Region gibt es sieben Orte und einen Endlos-/Handelsort, insgesamt 40 eigene Nahansichten. Leichte Regionstitel, dezente Pfeile und weich auslaufender Nebel lassen die Landschaft wirken. Gesperrte Gebäude, Namen und Aktionen bleiben verdeckt. Details: [Reisekarten](docs/ui/expedition-journeys.md), [Atmosphäre](docs/ui/expedition-atmosphere.md), [Ortsmodale](docs/ui/expedition-place-modals.md).
+Großauftragskategorien und konkrete Auftragskarten verwenden Papierflächen, einen neutralen Außenrand und einen markanten linken Seltenheitsstreifen: Rare-Blau für Sonderaufträge, Epic-Violett für Empfehlungen und Legendary-Gold bei den vorhandenen Eventkarten. Typbeschriftungen und Bilder bleiben zusätzliche Orientierung. Die Großauftragsseite wechselt über zwei Reiter zwischen Laufende und Aufträge; deren Zahlen trennen aktive von bereitliegenden Aufträgen. Aktive und fertige Großaufträge mit offener Prämie stehen gemeinsam unter Laufende, mit vorhandenen Kundenwarenbildern und echten Mengen. Aktive zeigen Fortschritt und Serverprognose, fertige einen nativen grünen ERLEDIGT-Stempel in eigenem Platz sowie die direkte Abholtaste. Diese Anpassung ist gesammelt und noch nicht veröffentlicht.
 
-Stadthub: Übersicht und Boten, kompakte Ertrags-/Fundkisten-/Vertriebsbereiche und Dreispaltenraster für Lastwombat-Boten. Bilder für Erträge und Vertrieb ergänzen die tatsächlichen Werte; sie ersetzen keine Anzeigen. Der aktuell verfügbare Lastwombat ist zugleich die freie Standardgestaltung. Weitere bezahlte Skins benötigen eigene freigegebene Motive und technische Einbindung; Platzhalter werden nicht verkauft.
+## Expedition und Botenstation
+
+Fünf Regionskarten führen in horizontal erkundbare Landschaften: Kronenlande, Weite Ebenen, Safranstraße, Jadetal und Nordmark. Je Region gibt es sieben Orte und einen Endlos-/Handelsort, insgesamt 40 eigene Nahansichten. Im neuen Sammelstand steht der Regionsname im zentralen Seitenkopf; der separate Titel über dem Bild entfällt. Dezente Pfeile und weich auslaufender Nebel lassen die Landschaft wirken. Fertige Ortsschilder haben keine Haken; verfügbare Bonusfahrten zeigen ein Plus im Kreis, Ortsnamen brechen an Wortgrenzen um. Gesperrte Gebäude, Namen und Aktionen bleiben verdeckt. Details: [Reisekarten](docs/ui/expedition-journeys.md), [Atmosphäre](docs/ui/expedition-atmosphere.md), [Ortsmodale](docs/ui/expedition-place-modals.md).
+
+Botenstation: Übersicht und Boten, kompakte Ertrags-/Fundkisten-/Vertriebsbereiche und Dreispaltenraster für Lastwombat-Boten. Bilder für Erträge und Vertrieb ergänzen die tatsächlichen Werte; sie ersetzen keine Anzeigen. Der aktuell verfügbare Lastwombat ist zugleich die freie Standardgestaltung. Weitere bezahlte Skins benötigen eigene freigegebene Motive und technische Einbindung; Platzhalter werden nicht verkauft.
 
 ## Items, Währungen und Assets
 
@@ -69,3 +73,7 @@ Illustrationen werden lokal gebündelt; es gibt keine Bildgenerierung oder exter
 ## Gestalterisch prüfen
 
 Bei Änderungen die betroffenen realen Komponenten bei kleinen Displaybreiten, langen deutschen/englischen Namen, gesperrten und belegten Zuständen sowie großen Mengen prüfen. Export und Verhaltenstests belegen keine native Bildschärfe, Scrollrate oder Touchqualität. Aktuelle Prüfberichte gehören in [TEST_REPORT.md](TEST_REPORT.md); historische Prüfungen in Modulnotizen bleiben als solche gekennzeichnet.
+
+## Punkteverteiler – gesammelte Anpassung
+
+Entwicklung zeigt permanente Basiswerte ohne Boni. Levelpunkte und Ausbaupunkte bleiben getrennte Bestände in einem gemeinsamen Übersichtsbereich; beide Verteiler verwenden denselben kompakten Aufbau ohne Hinweisabsatz. Verfügbarkeitsanzeigen und die vergleichbaren Nach-Ausbau-Vorschauen im Imperiumsausbau und Verteilnetz nutzen helles Material mit dünner Petrolkontur. Nur am Titel Imperiumsausbau steht in der Übersicht ein bezahlbarkeitsabhängiger goldener Hinweis. [Details und Prüfumfang](docs/ui/point-allocation.md). Noch nicht veröffentlicht.

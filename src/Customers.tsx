@@ -1,5 +1,6 @@
 import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {t as translate} from './i18n';
+import {OrderArtwork} from './OrderArtwork';
 import {Icon} from './Icon';
 import React,{useEffect,useState} from 'react';
 import {Image,StyleSheet} from 'react-native';
@@ -53,7 +54,7 @@ export function CustomerDetail({data,id,busy,onSave}:any){
    </View>;})}
    {assigned>0&&<Btn disabled={busy||!valid} onPress={async()=>{const result=await onSave(id,draft,customer.skills);if(result?.customerBatchApplied)setDraft({pay:0,special:0,referral:0});}}>Speichern</Btn>}
   </Card>
-  <Card><Row style={{alignItems:'flex-start',gap:12}}><Txt muted>Waren</Txt><View style={{flex:1,minWidth:0}}>{(customer.products||[customer.cargo]).map((product:string)=><Txt key={product} style={{textAlign:'right'}}>{product}</Txt>)}</View></Row><Row><Txt muted>Verkehr</Txt><Txt>{category?.label||customer.category}</Txt></Row><Row style={{marginBottom:0}}><Txt muted>Herkunft</Txt><Txt>{customer.regionName||region?.name||'Expedition'}</Txt></Row></Card>
+  <Card><Row style={{alignItems:'flex-start',gap:12}}><Txt muted>Waren</Txt><View style={{flex:1,minWidth:0}}>{(customer.products||[customer.cargo]).map((product:string)=><View key={product} style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-end',gap:8,marginBottom:4}}><OrderArtwork cargo={product} size={32}/><Txt style={{flexShrink:1,textAlign:'right'}}>{product}</Txt></View>)}</View></Row><Row><Txt muted>Verkehr</Txt><Txt>{category?.label||customer.category}</Txt></Row><Row style={{marginBottom:0}}><Txt muted>Herkunft</Txt><Txt>{customer.regionName||region?.name||'Expedition'}</Txt></Row></Card>
  </>;
 }
 const styles=StyleSheet.create({summary:{backgroundColor:C.ink,borderColor:C.line,borderWidth:1,borderRadius:6,overflow:'hidden',marginBottom:10},

@@ -23,7 +23,7 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
  const close=()=>{if(locked||inFlight.current)return;if(kind){setKind(null);setFailed(false);}else onClose();};
  const enough=q&&inventory.hubVehicleParts>=q.parts&&coins>=q.coins;
  return <AppModal visible transparent animationType="none" onRequestClose={close}><View style={s.overlay}><View style={s.modal} testID="hub-vehicle-detail">
-  <View style={s.header}><View style={{flex:1,minWidth:0}}>{!kind&&<Txt muted style={s.caption}>Stadthub</Txt>}<Txt style={s.heading}>{kind?`${t(label)} ${t('verbessern')}`:`${t(courierModel(truck))} · ${t(courierName(truck))}`}</Txt></View><Btn icon="close" iconOnly secondary disabled={locked} onPress={close}>Schließen</Btn></View>
+  <View style={s.header}><View style={{flex:1,minWidth:0}}>{!kind&&<Txt muted style={s.caption}>Botenstation</Txt>}<Txt style={s.heading}>{kind?`${t(label)} ${t('verbessern')}`:`${t(courierModel(truck))} · ${t(courierName(truck))}`}</Txt></View><Btn icon="close" iconOnly secondary disabled={locked} onPress={close}>Schließen</Btn></View>
   <ScrollView style={{flexShrink:1}} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
    {kind?<>
     <Txt muted style={s.stage}>Stufe {q.level} / {q.max}</Txt>
@@ -35,7 +35,7 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
     {(failed||error)&&<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}
     <Btn disabled={locked||!enough||q.level>=q.max} onPress={()=>command('hubVehicleUpgrade',{id:truck.id,kind})}>{pending?'Wird verbessert …':`${t(label)} ${t('ausbauen')}`}</Btn>
    </>:<>
-    <View style={s.identity}><HubCourierArt size={100}/><View style={{flex:1}}><Txt style={[s.status,{color:truck.hubAssigned?C.accent:C.muted}]}>{truck.hubAssigned?'Im Hub eingesetzt':'Nicht eingesetzt'}</Txt><Txt muted style={s.caption}>{n(truck.kmDriven)} km gefahren</Txt></View></View>
+    <View style={s.identity}><HubCourierArt size={100}/><View style={{flex:1}}><Txt style={[s.status,{color:truck.hubAssigned?C.accent:C.muted}]}>{truck.hubAssigned?'In der Botenstation eingesetzt':'Nicht eingesetzt'}</Txt><Txt muted style={s.caption}>{n(truck.kmDriven)} km gefahren</Txt></View></View>
     <Txt style={s.sectionTitle}>Verbesserungen</Txt>
     <View style={s.upgrades}>{(['capacity','speed'] as const).map(option=>{
      const upgrade=truck.hubUpgrades[option],name=option==='capacity'?'Laderaum':'Antrieb',suffix=option==='capacity'?'t':'km/s',max=upgrade.level>=upgrade.max,available=!max&&coins>=upgrade.coins&&inventory.hubVehicleParts>=upgrade.parts;
@@ -45,7 +45,7 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
     })}</View>
     <Txt muted style={s.note}>Ausbauten wirken ab dem nächsten Stundenzyklus.</Txt>
     {(failed||error)&&<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}
-    {!truck.hubAssigned&&<Btn secondary disabled={locked} onPress={()=>command('hubTruck',{id:truck.id})}>Im Hub einsetzen</Btn>}
+    {!truck.hubAssigned&&<Btn secondary disabled={locked} onPress={()=>command('hubTruck',{id:truck.id})}>In der Botenstation einsetzen</Btn>}
    </>}
   </ScrollView>
  </View></View></AppModal>;
@@ -57,3 +57,4 @@ const s=StyleSheet.create({
  upgrades:{borderWidth:1,borderColor:C.line,borderRadius:6,overflow:'hidden'},upgrade:{flexDirection:'row',alignItems:'center',gap:8,minHeight:76,padding:10},divider:{borderTopWidth:1,borderTopColor:C.line},upgradeTitle:{fontSize:14,fontWeight:'700'},current:{fontSize:12,fontWeight:'700',flexShrink:1,textAlign:'right'},dot:{width:6,height:6,borderRadius:3,backgroundColor:C.accent},
  comparison:{flexDirection:'row',alignItems:'center',gap:8,marginBottom:8},valueBox:{flex:1,minWidth:0,padding:10,borderRadius:6,backgroundColor:C.raised,gap:4,borderWidth:1,borderColor:C.line,overflow:'hidden'},afterBox:{borderColor:C.accent},afterTint:{position:'absolute',top:0,left:0,right:0,bottom:0,backgroundColor:'rgba(73,109,77,.14)'},value:{fontSize:16,lineHeight:23,fontWeight:'700'},cost:{flexDirection:'row',alignItems:'center',gap:10,marginTop:12},label:{fontSize:12,lineHeight:18},costValue:{fontSize:14,lineHeight:21,fontWeight:'700'},note:{fontSize:10,lineHeight:16,marginTop:12,marginBottom:4},error:{fontSize:12,color:C.red,marginTop:10}
 });
+
