@@ -1251,5 +1251,10 @@
   "Imperiumsausbau": "Empire expansion",
   "Ausbau verfügbar": "Upgrade available",
   "Erweiterungspunkte verteilen · {0}": "Allocate expansion points · {0}",
-  "benötigt": "required"
+  "benötigt": "required",
+  "Auffüller": "Refills",
+  "Ausbau": "Upgrades",
+  "Materialien": "Materials",
+  "Kartensplitter": "Card shards",
+  "Weitere Vorräte": "Other supplies"
 }
