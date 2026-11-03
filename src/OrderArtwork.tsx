@@ -20,7 +20,7 @@ const categories:Record<string,number>={
 const freight=require('../assets/art/menu/inventory.png');
 export const OrderArtwork=memo(function OrderArtwork({cargo,category,size=68,fill=false}:{cargo?:string;category?:string;size?:number;fill?:boolean}){
  const source=category?categories[category]||freight:cargoAssets[cargo||'']||freight;
- return <Image accessible={false} accessibilityElementsHidden importantForAccessibility="no" source={source} resizeMode="contain" fadeDuration={0} style={fill?StyleSheet.absoluteFill:{width:size,height:size,flexShrink:0}}/>;
+ return <Image accessible={false} accessibilityElementsHidden importantForAccessibility="no" source={source} resizeMode="contain" fadeDuration={0} style={fill?[StyleSheet.absoluteFill,{width:'100%',height:'100%'}]:{width:size,height:size,flexShrink:0}}/>;
 });
 
 /** Decoration only; the enclosing independent 44-dp action owns its semantics. */
