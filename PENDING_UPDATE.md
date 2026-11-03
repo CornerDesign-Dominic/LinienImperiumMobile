@@ -56,3 +56,10 @@ Noch nicht veröffentlicht; Veröffentlichung erst nach neuer Freigabe. Orts- un
 - Kronenlande: Schmuck der Krone; Weite Ebenen: Edle Webwaren; Safranstraße: Kostbare Essenzen; Jadetal: Kunst aus Jade; Nordmark: Schätze des Nordens. Deutsch/Englisch und aktuelle Kategorie-/Startreferenzen sind angepasst.
 - Kunden-ID bestimmt den Titel in Kategorie, Herkunft, Start und allen Auftragszuständen. Neue Sonderaufträge erhalten ihn; Altaufträge werden nur zur Anzeige normalisiert. Empfehlungen, Ladungen, Mengen, Fortschritte und Belohnungen bleiben erhalten. Keine neuen Bilder.
 - Drei gezielte Backendfälle erfolgreich, einschließlich aller fünf Kunden sowie alter bereiter/laufender/abgeschlossener/abgelaufener Aufträge, Eigennamen und generischer Transporttexte. Übersetzungsprüfungen erweitert; lokaler UI-/TypeScript-Lauf mangels Abhängigkeiten offen. Veröffentlichung erst nach neuer Freigabe.
+
+## Großauftragsreiter und Seltenheitsstreifen – gesammelt, nicht veröffentlicht
+
+- Die große Laufend-Navigationskarte entfällt. Reiter Laufende und Aufträge zeigen tatsächliche aktive bzw. bereitliegende Großaufträge, nicht die Zahl ihrer Kategorien. Fertige Prämien bleiben unter Laufende erreichbar und werden separat markiert. Normaler Einstieg auf Aufträge, Startseiten-Belohnungslink auf Laufende, Rückkehr aus Details erhält den Reiter.
+- Gemeinsamer markanter linker Streifen: Sonderauftrag Rare-Blau, Empfehlung Epic-Violett, vorhandene legendäre Eventkarten Legendary-Gold. Restlicher Rahmen neutral, Papierfläche und Bilder bleiben. Keine neuen Spielwerte oder Bilder.
+- Feste Kategoriereihenfolge unabhängig von Vorräten: Seltenheit absteigend, bei gleicher Seltenheit Region 5 bis 1. Empfehlung Hafenverbund steht vor den fünf regionalen Sonderaufträgen; keine Sortierung nach Zeitpunkt oder Verfügbarkeit.
+- Zwei gezielte Status-/Sortierprüfungen erfolgreich; bestehende Kategorien-/Start-Komponententests erweitert, lokal mangels React/TypeScript nicht ausführbar. JS-Syntax und Diff geprüft; kein neuer App-Export/Gerätetest. Veröffentlichung erst nach erneuter Freigabe. Details: [Großauftragsübersicht](docs/ui/project-category-overview.md).

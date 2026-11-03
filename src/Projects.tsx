@@ -6,6 +6,7 @@ import {t as translate} from './i18n';
 import {Icon} from './Icon';
 import {LocationArt} from './LocationArt';
 import {ProjectCategoryArt} from './ProjectCategoryArt';
+import {projectSections,orderedProjectCategories} from './projectSections';
 import {itemName} from './items';
 import React,{useEffect,useRef,useState} from 'react';
 import {ScrollView,StyleSheet} from 'react-native';
@@ -13,17 +14,18 @@ import {AppModal as Modal} from './AppModal';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes} from './ui';
 export const projectTitle=(name:string,kind:string)=>`${kind==='referral'?'Empfehlungsauftrag':'Sonderauftrag'} ${(name||'').replace(/^(?:Großauftrag|Großprojekt|Sonderauftrag|Empfehlungsauftrag)\s+/,'')}`.trim();
-const rarityStyle=(kind:string)=>kind==='referral'?{backgroundColor:C.purpleWash,borderColor:C.epic}:{backgroundColor:C.blueWash,borderColor:C.rare};
+const projectColor=(kind:string,rarity?:string)=>rarity==='legendary'?C.legendary:rarity==='epic'||kind==='referral'?C.epic:C.rare;
+const rarityStyle=(kind:string,rarity?:string)=>({backgroundColor:C.panel,borderColor:C.line,borderLeftWidth:4,borderLeftColor:projectColor(kind,rarity)});
 const section=(text:string)=><Txt style={s.section}>{text}</Txt>;
 const fact=(label:string,value:string)=><Row><Txt muted style={{flex:1}}>{label}</Txt><Txt style={{textAlign:'right'}}>{value}</Txt></Row>;
 function ProjectTile({order:o,clock,onOpen}:any){
- return <Pressable accessibilityRole="button" accessibilityLabel={translate(`${projectTitle(o.projectName,o.kind)}, ${o.id}`)} onPress={()=>onOpen(o.id)}><Card style={[s.tile,rarityStyle(o.kind)]}>
+ return <Pressable accessibilityRole="button" accessibilityLabel={translate(`${projectTitle(o.projectName,o.kind)}, ${o.id}`)} onPress={()=>onOpen(o.id)}><Card style={[s.tile,rarityStyle(o.kind,o.projectInfo?.rarity)]}>
   <Row><ItemArt id={o.kind==='referral'?'referral':'special'} size={48}/><Txt style={[s.title,{flex:1}]}>{projectTitle(o.projectName,o.kind)}</Txt><Txt muted style={s.small}>{o.status==='queued'?'Bereit':o.status==='active'?'›':o.status==='failed'?'Abgelaufen':'Abschluss'}</Txt></Row>
   <Txt muted style={s.small}>{o.customerName} · {n(o.volume)} t · {n(o.distance)} km</Txt>
   {o.status==='active'&&<><Bar value={o.delivered/o.volume*100}/><Row style={{marginBottom:0}}><Txt gold style={s.small}>Frist {remaining(o.project.deadlineAt,clock)}</Txt><Txt muted style={s.small}>Flotte {o.eta?remaining(o.eta,clock):'—'}</Txt></Row></>}
  </Card></Pressable>;
 }
-export function Projects({data,onRunning,onOpen,onCommand,busy=false,modalBlocked=false}:any){
+export function Projects({data,clock,tab='saved',onTab,onOpen,onCommand,busy=false,modalBlocked=false}:any){
  const [infoKey,setInfoKey]=useState<string|null>(null),[startId,setStartId]=useState<string|null>(null),[template,setTemplate]=useState<number|null>(null),[submitting,setSubmitting]=useState(false),[startError,setStartError]=useState('');
  const starting=useRef(false);
  const info=data.projectCatalog.find((entry:any)=>entry.key===infoKey),order=data.state.orders.find((entry:any)=>entry.id===startId&&entry.isProject&&entry.status==='queued');
@@ -31,13 +33,14 @@ export function Projects({data,onRunning,onOpen,onCommand,busy=false,modalBlocke
  const close=()=>{if(!starting.current&&!busy){setInfoKey(null);setStartId(null);}};
  const selectCategory=(entry:any,available:any[])=>{setStartError('');if(available.length){setStartId(available[0].id);setInfoKey(null);setTemplate(null);}else{setInfoKey(entry.key);setStartId(null);}};
  const start=async()=>{if(starting.current||busy||!order||template===null||!onCommand)return;starting.current=true;setSubmitting(true);setStartError('');try{const result=await onCommand('projectStart',{id:order.id,template});if(result?.state?.orders?.find((entry:any)=>entry.id===order.id)?.status==='active'){setStartId(null);onOpen?.(order.id);}else setStartError(result?.message||'Auftrag konnte nicht gestartet werden.');}catch{setStartError('Auftrag konnte nicht gestartet werden.');}finally{starting.current=false;setSubmitting(false);}};
- const orders=data.state.orders.filter((o:any)=>o.isProject),active=orders.filter((o:any)=>o.status==='active');
+ const {active,queued,rewards}=projectSections(data.state.orders);
+ const tabs=[{id:'running',label:'Laufende',count:active.length,ready:rewards.length},{id:'saved',label:'Aufträge',count:queued.length,ready:0}];
  return <>
-  <Pressable accessibilityRole="button" accessibilityLabel={translate(`Laufende Großaufträge, ${active.length}`)} onPress={onRunning}><Card style={s.running}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700',flex:1}}>Laufende Großaufträge</Txt><Pill>{active.length}</Pill><Icon name="chevron" size={17} color={C.accent}/></Row></Card></Pressable>
-  {data.projectCatalog.map((info:any,index:number)=>({info,index,ready:orders.filter((o:any)=>o.status==='queued'&&o.projectInfo.key===info.key).length}))
-   .sort((a:any,b:any)=>Number(b.ready>0)-Number(a.ready>0)||a.index-b.index).map(({info,ready}:any)=>{
-   const referral=info.kind==='referral',name=(info.name||'').replace(/^(?:Großauftrag|Großprojekt|Sonderauftrag|Empfehlungsauftrag)\s+/,''),color=referral?C.epic:C.rare;
-   return <Pressable key={info.key} testID={`project-category-${info.key}`} accessibilityRole="button" accessibilityLabel={translate(`${projectTitle(info.name,info.kind)}, ${referral?'Alle Regionen':info.regionName}, Aufträge ${ready}`)} onPress={()=>selectCategory(info,orders.filter((order:any)=>order.status==='queued'&&order.projectInfo.key===info.key))} style={({pressed})=>pressed&&{opacity:.8}}><Card style={[s.category,{borderColor:color}]}>
+  <View accessibilityRole="tablist" style={s.tabs}>{tabs.map(item=><Pressable key={item.id} testID={`project-tab-${item.id}`} accessibilityRole="tab" accessibilityLabel={`${translate(item.label)}, ${item.count}${item.ready?`, ${translate('Belohnungen')}: ${item.ready}`:''}`} accessibilityState={{selected:tab===item.id}} aria-selected={tab===item.id} onPress={()=>{close();onTab?.(item.id);}} style={[s.tab,tab===item.id&&s.activeTab]}><Txt style={[s.tabLabel,tab===item.id&&s.selectedTabText]}>{item.label}</Txt><Txt style={[s.tabCount,tab===item.id&&s.selectedTabText]}>{n(item.count)}</Txt>{item.ready>0&&<View testID="project-rewards-hint" style={s.rewardDot}/>}</Pressable>)}</View>
+  {tab==='running'?<RunningProjects data={data} clock={clock} onOpen={onOpen}/>:<>
+  {orderedProjectCategories(data.projectCatalog).map((info:any)=>({info,ready:queued.filter((o:any)=>o.projectInfo.key===info.key).length})).map(({info,ready}:any)=>{
+   const referral=info.kind==='referral',name=(info.name||'').replace(/^(?:Großauftrag|Großprojekt|Sonderauftrag|Empfehlungsauftrag)\s+/,''),color=projectColor(info.kind,info.rarity);
+   return <Pressable key={info.key} testID={`project-category-${info.key}`} accessibilityRole="button" accessibilityLabel={translate(`${projectTitle(info.name,info.kind)}, ${referral?'Alle Regionen':info.regionName}, Aufträge ${ready}`)} onPress={()=>selectCategory(info,queued.filter((order:any)=>order.projectInfo.key===info.key))} style={({pressed})=>pressed&&{opacity:.8}}><Card style={[s.category,{borderLeftColor:color}]}>
     <View material={false} style={s.categoryArt}><ProjectCategoryArt preciousCargo={info.customer?.preciousCargo} referral={referral}/>{!referral&&<View material={false} style={s.regionLabel}><Txt style={s.regionName}>{info.regionName}</Txt></View>}</View>
     <View style={s.categoryCopy}>
      <Pressable testID={`project-info-${info.key}`} accessibilityRole="button" accessibilityLabel={translate(`Informationen zu ${projectTitle(info.name,info.kind)}`)} onPress={event=>{event?.stopPropagation();setStartId(null);setInfoKey(info.key);}} material={false} style={s.infoButton}><Icon name="help" size={20} color={C.accent}/></Pressable>
@@ -48,8 +51,9 @@ export function Projects({data,onRunning,onOpen,onCommand,busy=false,modalBlocke
     </View>
    </Card></Pressable>;
   })}
-  <Modal visible={!!info&&!modalBlocked} transparent animationType="none" onRequestClose={close}><View style={s.overlay}><SafeAreaView edges={[]} style={s.sheet}><MaterialLayer surfaceStyle={s.sheet}/><Row style={{flexWrap:'nowrap'}}><Txt style={[s.title,{flex:1,minWidth:0}]}>{info?projectTitle(info.name,info.kind):'Auftragsinfo'}</Txt><Btn testID="project-info-close" icon="close" iconOnly secondary disabled={busy} onPress={close}>Schließen</Btn></Row><ScrollView keyboardShouldPersistTaps="handled">{info&&<ProjectBrief info={info}/>}</ScrollView></SafeAreaView></View></Modal>
-  <Modal visible={!!order&&!modalBlocked} transparent animationType="none" onRequestClose={close}><View style={s.overlay}><SafeAreaView edges={[]} style={s.sheet}><MaterialLayer surfaceStyle={s.sheet}/><Row style={{flexWrap:'nowrap'}}><Txt style={[s.title,{flex:1,minWidth:0}]}>Auftrag starten?</Txt><Btn testID="project-start-close" icon="close" iconOnly secondary disabled={busy||submitting} onPress={close}>Schließen</Btn></Row><ScrollView keyboardShouldPersistTaps="handled">{order&&<><Txt style={[s.title,{marginBottom:8}]}>{projectTitle(order.projectName,order.kind)}</Txt><Txt muted style={s.small}>{order.customerName}</Txt>{fact('Umfang',`${n(order.volume)} t · ${n(order.distance)} km`)}{fact('Frist ab Start',minutes(order.deadlineMs/1000))}<Txt style={[s.title,{marginTop:12,marginBottom:6}]}>Flotte wählen</Txt>{fleets.map((entry:any)=><Pressable key={entry.index} testID={`project-fleet-${entry.index}`} accessibilityRole="button" accessibilityState={{selected:template===entry.index,disabled:busy||submitting}} disabled={busy||submitting} onPress={()=>setTemplate(entry.index)} style={[s.fleetChoice,template===entry.index&&{borderColor:C.accent,backgroundColor:C.greenWash}]}><Txt style={{fontWeight:'700'}}>Flotte {entry.index+1}</Txt><Txt muted style={s.small}>{entry.vehicles.map((vehicle:any)=>vehicle.model).join(' · ')}</Txt></Pressable>)}{!fleets.length&&<Txt muted style={s.small}>Mindestens eine Karte muss in einer Flotte eingesetzt sein.</Txt>}</>}{!!startError&&<Txt style={[s.small,{color:C.red,marginTop:8}]}>{startError}</Txt>}</ScrollView><Btn testID="project-start-confirm" disabled={busy||submitting||template===null||!fleets.some((entry:any)=>entry.index===template)||!onCommand} onPress={start}>Auftrag starten</Btn></SafeAreaView></View></Modal>
+  </>}
+  <Modal visible={!!info&&tab==='saved'&&!modalBlocked} transparent animationType="none" onRequestClose={close}><View style={s.overlay}><SafeAreaView edges={[]} style={s.sheet}><MaterialLayer surfaceStyle={s.sheet}/><Row style={{flexWrap:'nowrap'}}><Txt style={[s.title,{flex:1,minWidth:0}]}>{info?projectTitle(info.name,info.kind):'Auftragsinfo'}</Txt><Btn testID="project-info-close" icon="close" iconOnly secondary disabled={busy} onPress={close}>Schließen</Btn></Row><ScrollView keyboardShouldPersistTaps="handled">{info&&<ProjectBrief info={info}/>}</ScrollView></SafeAreaView></View></Modal>
+  <Modal visible={!!order&&tab==='saved'&&!modalBlocked} transparent animationType="none" onRequestClose={close}><View style={s.overlay}><SafeAreaView edges={[]} style={s.sheet}><MaterialLayer surfaceStyle={s.sheet}/><Row style={{flexWrap:'nowrap'}}><Txt style={[s.title,{flex:1,minWidth:0}]}>Auftrag starten?</Txt><Btn testID="project-start-close" icon="close" iconOnly secondary disabled={busy||submitting} onPress={close}>Schließen</Btn></Row><ScrollView keyboardShouldPersistTaps="handled">{order&&<><Txt style={[s.title,{marginBottom:8}]}>{projectTitle(order.projectName,order.kind)}</Txt><Txt muted style={s.small}>{order.customerName}</Txt>{fact('Umfang',`${n(order.volume)} t · ${n(order.distance)} km`)}{fact('Frist ab Start',minutes(order.deadlineMs/1000))}<Txt style={[s.title,{marginTop:12,marginBottom:6}]}>Flotte wählen</Txt>{fleets.map((entry:any)=><Pressable key={entry.index} testID={`project-fleet-${entry.index}`} accessibilityRole="button" accessibilityState={{selected:template===entry.index,disabled:busy||submitting}} disabled={busy||submitting} onPress={()=>setTemplate(entry.index)} style={[s.fleetChoice,template===entry.index&&{borderColor:C.accent,backgroundColor:C.greenWash}]}><Txt style={{fontWeight:'700'}}>Flotte {entry.index+1}</Txt><Txt muted style={s.small}>{entry.vehicles.map((vehicle:any)=>vehicle.model).join(' · ')}</Txt></Pressable>)}{!fleets.length&&<Txt muted style={s.small}>Mindestens eine Karte muss in einer Flotte eingesetzt sein.</Txt>}</>}{!!startError&&<Txt style={[s.small,{color:C.red,marginTop:8}]}>{startError}</Txt>}</ScrollView><Btn testID="project-start-confirm" disabled={busy||submitting||template===null||!fleets.some((entry:any)=>entry.index===template)||!onCommand} onPress={start}>Auftrag starten</Btn></SafeAreaView></View></Modal>
  </>;
 }
 export function ProjectBrief({info}:any){
@@ -80,8 +84,8 @@ export function ProjectType({data,typeKey,onOpen,onExpedition,onCustomers}:any){
  </>;
 }
 export function RunningProjects({data,clock,onOpen}:any){
- const orders=data.state.orders.filter((o:any)=>o.isProject),active=orders.filter((o:any)=>o.status==='active'),ready=orders.filter((o:any)=>o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt);
- return <>{active.map((o:any)=><ProjectTile key={o.id} order={o} clock={clock} onOpen={onOpen}/>)}{!active.length&&<Empty>Keine Großaufträge unterwegs.</Empty>}{!!ready.length&&<>{section('Prämien')}{ready.map((o:any)=><ProjectTile key={o.id} order={o} clock={clock} onOpen={onOpen}/>)}</>}</>;
+ const {active,rewards:ready}=projectSections(data.state.orders);
+ return <>{active.map((o:any)=><ProjectTile key={o.id} order={o} clock={clock} onOpen={onOpen}/>)}{!active.length&&!ready.length&&<Empty>Keine Großaufträge unterwegs.</Empty>}{!!ready.length&&<>{section('Prämien')}{ready.map((o:any)=><ProjectTile key={o.id} order={o} clock={clock} onOpen={onOpen}/>)}</>}</>;
 }
 export function ProjectDetail({data,id,busy,clock,onCommand,onExpedition,onCustomers,onInventory,onFleet,modalBlocked=false}:any){
  const [overtime,setOvertime]=useState(false),[more,setMore]=useState(false),[amount,setAmount]=useState<number|'max'>(1);
@@ -109,7 +113,8 @@ export function ProjectDetail({data,id,busy,clock,onCommand,onExpedition,onCusto
  </>;
 }
 const s=StyleSheet.create({
- category:{flexDirection:'row',paddingHorizontal:0,paddingVertical:0,overflow:'hidden',minHeight:112,marginBottom:10,backgroundColor:C.panel,borderWidth:1},
+ tabs:{flexDirection:'row',gap:5,marginBottom:10},tab:{flex:1,minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:5,borderWidth:1,borderColor:C.line,backgroundColor:C.panel,borderRadius:5},activeTab:{backgroundColor:C.accent,borderColor:C.ink},tabLabel:{fontSize:12,fontWeight:'700'},tabCount:{fontSize:11,color:C.muted},selectedTabText:{color:C.onInk},rewardDot:{width:7,height:7,borderRadius:4,backgroundColor:C.gold},
+ category:{flexDirection:'row',paddingHorizontal:0,paddingVertical:0,overflow:'hidden',minHeight:112,marginBottom:10,backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderLeftWidth:4},
  categoryArt:{width:'31%',minWidth:88,position:'relative',overflow:'hidden'},
  regionLabel:{position:'absolute',bottom:0,left:0,right:0,paddingHorizontal:4,paddingVertical:5},
  regionName:{fontSize:10,lineHeight:14,color:C.muted,fontWeight:'600',textAlign:'center'},
@@ -124,4 +129,4 @@ const s=StyleSheet.create({
  available:{backgroundColor:C.accent,borderColor:C.brass,borderWidth:1,borderRadius:3,paddingHorizontal:7,paddingVertical:3},
  availableText:{color:C.onInk,fontSize:11,lineHeight:15,fontWeight:'700'},
  unavailable:{fontSize:11,lineHeight:15},
-vehicle:{borderTopWidth:1,borderTopColor:C.line,paddingTop:10,marginTop:6,paddingBottom:6},title:{fontSize:15,fontWeight:'700'},small:{fontSize:12,lineHeight:18},section:{fontSize:13,fontWeight:'700',color:C.muted,marginVertical:10},running:{padding:12,backgroundColor:C.greenWash,borderColor:C.accent},tile:{padding:12,backgroundColor:C.panel,borderColor:C.line,marginBottom:9},loot:{fontSize:12,lineHeight:18,marginTop:7},times:{flexDirection:'row',gap:12,marginTop:8},image:{width:'100%',aspectRatio:16/9,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:12,marginBottom:4},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},sheet:{width:'100%',maxWidth:440,maxHeight:'80%',backgroundColor:C.panel,borderRadius:20,borderWidth:1,borderColor:C.line,padding:16},preset:{flex:1,minWidth:0,minHeight:44,borderRadius:10,borderWidth:1,borderColor:C.line,alignItems:'center',justifyContent:'center'}});
+vehicle:{borderTopWidth:1,borderTopColor:C.line,paddingTop:10,marginTop:6,paddingBottom:6},title:{fontSize:15,fontWeight:'700'},small:{fontSize:12,lineHeight:18},section:{fontSize:13,fontWeight:'700',color:C.muted,marginVertical:10},tile:{padding:12,backgroundColor:C.panel,borderColor:C.line,marginBottom:9},loot:{fontSize:12,lineHeight:18,marginTop:7},times:{flexDirection:'row',gap:12,marginTop:8},image:{width:'100%',aspectRatio:16/9,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:12,marginBottom:4},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},sheet:{width:'100%',maxWidth:440,maxHeight:'80%',backgroundColor:C.panel,borderRadius:20,borderWidth:1,borderColor:C.line,padding:16},preset:{flex:1,minWidth:0,minHeight:44,borderRadius:10,borderWidth:1,borderColor:C.line,alignItems:'center',justifyContent:'center'}});

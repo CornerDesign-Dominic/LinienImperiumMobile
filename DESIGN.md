@@ -50,6 +50,10 @@ Die Sammlung verwendet die verzierte Variante von `VehicleCardTile`: Schild, Bil
 
 Fahrzeugdetails verwenden [VehicleCardDetail](src/VehicleCardDetail.tsx): Stufe, Bild/Name, Bonus mit Stufentabelle, Geschwindigkeit, Kapazität und Betriebskosten. Garage/Flotte nutzen den kompakten Modus mit Kontextaktionen; Verbesserungen erfolgen aus der Sammlung. Details: [Sammlungskarten](docs/ui/vehicle-collection-cards.md), [Filter](docs/ui/collection-filters.md), [gemeinsame Auswahl](docs/ui/shared-card-pickers.md).
 
+## Auftragskarten
+
+Großauftragskategorien und konkrete Auftragskarten verwenden Papierflächen, einen neutralen Außenrand und einen markanten linken Seltenheitsstreifen: Rare-Blau für Sonderaufträge, Epic-Violett für Empfehlungen und Legendary-Gold bei den vorhandenen Eventkarten. Typbeschriftungen und Bilder bleiben zusätzliche Orientierung. Die Großauftragsseite wechselt über zwei Reiter zwischen Laufende und Aufträge; deren Zahlen trennen aktive von bereitliegenden Aufträgen. Diese Anpassung ist gesammelt und noch nicht veröffentlicht.
+
 ## Expedition und Botenstation
 
 Fünf Regionskarten führen in horizontal erkundbare Landschaften: Kronenlande, Weite Ebenen, Safranstraße, Jadetal und Nordmark. Je Region gibt es sieben Orte und einen Endlos-/Handelsort, insgesamt 40 eigene Nahansichten. Im neuen Sammelstand steht der Regionsname im zentralen Seitenkopf; der separate Titel über dem Bild entfällt. Dezente Pfeile und weich auslaufender Nebel lassen die Landschaft wirken. Fertige Ortsschilder haben keine Haken; verfügbare Bonusfahrten zeigen ein Plus im Kreis, Ortsnamen brechen an Wortgrenzen um. Gesperrte Gebäude, Namen und Aktionen bleiben verdeckt. Details: [Reisekarten](docs/ui/expedition-journeys.md), [Atmosphäre](docs/ui/expedition-atmosphere.md), [Ortsmodale](docs/ui/expedition-place-modals.md).

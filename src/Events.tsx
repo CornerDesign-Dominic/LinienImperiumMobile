@@ -44,5 +44,6 @@ export function Events({events,busy,onStart,onEnd,onInfo,onRegister,onJoin}:{eve
   </Card>}
  </React.Fragment>;})}</>;
 }
-export const legendaryStyle={backgroundColor:C.goldWash,borderColor:C.legendary};
+export const legendaryStyle={backgroundColor:C.panel,borderColor:C.line,borderLeftWidth:4,borderLeftColor:C.legendary};
 const styles=StyleSheet.create({title:{fontSize:17,fontWeight:'700',marginBottom:8},input:{color:C.text,borderWidth:1,borderColor:C.line,backgroundColor:C.raised,padding:12,borderRadius:5,marginVertical:10}});
+

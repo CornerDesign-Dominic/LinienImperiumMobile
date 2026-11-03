@@ -26,7 +26,7 @@ import {TransportSummary,TransportEditor} from './Company';
 import {Expeditions} from './Expeditions';
 import {Wholesaler} from './Wholesaler';
 import {Gifts} from './Gifts';
-import {Projects,ProjectType,RunningProjects,ProjectDetail,projectTitle} from './Projects';
+import {Projects,ProjectType,ProjectDetail,projectTitle} from './Projects';
 import {Orders,OrderDetail} from './Orders';
 import {OfferRefreshModal} from './OfferRefreshModal';
 import {OrderVehiclePicker} from './OrderVehiclePicker';
@@ -45,7 +45,7 @@ import {EventProject} from './EventProject';
 import {Procurement,procurementHelpNotes} from './Procurement';
 import {C,s,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes,plain} from './ui';
 const TABS=[['home','Home'],['fleet','Flotte'],['garage','Garage'],['orders','Einzelaufträge'],['projects','Großaufträge']];
-const NAMES:Record<string,string>={procurement:'Materialbeschaffung',home:'Start',fleet:'Flotte',garage:'Garage',orders:'Einzelaufträge',runningOrders:'Laufende Aufträge',savedOrders:'Aufträge aus Vorräten',savedOrderType:'Auftragsauswahl',orderDetail:'Auftragsdetails',projects:'Großaufträge',projectType:'Großauftrag',runningProjects:'Laufende Großaufträge',projectDetail:'Großauftrag',expeditions:'Expedition',cards:'Transportkarten',cardDetail:'Transportkarte',company:'Handelsimperium',transportUpgrade:'Imperiumsausbau',hub:'Botenstation',inventory:'Vorräte',crafting:'Herstellen',customers:'Stammkunden',customerDetail:'Kundendetails',statistics:'Statistik',account:'Einstellungen',dealer:'Botenstation-Händler',wholesaler:'Großhändler',gifts:'Geschenke',help:'Spielhilfe',eventProject:'Event-Großprojekt',events:'Events & Ankündigungen'};
+const NAMES:Record<string,string>={procurement:'Materialbeschaffung',home:'Start',fleet:'Flotte',garage:'Garage',orders:'Einzelaufträge',runningOrders:'Laufende Aufträge',savedOrders:'Aufträge aus Vorräten',savedOrderType:'Auftragsauswahl',orderDetail:'Auftragsdetails',projects:'Großaufträge',projectType:'Großauftrag',projectDetail:'Großauftrag',expeditions:'Expedition',cards:'Transportkarten',cardDetail:'Transportkarte',company:'Handelsimperium',transportUpgrade:'Imperiumsausbau',hub:'Botenstation',inventory:'Vorräte',crafting:'Herstellen',customers:'Stammkunden',customerDetail:'Kundendetails',statistics:'Statistik',account:'Einstellungen',dealer:'Botenstation-Händler',wholesaler:'Großhändler',gifts:'Geschenke',help:'Spielhilfe',eventProject:'Event-Großprojekt',events:'Events & Ankündigungen'};
 const HELP:Record<string,string>={procurement:'procurement',home:'dashboard',fleet:'personnel',garage:'fleet',orders:'orders',runningOrders:'orders',savedOrders:'orders',savedOrderType:'orders',orderDetail:'orders',projects:'special',projectType:'special',runningProjects:'special',projectDetail:'special',expeditions:'expeditions',cards:'personnel',cardDetail:'personnel',company:'company',transportUpgrade:'company',hub:'hub',inventory:'inventory',crafting:'development',customers:'customers',customerDetail:'customers',statistics:'statistics',dealer:'dealer'};
 export default function App(){return <SafeAreaProvider><LanguageProvider><Game/></LanguageProvider></SafeAreaProvider>;}
 function Game(){
@@ -54,6 +54,7 @@ function Game(){
  const [data,setData]=useState<any>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState(''),[screen,setScreen]=useState('home'),[trail,setTrail]=useState<string[]>([]),[clock,setClock]=useState(Date.now()),[template,setTemplate]=useState(0),[region,setRegion]=useState<number|null>(null),[projectId,setProjectId]=useState<string|null>(null),[sheet,setSheet]=useState<any>(null),[email,setEmail]=useState(''),[password,setPassword]=useState(''),[companyName,setCompanyName]=useState(''),[cityName,setCityName]=useState('');
  const [refreshOffersOpen,setRefreshOffersOpen]=useState(false);
  const [projectTypeKey,setProjectTypeKey]=useState<string|null>(null);
+ const [projectsTab,setProjectsTab]=useState('saved');
  const [eventId,setEventId]=useState<string|null>(null);
  const [orderId,setOrderId]=useState<string|null>(null);
  const [savedType,setSavedType]=useState<string|null>(null);
@@ -93,7 +94,7 @@ function Game(){
   scroll.current?.scrollTo({y:0,animated:false});
  },[data,screen,orderId]);
  useEffect(()=>{if(!message)return;const timer=setTimeout(()=>setMessage(''),5000);return()=>clearTimeout(timer);},[message]);
- const go=useCallback((next:string)=>{if(next==='runningOrders'||next==='savedOrders'){setOrdersTab(next==='runningOrders'?'running':'saved');setSavedType(null);next='orders';}if(next==='expeditions'&&screen!=='expeditions')setRegion(null);if(screen!==next)setTrail(v=>[...v,screen]);setScreen(next);scroll.current?.scrollTo({y:0,animated:false});},[screen]);
+ const go=useCallback((next:string)=>{if(next==='runningProjects'){setProjectsTab('running');next='projects';}else if(next==='projects'&&screen!=='projects')setProjectsTab('saved');if(next==='runningOrders'||next==='savedOrders'){setOrdersTab(next==='runningOrders'?'running':'saved');setSavedType(null);next='orders';}if(next==='expeditions'&&screen!=='expeditions')setRegion(null);if(screen!==next)setTrail(v=>[...v,screen]);setScreen(next);scroll.current?.scrollTo({y:0,animated:false});},[screen]);
  const openCollectionCard=useCallback((id:string)=>{setCardId(id);go('cardDetail');},[go]);
  const back=()=>{if(expansionOpen){setExpansionOpen(false);return true;}if(levelNotices.length){setLevelNotices(queue=>queue.slice(1));return true;}if(sheet){setSheet(null);return true;}if(screen==='orders'&&ordersTab==='saved'&&savedType){setSavedType(null);return true;}if(screen==='expeditions'&&region!==null){setRegion(null);scroll.current?.scrollTo({y:0,animated:false});return true;}if(trail.length){if(screen==='cardDetail')scroll.current?.scrollTo({y:0,animated:false});setScreen(trail[trail.length-1]);setTrail(v=>v.slice(0,-1));return true;}if(screen!=='home'){setScreen('home');return true;}return false;};
  useEffect(()=>{const handler=BackHandler.addEventListener('hardwareBackPress',back);return()=>handler.remove();},[screen,trail,sheet,projectId,region,levelNotices,ordersTab,savedType,expansionOpen,busy]);
@@ -153,9 +154,8 @@ function Game(){
     ...(order.replacementChoices||[]).map((truck:any)=>({title:truck.model,detail:`${n(truck.capacity,1)} t · Wechsel nach Ende der laufenden Tour`,onPress:()=>act('singleVehicle',{order:order.id,truck:truck.id})})),
     ...(order.pendingTruckId?[{title:'Aktuelles Fahrzeug behalten',onPress:()=>act('singleVehicle',{order:order.id,truck:order.truckId})}]:[])
    ],'Das Ersatzfahrzeug wird bis zum Wechsel reserviert. Die laufende Tour wird unverändert abgeschlossen.')}/>;
-   case 'projects':return <Projects data={data} busy={busy} onCommand={run} modalBlocked={!!sheet||levelNotices.length>0} onOpen={(id:string)=>{setProjectId(id);go('projectDetail');}} onRunning={()=>go('runningProjects')} onType={(key:string)=>{setProjectTypeKey(key);go('projectType');}}/>;
+   case 'projects':return <Projects data={data} busy={busy} clock={clock} tab={projectsTab} onTab={(tab:string)=>{setProjectsTab(tab);scroll.current?.scrollTo({y:0,animated:false});}} onCommand={run} modalBlocked={!!sheet||levelNotices.length>0} onOpen={(id:string)=>{setProjectId(id);go('projectDetail');}} onType={(key:string)=>{setProjectTypeKey(key);go('projectType');}}/>;
    case 'projectType':return <ProjectType data={data} typeKey={projectTypeKey} onOpen={(id:string)=>{setProjectId(id);go('projectDetail');}} onExpedition={(index:number)=>{go('expeditions');if(data.openRegions[index])setRegion(index);}} onCustomers={()=>go('customers')}/>;
-   case 'runningProjects':return <RunningProjects data={data} clock={clock} onOpen={(id:string)=>{setProjectId(id);go('projectDetail');}}/>;
    case 'projectDetail':return <ProjectDetail modalBlocked={levelNotices.length>0} key={projectId} data={data} id={projectId} busy={busy} clock={clock} onCommand={act} onExpedition={(index:number)=>{go('expeditions');if(data.openRegions[index])setRegion(index);}} onCustomers={()=>go('customers')} onInventory={()=>go('inventory')} onFleet={(index:number)=>{setTemplate(index);go('fleet');}}/>;
    case 'expeditions':return <Expeditions key={region??'regions'} modalBlocked={!!sheet||levelNotices.length>0} accountId={auth.currentUser?.uid||'guest'} data={data} region={region} busy={busy} clock={clock} onSelectRegion={(index:number)=>{if(data.expeditionMap[index]?.open){setRegion(index);scroll.current?.scrollTo({y:0,animated:false});}}} onCommand={act} onMission={chooseMission} onProcurement={()=>go('procurement')}/>;
    case 'company':return <><DevelopmentCard data={data} busy={busy} onCommand={act} onExpansion={()=>setExpansionOpen(true)} modalBlocked={!!sheet||levelNotices.length>0}/><TransportSummary data={data} onImprove={()=>go('transportUpgrade')}/></>;

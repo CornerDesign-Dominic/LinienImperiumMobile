@@ -19,6 +19,7 @@ function componentHarness(file,imports={}){
   if(id==='react-native-safe-area-context')return {SafeAreaView:'SafeAreaView'};
   if(id==='./Material')return {MaterialView:'View',MaterialPressable:'Pressable',MaterialLayer:'MaterialLayer'};
   if(id==='./i18n')return {t:String};
+  if(id==='./projectSections')return require('../../src/projectSections.js');
   if(id==='./ui')return {C:require('../../src/palette.json'),Txt:'Txt',Card:'Card',Row:'Row',Btn:'Btn',Pill:'Pill',n:String};
   if(id==='./AppModal')return {AppModal:'Modal'};
   if(id==='./ModalCloseButton')return {ModalCloseButton:'ModalCloseButton'};
