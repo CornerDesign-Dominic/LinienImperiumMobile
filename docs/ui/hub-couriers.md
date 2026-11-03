@@ -1,6 +1,6 @@
 # Stadthub-Boten
 
-Alle Stadthub-Boten verwenden das freigegebene Lastwombat-Motiv: ein einzelnes kräftiges Fabelwesen mit Fellkamm, beladenen Ledertaschen und petrolfarbener Decke im Kontorhof. Das optimierte quadratische JPEG wird über `HubCourierArt` in der dreispaltigen Übersicht, dem Detailfenster und dem Anwerbefenster gemeinsam angezeigt. Das bisherige LKW-Piktogramm entfällt dort. Es gibt keine Seltenheitskennzeichnung und kein neues Skinsystem.
+Alle Stadthub-Boten verwenden das freigegebene Lastwombat-Motiv: ein einzelnes kräftiges Fabelwesen mit Fellkamm, beladenen Ledertaschen und petrolfarbener Decke im Kontorhof. Das optimierte quadratische JPEG wird über `HubCourierArt` in der dreispaltigen Übersicht, dem Detailfenster und dem Anwerbefenster gemeinsam angezeigt. Das bisherige LKW-Piktogramm entfällt dort. Es gibt keine Seltenheitskennzeichnung. Das inzwischen vorbereitete [Skinsystem](premium-shop.md) führt den Lastwombat als kostenlose eigene Standardgestaltung; weitere kaufbare Motive sind noch nicht verfügbar.
 
 Sichtbare Bezeichnungen lauten Boten, Bote 01 usw.; die Art heißt Lastwombat. Hilfe, Anwerbetexte, Werkzeugkastenbeschreibung und englische Texte sind angepasst. Der Server liefert zusätzlich displayName/displayModel. Der Client hat dieselben kanonischen Ausweichregeln für bereits geladene Spielstände. Bekannte Hub-IDs werden in Mitteilungen und Historien nur bei der Anzeige übersetzt; eigene Namen und Firmen-/Stadtnamen bleiben erhalten.
 

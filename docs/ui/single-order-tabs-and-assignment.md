@@ -1,5 +1,7 @@
 # Einzelaufträge: Reiter und Fahrzeugwahl
 
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
+
 ## Übersicht
 
 Drei Reiter: Laufende, Angebote, Aufträge. Angebote ist die erste Auswahl; bei einer Rückkehr aus den Details bleibt der Reiter erhalten. Alte Einstiege aus Vorräten navigieren zum Reiter Aufträge. Dort bleiben die bisherigen Auftragsgruppen und gestapelten Expeditionsaufträge verfügbar. Zurück geht innerhalb einer Gruppe zuerst zur Gruppenübersicht.
@@ -18,12 +20,12 @@ Die Serveransicht liefert vehicleChoices inklusive geeigneter belegter Fahrzeuge
 
 Auftrag starten sendet den bestehenden passenden Befehl assign, assignPrivate, assignCrafted oder mission. Ein lokaler Sperrverweis und deaktivierte Bedienelemente verhindern Doppelstarts. Nur bestätigte Starts schließen das Modal und wechseln zu Laufende; bei Fehlern bleibt eine erneute Auswahl bzw. ein erneuter Versuch möglich. Die Zuweisungsprüfung auf dem Server bleibt maßgeblich.
 
-## Verifikation
+## Historische Verifikation bei Einführung
 
 - Typprüfung und alle 183 Tests erfolgreich. Sechs neue Tests prüfen Sortierung, Kompatibilität der freien choices, Anzeige belegter Fahrzeuge, reale Dauer-/Gewinnübereinstimmung beim Start, gespeicherte Missionen, Reservierungen und Beschaffungszeiten.
 - Android-Export erfolgreich.
 - Reale App mit lokalem Testserver: 320/390/430 px, alle Reiter, Sammelabholung, Angebote, Fahrzeugwahl ohne Start, Auswahlwechsel, schwebender Start, Sortierungen, Filter, Live-Countdown, Fehler und erneuter Versuch, Doppelklickschutz und Materialaufträge.
 - Privatabholungen, hergestellte Kundenaufträge, leere Garage, ausschließlich belegte Fahrzeuge und englische Oberfläche zusätzlich geprüft. Keine Browserlaufzeitfehler. Screenshots von Übersicht, Details und Auswahl visuell geprüft.
-- Kein physischer Gerätetest. Veröffentlichung ausdrücklich beauftragt.
+- Kein physischer Gerätetest.
 
-Nachträgliche Anpassung der Sortierbuttons: Typprüfung, zehn betroffene Sortier-/Server-/Übersetzungsprüfungen und Android-Export erfolgreich. Browser bei 320/390/430 px sowie Englisch geprüft: beide Buttons nebeneinander, exklusive Auswahl, echte Kartenreihenfolge, erhaltene Fahrzeugauswahl und Standard beim erneuten Öffnen. Diese Änderung ist zunächst nur gesammelt.
+Nachträgliche Anpassung der Sortierbuttons: Typprüfung, zehn betroffene Sortier-/Server-/Übersetzungsprüfungen und Android-Export erfolgreich. Browser bei 320/390/430 px sowie Englisch geprüft: beide Buttons nebeneinander, exklusive Auswahl, echte Kartenreihenfolge, erhaltene Fahrzeugauswahl und Standard beim erneuten Öffnen.

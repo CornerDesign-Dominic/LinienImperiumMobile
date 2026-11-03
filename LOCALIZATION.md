@@ -20,4 +20,13 @@ Serverzustand, Auftrags-/Karten-IDs, Command-Namen und Firebase-Dokumente bleibe
 4. Neue Spieltexte in alle Kataloge eintragen. Firmen-/Stadtnamen, E-Mail-Adressen und andere Nutzereingaben immer mit `literal` anzeigen. Unbekannte Texte bleiben als deutsche Quelle sichtbar statt zu verschwinden.
 5. Typprüfung, Übersetzungstests und UI-Prüfung auf schmalen Displays ausführen. Neue dynamische Nachrichten mit Testfall ergänzen.
 
-Veröffentlicht am 19.10.2026 mit Release 0ba088d8, Workflow 39307392702.
+## Aktuelle Anzeigebegriffe
+
+Die mobile Präsentationsschicht normalisiert historische Webbegriffe: unter anderem Münzen → Imperium-Taler, Premium-Münzen → Hermes-Siegel, Regionalverkehr → Nahverkehr, Fahrzeugkarte → Transportkarte sowie Stadttransporter → Lastwombat-Boten. Die Zuordnung liegt im Serveradapter und in `functions/src/currency-names.cjs` bzw. `hub-courier.js`. Persistierte IDs und Nutzerprofile werden dabei nicht umbenannt. Übersetzungen müssen die tatsächlich ausgegebenen mobilen Begriffe abdecken; veraltete Quellschlüssel können für alte Servermeldungen weiterhin benötigt werden.
+
+`src/i18n.ts` übersetzt auch zusammengesetzte Beschriftungen und dynamische Nachrichten. Unbekannte Texte bleiben als deutsche Rückfalltexte sichtbar; dies ist kein Nachweis vollständiger englischer Abdeckung. Bei neuen UI-Texten deshalb Katalog, Platzhalter und tatsächliche Darstellung gemeinsam prüfen.
+
+## Historischer Einführungsnachweis
+
+Die Sprachauswahl wurde am 19.10.2026 mit Release `0ba088d8`, Workflow `39307392702` eingeführt. Dieser Vermerk belegt nur diesen damaligen Stand. Aktuelle Prüfnachweise stehen in [TEST_REPORT.md](TEST_REPORT.md).
+

@@ -1,6 +1,6 @@
 # Gemeinsame Fahrzeugdetails in Sammlung, Garage und Flotte
 
-Neu im Sammelbranch `batch/company-improvements`, nicht veröffentlicht.
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
 
 Garage und Flotte verwenden jetzt dieselbe `VehicleCardDetail`-Komponente wie die Sammlung. Der kompakte Kontextmodus zeigt die Bereiche als zusammenhängende Ansicht mit Trennlinien statt separater Cards. Die Reihenfolge bleibt: römische Kartenstufe, Facettenbild, Fahrzeugname, Bonussatz mit Stufenhilfe, Geschwindigkeit (Leer/Beladen/Durchschnitt und Rang oben rechts), Kapazität mit Erweitert/Limit, Betriebskosten. Das Bild ist im Kontextmodal auf maximal 200 Layout-Einheiten begrenzt. Die Sammlung behält separate Cards und ihren Button Verbessern.
 
@@ -13,7 +13,7 @@ Garage und Flotte verwenden jetzt dieselbe `VehicleCardDetail`-Komponente wie di
 
 Neuer Serverbefehl `garageReplace` nimmt ursprüngliche Karten-ID und Ersatzkarten-ID entgegen. Zielkarte muss bekannt, im Besitz und außerhalb der Garage sein. Die Entfernung nutzt weiterhin die bestehenden Prüfungen für laufende Einzelaufträge, Expeditionen, Materialbeschaffung und reservierte Ersatzfahrzeuge. Entfernen und Hinzufügen erfolgen im selben Servervorgang, auch bei voller Garage. Die Zielkarte übernimmt die Position des bisherigen Fahrzeugs. Geparkte Fahrzeuge behalten Kapazitätsausbauten, Rang und Statistiken. Bestände, Münzen und Einsatzregeln werden nicht verändert. Ein unerwartet fehlschlagendes Hinzufügen wirft einen Fehler, damit die serverseitige Transaktion keinen halben Wechsel speichert.
 
-## Prüfung
+## Historische Prüfung bei Einführung
 
 - Typprüfung und alle 177 Tests erfolgreich.
 - Neue Tests: volle Garage mit Positionserhalt und wiederhergestellten Ausbauten/Statistiken; unzulässige, doppelte, unbekannte oder nicht besessene Ersatzkarten; keine Entfernung eines laufenden Fahrzeugs.
@@ -21,4 +21,4 @@ Neuer Serverbefehl `garageReplace` nimmt ursprüngliche Karten-ID und Ersatzkart
 - Deutsch/Englisch geprüft, keine Laufzeitfehler oder seitlicher Überlauf. Screenshots der kompakten Kontextdetails visuell geprüft.
 - Android-Export erfolgreich. Kein physischer Gerätetest.
 
-Keine Veröffentlichung: zunächst zusammen mit den bereits gesammelten Garage-/Sammlungskarten und den angepassten Detailbeschriftungen bereitgestellt. Der Serverbefehl muss bei einer späteren Veröffentlichung vor dem neuen Client ausgerollt werden.
+Der kompatible Serverbefehl muss vor einem darauf angewiesenen neuen Client ausgerollt werden.

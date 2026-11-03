@@ -1,12 +1,12 @@
 # Beschaffung mit gemeinsamem Tourenvorrat
 
-Status: vorbereitet, noch nicht veröffentlicht.
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
 
 ## Oberfläche
-Startmodal: Fahrzeugkacheln mit Kapazität und effektivem Tempo, gestrichelte Plus-Kachel gleicher Größe, nur freie Fahrzeuge zur Auswahl. Mehrere Fahrzeuge auswählbar, vor Start per Antippen wieder entfernbar.
+Startmodal: zweispaltige Fahrzeugauswahl mit vollständigen Namen und serverseitiger Dauer je Tour. Freie Fahrzeuge lassen sich mehrfach auswählen beziehungsweise abwählen; belegte Fahrzeuge bleiben sichtbar und gesperrt. Die frühere Plus-Kachel entfällt. Aktuelle Auswahlgestaltung: [Fahrzeugauswahl](procurement-picker.md).
 Kleineres Eingabefeld mit Max für feste Tourenzahl bzw. +10.000 für Reserve. Manuelle Eingabe bleibt erhalten. Max gilt für den gesamten Tourenvorrat, nicht je Fahrzeug; Obergrenze weiterhin 100.000 Touren. Reserve-Schnellbutton erhöht um 10.000 bis zur bestehenden Grenze von 1 Milliarde.
 Nur der Münzbestand bleibt als Zusammenfassung im Startmodal. Erläuterungen auf der Seite unter Hinweise, keine Kosten-/Maximalzahl-/Dauer-Textblöcke mehr im Dialog.
-Laufende Gruppen zeigen gemeinsamen Fortschritt und pro noch aktivem Fahrzeug einen eigenen Balken und Countdown. Bereits ausgeschiedene Fahrzeuge verschwinden aus dieser aktiven Gruppe und sind unabhängig von den übrigen Mitgliedern wieder frei.
+Laufende Gruppen zeigen gemeinsamen Fortschritt und pro noch aktivem Fahrzeug einen eigenen Balken und Countdown. Bereits ausgeschiedene Fahrzeuge verschwinden aus dieser aktiven Gruppe und sind unabhängig von den übrigen Mitgliedern wieder frei. Die Übersichtskarte öffnet einen Detaildialog mit den bestätigungspflichtigen Stop-Aktionen; siehe [Beschaffungsübersicht](procurement-overview.md).
 
 ## Gemeinsame Disposition
 Neue Aktionen procurementGroupStart und procurementGroupStop; alte Einzelaktionen und bestehende Spielstände bleiben kompatibel.
@@ -17,7 +17,7 @@ Nach laufenden Touren beenden: alle bereits gestarteten Fahrten liefern ab; nur 
 Garagenexklusivität bleibt pro Fahrzeug, Flotteneinsätze parallel erlaubt. Individuelle Touren frieren ihre Laufzeit weiterhin ein; neue Touren lesen aktuelle Werte.
 Alle abgeschlossenen Touren nutzen dieselben bisherigen Lootchancen und permanenten Gesamt-/Regionszähler. Neu: Gruppenhistorie hält aktive und die letzten 20 abgeschlossenen Gruppen; Zähler und Belohnungen werden dadurch nicht gelöscht.
 
-## Prüfungen
+## Historische Prüfungen bei Einführung
 96 Rechen-/Backendtests bestanden:
 node --test --test-reporter=dot tests/fleet-details.test.cjs tests/gifts.test.cjs tests/mobile-engine.test.cjs tests/events.test.cjs tests/tour-updates.test.cjs tests/procurement.test.cjs tests/procurement-groups.test.cjs
 

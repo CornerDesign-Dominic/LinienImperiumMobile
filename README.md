@@ -1,45 +1,41 @@
 # Linien Imperium Online — Mobile
 
-Native React-Native-/Expo-App für Android, mit vorbereitetem iOS-Projekt. Hochformat-Oberfläche im Stil eines Reiseatlas: Pergament, Tintenpetrol, Messingdetails und eine malerische Hafenillustration. Die gestalterischen Regeln stehen in [DESIGN.md](DESIGN.md).
+Transport-, Handels- und Entdeckungsspiel als native React-Native-/Expo-App für Android. Quellcode und Bundle-ID für iOS sind vorbereitet; ein signierter iPhone-Build benötigt Apple-Entwicklerzugang. Die mobile Version entwickelt den ursprünglichen Web-Prototyp eigenständig weiter.
 
-## Einmalige Cloud-Einrichtung
+## Einstieg
 
-Nach `scripts/setup-firebase-access.sh` muss der Projektinhaber zusätzlich `scripts/finish-firebase-access.sh` in Google Cloud Shell ausführen. Das aktiviert die beim ersten Deployment benötigten Zusatz-APIs, legt ein Serverkonto mit Firestore-Zugriff an und gibt dem Deployment-Konto nur Lese- und Hinzufügerechte auf das einzelne Android-Signatur-Secret. Anschließend **Actions → Mobile preview → Run workflow** starten. Diese administrativen Rechte hat der GitHub-Dienst selbst nicht.
+- [Dokumentationsindex](docs/README.md): Detailreferenzen und Historie.
+- [Aktuelle Spielregeln](SPIELREGELN.md) und [Tourregeln](TOUR_RULES.md).
+- [Gestaltung](DESIGN.md), [Sprachen](LOCALIZATION.md), [Item-Katalog](ITEM_AUDIT.md).
+- [Teststrategie](tests/README.md), [Prüfnachweise](TEST_REPORT.md), [offene Arbeiten](PENDING_UPDATE.md).
 
-## Android testen — ohne laufenden PC
+## Spielumfang
 
-**Testversion 0.1.0:** [APK direkt herunterladen](https://expo.dev/artifacts/eas/giLzWrQVv-S37lNWNLg15Sz9HosyPsfEqGtl_-geOfQ.apk) · [Erfolgreicher Build](https://expo.dev/accounts/cornerdesign/projects/linien-imperium-online/builds/d43d1b43-e06a-42b3-9204-a815bff724af)
+- Fünf Hauptbereiche: Home, Flotte, Garage, Einzelaufträge und Großaufträge; Firma und Stadt erhalten frei gewählte Anzeigenamen.
+- 25 regionale Transportkarten mit Illustrationen, Seltenheiten, Kartenstufen, Geschwindigkeitsrang, Kapazitätsausbau und Einsatzboni. Garage und Flotte haben getrennte Einsatzregeln.
+- Einzelaufträge mit Nah-/Fernverkehr, Single/Dual Way, Kunden- und Vorratsaufträgen, Halten, Aktualisieren und gemeinsamer Belohnungsabholung.
+- Großaufträge mit Flotteneinsatz, passiven Lieferungen, Überstunden und Abschlussstatistik; Expeditionen mit fünf Regionen, Ortsmissionen, Endlosorten, Kartenfunden und Shards.
+- Materialbeschaffung mit Einzel- und Gruppenfahrten, vorausbezahlten Touren oder Kontoreserve, Offline-Abrechnung und getrennten Abbruchmöglichkeiten.
+- Handelsimperium mit Ausbauten und Punkteverteilung; je Level drei verteilbare Punkte sowie je ein Expeditions- und Überstundenauffüller für 50 Punkte.
+- Stadthub mit Lastwombat-Boten, Vertrieb, Erträgen, Fundkisten und eigenem Ausbau über Werkzeugkästen; Vorräte, Herstellung, Stammkunden und Statistik.
+- Pyramiden-Event mit Event/Pass/Ränge, Solotest und Gemeinschaftsrunde; [Eventregeln und Grenzen](docs/events/pyramid.md).
+- Großhändler mit regionalen Geschenken und vorbereitetem Skin-/Hermes-Siegel-Shop. Echtgeldkäufe sind deaktiviert; aktuell ist nur der kostenlose Standard-Skin vorhanden. [Shopstand](docs/ui/premium-shop.md).
 
-Firebase-Deployment und Live-Tests sind erfolgreich abgeschlossen. Diese APK basiert auf Commit `8f8c5768a8891d6cd53a00b07155798d396c61c6`. Ein Start auf einem physischen Android-Gerät steht noch aus.
+Dies ist eine Testversion mit Testwerkzeugen unter Einstellungen. Temporäre Testwerte sind in den Spielregeln ausdrücklich von regulären Regeln getrennt.
 
-Der Workflow **Mobile preview** prüft den Code, veröffentlicht das Firebase-Backend und liefert kompatible Änderungen nach ausdrücklicher Veröffentlichung per EAS Update an installierte Android-Testversionen. Pushes allein veröffentlichen nichts; dafür ist ein manueller Workflow-Start oder ein Commit mit `[publish-preview]` erforderlich. Für eine neue APK den Workflow manuell mit **build_apk** starten. Der Downloadlink erscheint in der Zusammenfassung des erfolgreichen GitHub-Actions-Laufs. Auf Android die APK herunterladen, die Installation aus dem Browser erlauben und die installierte App öffnen. Expo Go und ein lokaler Entwicklungsserver sind dafür nicht erforderlich.
+## Konto und Speicherung
 
-EAS-Projekt: https://expo.dev/accounts/cornerdesign/projects/linien-imperium-online
-GitHub-Builds: https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions
+Der erste Start legt ein anonymes Firebase-Konto an und speichert dessen Anmeldung auf dem Gerät. Unter **Home → Einstellungen** kann der Spielstand mit E-Mail und Passwort gesichert oder ein bestehendes Konto geladen werden. Eine Neuinstallation kann den Zugang zu einem ungesicherten Gastkonto verlieren.
 
-Der erste Start erstellt ein dauerhaft auf dem Gerät gespeichertes anonymes Firebase-Konto. Unter **Home → Einstellungen** lässt sich der Spielstand mit E-Mail und Passwort sichern oder ein bestehendes Konto laden. Eine Neuinstallation kann ein ungesichertes Gastkonto verlieren. Internet ist für Spielaktionen nötig. Serverzeit berechnet Fortschritt nach geschlossener App; lokale Uhrzeit oder vom Client gesendete Münzen werden nicht übernommen.
-
-## Umfang und Quelle
-
-Übernommen ist der Webstand `CornerDesign-Dominic/LinienImperium` bei Commit `3ffe8a3ba7956119359b8c16a4df0e4423acc6e7`. Kundenprofile, neue Events und andere nur besprochene Erweiterungen sind nicht enthalten. Vorhandene noch nicht aktive Webabteilungen bleiben als solche gekennzeichnet.
-
-- Kompakte Kopfzeile mit Level/XP, Münzen, Expeditions- und Überstundenpunkten; nur ein dezenter Seitenname je Ansicht.
-- Fünf feste Navigationstasten: Home, Flotte, Garage, Einzelaufträge, Großaufträge.
-- Firmengründung mit frei gewähltem Firmen- und Fantasiestadtnamen; drei Flottenvorlagen, Kartensammlung im Raster mit drei Spalten und Detailansicht, Garage mit zehn Kartenplätzen und Fahrzeugausbau.
-- Frachtbörse, Single/Dual Way, Kunden- und hergestellte Aufträge, Halten/Aktualisieren, Prämien.
-- Großprojekte, gespeicherte Flottenwerte, passive Transporte, 1.000 tkm je Token und Vergütung für Tokenlieferungen.
-- Expeditionen mit fünf Regionen und sieben Orten, Missionen, Endlosorte, Kartenfunde und Shards.
-- Firma und Transportausbauten, Stadthub und Händler, Vorräte, Herstellung, Kundenfähigkeiten und Statistik.
-- 100-Token-Refill pro Level, fünf frei verteilbare Kapazitätspunkte.
-- Bestehende Testwerkzeuge (+50.000 Münzen / Zurücksetzen) unter Einstellungen. Diese Test-App ist keine Veröffentlichung für echte Spieler.
+Spielaktionen benötigen Internet. Der Server berechnet Fortschritt anhand seiner Zeit, auch nach einer Spielpause; eine lokale Uhrzeitänderung oder vom Client übermittelte Guthaben bestimmen den Spielstand nicht. Die Sprachwahl Deutsch/Englisch ist eine lokale Geräteeinstellung, getrennt vom Konto.
 
 ## Architektur
 
-`functions/vendor/web-game.js` enthält die unveränderte Webquelle. `functions/src/engine.cjs` bindet deren Spiellogik und die mobilen Tourregeln aus `functions/src/tour-runtime.js` auf dem Server ein und stellt ausschließlich eine feste Liste erlaubter Befehle und mobile Ansichtsmodelle bereit. Die Weboberfläche wird nicht in einer WebView ausgeführt; `src/App.tsx` rendert native React-Native-Komponenten.
-
-Die authentifizierte callable Function `game` in `europe-west3` berechnet alle Aktionen und prüft Besitz/Vorräte. Spielstände werden komprimiert in Firestore gespeichert. Transaktionen und Anfragekennungen verhindern doppelte Mutationen bei Wiederholungen; direkte Clientzugriffe auf Firestore sind gesperrt. `EXPO_TOKEN` bleibt ein GitHub-Secret. Firebase-Deployments authentifizieren sich per Workload Identity Federation. Die Android-Testsignatur bleibt in Google Secret Manager, nicht im Repository.
-
-Firebase-Projekt: `linienimperium`. Datenbankregion bleibt wie angelegt; Functions verwenden Frankfurt. Deployment-Identität: `github-mobile-deploy@linienimperium.iam.gserviceaccount.com`.
+- `src/App.tsx` und die übrigen Komponenten unter `src/` rendern die native Oberfläche, keine WebView.
+- `functions/vendor/web-game.js` ist die gepinnte Web-Baseline (`CornerDesign-Dominic/LinienImperium`, Commit `3ffe8a3ba7956119359b8c16a4df0e4423acc6e7`). Deren ursprüngliche Regeln beschreiben nicht automatisch das heutige Mobile-Spiel.
+- `functions/src/engine.cjs` bindet die Baseline und die Mobile-Runtimes ein und stellt erlaubte Befehle und Ansichtsmodelle bereit. Touren, Karten, Fortschritt, Beschaffung und Stadthub werden dort für Mobile erweitert.
+- Die authentifizierte callable Function `game` in `europe-west3` verarbeitet Aktionen serverseitig. Komprimierte Spielstände liegen in Firestore; Transaktionen und Anfragekennungen verhindern doppelte Mutationen bei Wiederholungen. Direkte Firestore-Clientzugriffe sind gesperrt.
+- Firebase-Projekt: `linienimperium`. Deployment verwendet Workload Identity Federation; Expo-Token und Android-Signierung werden über Secret-Verwaltung bereitgestellt, nicht über Repository-Dateien.
 
 ## Lokal prüfen
 
@@ -51,32 +47,21 @@ npm test
 npx expo export --platform android
 ```
 
-Die Tests umfassen 23 übernommene Web-Regressionsdateien und zusätzliche Tests für den mobilen Serveradapter. `scripts/smoke-backend.cjs` prüft nach Deployment die echte Gastanmeldung, Speicherung, Deduplizierung und Zugriffssperre ohne Authentifizierung.
+Die Tests sichern Mobile-Regeln, ausgewählte Komponentenabläufe und die bewusst erhaltene Web-Baseline getrennt ab. Umfang und Grenzen stehen in [tests/README.md](tests/README.md). Ein grüner lokaler Lauf belegt weder Veröffentlichung noch einen physischen Gerätetest.
 
-## Updates und iOS
+## Android-Testversion und Veröffentlichung
 
-**Mobile preview** veröffentlicht nach explizitem Start eine kompatible Android-Aktualisierung über EAS Update; **Update installed preview** kann dies zusätzlich manuell auslösen. Die vorhandene APK lädt diese Updates beim Start und verwendet sie beim nächsten Neustart. Bei Änderungen an nativen Abhängigkeiten oder der Runtime-Version ist eine neue APK erforderlich. Für iOS sind Bundle-ID und gemeinsamer Quellcode vorbereitet; ein iPhone-Build braucht noch Apple-Entwicklerzugang und Signierung.
+Die installierte APK benötigt keinen laufenden PC oder Expo Go. Aktuelle Build- und Update-Ergebnisse stehen in [GitHub Actions](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions) und im [EAS-Projekt](https://expo.dev/accounts/cornerdesign/projects/linien-imperium-online). Der APK-Link wird bei einem erfolgreichen neuen Build in dessen Workflow-Zusammenfassung ausgegeben.
 
-`SPIELREGELN.md` dokumentiert die übernommenen Werte. Die aktuelle mobile Testversion bleibt getrennt vom ursprünglichen Webrepository.
+| Weg | Wirkung |
+| --- | --- |
+| Normaler Push auf `main` | Startet gemäß Workflow-Pfadfilter die Validierung; veröffentlicht allein weder Server noch OTA. |
+| **Mobile preview** manuell oder `main`-Commit mit `[publish-preview]` | Validierung → Firebase-Backend und Regeln → Live-API-Smoke-Test → kompatibles Android-OTA im Kanal `preview`. |
+| **Mobile preview** manuell mit `build_apk` | Validierung und Backend-Deployment, anschließend neue installierbare APK statt OTA. Erforderlich bei nativen Änderungen oder neuer Runtime. |
+| **Update installed preview** manuell | Typprüfung und Tests, dann ausschließlich kompatibles Android-OTA; kein Backend-Deployment. Nur verwenden, wenn der veröffentlichte Server bereits passt. |
 
-## Mobile-Anpassungen nach dem ersten Build
+Die APK lädt kompatible OTA-Updates beim Start; sie werden nach einem Neustart verwendet. Maßgeblich für eine Veröffentlichung ist der erfolgreiche Workflow mit passendem Commit, nicht ein historischer Vermerk in einer Moduldatei. Die Workflow-Definitionen unter `.github/workflows/` sind die technische Referenz.
 
-Firmen- und Stadtname sind reine Anzeigenamen. Neue Firmen verwenden ein einheitliches Streckenprofil; die Namenswahl beeinflusst weder Entfernungen noch Vergütung. Bestehende Spielstände erhalten das Namensformular ohne Zurücksetzen. Bereits laufende Transporte behalten ihre Werte.
+## Erstmalige Cloud-Einrichtung
 
-Die Kartensammlung zeigt Kartenstufe, Geschwindigkeitsrang und aktuelle Kapazität, mit quadratischer Fläche für spätere Bilder. Detailansichten enthalten Werte, Boni und Shard-Aufwertung, aber keine Einsatz- oder Auftragszustände. Fahrzeuge werden unter **Garage → Fahrzeug hinzufügen** eingesetzt.
-
-## Gesammeltes Update: Expeditionen und Testwerkzeuge
-
-Fünf Regionskarten führen zu je sieben Ortskarten und einer Endloskarte. Kunde, Fortschritt und Sperren stehen direkt auf den Karten. Unter **Einstellungen → Testwerkzeuge** lassen sich zusätzlich Expeditionspunkte, Überstundenpunkte und XP hinzufügen. Test-XP verwendet die normalen Levelbelohnungen. Dieses Paket enthält auch die vorbereitete Wiederholung von Verbindungsfehlern und die kontrastreicheren Angebotskarten. Die Vorschläge für neue Startangebote bleiben unverändert offen. Details zur Prüfung stehen in [TEST_REPORT.md](TEST_REPORT.md).
-
-
-## Materialbeschaffung
-
-Nach vollständigem Abschluss einer Expeditionsregion wird ihre Beschaffungsstelle dauerhaft verfügbar. Garagenfahrzeuge holen für feste Münzpreise Materialien ab, wahlweise mit vorausbezahlter Tourenzahl oder bis zu einer Kontoreserve. Offlinefahrten, getrennte Beendigung nach Tour oder sofortiger Abbruch, Rückerstattung ungestarteter Touren, gemeinsame Lootabholung und regionale Erfolgszähler sind enthalten. Flotteneinsätze bleiben parallel möglich. Preise beginnen bei 8.000 Münzen je Runde; alle fünf Stellen nutzen vorerst denselben niedrigen Lootpool. Zugang über Home und Expedition; Regeln und Hilfe beschreiben die Details.
-
-## Pyramiden-Event
-
-Das bestehende Event enthält die Reiter Event, Pass und Ränge, konfigurierbare
-Solotests sowie einen gemeinsamen Pyramidenbau mit 48-Stunden-Anmeldung.
-Regeln, vorläufige Skalierung, Belohnungen und verbleibende Grenzen stehen in
-[docs/events/pyramid.md](docs/events/pyramid.md).
+Nur für eine neue bzw. wiederherzustellende Umgebung: `scripts/setup-firebase-access.sh`, anschließend durch den Projektinhaber `scripts/finish-firebase-access.sh` in Google Cloud Shell ausführen. Die Skripte richten den Deployment-Zugang, benötigte APIs und Zugriff auf die Android-Testsignatur ein. Danach **Mobile preview** manuell starten. Die vorhandene Umgebung benötigt diese Einrichtung nicht für jedes Update.

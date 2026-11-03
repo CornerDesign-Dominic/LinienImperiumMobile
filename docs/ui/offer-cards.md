@@ -1,6 +1,6 @@
 # Einzelaufträge: kompakte Angebotsmerkmale
 
-Unveröffentlicht im Sammelbranch `collect/transport-upgrades`.
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
 
 Angebote und gespeicherte Einzelaufträge zeigen Tonnen und Kilometer direkt unter dem Warennamen untereinander, neben dem Auftragsbild. In einer festen Merkmalszeile stehen Location-Symbol plus Nah/Fern, ein bis drei aufsteigende Dauerbalken plus Kurz/Mittel/Lang und zwei gegenläufige Frachtpfeile plus Single/Dual. Bei Single ist der Rückpfeil blass: Die Rückfahrt existiert, erfolgt aber leer. Aktive Einzelaufträge verwenden dieselbe Merkmalszeile.
 
@@ -10,7 +10,7 @@ In Angeboten hält oder löst ein separater aufrechter, symmetrischer Pin direkt
 
 Vier kleine ursprüngliche technische Icons sind als SVG-Quelle und PNG gebündelt (Location, Pin leer/gefüllt, Richtungspfeil); keine neue native Abhängigkeit.
 
-## Validierung
+## Historische Validierung bei Einführung
 
 - TypeScript und 219/219 Tests erfolgreich; drei gezielte Tests prüfen Halteplätze/Klicktrennung, Busy-Zustand, goldene Füllung, Dauer-/Fahrartsemantik und globale Nahverkehr-Bezeichnung mit geschützten Profilnamen.
 - Tatsächliche App mit lokalem Spielkern bei 320/360/390/430 dp: alle Bilder geladen, kein horizontaler Überlauf oder JavaScript-Fehler; langer Warenname geprüft.

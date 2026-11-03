@@ -1,6 +1,6 @@
 # Stadthub-Status auf der Startseite
 
-Vorbereitet am 20.10.2026, noch nicht veröffentlicht.
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
 
 - Füllstand direkt rechts in der vorhandenen Stadthub-Kachel: 0/6 bis 5/6, ab sechs gesammelten Zyklen „Voll“ in Gold.
 - Vor Eröffnung des Stadthubs keine Füllstandsanzeige. Englische Anzeige verwendet die vorhandene Übersetzung „Full“.

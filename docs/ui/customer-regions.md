@@ -1,6 +1,6 @@
-# Regionale Stammkunden – Sammelstand
+# Regionale Stammkunden
 
-Unveröffentlicht im Branch `collect/transport-upgrades`.
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
 
 `functions/src/customer-identities.json` definiert die gemeinsame Anzeigeidentität für mobilen Server und Oberfläche. Stabile IDs, regionale Reihenfolge, Waren, Transportkategorie, Beziehungen, Fähigkeiten und Wirtschaftslogik bleiben erhalten. Der gepinnte Web-Code bleibt unverändert. Alte Kundennamen in historischen Anzeige- und Belohnungstexten werden bei der Ausgabe ersetzt; frei gewählte Firmen-/Stadtnamen bleiben unberührt.
 
@@ -14,7 +14,7 @@ Unveröffentlicht im Branch `collect/transport-upgrades`.
 
 Die Liste verwendet 118 dp hohe Bildkarten (120 dp einschließlich Rahmen). Name und Region liegen auf einem dunklen halbtransparenten Streifen; das Level sitzt in einer kleinen Plakette oben rechts. Die Detailseite zeigt dasselbe Bild mit 200 dp Höhe. Ein Hinweis-Punkt direkt am Level erscheint bei unvergebenen Fähigkeitspunkten und verschwindet nach dem Speichern der letzten Punkte. Beziehungsbalken und rohe Beziehungszahlen entfallen in beiden Ansichten. Keine neuen Bilder oder Kurzbeschreibungen.
 
-## Validierung
+## Historische Validierung bei Einführung
 
 - 206 Tests erfolgreich, einschließlich gemeinsamer Identität in Kunden-/Expeditions-/Projektansichten, erhaltener Spielstandwerte, historischer Texte und Punktehinweisen mit/ohne freie Punkte.
 - TypeScript erfolgreich.

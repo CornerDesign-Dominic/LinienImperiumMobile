@@ -1,9 +1,7 @@
-# Gesperrte Beschaffungsorte kompakter
+# Gesperrte Beschaffungsorte
 
-Status: vorbereitet, noch nicht veröffentlicht.
+Aktueller Implementierungsbezug: `src/Procurement.tsx` (03.11.2026).
 
-Die aktuelle Beschaffungsort-Auswahl verwendet für gesperrte Orte weniger Innenabstand, kleineren Titel und Preis, einen kompakten Fortschritt und zwei nebeneinanderliegende Textaktionen. Das große Gesperrt-Band und der breite Expeditionsbutton entfallen; Schloss und dezenter Gesperrt-Text bleiben. Belohnungen bleiben aufklappbar und die Expedition erreichbar. Aktionsflächen mindestens 44 logische Pixel hoch.
+Die Ortsauswahl zeigt gesperrte Regionen mit kleinerem Titel, Preis, Schloss, Gesperrt-Text und kompaktem Freischaltfortschritt (Orte/Lieferungen/Endloslieferung). Sie sind nicht als Beschaffungsziel wählbar. Ein kompakter Expeditionslink bleibt erreichbar. Der frühere aufklappbare Belohnungsbereich ist entfernt; bereits verdiente Belohnungen stehen weiter auf der Hauptseite zum Einsammeln.
 
-Aktuelle Regionsidentitäten und die neue Beschaffungsübersicht aus main übernommen. Die zuvor vorbereitete Entfernung der oberen Startkarten-Dopplung samt Belohnungsbadge bleibt erhalten. Backend und Freischaltungsregeln unverändert.
-
-Quelltextprüfung der gesperrten/freien Zweige, Navigation und Belohnungsaufklappung. Keine neuen Mechaniktests für diese Anzeigeänderung. Vollständiger App-Build und Gerätetest stehen aus.
+Die aktuelle [Beschaffungsübersicht](procurement-overview.md) und [Fahrzeugauswahl](procurement-picker.md) beschreiben die weiteren Dialoge. Backend, Preise und Freischaltungsregeln werden durch die kompakte Darstellung nicht verändert.

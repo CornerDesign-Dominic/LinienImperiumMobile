@@ -1,8 +1,9 @@
-# Beschaffung: kompakte Fahrzeugauswahl
-Status: vorbereitet, noch nicht veröffentlicht.
+# Beschaffung: Fahrzeugauswahl
 
-Die dreispaltige Auswahl zeigt nur freie Garagenfahrzeuge. Bereits durch Einzelaufträge, Expeditionslieferungen, andere Beschaffung oder reservierte Wechsel belegte Fahrzeuge werden über den vorhandenen serverseitigen Frei-Status ausgeblendet. Parallele Flottennutzung bleibt wie bisher erlaubt.
-Pro Karte: Symbol, Name, Kapazität in t und effektives Beschaffungstempo in km/s. „Bereit“ entfällt zugunsten der Werte. Ausgewählte Karte bleibt dezent markiert.
-Kapazität und Tempo kommen aus der Serveransicht. Das Tempo verwendet dieselbe Funktion wie die Beschaffungsdauer, inklusive Rang und wirksamer Garagenboni, ohne Beladungseinfluss. Keine Änderung der Laufzeitformel oder Startvalidierung.
+Aktuelle Referenz zu `src/Procurement.tsx` (Quellstand 03.11.2026). Die frühere dreispaltige Auswahl nur freier Fahrzeuge ist ersetzt.
 
-Prüfung: bestehende Beschaffungstests bestanden, erweitert um tatsächliche Kapazität, Tempo mit Rang/Bonus, daraus berechnete Dauer und Frei-Status während laufender Beschaffung. Kein vollständiger App-Build oder Gerätetest in dieser Vorbereitung.
+Das Planungsmodal zeigt Garagentransporte direkt in zwei Spalten. Jede Karte enthält das vorhandene Fahrzeugbild, den vollständigen Namen und die vom Server berechnete Dauer je Tour. Mehrere freie Fahrzeuge sind auswählbar; erneut antippen entfernt die Auswahl. Haken und Status kennzeichnen gewählte Fahrzeuge. Belegte Fahrzeuge bleiben sichtbar, ausgegraut und deaktiviert. Höchstens zehn Fahrzeuge dürfen gewählt werden.
+
+Kapazität und Rohgeschwindigkeit werden nicht zusätzlich wiederholt. Die Dauer verwendet dieselbe Berechnung wie die Beschaffung; der Client erfindet keine eigene Laufzeit. Tourenzahl beziehungsweise Reserve und Startvalidierung bleiben serverseitig. Auswahldaten werden bei neuen Serverantworten mit dem Frei-Status abgeglichen.
+
+Details zum gemeinsamen Tourenvorrat: [Beschaffungsgruppen](procurement-groups.md). Übersicht und Ablaufdialog: [Beschaffungsübersicht](procurement-overview.md). Frühere Testberichte zur alten Dreispaltenauswahl sind keine Layoutprüfung dieser Fassung; aktuelle Prüfbezüge stehen in [tests/README.md](../../tests/README.md).

@@ -1,6 +1,6 @@
 # Gemeinsames Verbesserungsmodal für Fahrzeugkarten
 
-Vorbereitet am 22.10.2026 im Sammelbranch `batch/company-improvements`. Nicht veröffentlicht.
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
 
 Am Ende der Kartendetails führt ein einzelner Button „Verbessern“ in ein gemeinsames, bei Bedarf scrollbareres Modal. Nicht besessene Karten können noch nicht verbessert werden. Die zuvor entfernten separaten Ausbau-Cards bleiben entfernt.
 
@@ -16,11 +16,11 @@ Die bestehenden Befehle cardUpgrade/cardCapacity/cardRank, Preise und Mechaniken
 
 Deutsch und Englisch. Durchschnitt wie vereinbart numerisch drei, sichtbar maximal zwei Nachkommastellen. Bonuswerte werden mit bis zu zwei Nachkommastellen gezeigt.
 
-Prüfung:
+Historische Prüfung bei Einführung:
 - TypeScript und alle 174 Tests erfolgreich.
 - Neue Serverprüfungen gleichen Vorschau mit tatsächlichen Kapazitäts-/Rangupgrades ab, einschließlich verschiedener Fahrzeuge, geparkter Karten, Rang-Seltenheitswechsel und Maximalgrenzen.
 - React-Native-Web bei 320/390/430 px: alle drei Upgrade-Arten, Anrechnung von Splitterfortschritt, fehlende Vorräte, alle Maximalstufen und Fehlerfall erfolgreich; keine Laufzeitfehler oder seitlicher Überlauf.
 - Englische Anzeige erfolgreich geprüft.
 - Android-Export erfolgreich. Kein physischer Android-Gerätetest.
 
-Kein Deployment und kein EAS Update. Zusammen mit dem übrigen Sammelstand erst nach ausdrücklichem Go veröffentlichen.
+Veröffentlichungen werden zentral in [PENDING_UPDATE.md](../../PENDING_UPDATE.md) dokumentiert; diese Modulreferenz ist keine Freigabeanweisung.

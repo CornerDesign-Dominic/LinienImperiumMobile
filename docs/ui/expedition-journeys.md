@@ -1,8 +1,10 @@
 # Horizontale Expeditionskarten
 
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
+
 ## Ergebnis
 
-Die geöffnete Region ist eine zusammenhängende, horizontal scrollbar gemalte Landschaft. Auf Hochkant-Handys umfasst sie etwa vier bis fünf Bildschirmbreiten. Gebäude und Schauplätze sind in die Landschaft integriert; kompakte Ortsmarkierungen in Dunkelgrün und Messing darunter kennzeichnen die antippbaren Orte. Die Markierungen zeigen Ortsnummer, Namen und gegebenenfalls den Auftragsstatus. Großzügige unsichtbare Tippflächen umfassen Ortsbild und Markierung. Titel und Regionspfeile schweben über der Karte. Die Pfeile wechseln ausschließlich zwischen benachbarten freigeschalteten Expeditionsregionen; Grenzen und gesperrte Regionen deaktivieren den jeweiligen Pfeil.
+Die geöffnete Region ist eine zusammenhängende, horizontal scrollbar gemalte Landschaft. Auf Hochkant-Handys umfasst sie etwa vier bis fünf Bildschirmbreiten. Gebäude und Schauplätze sind in die Landschaft integriert; kompakte Ortsmarkierungen in Dunkelgrün und Messing darunter kennzeichnen die antippbaren Orte. Die Markierungen zeigen Ortsnummer, Namen und gegebenenfalls den Auftragsstatus. Großzügige unsichtbare Tippflächen umfassen Ortsbild und Markierung. Titel und Regionspfeile schweben über der Karte. Die Pfeile wechseln ausschließlich zwischen benachbarten freigeschalteten Expeditionsregionen; An Grenzen und bei gesperrten Regionen wird der jeweilige Pfeil ausgeblendet; eine nicht bedienbare Platzfläche hält die Ausrichtung.
 
 Jede Region verwendet die bestehenden sieben Ortsindizes und einen achten Stammkunden-/Endlosort. Ihre Reihenfolge und die am fertigen Bild gemessenen Koordinaten stehen in `src/regionRoutes.ts`.
 
@@ -19,19 +21,17 @@ Jede Region verwendet die bestehenden sieben Ortsindizes und einen achten Stammk
 - Der nächste nach bestehender Spielregel erkundbare Ort ist sichtbar. Weiter entfernte Orte werden nicht als Bedienelemente oder Namen gerendert. Ein vollständig deckender Kartennebel verdeckt ihre Bildbereiche einschließlich der Gebäude. Der Rand ist unregelmäßig und weich. Mit jeder Entdeckung öffnet sich der nächste Abschnitt. Die scrollbare Strecke endet kurz hinter dem sichtbaren Bereich, damit man nicht durch leere Kilometer wischt.
 - Beim ersten Besuch wird eine ausstehende Bonuslieferung fokussiert, ansonsten der nächste Erkundungsort beziehungsweise das Endziel. Die zuletzt betrachtete Position wird je Konto und Region lokal gespeichert, bei Regionswechsel und erneutem Öffnen wiederhergestellt sowie nach Größenänderungen oder zurückgesetztem Spielfortschritt begrenzt.
 - Die Karte füllt den Raum zwischen Seitenkopf und Menü. Sie liegt nicht mehr in der vertikalen Inhaltsliste. Bildmaße werden ausdrücklich gesetzt, damit Androids ursprüngliche lokale Bildmaße die Darstellung nicht beeinflussen.
-- Die bisherigen Ortsmodale behalten Erkundung, Bonuslieferung, Fahrzeugwahl, Belohnungsabholung, Kundenfreischaltung, Fundchancen und Expedition bei. Sie verwenden nun die richtigen Orts- und Regionsnamen. Neue Nahansichten und Ortsgeschichten sind der vereinbarte spätere Arbeitsschritt.
+- Die bisherigen Ortsmodale behalten Erkundung, Bonuslieferung, Fahrzeugwahl, Belohnungsabholung, Kundenfreischaltung, Fundchancen und Expedition bei. Sie verwenden nun die richtigen Orts- und Regionsnamen. Die 40 individuellen Nahansichten sind eingebunden; die aktuelle zustandsabhängige Darstellung steht in [Ortsmodale](expedition-place-modals.md). Ortsgeschichten sind weiterhin keine implementierte Funktion.
 - Serverindizes, Kunden-IDs, Freischaltungsregeln, Kosten, Zeiten, Belohnungen und Spielstände werden nicht verändert.
 
 ## Bilddateien
 
 Fünf fertige Panoramen unter `assets/art/journeys/`, je 2172 × 724 Pixel im Seitenverhältnis 3:1, gemeinsam rund 3,3 MB als optimierte JPEG-Dateien. Erstellung mit dem eingebauten ImageGen-Werkzeug; das vollständige Promptset liegt in `docs/ui/expedition-journey-prompts.json`. Die bisherigen Bilder der Regionsauswahl bleiben erhalten.
 
-## Validierung
+## Historische Validierung bei Einführung
 
 - Typprüfung erfolgreich.
 - 117 Tests erfolgreich, davon vier neue Tests für Ortszuordnung, alle Freischaltungsstände, native Bildgrößen, responsive Tippflächen, Regionsgrenzen und gespeicherte Positionen.
 - Browserprüfung der tatsächlichen React-Native-Web-App: 320 × 568, 360 × 740, 390 × 844 und 430 × 932. Alle 40 Orte je Größe geöffnet; Bilder und Namen, originale Aktionen, Abstand zu Titel/Pfeilen, Regionswechsel und Grenzen geprüft.
 - Zusätzlich neuer Spielstand mit Kartennebel und gesperrter Folgeregion, dreimal Erkundung bis zur Freischaltung des zweiten Ortes, ausstehende Bonuslieferung samt Fahrzeugauswahl, horizontale Scrollgeste, Positionswiederherstellung nach Regionswechsel und Neuladen sowie Englisch geprüft. Keine JavaScript-Fehler.
 - Android-Export erfolgreich. Kein Android-Geräte- oder Emulatortest durchgeführt.
-
-Dieser Stand ist zur Prüfung vorbereitet und noch nicht veröffentlicht.

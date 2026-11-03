@@ -20,7 +20,7 @@ The repository has no store billing dependency, configured products, server rece
 4. Display live localized prices from the store, not these planning values. Handle cancelled, pending and refunded purchases and restore/recovery appropriately. Link a recoverable player account before taking real payment.
 5. Test sandbox successful/pending/cancelled/duplicate/refund delivery, then enable actual payment buttons.
 
-No billing SDK, native build setting, paid provider or store configuration is changed by this foundation. It remains unpublished until separately requested.
+No billing SDK, native build setting, paid provider or store configuration is changed by this foundation. Release state is tracked centrally in [PENDING_UPDATE.md](../../PENDING_UPDATE.md); this module describes the source implementation and does not authorize payment activation.
 
 Validation: premium migration, pack values, unknown grant/skin rejection, server-price deductions and duplicate ownership, insufficient balance, no statistic changes, entitlement reload/reset preservation; full suite, TypeScript and Android export.
 

@@ -1,5 +1,7 @@
 # Regionale Transporterkarten mit vollständigen Bildern
 
+Aktuelle Mobile-Referenz, abgeglichen am 03.11.2026. Wertequelle: [transport-cards.json](../../functions/src/transport-cards.json), Wirkung: [transport-runtime.js](../../functions/src/transport-runtime.js). Die [Kartenbonus-Staffeln](../ui/card-bonus-steps.md) beschreiben die aktuellen einfachen Schritte. Veröffentlichungs- und Testangaben am Ende sind historische Nachweise.
+
 25 Landtransporter ersetzen die bisherigen generischen LKW-Namen. Keine Flug- oder Wasserfahrzeuge, Elefanten bleiben für spätere legendäre Karten reserviert. Die 25 Besitz-IDs bleiben stabil. Kronenlande erhält nun ebenfalls eine Epic-Karte; die bisherige ID `r1_uncommon_2` wird dafür weiterverwendet. Vorhandener Kartenbesitz und Kartenlevel bleiben erhalten, vorhandene Shards bleiben in ihren bisherigen Seltenheitspools.
 
 ## Werte und Ausbau
@@ -21,31 +23,31 @@ Jede Karte besitzt genau einen Bonus. Eigenboni gelten für das Fahrzeug, Flotte
 
 | Region | ID | Name | Seltenheit | Grundkapazität t | Tempo | Bereich | Bonus | Level 1 → 10 |
 |---|---|---|---|---:|---:|---|---|---|
-| Kronenlande | `navigator` | Eselkarren | common | 2 | 75 | self | cost | 3.0 → 6.0 |
-| Kronenlande | `r1_common_2` | Marktgespann | common | 5 | 90 | self | pay | 3.0 → 6.0 |
+| Kronenlande | `navigator` | Eselkarren | common | 2 | 75 | self | cost | 3 → 5.7 |
+| Kronenlande | `r1_common_2` | Marktgespann | common | 5 | 90 | self | pay | 3 → 5.7 |
 | Kronenlande | `r1_uncommon` | Königliche Postkutsche | uncommon | 3 | 125 | garage | overtimeCapacity | 5 → 70 |
-| Kronenlande | `r1_rare` | Silberhirsch-Gespann | rare | 7 | 110 | garage | speed | 4.0 → 8.0 |
-| Kronenlande | `r1_uncommon_2` | Königliches Löwengespann | epic | 2 | 155 | fleet | speed | 8.0 → 16.0 |
-| Weite Ebenen | `r2_common` | Siedlerwagen | common | 6 | 85 | self | cost | 3.0 → 6.0 |
-| Weite Ebenen | `r2_common_2` | Ochsenfuhrwerk | common | 12 | 60 | self | pay | 3.0 → 6.0 |
-| Weite Ebenen | `disponent` | Prärie-Lastenzug | uncommon | 16 | 70 | self | cost | 6.0 → 12.0 |
-| Weite Ebenen | `r2_rare` | Leitwagen der Pioniere | rare | 10 | 95 | fleet | cost | 4.0 → 8.0 |
-| Weite Ebenen | `r2_epic` | Donnerbison-Gespann | epic | 24 | 75 | fleet | pay | 8.0 → 16.0 |
-| Safranstraße | `r3_common` | Lasteselzug | common | 3 | 80 | self | cost | 3.0 → 6.0 |
-| Safranstraße | `r3_common_2` | Wüstenkamel | common | 4 | 95 | self | pay | 3.0 → 6.0 |
+| Kronenlande | `r1_rare` | Silberhirsch-Gespann | rare | 7 | 110 | garage | speed | 4 → 8.5 |
+| Kronenlande | `r1_uncommon_2` | Königliches Löwengespann | epic | 2 | 155 | fleet | speed | 8 → 17 |
+| Weite Ebenen | `r2_common` | Siedlerwagen | common | 6 | 85 | self | cost | 3 → 5.7 |
+| Weite Ebenen | `r2_common_2` | Ochsenfuhrwerk | common | 12 | 60 | self | pay | 3 → 5.7 |
+| Weite Ebenen | `disponent` | Prärie-Lastenzug | uncommon | 16 | 70 | self | cost | 6 → 10.5 |
+| Weite Ebenen | `r2_rare` | Leitwagen der Pioniere | rare | 10 | 95 | fleet | cost | 4 → 8.5 |
+| Weite Ebenen | `r2_epic` | Donnerbison-Gespann | epic | 24 | 75 | fleet | pay | 8 → 17 |
+| Safranstraße | `r3_common` | Lasteselzug | common | 3 | 80 | self | cost | 3 → 5.7 |
+| Safranstraße | `r3_common_2` | Wüstenkamel | common | 4 | 95 | self | pay | 3 → 5.7 |
 | Safranstraße | `r3_uncommon` | Oasenkarawane | uncommon | 9 | 90 | garage | expeditionCapacity | 5 → 70 |
-| Safranstraße | `forscherin` | Silberkarawane | rare | 13 | 100 | fleet | pay | 4.0 → 8.0 |
-| Safranstraße | `r3_epic` | Dünenläufer-Karawane | epic | 8 | 140 | garage | cost | 8.0 → 16.0 |
-| Jadetal | `r4_common` | Bambuskarren | common | 1.5 | 85 | self | cost | 3.0 → 6.0 |
-| Jadetal | `r4_common_2` | Tee-Maultiergespann | common | 4 | 100 | self | pay | 3.0 → 6.0 |
-| Jadetal | `r4_uncommon` | Terrassen-Ochsenwagen | uncommon | 11 | 65 | self | cost | 6.0 → 12.0 |
+| Safranstraße | `forscherin` | Silberkarawane | rare | 13 | 100 | fleet | pay | 4 → 8.5 |
+| Safranstraße | `r3_epic` | Dünenläufer-Karawane | epic | 8 | 140 | garage | cost | 8 → 17 |
+| Jadetal | `r4_common` | Bambuskarren | common | 1.5 | 85 | self | cost | 3 → 5.7 |
+| Jadetal | `r4_common_2` | Tee-Maultiergespann | common | 4 | 100 | self | pay | 3 → 5.7 |
+| Jadetal | `r4_uncommon` | Terrassen-Ochsenwagen | uncommon | 11 | 65 | self | cost | 6 → 10.5 |
 | Jadetal | `logistiker` | Jade-Kundschaftergespann | rare | 8 | 100 | garage | expeditionRegen | 10 → 120 |
-| Jadetal | `r4_epic` | Kaiserliches Pandagespann | epic | 12 | 50 | fleet | cost | 10.0 → 20.0 |
-| Nordmark | `r5_common` | Fischer-Hundeschlitten | common | 2 | 115 | self | pay | 3.0 → 6.0 |
-| Nordmark | `r5_common_2` | Rentier-Lastschlitten | common | 5 | 95 | self | cost | 3.0 → 6.0 |
-| Nordmark | `r5_uncommon` | Nordland-Lastengespann | uncommon | 9 | 80 | garage | cost | 2.0 → 4.0 |
-| Nordmark | `pionierin` | Weißhirsch-Schlitten | rare | 6 | 120 | fleet | speed | 4.0 → 8.0 |
-| Nordmark | `r5_epic` | Schneeleoparden-Express | epic | 3 | 150 | garage | speed | 8.0 → 16.0 |
+| Jadetal | `r4_epic` | Kaiserliches Pandagespann | epic | 12 | 50 | fleet | cost | 10 → 19 |
+| Nordmark | `r5_common` | Fischer-Hundeschlitten | common | 2 | 115 | self | pay | 3 → 5.7 |
+| Nordmark | `r5_common_2` | Rentier-Lastschlitten | common | 5 | 95 | self | cost | 3 → 5.7 |
+| Nordmark | `r5_uncommon` | Nordland-Lastengespann | uncommon | 9 | 80 | garage | cost | 2 → 4.25 |
+| Nordmark | `pionierin` | Weißhirsch-Schlitten | rare | 6 | 120 | fleet | speed | 4 → 8.5 |
+| Nordmark | `r5_epic` | Schneeleoparden-Express | epic | 3 | 150 | garage | speed | 8 → 17 |
 
 ## Bilder
 
@@ -55,7 +57,9 @@ Erstellung: eingebautes ImageGen-Werkzeug, je Motiv ein eigener Aufruf. Bei Sied
 
 Die gemeinsame `VehicleArt`-Komponente zeigt alle Motive in Sammlung, Kartendetail, Garage, Flotte und Geschenkpool. Namen, Werte und Seltenheitsrahmen bleiben außerhalb der Bilddateien. Die Bilder verändern keine Kapazitäten, Geschwindigkeiten, Bonuswerte oder Besitzkennungen.
 
-## Prüfung
+## Historische Prüfung des ursprünglichen Kartenpakets
+
+Die folgenden Ergebnisse betreffen die damalige Einführung, nicht einen neuen Gesamtlauf am 03.11.2026. Spätere Bonusstaffeln und Oberflächenänderungen sind zusätzlich zu beachten.
 
 * Typprüfung erfolgreich.
 * 138 Tests erfolgreich, darunter zehn neue Tests für die individuellen Werte, Bonusstaffeln, Inaktivität in Sammlung/Flotte, Punktetrennung, Übermaximum, Offline-Pause, Timerwechsel, Auffüller und Migration.
@@ -63,10 +67,11 @@ Die gemeinsame `VehicleArt`-Komponente zeigt alle Motive in Sammlung, Kartendeta
 * Android-Export erfolgreich. Kein Android-Gerätetest.
 * Echte React-Native-Web-Komponenten bei 320/360/390/430 px geprüft (vollständige Bildserie zusätzlich bei 320/390/430 px): Sammlung und alle 25 Bilddetails ohne horizontalen Überlauf, danach Garage und Flotte geöffnet, englische Kartendarstellung geprüft. Keine JavaScript-Laufzeitfehler. Die lokale Prüfansicht verwendet synthetische Testdaten und wird nicht in die App eingebaut.
 
-Vollständiger Stand zur Veröffentlichung über die bestehende Android-Vorschau-Pipeline. Native Abhängigkeiten und Laufzeitversion bleiben unverändert.
+Die damalige Vorbereitung verwendete die bestehende Android-Vorschau-Pipeline ohne neue native Abhängigkeiten. Der heutige Veröffentlichungsstand muss am erfolgreichen Workflow des jeweiligen Commits geprüft werden.
 
 ### Einheitlicher Seltenheitsrahmen
 
 `VehicleArt` zeichnet die freigegebene Facettenfassung ohne Seltenheitssymbol direkt mit React-Native-Views und einem nativen Farbverlauf; es gibt keine Rahmen-Bilddateien. Alle Porträts bleiben quadratisch, das Bild füllt die Fassung ohne unteren Sockel. Eisen, Grün, Blau/Silber, Violett und Gold kennzeichnen Common bis Legendary. Die umlaufende Fassung hat abgeschrägte Ecken und eine dezente Licht-/Schattenkante, Epic und Legendary eine etwas edlere Fassung im gleichen Stil. Unter 110 px gibt es keine zusätzliche dunkle Außenlinie; die farbige Fassung skaliert auf 2–3 px. Größere Porträts zeigen optional die Kartenstufe. Die Levelangabe auf kleinen Sammlungskarten bleibt außerhalb des Porträts. Rauten, Seltenheitssymbole, Eckornamente und Seltenheitssockel entfallen; die zugängliche Bildbeschreibung nennt weiterhin die Seltenheit.
 
 Die gemeinsame Darstellung gilt für Garage, Sammlung, Flottenliste und -details, Fahrzeugauswahl, Fundübersicht, Beschaffung und die Fahrzeugangaben in Auftragsdetails. Garagenkarten behalten einen neutralen Hintergrund. `VehicleName` übersetzt vor dem Einfügen bedingter Trennstellen für lange Fahrzeugnamen.
+

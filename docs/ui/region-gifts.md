@@ -1,38 +1,25 @@
-# Regionale Geschenke und 25 Fahrzeugkarten
+# Regionale Geschenke und Fahrzeugpools
 
-Status: vorbereitet auf batch/mobile-adjustments, noch nicht veröffentlicht.
+Aktuelle Quellen: `functions/src/gifts-runtime.js`, `functions/src/transport-cards.json`, `src/Gifts.tsx` (03.11.2026).
 
 ## Ablauf
-Großhändler → Geschenke → Geschenk je Region. Das mittige Detailmodal zeigt alle fünf Fahrzeuge mit Seltenheitsfarben und Einzelchancen. Öffnen kostet aktuell serverseitig 10 normale Münzen und vergibt genau eine Karte. Das Ergebnis erscheint als mittiges Modal mit Fahrzeugsymbol oder Shardsymbol. Doppelte Karten geben einen Shard derselben Seltenheit. Keine echte Zahlung, Geschenkfunde oder Herstellungsrezepte aktiviert; diese Erweiterungen können später denselben Vergabepfad nutzen.
 
-Alle fünf Geschenke sind im Großhändler sichtbar und testweise unabhängig vom Erkundungsfortschritt zu öffnen.
+Großhändler → Geschenke zeigt ein Geschenk je Region. Alle fünf sind testweise unabhängig vom Erkundungsfortschritt zu öffnen. Öffnen kostet serverseitig 10 Imperium-Taler und vergibt genau eine der fünf tatsächlichen regionalen Karten. Neue Karten beginnen auf Stufe 1; eine doppelte Karte gibt einen Splitter ihrer Seltenheit. Animation und Ergebnisdarstellung ändern weder Auslosung noch Vergabe.
 
-## Fahrzeugpools
-Alle 15 bestehenden IDs, Boni und Fahrzeugwerte bleiben erhalten. Zehn neue Karten:
-- Region 1: Landkurier (Common), Hafen-Transporter (Uncommon)
-- Region 2: Frischekurier (Common), Kühlkonvoi (Epic)
-- Region 3: Werkstoffwagen (Common), Schwerlast-Bergung (Epic)
-- Region 4: Passkurier (Common), Alpen-Konvoi (Epic)
-- Region 5: Marktfrachter (Common), Europa-Express (Epic)
+Der aktuelle Katalog hat 25 Karten, fünf je Region: jeweils zwei Common, eine Uncommon, eine Rare und eine Epic. Namen, Bilder, Boni und Stufenwerte stehen zentral im [regionalen Kartenkatalog](../gameplay/regional-transport-cards.md); die früheren motorisierten Karten- und vorläufigen Bonuslisten gelten nicht mehr.
 
-Region 1: 2 Common, 2 Uncommon, 1 Rare.
-Region 2–5: 2 Common, 1 Uncommon, 1 Rare, 1 Epic. Die Verteilung für Region 3–5 wurde analog Region 2 gewählt.
-Kein Gebiet überschreitet 1 Epic oder 2 Rare.
+## Getrennte Chancen
 
-Epic-Karten verwenden vorläufig 8 % Grundbonus und +2 Prozentpunkte pro Kartenstufe. Epic-Shards aus Duplikaten sind in Vorräten und Sammlung sichtbar und für Kartenstufen verwendbar; kein neuer Shard-Umtausch hinzugefügt.
+| Quelle | Verteilung |
+| --- | --- |
+| Geschenk, aktuelle Testchancen | Jede der fünf Karten exakt 20 % |
+| Expedition, innerhalb eines Kartenfunds | Common insgesamt 60 %, Uncommon 30 %, Rare 9 %, Epic 1 % |
+| Expedition, absolute Kartenchance | 10 % insgesamt: je Common-Karte 3 %, Uncommon 3 %, Rare 0,9 %, Epic 0,1 % |
 
-## Testchancen (November 2026)
-Geschenke: Jede der fünf Karten eines Gebietes hat testweise exakt 20 % Chance. Gemeint sind die fünf tatsächlichen Karten, nicht fünf erfundene Seltenheiten. Der aktuelle Fahrzeugkatalog enthält je Gebiet zwei Common-, eine Uncommon-, eine Rare- und eine Epic-Karte.
+`regionGiftPool` ist die gemeinsame Quelle für Geschenkziehung und sichtbare Einzelchancen. `regionVehiclePool` bleibt für die gewichteten Expeditionsfunde zuständig. Preis, Guthaben, Vergabe, Duplikate und wiederholte Anfragen werden serverseitig behandelt.
 
-Expeditionen behalten ihre bisherigen Gewichte: insgesamt 10 % Kartenchance, pro Auslosung je Common-Karte 3 %, Uncommon 3 %, Rare 0,9 % und Epic 0,1 %. Die Auftragswahrscheinlichkeiten bleiben unverändert.
+Nach dem echten Ergebnis stoppt die Markierung; nach 350 ms öffnet ein separates Gewinnmodal. Schließen führt zur geöffneten Kiste zurück, siehe [Geschenk-Ergebnis](gift-result-modal.md). Keine reale Zahlung oder lokale Neuverlosung.
 
-## Implementierung
-`regionGiftPool` ist die gemeinsame Quelle für tatsächliche Geschenkziehung und sichtbare Einzelchancen im Geschenkmodal. `regionVehiclePool` bleibt ausschließlich für die bisher gewichteten Expeditionsfunde zuständig. Preis, Vergabe, Duplikate und transaktionale Anfragebelege bleiben unverändert.
+## Historischer Prüfbezug
 
-## Validierung
-83 Backendtests bestanden:
-node --test --test-reporter=dot tests/gifts.test.cjs tests/mobile-engine.test.cjs tests/events.test.cjs tests/tour-updates.test.cjs tests/procurement.test.cjs
-
-Sechs neue Tests prüfen alle 25 erreichbaren Karten, Poolverteilungen, gleiche Geschenk-/Expeditionspools, Kosten bei ausreichendem/exaktem/fehlendem Guthaben, unveränderte Eingabespielstände, Duplikate, Epic-Shards und Upgrades, Speicherrunden sowie echte Callable-Anfragewiederholung ohne doppelten Abzug oder doppelte Vergabe. Bestehende Katalogerwartungen auf 25 Karten und fünf Funde je Region aktualisiert. Zusätzlicher Epic-Inventartest vorbereitet.
-node --check für index.cjs und gifts-runtime.js bestanden.
-Kein vollständiger TypeScript-/Expo-Build oder Gerätetest ausgeführt. Der zusätzliche TypeScript-basierte Inventartest wurde hier mangels lokal installierter App-Abhängigkeiten noch nicht ausgeführt.
+Die ursprüngliche Erweiterung wurde mit damals 83 Backendtests einschließlich Besitz, Preisgrenzen, Duplikaten und transaktionaler Wiederholung geprüft. Der damalige Nachweis identischer Geschenk-/Expeditionspools ist durch die ausdrücklich getrennten Testchancen ersetzt. Aktuelle Tests und Grenzen: [tests/README.md](../../tests/README.md).

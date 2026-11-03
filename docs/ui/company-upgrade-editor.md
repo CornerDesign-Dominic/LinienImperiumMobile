@@ -1,8 +1,6 @@
 # Transportverbesserungen: Übersicht und Einzel-Ausbau
 
-Vorbereitet am 22.10.2026. Nicht veröffentlicht.
-
-Sammelbranch: `batch/company-improvements`. Ausgangspunkt ist main nach der Event-Erweiterung (`f1aab045b3baa5850e8ddf662ca22ec74ce77182`).
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
 
 - Kleine Materialzeile mit vorhandenem Bestand und Vorratslink statt großer Infokarte.
 - Reiter für Regionalverkehr und Fernverkehr, drei kompakte Verbesserungszeilen je Bereich.
@@ -14,6 +12,4 @@ Sammelbranch: `batch/company-improvements`. Ausgangspunkt ist main nach der Even
 - Fehlender Bestand, volle Ausbaustufen und laufende Anfragen deaktivieren den Kauf. Schließen ist während der Anfrage gesperrt.
 - Deutsch und Englisch.
 
-Prüfung: TypeScript erfolgreich; alle 169 bestehenden Tests erfolgreich. React-Native-Web-Prüfung bei 320/360/390/430 px: Reiter, mehrstufige Gesamtkosten, Materialgrenze, bestätigter Kauf, fehlgeschlagener Kauf, fehlender Bestand und maximale Stufe erfolgreich; keine Laufzeitfehler oder seitlicher Überlauf. Englische Modalbeschriftung und Kaufaktion geprüft. Lokaler Android-Export erfolgreich. Physischer Android-Gerätetest steht aus.
-
-Nicht veröffentlicht: kein Deployment, kein EAS Update, kein Merge nach main. Die laufende Event-Veröffentlichung wurde nicht verändert.
+Historische Prüfung bei Einführung: TypeScript erfolgreich; alle 169 bestehenden Tests erfolgreich. React-Native-Web-Prüfung bei 320/360/390/430 px: Reiter, mehrstufige Gesamtkosten, Materialgrenze, bestätigter Kauf, fehlgeschlagener Kauf, fehlender Bestand und maximale Stufe erfolgreich; keine Laufzeitfehler oder seitlicher Überlauf. Englische Modalbeschriftung und Kaufaktion geprüft. Lokaler Android-Export erfolgreich. Physischer Android-Gerätetest steht aus.

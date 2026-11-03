@@ -1,23 +1,21 @@
-# Flottendetails, Geschenköffnung und Garagenkarten
+# Flottendetails und verwandte Ansichten
 
-Status: vorbereitet, noch nicht veröffentlicht.
+Aktuelle Implementierung der Flottendetails: `src/FleetDetails.tsx`, `src/fleetEstimate.js` und serverseitige effektive Fahrzeugwerte (03.11.2026).
 
 ## Flottendetails
-Der Hinweis „5 Plätze …“ wurde durch den Button Flottendetails ersetzt. Mittiges, scrollbar begrenztes Modal mit eigener Kilometer-Eingabe (Startwert 100 km, Dezimalwerte möglich, >0 bis 100.000 km).
-Annahme: voll beladene Hinfahrt, leere Rückfahrt, wiederholte Touren über eine Stunde. Alle Fahrzeuge werden separat berechnet, anschließend summiert. Angezeigt: Kapazität, gefahrene Kilometer inklusive angebrochener Tour, abgeschlossene Touren, tatsächlich abgeschlossene Liefermenge, Kosten und Frachtvergütung, XP und wirksame Boni.
-Der Server liefert die effektiven Werte aus projectFleetVehicles, truckSpeed und operatingCostPerKm sowie die echten Frachtraten. Werkstatt, Kartenstufen, Kapazität, Geschwindigkeitsrang und Flottenboni sind enthalten; Garage-/Einzelauftragsboni wirken nur wie im echten Flottenmodus. Keine Kundenboni oder Abschlussprämien in der Beispieltour.
-Die Eingabe berechnet lokal und verursacht keine zusätzlichen Serverbefehle oder Ressourcenänderungen. Es werden aktuelle Vorlagenwerte simuliert, keine laufenden Touren umgeschrieben.
 
-## Geschenköffnung
-Nach Öffnen läuft eine Markierung wiederholt von oben nach unten durch die fünf Fahrzeuge. Während der Serveranfrage bleibt sie in Bewegung; nach Eingang des echten Ergebnisses folgen zwei Runden mit zunehmender Verzögerung bis zum Gewinner. Dieser bleibt markiert; darunter steht neue Fahrzeugkarte oder Duplikat-Shard.
-Das Ergebnis wird weiterhin ausschließlich vom bestehenden Serverkommando vergeben, einmal bezahlt und gespeichert. Keine erneute Auslosung durch die Animation. Überspringen ist verfügbar, sobald das Ergebnis vorliegt; es zeigt denselben Gewinner. Timer werden beim Verlassen/Unmount aufgeräumt. Reduzierte Bewegung des Geräts zeigt direkt das echte Ergebnis. Fehler erlauben erneuten Versuch und vergeben lokal nichts.
+Ein mittiger begrenzter Dialog berechnet eine frei eingegebene einfache Strecke (Startwert 100 km, >0 bis 100.000 km) für eine Stunde. Annahme: voll beladene Hinfahrt, leere Rückfahrt, wiederholte Touren. Jedes Fahrzeug wird separat berechnet, danach werden Kapazität, Fahrkilometer einschließlich angebrochener Tour, abgeschlossene Touren/Liefermenge, Kosten, Vergütung und XP summiert.
 
-## Garage
-Zwei Spalten und zehn Plätze bleiben erhalten. Karten haben Seltenheitsfarbe in Hintergrund, Rahmen und Symbol. Stufe oben, Name und Kapazität hervorgehoben, Rang separat, Tempo beladen und leer mit gemeinsamer Einheit km/s. Ungefähr 220 logische Pixel Mindesthöhe, auf normalen Handybreiten kürzer als Verhältnis 1:3. Leere Plätze behalten gestrichelte Plus-Karte. Auch Details zeigen beide Geschwindigkeiten, ohne Upgradefunktionen.
+Kartenstufe, Kapazität, Geschwindigkeitsrang, wirksame Flottenboni und Werkstatt sind enthalten. Garage-/Einzelboni gelten ausschließlich gemäß realem Flottenmodus; keine erfundene Kundenvergütung oder Abschlussprämie. Die lokale Vorschau verändert keine Tour und keinen Vorrat und löst keine zusätzlichen Serverbefehle aus.
 
-## Prüfung
-87 Backend-/Berechnungstests bestanden:
-node --test --test-reporter=dot tests/fleet-details.test.cjs tests/gifts.test.cjs tests/mobile-engine.test.cjs tests/events.test.cjs tests/tour-updates.test.cjs tests/procurement.test.cjs
+## Zuständige Referenzen
 
-Vier neue Tests decken separate Fahrzeugtouren, unterschiedliche Tempi, Summen, Kosten und Boni, lange/angebrochene/exakt stündliche Touren, ungültige Strecken, leere Flotten, reine Servervorschau ohne Zufall oder Zustandsänderung, Flotten-/Garagenbonusabgrenzung, Werkstattkosten und alle Start-/Zielkombinationen der Geschenkmarkierung ab.
-Kein vollständiger TypeScript-/Expo-Build, keine visuelle Browserprüfung und kein Gerätetest in dieser Vorbereitung.
+Die hier früher ebenfalls beschriebene Geschenk- und Garage-Zwischenfassung ist ersetzt:
+
+- [Geschenk-Ergebnis](gift-result-modal.md): eigenes Gewinnmodal nach kurzer Pause, Rückkehr zur geöffneten Kiste.
+- [Garagenkarten](shared-garage-collection-cards.md): drei Spalten, zehn Plätze, gemeinsame kompakte Kartenwerte.
+- [Gemeinsame Kartenauswahl](shared-card-pickers.md) und [Kontextdetails](unified-context-card-details.md).
+
+## Historische Prüfung bei Einführung
+
+Damals 87 Backend-/Berechnungstests, darunter separate Fahrzeugtouren, Summen, Kosten, Boni, Teilstunden, ungültige Strecken und reine Vorschau ohne Zustandsänderung. Der damalige Bericht enthielt keinen vollständigen App-Build und keinen Gerätetest. Aktuelle Prüfergebnisse: [TEST_REPORT.md](../../TEST_REPORT.md).

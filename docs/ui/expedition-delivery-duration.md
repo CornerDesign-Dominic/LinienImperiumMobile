@@ -1,6 +1,7 @@
-# Bonuslieferung: Dauer im Expeditionsmodal
-Status: vorbereitet, noch nicht veröffentlicht.
+# Bonuslieferung: Dauer und Restzeit
 
-Unter dem Bonuslieferungsbalken steht vor dem Start „Dauer HH:MM:SS“, während der Lieferung „Restzeit HH:MM:SS“. Gilt für Orte und erste Endloslieferung. Nutzt die Serverfelder places.durationMs und finalDurationMs, bei gestarteter Lieferung deren tatsächliche Zeitstempel; keine fest codierte Testdauer. Doppelte Restzeitanzeige unter den Buttons entfernt.
+Aktueller Implementierungsbezug: `src/ExpeditionPlaceDetails.tsx` (03.11.2026).
 
-Quelltext und Serverfelder abgeglichen. Die aktuelle Testdauer beträgt weiterhin 15 Sekunden. Kein vollständiger Build oder Gerätetest in dieser Vorbereitung.
+Laufende Orts- und erste Endloslieferungen zeigen ihre tatsächliche Restzeit aus `endsAt` und der gemeinsamen Anzeigeuhr. Normale Ortsmodale wiederholen nach Abschluss weder Zeit noch Belohnungsdetails. Vor dem Start enthalten sie keinen zusätzlichen Dauerblock.
+
+Am Endlos-/Handelsort steht die Dauer der Bonuslieferung unter dem aufklappbaren Bereich Details. Die Daten stammen bei vorhandener Mission aus `endsAt − startedAt`, andernfalls aus `finalDurationMs`; es wird keine Testdauer im UI fest codiert. Frühere Berichte über einen Dauertext direkt unter jedem Balken beschreiben die ersetzte Fassung. Weitere Zustände: [Ortsmodale](expedition-place-modals.md).

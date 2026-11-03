@@ -1,7 +1,9 @@
-# Stadthub section art
+# Stadthub-Bilder
 
-Four transparent, bundled illustrations accompany the earnings, found crates, sales and vehicle headings. They use the menu artwork's warm wood, leather and brass palette. The adjacent text provides the accessible name; images are decorative and do not add separate touch targets.
+Die vier ursprünglichen transparenten Abschnittsillustrationen für Erträge, Fundkisten, Vertrieb und Fahrzeuge werden von `src/HubArt.tsx` gebündelt. Sie nutzen die warme Holz-, Leder- und Messingpalette des Startmenüs. Die benachbarte Beschriftung liefert den zugänglichen Namen; dekorative Bilder erzeugen keine zusätzlichen Touch-Ziele.
 
-Generated using the built-in image generator with the existing procurement cart and Hermes coin as style references. Production PNGs are alpha-trimmed and resized without creative alteration to 256 × 256 pixels, containing a maximum 232-pixel motif. The original prompts are recorded in `prompts.json`.
+Erzeugt mit dem integrierten Bildgenerator anhand des Beschaffungswagens und der damaligen Hermes-Münze als Stilreferenzen. Produktions-PNGs wurden auf sichtbaren Alphainhalt zugeschnitten und in 256 × 256 Pixel eingepasst, mit maximal 232 Pixel großem Motiv. Originalprompts: `prompts.json`.
 
-No economy or interaction changes are introduced by these images.
+Der aktuelle Stadthub verwendet zusätzlich eigenständige Szenen und Motive für Erträge, Fundkisten, Vertrieb und Lastwombat-Boten. Diese werden in den jeweiligen Komponenten `HubEarnings`, `HubCrateCard`, `HubSales`, `HubCourierArt` und `HubVehicleDetail` eingebunden. Die dazugehörigen Promptdateien liegen neben den Bildern. Die vier ursprünglichen Abschnittsicons beschreiben daher nicht mehr allein den gesamten Bildumfang.
+
+Fachliche Regeln: [Spielregeln](../../../SPIELREGELN.md). Die Bilddateien selbst ändern weder Wirtschaft noch Interaktionen.

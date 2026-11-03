@@ -1,5 +1,7 @@
 # Leichtere Kartenelemente und weicher Nebel
 
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
+
 Die bisherigen rechteckigen Pfeiltasten und die kräftige Titelplakette lagen optisch schwer auf der Landschaft. Die neue Fassung reduziert den Regionstitel von 21 auf 18, verwendet eine ruhigere Schriftstärke und ersetzt Rahmen und Kartenhintergrund durch einen transparenten Pergamentschimmer mit weich auslaufendem Lichtsaum.
 
 Die Regionspfeile liegen auf kleinen runden Flächen mit 54 % Deckkraft. Die sichtbare Fläche misst 34 × 34, die antippbare Fläche weiterhin 48 × 48. Nicht verfügbare Richtungen werden vollständig ausgeblendet; unsichtbare Platzhalter halten die jeweils andere Richtung am richtigen Rand und lassen Gesten zur Karte durch.
@@ -12,12 +14,10 @@ Die Grundtöne sind regional abgestimmt: gedecktes Elfenbein in den Kronenlanden
 
 `assets/art/atmosphere/fog-edge.png`, 887 × 1774, RGBA. Mit dem eingebauten ImageGen-Werkzeug erstellt. Das vollständige Promptset steht in `docs/ui/expedition-atmosphere-prompt.json`. Der Alphakanal wurde geprüft: links transparent, über einen breiten Bereich abgestuft, rechts fast vollständig deckend. Die deckende Sicherung liegt unabhängig davon in der nativen Ansicht. Die Panoramen bleiben unverändert.
 
-## Validierung
+## Historische Validierung bei Einführung
 
 - Typprüfung und alle 117 Tests erfolgreich. Die bestehenden Kartenregressionen prüfen die ausgeblendeten Navigationsrichtungen statt deaktivierter Tasten.
 - Tatsächliche App bei 320 × 568, 360 × 740, 390 × 844 und 430 × 932 geprüft: alle 40 Orte je Größe geöffnet, Regionswechsel, Freischaltung, Fahrzeugauswahl, Positionsspeicherung und Englisch. Keine JavaScript-Fehler.
 - Zusätzlich alle fünf Regionen mit teilweise erkundeter Karte geprüft: vollständig deckender Hintergrund, geladene Alpha-Textur, sichtbare Namensschilder, weiterhin antippbare Orte und mindestens 44 große Navigationstippflächen.
 - Android-Export erfolgreich; fertiges Hermes-Bundle und eingebundene Nebel-PNG im Export geprüft. Keine Geräte-/Emulatorprüfung durchgeführt.
 - Neue Vorschauen: `docs/ui/previews/expedition-mist-jade.png` und `docs/ui/previews/expedition-mist-north.png`.
-
-Zur Prüfung vorbereitet, noch nicht veröffentlicht.

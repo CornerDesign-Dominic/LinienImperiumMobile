@@ -1,16 +1,12 @@
-Veröffentlicht am 24.10.2026 mit Release `bd678df7b4e82278b18dba33447b7ece0c5bf390` (Mobile preview, Lauf 40088588867). Frühere Sammelvermerke im folgenden Text sind historisch.
-
 # Stadthub: Übersicht und Fahrzeuge
 
-Gesammelt im Branch `batch/company-improvements`, noch nicht veröffentlicht.
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
 
-- Hub-Bild entfernt. Zwei Reiter: Übersicht und Fahrzeuge.
-- Erträge stehen zuerst: Münzen, Abholhinweise und Fahrzeugteile als drei kompakte Werte mit Icons. Sechs-Stunden-Speicher, Fortschritt, nächster Einkauf und Abholen bleiben sichtbar. Bei voller Kasse oder ohne eingesetzte Transporter gibt es einen passenden Hinweis.
-- Fundkisten zeigen die verbleibende Tagesanzahl, Öffnen oder Wartezeit. Die Regeln stehen hinter dem Fragezeichen. Das Ergebnis öffnet ein eigenes Modal.
-- Vertrieb zeigt Stufe, Einkaufsquote und Verteilkapazität. Das Ausbau-Modal zeigt aktuelle/nächste Quote, Dauer sowie vorhandene/benötigte Münzen, Kontakte und Firmenausbau-Items. Laufender Ausbau und Maximum haben eigene Zustände.
-- Fahrzeuge stehen im Dreierspaltenraster: Kennung, Kapazität, Geschwindigkeit, zwei Ausbauanzeigen und Einsatzstatus. Der Teilebestand steht einmal über dem Raster. Ein freier Platz öffnet den Kaufdialog; bei voller Belegung wird das nächste Freischaltlevel angezeigt.
-- Fahrzeugdetails enthalten kompakte Werte und zwei Ausbauabschnitte mit Trennlinien. Effekt und Ressourcenvergleich stehen direkt beim jeweiligen Button. Kilometer und Einsatzstatus sind unter Weitere Details einklappbar; Herausnehmen, Wiedereinsetzen und der bestehende bestätigte Verkauf unter Weitere Aktionen.
-- Serverregeln, Preise, Teile-Chancen, Ausbaustufen und Bestandsfahrzeuge bleiben erhalten. Eingehende Serverdaten aktualisieren offene Dialoge; Mehrfachtipps lösen keinen zweiten gleichzeitigen Befehl aus. Fehlgeschlagene Aktionen können erneut versucht werden.
-- Zeitbasierte Aktualisierung berücksichtigt jetzt auch den nächsten Hubzyklus und das Ende eines Vertriebsausbaus.
+- Kein großes Hubbild am Seitenanfang. Reiter Übersicht und Boten.
+- Übersicht verwendet die aktuellen Komponenten HubEarnings, Fundkisten und HubSales. Erträge, sechs Speicherzyklen, Einkaufspunkt und laufender Vertriebsausbau bleiben echte Werte; einzelne Bereiche besitzen ihre eigenen dekorativen Motive.
+- Fundkisten zeigen Verfügbarkeit/Wartezeit und öffnen ein separates Werkzeugkasten-Ergebnis. Regeln und serverseitige Limits bleiben erhalten.
+- Boten erscheinen als Lastwombats im Dreispaltenraster mit Statuspunkt, Tragkraft, Tempo und zwei Ausbaustufen. Namen stehen im Detail und in zugänglichen Beschriftungen. Freie Plätze zeigen Anwerben, der nächste gesperrte Platz sein Freischaltlevel.
+- Gemeinsame Boten-Details enthalten Ausbauvorschau, Ressourcenvergleich, Einsatz und bestätigten Verkauf. Fehler erlauben Wiederholung; Mehrfachtipps lösen keine parallele zweite Anfrage aus.
+- Serverregeln und aktuelle Details sind in [Hub-Erträge](hub-earnings.md), [Vertrieb](hub-sales.md), [Boten](hub-couriers.md), [Botendetails](hub-vehicle-detail.md) und [Werkzeugkästen](hub-vehicle-parts.md) beschrieben.
 
-Prüfung: drei gezielte UI-Verhaltenstests ergänzen die vorhandenen neun Hub-Regeltests. Der Gesamtlauf umfasst 195 erfolgreiche Fälle. Typprüfung, Android-Export und Browserprüfung bei 320/390/430 px, Modale und Englisch. Kein physischer Android-Gerätetest.
+Historische Prüfung bei Einführung: drei gezielte UI-Verhaltenstests ergänzen die vorhandenen neun Hub-Regeltests. Der Gesamtlauf umfasst 195 erfolgreiche Fälle. Typprüfung, Android-Export und Browserprüfung bei 320/390/430 px, Modale und Englisch. Kein physischer Android-Gerätetest.

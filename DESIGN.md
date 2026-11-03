@@ -1,76 +1,70 @@
 # Gestaltung: Handel und Entdeckung
 
-Verbindliche gestalterische Grundlage für die nächste mobile Spieloberfläche:
-**Eine glaubwürdige Welt voller ungewöhnlicher Entdeckungen.**
+Gestaltungsreferenz der mobilen App. Mit dem Quellstand `22aa4dad756df65e71dd89dde98afdc6558f4b61` vom 03.11.2026 abgeglichen. Moduldetails stehen unter [docs/ui](docs/ui); Spielregeln unter [SPIELREGELN.md](SPIELREGELN.md). Frühere Entwurfsbilder und Testzahlen belegen ihren damaligen Stand, nicht automatisch die heutige Darstellung.
 
 ## Welt und Bildsprache
 
-Eine eigenständige Parallelwelt mit Transport, Handel und Expeditionen. Die Darstellung ist erwachsen, ruhig und atmosphärisch. Bilder verwenden einen leicht malerischen, reduzierten Realismus: natürliche Proportionen, nachvollziehbare Materialien, weiches Licht, vereinfachte Details und dezente Gebrauchsspuren. Die Motive müssen im kleinen mobilen Format erkennbar bleiben.
+Eine eigenständige Parallelwelt mit Transport, Handel und Expeditionen. Die Darstellung bleibt erwachsen, ruhig und atmosphärisch: leicht malerischer Realismus, natürliche Proportionen, nachvollziehbare Materialien, weiches Licht, vereinfachte Details und dezente Gebrauchsspuren. Motive müssen auch auf kleinen Handyflächen erkennbar bleiben. Keine grellen Farben, albernen Gesichter oder verzerrten Proportionen.
 
-Fantasievolle Inhalte erhalten dieselbe sorgfältige Darstellung wie gewöhnliche Fahrzeuge. Eine würdevoll ausgestattete Karawane oder ein Elefant mit konstruierter Lastplattform können später neben motorisierten Fahrzeugen stehen. Ungewöhnliche Kombinationen dürfen subtilen Humor erzeugen. Alberne Gesichter, verzerrte Proportionen, grelle Farben und Slapstick gehören nicht zur Bildsprache.
+Die aktuelle Fahrzeugwelt enthält bereits Wagen, Tiergespanne, Karawanen und Schlitten in fünf Regionen. Individuelle Fahrzeugillustrationen sind vorhanden; neutrale Fahrzeugicons sind nur Rückfälle bei fehlender Assetzuordnung. Neue Regionen und Fahrzeuge werden durch eine Gestaltungsänderung nicht automatisch Teil des Spiels.
 
-Karawanen, Elefantentransporte, neue Regionen, deren Werte und Gruppenboni sind **künftige Inhaltsideen**. Dieses Designpaket führt sie nicht in Katalog, Spielstand oder Wirtschaft ein.
+## Material und Farben
 
-## Oberfläche
-
-Die Oberfläche erinnert an einen Reiseatlas mit Sammelkarten. Dunkles Tintenpetrol rahmt helle Pergamentflächen ein. Schmale Messingkanten, nummerierte Regionssiegel, Kompassmotive und verbundene Wegpunkte tragen die Atmosphäre. Klare Systemschrift bleibt für Werte, Timer und Aktionen erhalten; eine System-Serifenschrift setzt Überschriften und Kartenakzente. Keine zusätzlichen Schriftdateien oder Laufzeitabhängigkeiten.
-
-Bedienelemente bleiben deutlich erkennbar. Hauptaktionen verwenden Petrol mit heller Schrift, ergänzende Aktionen eine helle Materialfläche. Sperren, Seltenheiten und Zustände besitzen Textbeschriftungen zusätzlich zur Farbe. Gesperrte Regionen bleiben lesbar. Verzierungen werden von der Screenreader-Ausgabe ausgeschlossen.
-
-Die Farbwerte stehen zentral in `src/palette.json`; `src/theme.ts` ergänzt Schriften und regionale Akzente. Helle Materialfarben sind von kontrastreicheren Schriftfarben getrennt. Zum Beispiel ist Messing als Material `#B69352`, Goldschrift auf Pergament dagegen `#79591F`.
+Reiseatlas mit Sammelkarten: dunkles Tintenpetrol, helle Pergamentflächen und zurückhaltende Messingdetails. Klare Systemschrift trägt Werte, Timer und Aktionen; eine System-Serifenschrift setzt Überschriften und Kartenakzente. Farben stehen in [src/palette.json](src/palette.json), Schriften und Akzente in [src/theme.ts](src/theme.ts).
 
 | Rolle | Farbton |
 | --- | --- |
-| Tinte, Navigation | `#243D40` |
-| Pergamentfläche | `#F2E8D3` |
+| Tinte und Navigation | `#243D40` |
+| Pergament | `#F2E8D3` |
 | Hintergrund | `#DCD0B8` |
 | Hauptaktionen | `#315F59` |
-| Messingdetails | `#B69352` |
+| Messingmaterial | `#B69352` |
+| Goldschrift auf Pergament | `#79591F` |
 | Helle Schrift auf Tinte | `#F4EBD8` |
 
-Regionen ergänzen die gemeinsame Gestaltung mit zurückhaltenden eigenen Akzentfarben. Individuelle Landschafts- und Fahrzeugbilder müssen die gemeinsame Perspektive, Lichtführung und Detailtiefe beibehalten. In der Sammlung kennzeichnet ein neutrales Fahrzeugsymbol die Bildfläche bis zur Erstellung individueller Fahrzeugillustrationen.
+[MaterialView und MaterialPressable](src/Material.tsx) legen die bestätigten Papier-/Petroltexturen dekorativ unter den Inhalt. Die Ebene fängt keine Berührungen ab und wird nicht vorgelesen; der Host erhält kein zusätzliches Clipping. Bildflächen, Fahrzeugfacetten und semantische Farben bleiben erhalten. Details: [Gealterte Materialien](docs/ui/aged-materials.md).
 
-## Erstes umgesetztes Paket
+## Navigation und Dialoge
 
-- Start mit eingebetteter Hafenillustration, Firmenschild und direktem Zugang zum Reiseatlas.
-- Gemeinsame Gestaltung für Karten, Aktionen, Fortschrittsbalken, Dialoge, Aufträge, Events, Vorräte und weitere bestehende Ansichten.
-- Expedition mit Regionssiegeln und verbundenen Ortskarten; Reihenfolge, automatische Fokussierung und sämtliche bestehenden Aktionen bleiben erhalten.
-- Sammelkarten mit einheitlichem Rahmen, lesbaren Seltenheitsfarben und neutralem Fahrzeugsymbol.
-- Vorhandene Spiellogik, Spielstände, Wirtschaftsparameter und Fahrzeugwerte bleiben unverändert.
+- Kompakte Startzeilen mit farbigen Miniaturen; die Firmenkarte öffnet Handelsimperium. Kein großes Hafenbild auf der aktuellen Startseite.
+- Fünf feste untere Ziele: Home, Flotte, Garage, Einzelaufträge, Großaufträge. Die Leiste zeigt Bildmotive; zugängliche Beschriftungen und Auswahlstatus bleiben erhalten.
+- Gemeinsamer Seitenkopf mit symmetrischen Aktionsflächen; Zurück, Hilfe und Schließen bleiben erkennbare Bedienelemente.
+- Schließaktionen verwenden das gemeinsame X. Lange Dialoginhalte scrollen; feste Köpfe und Schließflächen bleiben erreichbar, wo die jeweilige Dialogkomponente sie vorsieht.
+- Dekoration wird nicht vorgelesen. Zustände dürfen nicht ausschließlich über eine Farbe vermittelt werden; Namen, Zahlen und zugängliche Beschriftungen liefern Kontext.
 
+Komponenten: [MenuArt](src/MenuArt.tsx), [PageHeader](src/PageHeader.tsx), [ModalCloseButton](src/ModalCloseButton.tsx), [AppModal](src/AppModal.tsx). Einzelheiten: [Menübilder](docs/ui/menu-art.md), [Modal-Schließen](docs/ui/modal-close-consistency.md).
 
-## Icons und kleine Ortsbilder
+## Fahrzeugkarten
 
-34 eigens gezeichnete Bildsymbole bilden ein gemeinsames Set. Fünf davon kennzeichnen die feste Navigation: Hauptsitz, Flotte, Garage, Einzelaufträge und Großaufträge. Zurück, Hilfe, Öffnen, Schließen, Plus-/Minus-Steuerungen, Event- und Auswahlpfeile verwenden ebenfalls dieses Set. Jeder Stadtpunkt besitzt neben dem Ortsbild ein eigenes semantisches Icon. Die Navigation zeigt den aktiven Bereich zusätzlich durch Textfarbe, Fläche und Markierung an.
+[VehicleArt](src/VehicleArt.tsx) ist die gemeinsame Bilddarstellung: quadratisches Fahrzeugmotiv mit abgeschnittenen Facettenecken und deutlich sichtbarer technischer Fassung in Seltenheitsfarbe. Rahmen und Maskierung entstehen aus nativen Ansichten und Farben, nicht aus Rahmenbildern. Kein zusätzliches Seltenheitsicon. Die Fassung skaliert mit der Bildbreite; kleine Bilder erhalten keinen schweren schwarzen Außenstrich.
 
-Jeder der zehn Menüpunkte auf der Start-/Stadtansicht erhält ein eigenes Motiv: Expeditionslager, Kartenarchiv, Firmenkontor, Verteilerdepot, Lagerhaus, Werkstatt, Händlergilde, Markt, Zählhaus und Ausrüstungsschrank. Zwei weitere Motive zeigen Garage und Fahrzeugflotte. Die Ortsbilder verwenden dieselbe reduzierte malerische Bildsprache wie die Hafenillustration.
+Kartenstufe, Seltenheit und Geschwindigkeitsrang sind unabhängige Merkmale:
 
-- `src/Icon.tsx`: gemeinsame Icons und Zuordnung der Vorratsarten.
-- `assets/icons/source/`: originale SVG-Zeichnungen auf einem 32er-Raster.
-- `assets/icons/`: vorgerenderte transparente PNGs mit 96 Pixeln für scharfe kleine Symbole. Farbe wird passend zum Hintergrund gesetzt.
-- `scripts/build-icons.cjs`: optionaler Entwicklungsrenderer; benötigt `sharp` im Tooling-Umfeld. `ICON_RENDERER_NODE_MODULES` kann auf dessen Modulverzeichnis verweisen. Die App benötigt weder `sharp` noch ein natives SVG-Modul.
-- `src/LocationArt.tsx`: zeigt jeweils genau eine der zwölf quadratischen Zellen des unveränderten 4×3-Bildlayouts. Keine benachbarten Motive werden absichtlich angeschnitten oder wiederverwendet.
-- `assets/art/town-atlas.png`: transparentes, verlustfrei komprimiertes Bildlayout (1448×1086 Pixel). Mit dem integrierten Bildgenerierungswerkzeug erstellt; der vollständige Prompt steht in `assets/art/town-atlas.prompt.txt`.
+| Merkmal | Darstellung |
+| --- | --- |
+| Seltenheit | Gemeinsame farbige Facettenfassung: Common, Uncommon, Rare, Epic, Legendary |
+| Kartenstufe I–X | In der Sammlung Material-Schild: I–III Eisen, IV–VI Silber, VII–IX Gold, X Obsidian |
+| Geschwindigkeitsrang | Sammlung: farbige römische Zehnersegmente; Detail: Rangstern mit Teilstufe |
 
-Vorräte und Herstellung zeigen semantisch passende Icons für Kisten, Zahnräder, Shards, Kapazitätsmodule, Aufträge und Kontakte. Der Stadthub, sein Händler und der Großhändler verwenden ebenfalls passende Ortsbilder. Ein laufender Großauftrag erhält ein illustratives Flottenmotiv. Alle Bilder sind im App-Bundle enthalten. Es gibt keine neue native Abhängigkeit und keinen Bildabruf zur Laufzeit.
+Die Sammlung verwendet die verzierte Variante von `VehicleCardTile`: Schild, Bild, Namensband, Trennlinie, Rangsegmente und drei Iconwerte. Garage und allgemeine Fahrzeugauswahl verwenden die kompaktere Variante derselben Komponente mit römischer Stufe und drei Werten. Einzelauftragsauswahl zeigt stattdessen Touren, Dauer und Gewinn. Diese Kontexte teilen Bildsprache und Datenquellen, haben aber bewusst unterschiedliche Informationsdichte.
 
-![Stadtpunkte](docs/design/town.jpg)
-![Weitere Stadtpunkte](docs/design/town-services.jpg)
-![Vorratssymbole](docs/design/inventory.jpg)
-![Herstellung](docs/design/crafting.jpg)
+Fahrzeugdetails verwenden [VehicleCardDetail](src/VehicleCardDetail.tsx): Stufe, Bild/Name, Bonus mit Stufentabelle, Geschwindigkeit, Kapazität und Betriebskosten. Garage/Flotte nutzen den kompakten Modus mit Kontextaktionen; Verbesserungen erfolgen aus der Sammlung. Details: [Sammlungskarten](docs/ui/vehicle-collection-cards.md), [Filter](docs/ui/collection-filters.md), [gemeinsame Auswahl](docs/ui/shared-card-pickers.md).
 
-## Illustrationsquelle
+## Expedition und Stadthub
 
-Die Originalillustration wurde mit dem integrierten Bildgenerierungswerkzeug erstellt und als JPEG für das App-Bundle übernommen. Projektdatei: `assets/art/harbor.jpg`. Sie benötigt zur Laufzeit keine Bild-API oder externe Bild-URL.
+Fünf Regionskarten führen in horizontal erkundbare Landschaften: Kronenlande, Weite Ebenen, Safranstraße, Jadetal und Nordmark. Je Region gibt es sieben Orte und einen Endlos-/Handelsort, insgesamt 40 eigene Nahansichten. Leichte Regionstitel, dezente Pfeile und weich auslaufender Nebel lassen die Landschaft wirken. Gesperrte Gebäude, Namen und Aktionen bleiben verdeckt. Details: [Reisekarten](docs/ui/expedition-journeys.md), [Atmosphäre](docs/ui/expedition-atmosphere.md), [Ortsmodale](docs/ui/expedition-place-modals.md).
 
-Verwendeter Prompt:
+Stadthub: Übersicht und Boten, kompakte Ertrags-/Fundkisten-/Vertriebsbereiche und Dreispaltenraster für Lastwombat-Boten. Bilder für Erträge und Vertrieb ergänzen die tatsächlichen Werte; sie ersetzen keine Anzeigen. Der aktuell verfügbare Lastwombat ist zugleich die freie Standardgestaltung. Weitere bezahlte Skins benötigen eigene freigegebene Motive und technische Einbindung; Platzhalter werden nicht verkauft.
 
-> Use case: stylized-concept. Asset type: landscape illustration to be integrated into the home screen of an adult mobile transport and exploration strategy game, not a UI mockup. Create a wide 3:2 painting of a fictional working harbor at dawn, seen from an elevated traveler's viewpoint: warm sandstone warehouses along a curving waterfront, a cargo ship, small believable unbranded cargo trucks by the quay, distant mountains and roads fading into haze. An alternate contemporary world with a sense of discovery and long journeys. Restrained painterly realism, naturally proportioned architecture and vehicles, simplified readable forms, soft brushwork, tactile materials, atmospheric light, mature and quietly adventurous. Palette: deep ink petrol #243D40, warm parchment #E6D8BA, sandstone #B79A73, aged brass #B69352, touches of terracotta #A75F46. Warm dawn highlights balanced against cool teal water and shadows. Detailed but readable at small mobile sizes. Fill entire frame with landscape; no border, no text, no typography, no symbols, no UI, no logos, no watermark. Avoid cartoons, caricatures, cute forms, glossy 3D, photorealism, steampunk, medieval castles, exaggerated proportions, exaggerated saturation. This image is a project asset; return local output path metadata if available.
+## Items, Währungen und Assets
 
-## Prüfung
+- [ItemArt](src/ItemArt.tsx) zeigt transparente Illustrationen mit technisch erzeugter Seltenheitsfläche/Fassung und gegebenenfalls römischer Stufe. Die Menge steht separat.
+- Auftragsrollen tragen ihre Art oben links: Materialauftrag mit illustriertem Zahnrad, Transportkartenauftrag mit Pferdekopf; beide ohne zusätzliche Plakette oder Fassung. Andere Arten verwenden die vorhandenen hellen Symbole.
+- Imperium-Taler: Goldmünze mit Lorbeerkranz und leerer Mitte. Hermes-Siegel: geflügelte Sandale, schmaler Smaragdring und vier grüne Steine. Das alte kombinierte Münzmotiv ist keine aktuelle Iconquelle.
+- Hermes-Siegel-Pakete haben sechs eigene, steigende Motive von der Einzelmünze bis zur geöffneten Truhe. Echtgeldpreise bleiben ausdrücklich Vorschauen, Kaufbuttons sind deaktiviert.
 
-TypeScript-Prüfung, alle 70 vorhandenen Tests und der Android-Export mit eingebettetem Bild sind erfolgreich. Die Screenshots unter `docs/design/` zeigen die tatsächlichen React-Native-Komponenten über React Native Web mit einem lokalen Testspielstand. Die Testansicht ersetzt ausschließlich die Firebase-Verbindung; sie wird nicht in die App übernommen. Start, Atlas, Ortsdialog und Sammlung wurden in der lokalen Testansicht bedient. Zusätzlich wurden alle zehn Stadtpunkte und alle fünf Navigationstasten bei 320 und 430 Pixel Breite geöffnet. Bei 320, 360, 390 und 430 Pixel Breite gab es keinen horizontalen Überlauf und keine JavaScript-Laufzeitfehler. Die Sprachwahl Deutsch/Englisch wurde mit dem aktuellen Hauptstand zusammengeführt. Eine Namenskollision zwischen der Übersetzungsfunktion und lokalen Fahrzeugvariablen wurde durch den eindeutigen Namen `translate` beseitigt. Ein Test auf einem physischen Android-Gerät ist damit nicht ersetzt.
+Illustrationen werden lokal gebündelt; es gibt keine Bildgenerierung oder externe Bild-API zur Laufzeit. Prompts und Herkunft liegen neben den Assets. Funktionale Icons dürfen eingefärbt werden; gemalte Menü-, Item-, Währungs- und Fahrzeugmotive behalten ihre Materialfarben. Siehe [Itembilder](docs/ui/item-art.md), [Auftragssymbole](docs/ui/order-item-symbols.md), [Währungen](docs/ui/coin-art.md) und [Shop](docs/ui/premium-shop.md).
 
-![Startbildschirm](docs/design/home.jpg)
-![Reiseatlas](docs/design/atlas.jpg)
-![Sammlung](docs/design/collection.jpg)
+## Gestalterisch prüfen
+
+Bei Änderungen die betroffenen realen Komponenten bei kleinen Displaybreiten, langen deutschen/englischen Namen, gesperrten und belegten Zuständen sowie großen Mengen prüfen. Export und Verhaltenstests belegen keine native Bildschärfe, Scrollrate oder Touchqualität. Aktuelle Prüfberichte gehören in [TEST_REPORT.md](TEST_REPORT.md); historische Prüfungen in Modulnotizen bleiben als solche gekennzeichnet.

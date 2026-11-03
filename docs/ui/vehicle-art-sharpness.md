@@ -1,6 +1,6 @@
 # Fahrzeugbilder: Auflösung und große Anzeige
 
-Prüfung am 22.10.2026. Sammelbranch `batch/company-improvements`, nicht veröffentlicht.
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
 
 ## Befund
 
@@ -21,4 +21,4 @@ Mögliche zusätzliche Unschärfe entsteht im nativen Bild-/Skalierungspfad. Der
 
 Typprüfung und 13 Transportkartentests erfolgreich. Kleine und große Bildansicht im Browser bei dreifacher Pixeldichte geprüft: beide laden das 1024-Pixel-Original, große Bildfläche 924 Gerätepixel, keine Laufzeitfehler oder seitlicher Überlauf. Screenshot visuell geprüft. Android-Export erfolgreich.
 
-Die Browserprüfung beweist keine native Android-Schärfe. Die endgültige Wirkung muss nach der gemeinsamen Veröffentlichung auf dem tatsächlichen Handy geprüft werden. Die Änderung ist ausschließlich gesammelt, ohne Deployment/EAS Update.
+Die Browserprüfung beweist keine native Android-Schärfe. Die endgültige Wirkung muss auf dem tatsächlichen Handy geprüft werden.

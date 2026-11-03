@@ -1,6 +1,7 @@
-# Expedition: getrennte Prozentanzeigen
-Status: vorbereitet, noch nicht veröffentlicht.
+# Expedition: Fortschrittsanzeigen
 
-Ortskarten und Endlosort zeigen Erkundung und freigeschaltete Bonuslieferung mit eigener Beschriftung und Prozentzahl am jeweiligen Balken. Die unbeschriftete Prozentzahl am Titel entfällt. Erkundung 100 % bei Bonuslieferung 0 % ist dadurch eindeutig; eine fertige, noch nicht abgeholte Lieferung behält „Bonus bereit“. Erkundungs- und Bonusmechanik bleiben unverändert.
+Aktueller Implementierungsbezug: `src/ExpeditionJourney.tsx` und `src/ExpeditionPlaceDetails.tsx` (03.11.2026). Die frühere separate Ortskartenansicht mit zwei permanenten Prozentbalken ist ersetzt.
 
-Prüfung: Zustände unerforscht, erkundet, Lieferung aktiv, Bonus bereit und abgeschlossen anhand vorhandener Berechnungen geprüft; bestehende englische Beschriftungen vorhanden. Kein vollständiger Build oder Gerätetest in dieser Vorbereitung.
+Die Reisekarte zeigt kompakte Ortsnamensschilder und Zustandssymbole. Im normalen Ortsmodal steht während der Erkundung genau ein Balken mit investierten/benötigten Punkten und Prozentzahl. Nach Entdeckung folgt die Einladung zur Bonuslieferung; während ihrer Fahrt stehen Restzeit und Fortschritt. Nach automatischem Abschluss bleibt nur ein dezentes Entdeckt am Ort. Keine doppelte 100-%-Anzeige und kein manueller Abholschritt für diese Ortslieferung.
+
+Endlos-/Handelsorte behalten ihre Kundenfreischaltung, wiederholbaren Expeditionen und eigene Laufanzeige. Der genaue aktuelle Ablauf steht in [Ortsmodale](expedition-place-modals.md), die automatische Verarbeitung in [Expeditionsabschlüsse](expedition-completions.md).

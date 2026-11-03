@@ -1,6 +1,6 @@
 # Legendäre Events
 
-Vorbereitet am 20.10.2026, noch nicht veröffentlicht.
+Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
 
 - Eventübersicht und Eventprojekt verwenden die vorhandene legendäre Palette (Goldfläche/legendärer Rand und Text) und „LEGENDÄR“ statt „EPISCH“.
 - Englische Beschriftungen: LEGENDARY / LEGENDARY · EVENT. Empfehlungsaufträge behalten ihre epische Seltenheit und Farbe.
