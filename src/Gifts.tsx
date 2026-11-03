@@ -35,11 +35,7 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
   timer.current=setTimeout(()=>{if(generation.current!==token)return;timer.current=null;setRewardPending(false);setRewardOpen(true);},350);
  };
  const close=()=>{
-  if(presenting.current)return;
-  if(spinning.current){
-   if(outcome.current&&gift)finish(outcome.current,gift.cards.findIndex((vehicle:any)=>vehicle.id===outcome.current.cardId));
-   return;
-  }
+  if(presenting.current||spinning.current)return;
   clearTimer();generation.current++;setSelected(null);setFound(null);setHighlight(null);setFailed(false);setRewardOpen(false);setRewardPending(false);outcome.current=null;
  };
  const open=async()=>{
@@ -74,11 +70,11 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
  };
  return <>
   {gifts.map((item:any)=><Pressable key={item.region} accessibilityRole="button" accessibilityLabel={translate('Geschenk')+', '+translate(regionName(item.region,item.name))} onPress={()=>{setFound(null);setHighlight(null);setFailed(false);positions.current={};setSelected(item.region);}}>
-   <Card style={styles.gift}><Icon name="reward" size={36} color={C.gold}/><View style={{flex:1}}><Txt style={styles.title}>{regionName(item.region,item.name)}</Txt><Txt muted style={styles.small}>{item.cards.length} Fahrzeuge</Txt></View><Txt gold>{n(item.cost)} T</Txt><Icon name="chevron" size={16} color={C.gold}/></Card>
+   <Card style={styles.gift}><Icon name="reward" size={36} color={C.gold}/><View style={{flex:1}}><Txt style={styles.title}>{regionName(item.region,item.name)}</Txt><Txt muted style={styles.small}>{item.cards.length} Fahrzeuge</Txt></View><Txt gold>{n(item.cost)}</Txt><Icon name="chevron" size={16} color={C.gold}/></Card>
   </Pressable>)}
   <Modal visible={!!gift&&!modalBlocked&&!rewardOpen} transparent animationType="none" onRequestClose={close} onShow={()=>{if(highlight!==null)mark(highlight);}}>
    <View style={styles.overlay}><View style={styles.modal}>
-    <Row style={{flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{card?'Geschenk geöffnet':'Geschenk'}</Txt><Btn icon={opening?'chevron':'close'} iconOnly={!opening} secondary disabled={(opening&&!canSkip)||rewardPending} style={{marginTop:0}} onPress={close}>{opening?'Überspringen':'Schließen'}</Btn></Row>
+    <Row style={{flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{card?'Geschenk geöffnet':'Geschenk'}</Txt><Btn icon="close" iconOnly secondary disabled={opening||rewardPending} onPress={close}>Schließen</Btn></Row>
     {gift&&<>
      <Row><Txt muted>{regionName(gift.region,gift.name)}</Txt></Row>
      <ScrollView ref={list} style={{flexShrink:1,flexGrow:0}} contentContainerStyle={{paddingBottom:4}}>
@@ -87,9 +83,9 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
       </View>)}
       {!opening&&!card&&<Txt muted style={styles.small}>Doppelte Karte → 1 Shard derselben Seltenheit</Txt>}
      </ScrollView>
-     {opening&&<Txt gold style={{textAlign:'center',marginTop:8}}>Wird geöffnet …</Txt>}
+     {opening&&<><Txt gold style={{textAlign:'center',marginTop:8}}>Wird geöffnet …</Txt><Btn secondary disabled={!canSkip} onPress={()=>{if(spinning.current&&canSkip&&outcome.current&&gift)finish(outcome.current,gift.cards.findIndex((vehicle:any)=>vehicle.id===outcome.current.cardId));}}>Überspringen</Btn></>}
      {failed&&<Txt style={{color:C.red,fontSize:12,marginTop:8}}>Geschenk konnte nicht geöffnet werden. Bitte erneut versuchen.</Txt>}
-     <Btn icon="reward" disabled={busy||opening||rewardPending||data.state.coins<gift.cost} onPress={open}>{card?'Nochmal öffnen':'Öffnen'} · {n(gift.cost)} T</Btn>
+     <Btn icon="reward" disabled={busy||opening||rewardPending||data.state.coins<gift.cost} onPress={open}>{card?'Nochmal öffnen':'Öffnen'} · {n(gift.cost)}</Btn>
     </>}
    </View></View>
   </Modal>
@@ -100,7 +96,6 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
     <Pill>{data.catalog.rarities.find((r:any)=>r.id===card.rarity)?.label}</Pill>
     <View style={styles.reward} accessibilityLiveRegion="polite">{found.duplicate?<ItemArt id={`shard:${card.rarity}`} size={44}/>:<Icon name="cards" size={24} color={rarityColor(card.rarity)}/>}<Txt style={{flexShrink:1}}>{found.duplicate?`+${n(found.shards||1)} ${data.catalog.rarities.find((r:any)=>r.id===card.rarity)?.label}-Shard`:'Neue Transportkarte'}</Txt></View>
    </View>}
-   <Btn onPress={()=>{setRewardOpen(false);presenting.current=false;}}>Weiter</Btn>
   </ExpeditionPlaceModal>
  </>;
 }

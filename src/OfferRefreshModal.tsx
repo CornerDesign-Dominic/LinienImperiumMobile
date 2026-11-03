@@ -22,12 +22,12 @@ export function OfferRefreshModal({visible,cost,coins,busy,error,onClose,onConfi
    <View style={s.modal}>
     <View style={s.heading}><Txt style={s.title}>Neue Angebote?</Txt><Btn icon="close" iconOnly secondary disabled={locked} onPress={close}>Schließen</Btn></View>
     <ScrollView style={{flexShrink:1}} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
-     <View style={s.price}><Icon name="coin" size={34}/><Txt style={s.amount}>{n(cost)} T</Txt></View>
+     <View style={s.price}><Icon name="coin" size={34}/><Txt style={s.amount}>{n(cost)}</Txt></View>
      <Txt muted>Gehaltene Angebote bleiben bestehen.</Txt>
      {!enough&&<Txt style={s.error}>Nicht genügend Imperium-Taler.</Txt>}
      {failed&&<Txt style={s.error}>{error||'Angebote konnten nicht gewechselt werden. Bitte erneut versuchen.'}</Txt>}
     </ScrollView>
-    <View style={s.actions}><Btn secondary disabled={locked} onPress={close}>Abbrechen</Btn><Btn disabled={locked||!enough} onPress={confirm}>{saving?'Wird gewechselt …':`Für ${n(cost)} T wechseln`}</Btn></View>
+    <View style={s.actions}><Btn disabled={locked||!enough} onPress={confirm}>{saving?'Wird gewechselt …':`Für ${n(cost)} wechseln`}</Btn></View>
    </View>
   </SafeAreaView>
  </AppModal>;

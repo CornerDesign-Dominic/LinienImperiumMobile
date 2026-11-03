@@ -26,9 +26,9 @@ export function FleetDetails({data,template,visible,onClose,modalBlocked=false}:
       <Fact label="Kapazität" value={n(estimate.capacity,1)+' t'}/>
       <Fact label="Gefahren / 1 h" value={n(estimate.km,1)+' km'}/>
       <Fact label="Geliefert / 1 h" value={n(estimate.tons,1)+' t'}/>
-      <Fact label="Kosten / Tour" value={n(estimate.tourCost,2)+' T'}/>
-      <Fact label="Kosten / 1 h" value={n(estimate.hourCost,2)+' T'}/>
-      <Fact label="Frachtvergütung / 1 h" value={n(estimate.hourRevenue,2)+' T'}/>
+      <Fact label="Kosten / Tour" value={n(estimate.tourCost,2)+''}/>
+      <Fact label="Kosten / 1 h" value={n(estimate.hourCost,2)+''}/>
+      <Fact label="Frachtvergütung / 1 h" value={n(estimate.hourRevenue,2)+''}/>
       <Fact label="Spieler-XP / 1 h" value={n(estimate.xp,2)}/>
      </Card>
      {estimate.vehicles.map(vehicle=>{
@@ -40,9 +40,9 @@ export function FleetDetails({data,template,visible,onClose,modalBlocked=false}:
        <Fact label="Tourendauer" value={remaining(vehicle.seconds*1000,0)}/>
        <Fact label="Volle Touren / 1 h" value={n(vehicle.tours)}/>
        <Fact label="Geliefert / 1 h" value={n(vehicle.tons,1)+' t'}/>
-       <Fact label="Kosten / Tour" value={n(vehicle.tourCost,2)+' T'}/>
-       <Fact label="Kosten / 1 h" value={n(vehicle.hourCost,2)+' T'}/>
-       <Fact label="Frachtvergütung / 1 h" value={n(vehicle.hourRevenue,2)+' T'}/>
+       <Fact label="Kosten / Tour" value={n(vehicle.tourCost,2)+''}/>
+       <Fact label="Kosten / 1 h" value={n(vehicle.hourCost,2)+''}/>
+       <Fact label="Frachtvergütung / 1 h" value={n(vehicle.hourRevenue,2)+''}/>
        <Txt muted style={[styles.small,{marginTop:7}]}>Wirksame Boni</Txt>
        <Fact label="Tempo" value={'+'+n(vehicle.bonuses.speed,1)+' %'}/>
        <Fact label="Kostenersparnis" value={n(Math.min(80,vehicle.bonuses.cost),1)+' %'}/>

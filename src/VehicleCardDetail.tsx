@@ -49,7 +49,7 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade,compa
    <Fact label="Durchschnitt" value={averageSpeed===undefined?'—':`${n(averageSpeed,2)} km/s`}/>
   </DetailSection>
   <DetailSection compact={compact}><Row><Txt style={styles.title}>Kapazität</Txt><Txt style={styles.value}>{n(stats.capacity,1)} t</Txt></Row><Fact label="Erweitert" value={`${modules} / ${maxModules}`}/></DetailSection>
-  <DetailSection compact={compact}><Row style={{marginBottom:0}}><Txt style={styles.title}>Betriebskosten</Txt><Txt style={styles.value}>{n(stats.costPerKm,2)} T/km</Txt></Row></DetailSection>
+  <DetailSection compact={compact}><Row style={{marginBottom:0}}><Txt style={styles.title}>Betriebskosten</Txt><Txt style={styles.value}>{n(stats.costPerKm,2)}/km</Txt></Row></DetailSection>
   {!own&&<DetailSection compact={compact}><Txt muted>Auf Expeditionen in Region {card.region+1} entdecken.</Txt></DetailSection>}
   {card.description&&<DetailSection compact={compact}><Txt muted style={{fontSize:13,lineHeight:21}}>{card.description}</Txt></DetailSection>}
   {extra&&<DetailSection compact={compact}>{extra}</DetailSection>}

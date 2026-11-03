@@ -4,19 +4,19 @@ import {StyleSheet} from 'react-native';
 import {C,Txt,n} from './ui';
 export function Statistics({state:g}:any){
  const rows=[
-  ['Frachtumsatz',`${n(g.stats.grossRevenue,2)} T`],
-  ['Betriebskosten',`${n(g.stats.operatingCosts,2)} T`],
-  ['Beschaffungskosten',`${n(g.procurement?.spent,2)} T`],
-  ['Beschaffung: hinterlegtes Guthaben',`${n((g.procurement?.runs||[]).reduce((sum:number,r:any)=>sum+r.escrow,0),2)} T`],
+  ['Frachtumsatz',`${n(g.stats.grossRevenue,2)}`],
+  ['Betriebskosten',`${n(g.stats.operatingCosts,2)}`],
+  ['Beschaffungskosten',`${n(g.procurement?.spent,2)}`],
+  ['Beschaffung: hinterlegtes Guthaben',`${n((g.procurement?.runs||[]).reduce((sum:number,r:any)=>sum+r.escrow,0),2)}`],
   ['Erfolgreiche Abholungen',n(g.procurement?.completed)],
-  ['Prämien',`${n(g.stats.contractBonusRevenue,2)} T`],
+  ['Prämien',`${n(g.stats.contractBonusRevenue,2)}`],
   ['Touren',n(g.stats.trips)],
   ['Aufträge',n(g.completed)],
   ['Fracht',`${n(g.stats.tons,2)} t`],
   ['Strecke',`${n(g.stats.km,2)} km`],
   ['Transportleistung',`${n(g.stats.tonKm,2)} tkm`],
   ['Spieler-XP',n(g.xp)],
-  ['Test-Taler',`${n(g.stats.testCoinsGranted,2)} T`],
+  ['Test-Taler',`${n(g.stats.testCoinsGranted,2)}`],
   ['CO₂ (Schätzung)',`${n(g.stats.tonKm*.05275,1)} kg`]
  ];
  return <View style={styles.list}>{rows.map(([label,value],index)=><View key={label} style={[styles.row,index>0&&styles.divider]}>

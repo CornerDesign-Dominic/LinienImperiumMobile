@@ -8,8 +8,9 @@ const regions=[
  require('../assets/art/regions/northmark.jpg'),
 ];
 
-// The bundled scenes are decoration only; category buttons own all semantics.
+// Decoration only: landscape scenes for regions, an entrusted coffer for referrals.
+// The transparent coffer sits directly on the card paper without its own frame.
 export const ProjectCategoryArt=memo(function ProjectCategoryArt({region,referral=false}:{region:number;referral?:boolean}){
- const source=referral?require('../assets/art/projects/referral-trade.jpg'):regions[region];
- return source?<Image accessible={false} accessibilityElementsHidden importantForAccessibility="no" source={source} resizeMode="cover" fadeDuration={0} style={StyleSheet.absoluteFill}/>:null;
+ const source=referral?require('../assets/art/projects/referral-coffer.png'):regions[region];
+ return source?<Image accessible={false} accessibilityElementsHidden importantForAccessibility="no" source={source} resizeMode={referral?'contain':'cover'} fadeDuration={0} style={StyleSheet.absoluteFill}/>:null;
 });

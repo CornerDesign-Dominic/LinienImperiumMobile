@@ -13,13 +13,13 @@ export function HubEarnings({hub,cycle,clock,busy,onCollect}:any){
  return <View testID="hub-earnings-yard" style={s.card}>
   <Image source={require('../assets/art/hub/earnings-yard.jpg')} accessible={false} resizeMode="cover" fadeDuration={0} style={s.image}/>
   <View style={s.heading}><Txt style={s.title}>Erträge</Txt><Txt style={s.cashboxText}>{full?'Kasse voll':`${hub.cashboxCycles} / ${max} Std.`}</Txt></View>
-  <View style={s.amountRow}><Icon name="coin" size={32}/><Text testID="hub-earnings-amount" adjustsFontSizeToFit minimumFontScale={.6} numberOfLines={1} style={s.amount}>{n(hub.cashboxCoins,2)} T</Text></View>
+  <View style={s.amountRow}><Icon name="coin" size={32}/><Text testID="hub-earnings-amount" adjustsFontSizeToFit minimumFontScale={.6} numberOfLines={1} style={s.amount}>{n(hub.cashboxCoins,2)}</Text></View>
   <View style={s.scenery}/>
   <View style={s.cycle}>
    <View style={s.statusArea}><Txt style={s.status}>{status}</Txt>{full&&<Txt style={s.small}>Erträge abholen, um fortzufahren</Txt>}</View>
    <View testID="hub-earnings-timeline" style={s.timeline} accessible accessibilityLabel={active?`Einkaufszyklus: ${state.minutes} von ${cycle.durationMs/60000} Minuten. Ware leer nach ${cycle.workMs/60000} Minuten.`:status}>
     <View style={[s.markerArea,!active&&s.hidden]}>
-     {active&&state.emptyAt!==null&&<View style={[s.event,{left:`${state.emptyAt*100}%`,transform:[{translateX:state.emptyAt>.85?-104:-52}]}]}><Icon name="orders" size={18} color={C.onInk}/><Txt style={s.eventText}>Ware leer · {n(cycle.workMs/60000,1)} Min.</Txt></View>}
+     {active&&state.emptyAt!==null&&<View style={[s.event,{left:`${state.emptyAt*100}%`,transform:[{translateX:state.emptyAt>.85?-104:-52}]}]}><Image source={require('../assets/art/hub/parcel.png')} accessible={false} resizeMode="contain" fadeDuration={0} style={s.parcel}/><Txt style={s.eventText}>Ware leer · {n(cycle.workMs/60000,1)} Min.</Txt></View>}
      {active&&<View style={s.purchase}><MenuArt id="procurement" size={28}/></View>}
     </View>
     <View style={[s.track,!active&&s.dimTrack]}>
@@ -34,15 +34,15 @@ export function HubEarnings({hub,cycle,clock,busy,onCollect}:any){
  </View>;
 }
 const s=StyleSheet.create({
- card:{height:350,width:'100%',borderWidth:1,borderColor:C.line,borderRadius:8,overflow:'hidden',backgroundColor:C.ink,marginBottom:10},
+ card:{height:308,width:'100%',borderWidth:1,borderColor:C.line,borderRadius:8,overflow:'hidden',backgroundColor:C.ink,marginBottom:10},
  image:{position:'absolute',top:0,bottom:0,left:0,right:0,width:'100%',height:'100%'},
  heading:{height:36,flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:8,paddingHorizontal:12,backgroundColor:'rgba(21,33,33,0.72)'},
  title:{fontSize:14,lineHeight:20,fontWeight:'700',color:C.onInk},cashboxText:{fontSize:11,lineHeight:16,color:C.onInk,flexShrink:1},
  amountRow:{height:52,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:8,paddingHorizontal:12,backgroundColor:'rgba(21,33,33,0.45)'},amount:{fontSize:27,lineHeight:34,fontWeight:'700',color:C.onInk,flexShrink:1,minWidth:0,textAlign:'center'},
  scenery:{flex:1,backgroundColor:'rgba(21,33,33,0.08)'},
- cycle:{height:166,paddingHorizontal:14,paddingTop:10,backgroundColor:'rgba(21,33,33,0.84)'},
- statusArea:{height:43,alignItems:'center',justifyContent:'center'},status:{fontSize:13,lineHeight:19,fontWeight:'600',color:C.onInk,textAlign:'center'},small:{fontSize:10,lineHeight:16,color:C.onInk},
- timeline:{height:108},markerArea:{height:44,position:'relative',marginHorizontal:5},event:{position:'absolute',bottom:4,width:104,alignItems:'center'},eventText:{fontSize:8,lineHeight:12,color:C.onInk},purchase:{position:'absolute',right:-5,bottom:0},
+ cycle:{height:124,paddingHorizontal:14,paddingTop:6,backgroundColor:'rgba(21,33,33,0.84)'},
+ statusArea:{height:32,alignItems:'center',justifyContent:'center'},status:{fontSize:13,lineHeight:19,fontWeight:'600',color:C.onInk,textAlign:'center'},small:{fontSize:10,lineHeight:16,color:C.onInk},
+ timeline:{height:80},markerArea:{height:44,position:'relative',marginHorizontal:5},event:{position:'absolute',bottom:4,width:104,alignItems:'center'},parcel:{width:24,height:24},eventText:{fontSize:8,lineHeight:12,color:C.onInk},purchase:{position:'absolute',right:-5,bottom:0},
  track:{height:6,backgroundColor:'rgba(240,229,201,0.25)',borderRadius:4,position:'relative',marginHorizontal:5},progress:{position:'absolute',left:0,top:0,bottom:0,backgroundColor:'#DEC58B',borderRadius:4},cursor:{position:'absolute',top:-3,width:12,height:12,borderRadius:6,borderWidth:2,borderColor:C.onInk,backgroundColor:C.brass,transform:[{translateX:-6}]},eventLine:{position:'absolute',top:-7,bottom:-5,width:1,backgroundColor:'#DEC58B'},
  ends:{flexDirection:'row',justifyContent:'space-between',marginTop:6},hidden:{opacity:0},dimTrack:{opacity:.35},
  action:{height:46,justifyContent:'center',alignItems:'center',paddingHorizontal:10,backgroundColor:'rgba(21,33,33,0.9)',borderTopWidth:1,borderTopColor:C.brass},actionText:{color:C.onInk,fontSize:14,lineHeight:21,fontWeight:'700',textAlign:'center'},disabledText:{opacity:.45},pressed:{opacity:.8},

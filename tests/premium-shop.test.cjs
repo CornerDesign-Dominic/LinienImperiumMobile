@@ -51,8 +51,9 @@ test('Currency presentation updates legacy labels while preserving player names 
  const {currencyText}=require('../functions/src/currency-names.cjs');
  const profile={companyName:'Münzen Express',cityName:'250 M'};
  assert.equal(currencyText('Münzen Express in 250 M: +500 Münzen',profile),'Münzen Express in 250 M: +500 Imperium-Taler');
- assert.equal(currencyText('25.000 M · 0,62 M/km'),'25.000 T · 0,62 T/km');
+ assert.equal(currencyText('25.000 M · 0,62 M/km'),'25.000 · 0,62/km');
  assert.equal(currencyText('250 Premium-Münzen'),'250 Hermes-Siegel');
+ assert.equal(currencyText('250 T · 2 t · 250 Hermes-Siegel · Imperium-Taler'),'250 · 2 t · 250 Hermes-Siegel · Imperium-Taler');
  const base=initial();base.state.premiumShop.balance=750;
  const next=execute(base.state,'sync',{},now);
  assert.equal(next.state.coins,base.state.coins);assert.equal(next.state.premiumShop.balance,750);

@@ -9,7 +9,7 @@ import {LANGUAGES,t as translate,localizedHelp} from './i18n';
 import {Text,LanguageProvider,useLanguage} from './Language';
 import {itemName} from './items';
 import React,{useCallback,useEffect,useRef,useState} from 'react';
-import {ScrollView,ScrollViewInstance,StyleSheet,RefreshControl,TextInput,BackHandler,AppState,Alert,Platform,KeyboardAvoidingView} from 'react-native';
+import {ScrollView,ScrollViewInstance,StyleSheet,RefreshControl,TextInput,BackHandler,AppState,KeyboardAvoidingView} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {SafeAreaProvider,SafeAreaView,useSafeAreaInsets} from 'react-native-safe-area-context';
 import {StatusBar} from 'expo-status-bar';
@@ -110,7 +110,7 @@ function Game(){
  const back=()=>{if(completionNotice){closeCompletion();return true;}if(expansionOpen){setExpansionOpen(false);return true;}if(levelNotices.length){setLevelNotices(queue=>queue.slice(1));return true;}if(sheet){setSheet(null);return true;}if(screen==='orders'&&ordersTab==='saved'&&savedType){setSavedType(null);return true;}if(screen==='expeditions'&&region!==null){setRegion(null);scroll.current?.scrollTo({y:0,animated:false});return true;}if(trail.length){if(screen==='cardDetail')scroll.current?.scrollTo({y:0,animated:false});setScreen(trail[trail.length-1]);setTrail(v=>v.slice(0,-1));return true;}if(screen!=='home'){setScreen('home');return true;}return false;};
  useEffect(()=>{const handler=BackHandler.addEventListener('hardwareBackPress',back);return()=>handler.remove();},[screen,trail,sheet,projectId,region,levelNotices,ordersTab,savedType,completionNotice,expansionOpen,busy]);
  const act=(action:string,payload:Record<string,unknown>={})=>run(action,payload);
- const confirm=(title:string,body:string,onConfirm:()=>void)=>Platform.OS==='web'?setSheet({title,body,items:[{title:'Bestätigen',onPress:onConfirm}]}):Alert.alert(translate(title),translate(body),[{text:translate('Abbrechen'),style:'cancel'},{text:translate('Bestätigen'),onPress:onConfirm}]);
+ const confirm=(title:string,body:string,onConfirm:()=>void)=>setSheet({title,body,centered:true,items:[{title:'Bestätigen',primary:true,onPress:onConfirm}]});
  const choose=(title:string,items:any[],body?:string)=>setSheet({title,items,body});
  const g=data?.state,c=data?.catalog;
  const journeyOpen=screen==='expeditions'&&region!==null&&!!g?.profile&&!!data?.expeditionMap?.[region]?.open;
@@ -173,7 +173,7 @@ function Game(){
    case 'company':return <><DevelopmentCard data={data} busy={busy} onCommand={act} onExpansion={()=>setExpansionOpen(true)} modalBlocked={!!sheet||levelNotices.length>0}/><TransportSummary data={data} onImprove={()=>go('transportUpgrade')}/></>;
    case 'transportUpgrade':return <TransportEditor data={data} busy={busy} onSave={(upgrades:any[])=>act('transportBatch',{upgrades})} onInventory={()=>go('inventory')}/>;
    case 'dealer':return <Card><Txt muted>Boten werden direkt im Stadthub angeworben und ausgebaut.</Txt><Btn onPress={()=>go('hub')}>Zum Stadthub</Btn></Card>;
-   case 'hub':return <HubScreen data={data} busy={busy} clock={clock} onCommand={act} modalBlocked={levelNotices.length>0} onSell={(truck:any)=>confirm('Boten abgeben?',`${n(truck.sale.coins,2)} T Erlös. Werkzeugkästen werden nicht erstattet.`,()=>act('sell',{id:truck.id}))}/>;
+   case 'hub':return <HubScreen data={data} busy={busy} clock={clock} onCommand={act} modalBlocked={levelNotices.length>0} onSell={(truck:any)=>confirm('Boten abgeben?',`${n(truck.sale.coins,2)} Erlös. Werkzeugkästen werden nicht erstattet.`,()=>act('sell',{id:truck.id}))}/>;
    case 'inventory':return <Inventory modalBlocked={levelNotices.length>0} data={data} busy={busy} onNavigate={go} onUseRefill={(kind:string)=>act(kind==='expedition'?'expeditionRefill':'refill')}/>;
    case 'crafting':return <Crafting data={data} busy={busy} onCommand={act}/>;
    case 'customers':return <CustomerList data={data} onOpen={(id:string)=>{setCustomerId(id);go('customerDetail');}}/>;
@@ -196,7 +196,7 @@ function Game(){
    default:return null;
   }
  }
- return <SafeAreaView style={v.root} edges={['top','bottom']}><StatusBar style="light"/><View style={v.header}><Row style={{marginBottom:0,flexWrap:'nowrap'}}><View style={{flex:1}}><Txt style={{fontWeight:'700',fontSize:14,color:C.onInk}}>{data?`Level ${data.level.level} · ${n(data.level.within)} / ${n(data.level.need)} XP`:'Verbinden …'}</Txt></View><View accessible accessibilityLabel={translate(`${n(g?.coins)} Imperium-Taler`)} style={{flexDirection:'row',alignItems:'center',gap:6}}><Icon name="coin" size={18} color={C.brassLight}/><Txt style={{fontWeight:'700',color:C.brassLight}}>{n(g?.coins)} T</Txt></View></Row><Bar value={data?data.level.within/data.level.need*100:0}/><TokenHeader data={data} clock={clock} onInventory={()=>go('inventory')}/></View>
+ return <SafeAreaView style={v.root} edges={['top','bottom']}><StatusBar style="light"/><View style={v.header}><Row style={{marginBottom:0,flexWrap:'nowrap'}}><View style={{flex:1}}><Txt style={{fontWeight:'700',fontSize:14,color:C.onInk}}>{data?`Level ${data.level.level} · ${n(data.level.within)} / ${n(data.level.need)} XP`:'Verbinden …'}</Txt></View><View accessible accessibilityLabel={translate(`${n(g?.coins)} Imperium-Taler`)} style={{flexDirection:'row',alignItems:'center',gap:6}}><Icon name="coin" size={18} color={C.brassLight}/><Txt style={{fontWeight:'700',color:C.brassLight}}>{n(g?.coins)}</Txt></View></Row><Bar value={data?data.level.within/data.level.need*100:0}/><TokenHeader data={data} clock={clock} onInventory={()=>go('inventory')}/></View>
  <PageHeader title={translate(data&&!g?.profile?'Firmengründung':NAMES[screen])} home={screen==='home'} onBack={back} onHelp={()=>go('help')}/>
  {error?<Pressable onPress={()=>{setError('');run();}} style={v.error}><Txt style={{color:C.red,fontSize:12}}>{error} · Erneut versuchen</Txt></Pressable>:null}
  {journeyOpen?<View style={{flex:1}}>{body()}</View>:<ScrollView style={{backgroundColor:C.bg}} automaticallyAdjustKeyboardInsets ref={scroll} contentContainerStyle={[v.content,screen==='expeditions'&&v.expeditionContent]} keyboardShouldPersistTaps="handled" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>run()} tintColor={C.accent}/>}><MaterialLayer surfaceStyle={{backgroundColor:C.bg}} quiet/>

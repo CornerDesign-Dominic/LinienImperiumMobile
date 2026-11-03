@@ -35,7 +35,7 @@ export function CollectionFacts({capacity,loadedSpeed,emptySpeed,costPerKm}:{cap
  return <View style={collectionStyles.facts}>
   {row(`${t('Kapazität')}: ${n(capacity,1)} t`,<Icon name="capacity" size={18}/>,<Txt style={collectionStyles.value}>{n(capacity,1)} t</Txt>)}
   {row(`${t('Durchschnittsgeschwindigkeit')}: ${average===undefined?'—':n(average,2)+' km/s'}`,<Icon name="speed" size={18}/>,<Txt style={collectionStyles.value}>{average===undefined?'—':`${n(average,2)} km/s`}</Txt>)}
-  {row(`${t('Betriebskosten')}: ${costPerKm===undefined?'—':n(costPerKm,2)+' T/km'}`,<Icon name="coin" size={15} color={C.muted}/>,<Txt style={collectionStyles.value}>{costPerKm===undefined?'—':`${n(costPerKm,2)} T/km`}</Txt>)}
+  {row(`${t('Betriebskosten')}: ${costPerKm===undefined?'—':n(costPerKm,2)+'/km'}`,<Icon name="coin" size={15} color={C.muted}/>,<Txt style={collectionStyles.value}>{costPerKm===undefined?'—':`${n(costPerKm,2)}/km`}</Txt>)}
  </View>;
 }
 const collectionStyles=StyleSheet.create({facts:{marginTop:8,gap:4},row:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:3,minHeight:20},value:{fontSize:10,lineHeight:15,fontWeight:'600',flexShrink:1,textAlign:'right'}});
