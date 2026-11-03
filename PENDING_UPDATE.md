@@ -77,3 +77,10 @@ Neuer Einstieg auf Start mit 30 aufsteigenden Stufen (1 oben, 30 unten), mittige
 ## Kundenwarenbilder und kompakte Angebote – gesammelt
 
 Alle 15 Stammkundenwaren mit eigenen transparenten Motiven, bestehende fünf Grundwaren und fünf Edelwaren weiterverwendet. Gemeinsame Bildzuordnung in Angeboten, Auftragsdetails und Kundendetails. Halte-Pinnadel auf runder Fläche, ausgerichtete Fakten und dezenter Stammkunde-Hinweis. Keine Spielwertänderung. 25 Katalogwaren-Zuordnungen und 15 Alpha-Dateien geprüft, Serie visuell geprüft. Vollständige UI-/TypeScript-Prüfung lokal mangels Abhängigkeiten offen. Nicht veröffentlicht.
+
+## Entwicklung und Punkteverteiler – gesammelt, nicht veröffentlicht
+
+- Ein gemeinsamer Entwicklungsbereich, klar getrennte Einstiege für Levelpunkte und Ausbaupunkte; Bestände und Serveraktionen unverändert getrennt. Beide Dialoge verwenden gemeinsame Zeilen und Punkteanzeige, ohne Hinweisabsatz. Übersicht und Ist-/Vorschauwerte zeigen nur autoritative permanente Basiswerte; der globale Ressourcenheader behält Gesamtmaxima mit Boni.
+- Top-Badge und Rest/Gesamt-Punkteanzeigen: helle Materialfläche, dünne Petrolkontur und petrolfarbener Text. Ebenso eindeutig vergleichbare Nach-Ausbau-Flächen im Imperiumsausbau-Detail und Verteilnetz. Aktive Tabs, Auswahlen, Erfolgs-/Warnzustände und Hauptaktionen unverändert; keine globale Grün-Ersetzung.
+- Nur ein goldener Hinweis am Titel Imperiumsausbau, wenn tatsächlich ein Ausbau bezahlbar ist; Untergruppen-/Wertpunkte der Übersicht entfernt, Detailaktionen bleiben erreichbar.
+- 13 bestehende Backendtests zu Basiswerten, Bonusabgrenzung, getrennten Punktebeständen und atomarer Verteilung erfolgreich. Gezielt erweiterte Komponententests (Basisvorschau, getrennte Pools, Entwurf, Fehler und Doppeltipps) lokal mangels React/TypeScript nicht ausführbar; kein App-Export/Gerätetest. Veröffentlichung erst nach neuer Freigabe. [Details](docs/ui/point-allocation.md).

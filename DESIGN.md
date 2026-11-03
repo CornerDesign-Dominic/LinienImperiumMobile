@@ -73,3 +73,7 @@ Illustrationen werden lokal gebündelt; es gibt keine Bildgenerierung oder exter
 ## Gestalterisch prüfen
 
 Bei Änderungen die betroffenen realen Komponenten bei kleinen Displaybreiten, langen deutschen/englischen Namen, gesperrten und belegten Zuständen sowie großen Mengen prüfen. Export und Verhaltenstests belegen keine native Bildschärfe, Scrollrate oder Touchqualität. Aktuelle Prüfberichte gehören in [TEST_REPORT.md](TEST_REPORT.md); historische Prüfungen in Modulnotizen bleiben als solche gekennzeichnet.
+
+## Punkteverteiler – gesammelte Anpassung
+
+Entwicklung zeigt permanente Basiswerte ohne Boni. Levelpunkte und Ausbaupunkte bleiben getrennte Bestände in einem gemeinsamen Übersichtsbereich; beide Verteiler verwenden denselben kompakten Aufbau ohne Hinweisabsatz. Verfügbarkeitsanzeigen und die vergleichbaren Nach-Ausbau-Vorschauen im Imperiumsausbau und Verteilnetz nutzen helles Material mit dünner Petrolkontur. Nur am Titel Imperiumsausbau steht in der Übersicht ein bezahlbarkeitsabhängiger goldener Hinweis. [Details und Prüfumfang](docs/ui/point-allocation.md). Noch nicht veröffentlicht.
