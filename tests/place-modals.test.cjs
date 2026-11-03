@@ -23,7 +23,7 @@ test('Reachable exploration spends a single point, blocks inaccessible places an
 });
 test('Bonus delivery starts normally and reports automatic expansion rewards after completion',()=>{
  let game=explored();let r=render(game.view,0);assert.ok(text(r.tree).includes('Gebiet erkundet'));assert.equal(nodes(r.tree,'PlaceExtraDetails').length,0);click(r,'Bonuslieferung starten');assert.deepEqual(r.missions,[[0,'delivery',0]]);
- assert.equal(nodes(r.tree,'PlaceRewards')[0].props.items[0].label,'Erweiterungspunkt');
+ assert.equal(nodes(r.tree,'PlaceRewards')[0].props.items[0].label,'Ausbaupunkt');assert.equal(nodes(r.tree,'PlaceRewards')[0].props.items[0].icon,'expansion');
  game=execute(game.state,'mission',{region:0,kind:'delivery',place:0,truck:game.view.state.trucks[0].id},now,random);
  r=render(game.view,0,{clock:now+7500});assert.equal(r.buttons.length,0);assert.equal(nodes(r.tree,'Bar')[0].props.value,50);
  game=execute(game.state,'sync',{},now+15001,random);const id=game.state.expedition.missions[0].id;r=render(game.view,0);assert.equal(r.buttons.length,0);assert.equal(game.view.expansion.available,1);
@@ -59,3 +59,4 @@ test('Modal images override Android intrinsic image sizes and the X remains outs
  const {ExpeditionPlaceModal,PlacePortrait}=modal(0);assert.equal(nodes(PlacePortrait({source:{uri:'test'}}),'Image').length,0);assert.equal(ExpeditionPlaceModal({visible:false,title:'Hidden',onClose:()=>{},children:null}),null);
  const tree=ExpeditionPlaceModal({visible:true,title:'Place',onClose:()=>{},children:null});assert.equal(nodes(tree,'ModalCloseButton').length,1);assert.equal(nodes(nodes(tree,'ScrollView')[0],'ModalCloseButton').length,0,'X does not scroll away');assert.equal(nodes(nodes(tree,'ScrollView')[0],'Text').length,0,'Location title stays above the scrolling portrait and actions');assert.ok(nodes(tree,'Text').some(node=>text(node)==='Place'));
 });
+

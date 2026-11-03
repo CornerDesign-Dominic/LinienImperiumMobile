@@ -19,7 +19,7 @@ export function DevelopmentCard({data,busy,onCommand,onExpansion,modalBlocked=fa
    <Row style={{marginBottom:7,flexWrap:'nowrap'}}><Txt style={s.title}>Entwicklung</Txt><Pill>Verfügbare Punkte: {n(development.points)}</Pill></Row>
    {(['overtime','expedition'] as const).map(kind=><Row key={kind} style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={{fontSize:12,flex:1}}>{kind==='overtime'?'Überstunden':'Expeditionspunkte'}</Txt><View accessible accessibilityLabel={`${translate(kind==='overtime'?'Überstunden':'Expeditionspunkte')}: ${n(development[kind].base+development[kind].bonus)}, ${translate('Basis')} ${n(development[kind].base)}, ${translate('Boni')} +${n(development[kind].bonus)}`} style={s.capacity}><Txt style={{fontSize:17,fontWeight:'700'}}>{n(development[kind].base+development[kind].bonus)}</Txt><Txt muted style={{fontSize:11}}>{n(development[kind].base)} + {n(development[kind].bonus)}</Txt></View></Row>)}
    {development.points>0&&<Btn disabled={busy} onPress={()=>setOpen(true)}>Punkte verteilen</Btn>}
-   {data.expansion?.available>0&&onExpansion&&<Btn secondary disabled={busy} onPress={onExpansion}>Erweiterungspunkte verteilen · {n(data.expansion.available)}</Btn>}
+   {data.expansion?.available>0&&onExpansion&&<Btn secondary icon="expansion" disabled={busy} onPress={onExpansion}>Ausbaupunkte verteilen · {n(data.expansion.available)}</Btn>}
   </Card>
   {open&&<DevelopmentModal data={data} busy={busy} onCommand={onCommand} onClose={()=>setOpen(false)} modalBlocked={modalBlocked}/>}
  </>;
@@ -65,3 +65,4 @@ export function LevelUpNotice({levels,onClose}:{levels:number[];onClose:()=>void
  </SafeAreaView></View></Modal>;
 }
 const s=StyleSheet.create({title:{fontSize:16,fontWeight:'700'},area:{paddingVertical:10,borderBottomWidth:1,borderColor:C.line},values:{flexDirection:'row',alignItems:'center',gap:8},value:{width:42,alignItems:'center'},caption:{fontSize:10},capacity:{flexDirection:'row',alignItems:'center',gap:8},controls:{flexDirection:'row',justifyContent:'center',alignItems:'center',gap:6},step:{minWidth:44,minHeight:44,borderRadius:10,borderWidth:1,borderColor:C.line,alignItems:'center',justifyContent:'center'},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},modal:{width:'100%',maxWidth:440,borderRadius:20,padding:20,backgroundColor:C.panel,borderWidth:1,borderColor:C.accent},congrats:{fontSize:19,fontWeight:'700',textAlign:'center'},level:{fontSize:26,fontWeight:'700',textAlign:'center',color:C.accent,marginTop:8,marginBottom:18,lineHeight:32},reward:{fontSize:13,lineHeight:21,marginBottom:8}});
+

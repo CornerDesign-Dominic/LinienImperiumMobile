@@ -1,0 +1,19 @@
+# Ausbaupunkte: Name und Bild
+
+Ausbaupunkt (Mehrzahl Ausbaupunkte) ist die globale deutsche Bezeichnung für die dauerhaft verteilbaren Punkte aus einmaligen Expeditions-Ortslieferungen. Englisch: Upgrade point / Upgrade points. Die Entwicklungspunkte aus Spielerleveln bleiben ein getrennter Bestand.
+
+## Darstellung
+
+Das freigestellte Motiv zeigt den gewählten Ausbaupunkt-Entwurf: aufgerollter Bauplan mit bronzener Säule. Die 256-px-RGBA-Datei `assets/art/points/ausbaupunkt.png` wird über `Icon` mit dem internen Namen `expansion` eingebunden und behält ihre gemalten Farben. Referenz und vollständiger Generierungsprompt stehen in `assets/art/points/ausbaupunkt.prompt.json`.
+
+Das Motiv ersetzt das bisherige Plus als Belohnung im Ortsmodal. Es erscheint außerdem in der Abschlussinformation, der Ausbaupunktekarte, im Verteiler und am Einstieg unter Handelsimperium → Entwicklung. Die Plus-/Minus-Bedienelemente zum Verteilen bleiben funktionale Symbole. Mengen bleiben separate Zahlen und gehören nicht zur Bilddatei.
+
+## Kompatibilität
+
+Gespeicherte Schlüssel wie `expansion`, `expansionPoints` und der Befehl `expansionAllocate` bleiben unverändert. Besitz, verfügbare Punkte, bereits verteilte Boni und Regeneration werden nicht umgerechnet. Neue Meldungen und Hilfe verwenden den neuen Namen. Alte gespeicherte Belohnungstexte werden bei der Ausgabe normalisiert; Profilnamen und historische Speichertexte bleiben erhalten. Historische Markdown-Archive bleiben unverändert.
+
+Die Namens-/Bildänderung ändert weder automatische Gutschrift noch Abschluss- oder Verteilungsverhalten. Ausführliche Regeln: [Expeditionsabschlüsse](expedition-completions.md).
+
+## Prüfung
+
+Die vorhandenen Ortsmodal-, Verteilungs- und Übersetzungsprüfungen kontrollieren den neuen Namen, die Iconzuordnung und englische dynamische Beschriftungen. Ein zusätzlicher Kompatibilitätsfall prüft Altbelohnungstexte, erhaltene Speichertexte und geschützte Profilnamen. Die acht lokalen Expeditionsabschlussprüfungen sind erfolgreich; vollständige Typprüfung, Tests und Android-Export sowie Deployment werden durch den Veröffentlichungsworkflow nachgewiesen. Maßgeblicher Releasebeleg: [TEST_REPORT.md](../../TEST_REPORT.md).

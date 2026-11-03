@@ -44,7 +44,7 @@ Dies sind die drei Rezepte im mobilen Serverkatalog. `craftCustomerOrder` wird s
 ## Getrennte Ressourcen und Rechte
 
 - Imperium-Taler (`coins`) und Hermes-Siegel (`premiumShop.balance`) sind getrennte Währungen; XP und aktuelle Expeditions-/Überstundenpunkte sind Fortschritts- bzw. Aktionsressourcen.
-- Entwicklungs- und Erweiterungspunkte werden über ihre Verteiler verwendet, nicht als zusätzliches herstellbares Material.
+- Entwicklungs- und Ausbaupunkte werden über ihre Verteiler verwendet, nicht als zusätzliches herstellbares Material.
 - Der tkm-Restzähler ist ein Fortschrittszähler zum nächsten Firmenausbau-Item, kein Gegenstand.
 - Skinbesitz und die legendäre Pyramiden-Platzhalterbelohnung sind gespeicherte Rechte, keine regulären Materialstapel. Der Platzhalter ist noch keine spielbare legendäre Transportkarte.
 - Der Hermes-Siegel-Shop ist eine Vorschau mit deaktivierten Echtgeldkäufen; verfügbare Packbilder begründen keine Kauf- oder Gutschriftfunktion.

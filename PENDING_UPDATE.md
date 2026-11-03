@@ -8,6 +8,10 @@ Der [Mobile-preview-Lauf 41690415508](https://github.com/CornerDesign-Dominic/Li
 
 Die bis dahin vorhandenen Sammelnotizen sind [archiviert](docs/archive/mobile-update-history.md). Alte Branch- oder „noch nicht veröffentlicht“-Vermerke darin sind keine offenen Freigaben. Bestehende Entwicklungsbranches bleiben erhalten; aus ihrem Namen allein wird kein offenes Paket abgeleitet.
 
+## Zur Veröffentlichung freigegeben: Ausbaupunkte
+
+Die globale Umbenennung und das Bauplan-/Säulenmotiv werden mit der bereits bereinigten Dokumentation veröffentlicht. Interne Speicherfelder und Spielwerte bleiben erhalten. Nach diesem Paket werden neue Änderungen wieder gesammelt, bis eine weitere ausdrückliche Veröffentlichung freigegeben wird. Status und Nachweis werden nach erfolgreichem Workflow ergänzt.
+
 ## Noch offene Punkte
 
 | Bereich | Tatsächlicher Stand / nächster Schritt |

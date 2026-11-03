@@ -4,8 +4,8 @@ function setup(){return componentHarness('ExpansionPoints.tsx',{'./regionIdentit
 test('Completion modal is information only with exactly X and distribution, and no available points disables distribution',()=>{
  const h=setup(),props={notices:[{sequence:1,region:0,place:0,kind:'delivery',expansionPoints:1}],points:1,busy:false,onClose(){},onDistribute(){}};
  let tree=h.render('ExpeditionCompletionNotice',props),buttons=nodes(tree,'Btn');
- assert.deepEqual(buttons.map(text),['Schließen','Punkte verteilen']);assert.ok(text(tree).includes('Lindenweiler'));assert.ok(text(tree).includes('Erweiterungspunkt'));
- assert.equal(nodes(tree,'Modal')[0].props.trackActivity,false);
+ assert.deepEqual(buttons.map(text),['Schließen','Punkte verteilen']);assert.ok(text(tree).includes('Lindenweiler'));assert.ok(text(tree).includes('Ausbaupunkt'));
+ assert.equal(nodes(tree,'Modal')[0].props.trackActivity,false);assert.equal(nodes(tree,'Icon')[0].props.name,'expansion');
  props.points=0;tree=h.render('ExpeditionCompletionNotice',props);assert.equal(nodes(tree,'Btn')[1].props.disabled,true);
 });
 test('Expansion draft closes without spending and only an explicit confirmation sends a permanent bounded allocation',async()=>{
@@ -19,3 +19,4 @@ test('Expansion draft closes without spending and only an explicit confirmation 
  await nodes(tree,'Btn').at(-1).props.onPress();assert.deepEqual(JSON.parse(JSON.stringify(calls)),[['expansionAllocate',{expedition:0,overtime:1,points:3}]]);assert.equal(closed,1);
  const separate=setup();tree=separate.render('ExpansionPointsModal',props);nodes(tree,'RewardModal')[0].props.onClose();assert.equal(calls.length,1);assert.equal(closed,2);
 });
+

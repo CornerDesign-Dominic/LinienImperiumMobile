@@ -27,7 +27,7 @@ export function ExpeditionPlaceModal({visible,title,region,image,onClose,childre
 export function PlaceStatus({icon,children}:{icon:IconName;children:React.ReactNode}){return <View style={s.status}><Icon name={icon} size={15} color={C.accent}/><Text style={s.statusText}>{children}</Text></View>;}
 export function PlaceRewards({items,received=false}:{items:{icon:IconName;itemId?:string;label:string;amount:string}[];received?:boolean}){
  if(!items.length)return null;
- return <View style={s.rewards}><Text style={s.rewardLabel}>{received?'Belohnung erhalten':'Belohnung'}</Text><View style={s.rewardIcons}>{items.map((item,i)=><View key={i} accessible accessibilityLabel={`${t(item.label)} ${item.amount}`} style={s.reward}>{item.itemId?<ItemArt id={item.itemId} size={36}/>:<Icon name={item.icon} size={23} color={C.gold}/>}<Text literal style={s.rewardAmount}>{item.amount}</Text></View>)}</View></View>;
+ return <View style={s.rewards}><Text style={s.rewardLabel}>{received?'Belohnung erhalten':'Belohnung'}</Text><View style={s.rewardIcons}>{items.map((item,i)=><View key={i} accessible accessibilityLabel={`${t(item.label)} ${item.amount}`} style={s.reward}>{item.itemId?<ItemArt id={item.itemId} size={36}/>:<Icon name={item.icon} size={item.icon==='expansion'?36:23} color={C.gold}/>}<Text literal style={s.rewardAmount}>{item.amount}</Text></View>)}</View></View>;
 }
 export function PlaceExtraDetails({children}:{children:React.ReactNode}){
  const [open,setOpen]=useState(false);
@@ -40,3 +40,4 @@ const s=StyleSheet.create({
  rewards:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:10,paddingVertical:8,marginBottom:4},rewardLabel:{fontSize:11,lineHeight:17,color:C.muted,flexShrink:1},rewardIcons:{flexDirection:'row',gap:9,flexWrap:'wrap',justifyContent:'flex-end'},reward:{flexDirection:'row',alignItems:'center',gap:4,paddingHorizontal:7,paddingVertical:5,borderWidth:1,borderColor:C.line,borderRadius:5,backgroundColor:C.raised},rewardAmount:{fontSize:12,lineHeight:18,fontWeight:'700',color:C.gold},
  details:{borderTopWidth:1,borderTopColor:C.line,marginTop:12},detailsToggle:{minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8},detailsLabel:{fontSize:11,lineHeight:17,color:C.muted},detailsContent:{paddingBottom:6,gap:8}
 });
+

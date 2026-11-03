@@ -17,6 +17,7 @@ const icons={
  close:require('../assets/icons/close.png'),
  coin:require('../assets/art/currency/imperium-taler.png'),
  hermes:require('../assets/art/currency/hermes-siegel.png'),
+ expansion:require('../assets/art/points/ausbaupunkt.png'),
  company:require('../assets/icons/company.png'),
  crafting:require('../assets/icons/crafting.png'),
  customers:require('../assets/icons/customers.png'),
@@ -48,7 +49,7 @@ const icons={
 export type IconName=keyof typeof icons;
 export function Icon({name,size=24,color=C.text,style}:{name:IconName;size?:number;color?:string;style?:StyleProp<ImageStyle>}){
  // Illustrations retain their painted colours; functional icons retain their tint.
- const illustrated=name==='coin'||name==='hermes'||name==='capacity'||name==='speed';
+ const illustrated=name==='coin'||name==='hermes'||name==='expansion'||name==='capacity'||name==='speed';
  return <Image testID={illustrated?`${name}-art`:undefined} source={icons[name]} accessible={false} importantForAccessibility="no" resizeMode="contain" fadeDuration={0} style={[{width:size,height:size,flexShrink:0},!illustrated&&{tintColor:color},style]}/>;
 }
 export const screenIcons:Record<string,IconName>={procurement:'crafting',home:'home',fleet:'fleet',garage:'garage',orders:'orders',projects:'projects',expeditions:'expedition',cards:'cards',company:'company',hub:'hub',inventory:'inventory',crafting:'crafting',customers:'customers',wholesaler:'wholesaler',statistics:'statistics',account:'settings',events:'events',dealer:'truck'};
@@ -61,4 +62,5 @@ export function stockIcon(id:string):IconName{
  if(id.startsWith('order:'))return 'orders';
  return ({hubVehicleParts:'crafting',capacityModules:'module',companyItems:'company',pickupHints:'document',supplierContacts:'customers',expeditionRefills:'expedition',overtimeRefills:'overtime',private:'orders',customer:'customers'} as Record<string,IconName>)[id]||'inventory';
 }
+
 

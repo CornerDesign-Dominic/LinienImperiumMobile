@@ -55,7 +55,7 @@ function collectCompletedExpedition(mission){
     if(mission.claimedAt||region.deliveries[mission.place]){mission.completionRecorded=true;return false;}
     region.deliveries[mission.place]=true;
     e.convertedDeliveries++;e.available++;points=1;
-    mission.claimedAt=Date.now();mission.reward='1 Erweiterungspunkt erhalten';
+    mission.claimedAt=Date.now();mission.reward='1 Ausbaupunkt erhalten';
     addEvent(EXPEDITION_REGIONS[mission.region]+': '+mission.reward+'.');
   }else if(mission.kind==='final'){
     if(mission.claimedAt||region.finalClaimed){mission.completionRecorded=true;return false;}
@@ -94,9 +94,10 @@ function acknowledgeExpeditionCompletions(through){
 }
 function allocateExpansionPoints(expedition,overtime,expected){
   const e=expansionState(),total=expedition+overtime;
-  if(expected!==e.available)throw Error('Erweiterungspunkte wurden geändert. Bitte erneut verteilen.');
-  if(!total||total>e.available)throw Error('Nicht genügend Erweiterungspunkte.');
+  if(expected!==e.available)throw Error('Ausbaupunkte wurden geändert. Bitte erneut verteilen.');
+  if(!total||total>e.available)throw Error('Nicht genügend Ausbaupunkte.');
   e.available-=total;e.expedition+=expedition;e.overtime+=overtime;
-  addEvent(total+' Erweiterungspunkte dauerhaft verteilt.');
+  addEvent(total+' Ausbaupunkte dauerhaft verteilt.');
   return true;
 }
+

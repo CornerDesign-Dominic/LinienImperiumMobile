@@ -37,3 +37,10 @@ test('Procurement messages and help localize in English',()=>{
  assert.ok(localizedHelp('procurement',[]).some(row=>row[1].includes('8,000')));
  setLanguage('de');
 });
+
+
+test('Upgrade point labels and messages use the new name in both languages',()=>{
+ setLanguage('de');assert.equal(t('Ausbaupunkte'),'Ausbaupunkte');
+ setLanguage('en');assert.equal(t('Ausbaupunkte'),'Upgrade points');assert.equal(t('Ausbaupunkte verteilen · 3'),'Allocate upgrade points · 3');assert.equal(t('+2 Ausbaupunkte'),'+2 upgrade points');assert.equal(t('1 Ausbaupunkt erhalten'),'1 upgrade point received');
+ setLanguage('de');
+});

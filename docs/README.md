@@ -22,7 +22,7 @@ Diese Dokumentation beschreibt **Linien Imperium Online / Projekt 117**, die nat
 - [Firmen-Transportausbau](transport-upgrades.md) und [Entwicklungspunkte](ui/company-development-points.md)
 - [Einzelauftragsnavigation](single-orders-flow.md), [Reiter und Zuweisung](ui/single-order-tabs-and-assignment.md)
 - [Großauftragsstart und Hilfe](ui/project-start-and-info.md), [Abschlussstatistik](ui/project-statistics.md)
-- [Expeditionsabschlüsse](ui/expedition-completions.md), [Ortsmodale](ui/expedition-place-modals.md)
+- [Ausbaupunkte und Motiv](ui/ausbaupunkte.md), [Expeditionsabschlüsse](ui/expedition-completions.md), [Ortsmodale](ui/expedition-place-modals.md)
 - [Beschaffungsgruppen](ui/procurement-groups.md), [Beschaffungsübersicht](ui/procurement-overview.md)
 - [Stadthub-Boten und Werkzeugkästen](ui/hub-vehicle-parts.md), [Erträge](ui/hub-earnings.md), [Vertrieb](ui/hub-sales.md)
 - [Pyramiden-Event](events/pyramid.md), [Premiumshop und Kaufgrenzen](ui/premium-shop.md)

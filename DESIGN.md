@@ -60,6 +60,7 @@ Stadthub: Übersicht und Boten, kompakte Ertrags-/Fundkisten-/Vertriebsbereiche 
 
 - [ItemArt](src/ItemArt.tsx) zeigt transparente Illustrationen mit technisch erzeugter Seltenheitsfläche/Fassung und gegebenenfalls römischer Stufe. Die Menge steht separat.
 - Auftragsrollen tragen ihre Art oben links: Materialauftrag mit illustriertem Zahnrad, Transportkartenauftrag mit Pferdekopf; beide ohne zusätzliche Plakette oder Fassung. Andere Arten verwenden die vorhandenen hellen Symbole.
+- Ausbaupunkte: freigestellter Bauplan mit bronzener Säule, ohne eingefärbte Plusgrafik. Das Motiv wird in Belohnungen und Verteilung gemeinsam verwendet; Mengen stehen separat. [Referenz](docs/ui/ausbaupunkte.md).
 - Imperium-Taler: Goldmünze mit Lorbeerkranz und leerer Mitte. Hermes-Siegel: geflügelte Sandale, schmaler Smaragdring und vier grüne Steine. Das alte kombinierte Münzmotiv ist keine aktuelle Iconquelle.
 - Hermes-Siegel-Pakete haben sechs eigene, steigende Motive von der Einzelmünze bis zur geöffneten Truhe. Echtgeldpreise bleiben ausdrücklich Vorschauen, Kaufbuttons sind deaktiviert.
 

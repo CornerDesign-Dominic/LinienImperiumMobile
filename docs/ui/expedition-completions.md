@@ -1,24 +1,24 @@
-# Automatische Expeditionsabschlüsse und Erweiterungspunkte
+# Automatische Expeditionsabschlüsse und Ausbaupunkte
 
 Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprüfungen unten sind historische Nachweise, kein neuer Gesamttest. Aktuelle Veröffentlichungen: [PENDING_UPDATE.md](../../PENDING_UPDATE.md); Prüfstatus: [TEST_REPORT.md](../../TEST_REPORT.md).
 
 ## Verhalten
 
 - Der Server schreibt Ortslieferungen und die erste Endlosort-Lieferung bei Abschluss automatisch gut. Weitere Fahrten starten weiterhin nur auf Wunsch des Spielers.
-- Ortslieferungen geben jeweils einen freien **Erweiterungspunkt**. Die erste Endlosort-Lieferung schaltet den Stammkunden frei und gibt das einmalige Kapazitätsmodul, sofern noch nicht erhalten. Wiederholbare Material- und Fahrzeugkartenaufträge würfeln ihre unveränderte Beute einmal bei Ankunft aus, bewahren sie aber bis zum gemeinsamen Einsammeln unter Einzelaufträge auf. Sie erzeugen keine Expeditionsabschlussmeldung. Der Sammelzähler zählt diese Abschlüsse mit; fertige Einzelcards bleiben ausgeblendet. Das gemeinsame Belohnungsmodal zeigt auch Splitter nach Seltenheit.
+- Ortslieferungen geben jeweils einen freien **Ausbaupunkt**. Die erste Endlosort-Lieferung schaltet den Stammkunden frei und gibt das einmalige Kapazitätsmodul, sofern noch nicht erhalten. Wiederholbare Material- und Fahrzeugkartenaufträge würfeln ihre unveränderte Beute einmal bei Ankunft aus, bewahren sie aber bis zum gemeinsamen Einsammeln unter Einzelaufträge auf. Sie erzeugen keine Expeditionsabschlussmeldung. Der Sammelzähler zählt diese Abschlüsse mit; fertige Einzelcards bleiben ausgeblendet. Das gemeinsame Belohnungsmodal zeigt auch Splitter nach Seltenheit.
 - Eine gespeicherte Abschlussübersicht fasst alle noch nicht bestätigten Meldungen zusammen. Beim App-Start, erneuten Einloggen und während des Spiels gilt derselbe Ablauf. X und „Punkte verteilen“ bestätigen die gezeigten Meldungen serverseitig; spätere Synchronisierungen und Neustarts zeigen sie nicht erneut. Ein verlorener Netzwerkaufruf lässt die Übersicht offen und zeigt den Verbindungsfehler, statt Meldungen still zu verlieren.
-- Die Übersicht enthält nur ein X oben rechts und unten „Punkte verteilen“. Ohne freie Erweiterungspunkte ist der untere Button deaktiviert. Neue, während einer bereits geöffneten Übersicht eintreffende Abschlüsse bleiben für die nächste Übersicht gespeichert.
+- Die Übersicht enthält nur ein X oben rechts und unten „Punkte verteilen“. Ohne freie Ausbaupunkte ist der untere Button deaktiviert. Neue, während einer bereits geöffneten Übersicht eintreffende Abschlüsse bleiben für die nächste Übersicht gespeichert.
 - Native Produktdialoge melden ihre Sichtbarkeit zentral über `AppModal`. Die Abschlussübersicht wartet bestehende Dialoge, Fahrzeugauswahl, Levelmeldungen und Hintergrundzustand der App ab, statt darüber aufzuspringen. Die reguläre Synchronisierung und der Timer für Missionsankünfte bleiben erhalten.
 
 ## Dauerhafte Verteilung
 
-Ein Erweiterungspunkt erhöht wahlweise das Expeditionsmaximum oder das Überstundenmaximum dauerhaft um eins. Eine eigene Verteilung zeigt die aktuellen und folgenden Maxima und warnt vor der Unwiderruflichkeit. Bestätigte Zuteilungen sind nicht zurücksetzbar; unvergebene Punkte bleiben gespeichert und über **Handelsimperium → Entwicklung** erreichbar. Einzelne Punkte oder der gesamte Vorrat können verteilt werden. Zusätzliche, während der Bearbeitung eintreffende Punkte löschen den Entwurf nicht.
+Ein Ausbaupunkt erhöht wahlweise das Expeditionsmaximum oder das Überstundenmaximum dauerhaft um eins. Eine eigene Verteilung zeigt die aktuellen und folgenden Maxima und warnt vor der Unwiderruflichkeit. Bestätigte Zuteilungen sind nicht zurücksetzbar; unvergebene Punkte bleiben gespeichert und über **Handelsimperium → Entwicklung** erreichbar. Einzelne Punkte oder der gesamte Vorrat können verteilt werden. Zusätzliche, während der Bearbeitung eintreffende Punkte löschen den Entwurf nicht.
 
 Aktuelle Energie wird durch die Verteilung nicht aufgefüllt. Die vorhandene Regeneration behält ihren anteiligen Fortschritt. Levelaufstiegs-Punkte bleiben ein separater Bestand mit ihrem bisherigen Ablauf.
 
 ## Bestandsschutz und Wiederholungen
 
-Die Migration erhält bereits abgeholte, fest zugeteilte Expeditionskapazität. Noch nicht abgeholte abgeschlossene Ortslieferungen werden einmalig in Erweiterungspunkte umgewandelt; alte bereits gutgeschriebene Beute wird nicht erneut gemeldet. Jede neue Mission erhält eine beständige Abschlussmarkierung. Der Informations-Posteingang ist von der gekürzten Missionshistorie unabhängig.
+Die Migration erhält bereits abgeholte, fest zugeteilte Expeditionskapazität. Noch nicht abgeholte abgeschlossene Ortslieferungen werden einmalig in Ausbaupunkte umgewandelt; alte bereits gutgeschriebene Beute wird nicht erneut gemeldet. Jede neue Mission erhält eine beständige Abschlussmarkierung. Der Informations-Posteingang ist von der gekürzten Missionshistorie unabhängig.
 
 Die Kompatibilitätsaktion `claimMission` vergibt nichts doppelt. Bei wiederholten Cloud-Befehlen wird die ursprüngliche Aktion nicht erneut ausgeführt; inzwischen fällige Synchronisierungsabschlüsse werden dennoch gespeichert. Die erfolgreiche Punkteverteilung besitzt eine wiederholbar abrufbare Bestätigung im Befehlsbeleg, damit eine verlorene Antwort nicht zum erneuten Verteilen derselben Auswahl führt.
 

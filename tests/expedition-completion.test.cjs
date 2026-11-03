@@ -78,3 +78,16 @@ test('More than the history limit of offline job completions retains every pendi
  const claimed=cmd(out.state,'claimSingles',{},now+15001);assert.equal(claimed.view.claimSummary.count,125);assert.equal(claimed.view.claimSummary.coins,1875);
  assert.equal(cmd(claimed.state,'claimSingles',{},now+15002).view.claimSummary,undefined);
 });
+
+
+test('Legacy saved point rewards use the new display name without rewriting history or profile names',()=>{
+ const r=initial(),legacy='2 Erweiterungspunkte dauerhaft verteilt.';
+ r.state.events.push({at:now,text:legacy});
+ r.state.expedition.missions=[{...mission(1),status:'completed',claimedAt:now,completionRecorded:true,reward:'1 Erweiterungspunkt erhalten'}];
+ r.state.expedition.regions[0].deliveries[0]=true;
+ const next=cmd(r.state);
+ assert.equal(next.state.events.at(-1).text,legacy);assert.equal(next.view.state.events.at(-1).text,'2 Ausbaupunkte dauerhaft verteilt.');
+ assert.equal(next.state.expedition.missions[0].reward,'1 Erweiterungspunkt erhalten');assert.equal(next.view.state.expedition.missions[0].reward,'1 Ausbaupunkt erhalten');
+ const {currencyText}=require('../functions/src/currency-names.cjs');
+ assert.equal(currencyText('Erweiterungspunkte GmbH: 1 Erweiterungspunkt erhalten',{companyName:'Erweiterungspunkte GmbH'}),'Erweiterungspunkte GmbH: 1 Ausbaupunkt erhalten');
+});

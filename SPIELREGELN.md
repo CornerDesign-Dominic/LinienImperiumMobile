@@ -24,11 +24,11 @@ Maßgeblich ist die vom Server ausgeführte Kombination aus [Engine](functions/s
 
 Entwicklungspunkte werden unter **Handelsimperium → Entwicklung** auf die beiden Grundmaxima verteilt. Die gemeinsame Bestätigung verteilt alle derzeit offenen Levelpunkte; sie erhöht auch den jeweiligen aktuellen Punktestand um die zugeteilte Menge. Ausrüstungsboni kommen separat dazu.
 
-**Erweiterungspunkte** sind ein anderer Bestand: Jede neue einmalige Ortslieferung gibt einen freien Punkt. Dieser erhöht wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1, **ohne** aktuelle Energie aufzufüllen. Eine bestätigte Verteilung ist nicht rückgängig zu machen; unvergebene Punkte bleiben gespeichert. Alte bereits gutgeschriebene Ortsboni bleiben durch Migration erhalten.
+**Ausbaupunkte** sind ein anderer Bestand: Jede neue einmalige Ortslieferung gibt einen freien Punkt. Dieser erhöht wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1, **ohne** aktuelle Energie aufzufüllen. Eine bestätigte Verteilung ist nicht rückgängig zu machen; unvergebene Punkte bleiben gespeichert. Alte bereits gutgeschriebene Ortsboni bleiben durch Migration erhalten.
 
 Garagenkarten können Maxima oder Expeditionsintervall verändern. Das Einsetzen einer solchen Karte füllt keine Energie auf. Beim Entfernen bleibt Überschuss bestehen, die Regeneration pausiert bis unter das Maximum. Änderungen erhalten den anteiligen Timerfortschritt.
 
-Quellen: [Levelkurve](functions/src/progression-runtime.js), [Levelbelohnung und Auffüller](functions/src/engine.cjs), [Punkteboni](functions/src/transport-runtime.js), [Expeditionsabschlüsse](functions/src/expedition-completion-runtime.js); Details: [Entwicklung](docs/ui/company-development-points.md), [Erweiterungspunkte](docs/ui/expedition-completions.md).
+Quellen: [Levelkurve](functions/src/progression-runtime.js), [Levelbelohnung und Auffüller](functions/src/engine.cjs), [Punkteboni](functions/src/transport-runtime.js), [Expeditionsabschlüsse](functions/src/expedition-completion-runtime.js); Details: [Entwicklung](docs/ui/company-development-points.md), [Ausbaupunkte](docs/ui/expedition-completions.md).
 
 ## 3. Transportkarten, Garage und Flotte
 
@@ -77,7 +77,7 @@ Touren buchen Transportertrag; Abschlussbeute und Prämien werden anschließend 
 
 Jede Region hat sieben Orte und einen Endlosort. Erkundung investiert je Klick 1 Expeditionspunkt. Die Kosten pro Ort sind `3 + 9 × Regionsindex + floor(Ortsindex / 2)` bei nullbasierten Indizes. Nach Entdeckung aller sieben Orte wird der Endlosort sichtbar und die nächste Region zugänglich; die Bonuslieferungen sind keine Voraussetzung für diesen Zugang.
 
-Jeder entdeckte Ort bietet eine einmalige optionale Lieferung mit Garagenfahrzeug. Sie vergibt automatisch 1 Erweiterungspunkt. Die erste Endlosort-Lieferung schaltet den regionalen Stammkunden frei und gibt einmalig 1 Kapazitätsmodul. Abschlusshinweise bestätigen nur die Information und zahlen nichts erneut aus. Für die Beschaffungsfreischaltung müssen zusätzlich alle Ortslieferungen und der Endlosort-Abschluss erledigt sein.
+Jeder entdeckte Ort bietet eine einmalige optionale Lieferung mit Garagenfahrzeug. Sie vergibt automatisch 1 Ausbaupunkt. Die erste Endlosort-Lieferung schaltet den regionalen Stammkunden frei und gibt einmalig 1 Kapazitätsmodul. Abschlusshinweise bestätigen nur die Information und zahlen nichts erneut aus. Für die Beschaffungsfreischaltung müssen zusätzlich alle Ortslieferungen und der Endlosort-Abschluss erledigt sein.
 
 Eine Auslosung am Endlosort kostet 5 Expeditionspunkte. 10 % geben direkt eine regionale Karte; innerhalb dieser Kartenchance gelten insgesamt 60 % Common, 30 % Uncommon, 9 % Rare und 1 % Epic. Die übrigen 90 % verteilen sich auf Transportkartenaufträge (20 %), Materialaufträge (75 %), Sonderaufträge (4,5 %) und Empfehlungsaufträge (0,5 %). Diese vier Anteile sind bedingt auf den Nicht-Kartenfund. Wiederholbare Transportaufträge verwenden freie Garagenfahrzeuge; ihre Beute wird bei Ankunft einmal ausgewürfelt und gemeinsam unter Einzelaufträge abgeholt.
 

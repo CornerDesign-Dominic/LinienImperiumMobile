@@ -13,7 +13,7 @@ export function ExpeditionPlaceDetails({data,region,selected,busy,clock,onComman
  const noTruck=!g.trucks.some((truck:any)=>truck.free&&truck.tier>=2),active=!done&&mission?.status==='active';
  const duration=mission?Math.max(0,mission.endsAt-mission.startedAt):isFinal?map.finalDurationMs:place.durationMs;
  const button=(label:string,action:string,payload:any,disabled=false,secondary=false)=><Btn secondary={secondary} disabled={busy||disabled} onPress={()=>onCommand(action,payload)}>{label}</Btn>;
- const rewardItems=isFinal?[{icon:'customers' as const,label:'Stammkunde',amount:'+1'},...(!state.moduleAwarded||done&&state.moduleAwarded?[{itemId:'capacityModules',icon:'module' as const,label:'Kapazitätsmodul',amount:'+1'}]:[])]:[{icon:'plus' as const,label:'Erweiterungspunkt',amount:'+1'}];
+ const rewardItems=isFinal?[{icon:'customers' as const,label:'Stammkunde',amount:'+1'},...(!state.moduleAwarded||done&&state.moduleAwarded?[{itemId:'capacityModules',icon:'module' as const,label:'Kapazitätsmodul',amount:'+1'}]:[])]:[{icon:'expansion' as const,label:'Ausbaupunkt',amount:'+1'}];
  // Ordinary places become a quiet discovered landmark after their one delivery.
  // Final trading places retain their repeat expedition and customer actions below.
  if(!isFinal)return <>
@@ -29,7 +29,7 @@ export function ExpeditionPlaceDetails({data,region,selected,busy,clock,onComman
     <Bar value={progress(mission,false,clock)} gold/>
    </>:<>
     <PlaceStatus icon="check">Gebiet erkundet</PlaceStatus>
-    <Txt style={s.invitation}>Gut gemacht! Sichere dir mit einer Bonuslieferung den Erweiterungspunkt dieses Ortes.</Txt>
+    <Txt style={s.invitation}>Gut gemacht! Sichere dir mit einer Bonuslieferung den Ausbaupunkt dieses Ortes.</Txt>
    </>}
    <PlaceRewards items={rewardItems}/>
    {!mission&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'delivery',selected)}>Bonuslieferung starten</Btn>}
@@ -55,3 +55,4 @@ export function ExpeditionPlaceDetails({data,region,selected,busy,clock,onComman
  </>;
 }
 const s=StyleSheet.create({invitation:{fontSize:12,lineHeight:19,color:C.text,marginBottom:8},discovered:{fontSize:10,lineHeight:16},small:{fontSize:11,lineHeight:17},time:{fontSize:12,lineHeight:18,fontWeight:'600',marginBottom:9},note:{fontSize:11,lineHeight:17,marginTop:7},customer:{fontSize:12,lineHeight:18,fontWeight:'600',color:C.text,marginTop:4,marginBottom:5}});
+

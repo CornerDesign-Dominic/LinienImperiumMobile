@@ -1,0 +1,13 @@
+{
+  "use_case": "stylized-concept",
+  "asset": "assets/art/points/ausbaupunkt.png",
+  "generator": "built-in image_gen",
+  "reference": "User-supplied three-column Ausbau-Belohnung comparison (03.11.2026), left Ausbaupunkt motif",
+  "prompt": "Use case: stylized-concept. Asset type: transparent mobile-game reward icon, square composition. Reference image: the LEFT Ausbaupunkt concept in the attached three-option sheet only. Create a standalone production icon of that same rolled architectural parchment blueprint with a short bronze Ionic column standing in front on the right. Keep the left concept's recognizable silhouette and warm weathered parchment, bronze material, restrained painterly realism, soft lighting, natural proportions and mature travel-atlas game style. Simplify fine blueprint lines enough to read at 40–64 pixels. Single grouped object centered, whole icon inside frame with about 6% transparent padding. Actual fully transparent alpha background; no beige backdrop, no frame, no card, no extra props, no lettering, no numbers, no plus sign, no watermark, no cast shadow extending beyond object. Do not use the shield, castle, banner, quill or right concept.",
+  "production": {
+    "format": "PNG RGBA",
+    "size": 256,
+    "processing": "Proportional Lanczos downscale, original generated alpha preserved"
+  },
+  "semantics": "Ausbaupunkt / Upgrade point. Existing expansion save keys unchanged."
+}

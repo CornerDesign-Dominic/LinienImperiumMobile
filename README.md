@@ -16,6 +16,7 @@ Transport-, Handels- und Entdeckungsspiel als native React-Native-/Expo-App für
 - Einzelaufträge mit Nah-/Fernverkehr, Single/Dual Way, Kunden- und Vorratsaufträgen, Halten, Aktualisieren und gemeinsamer Belohnungsabholung.
 - Großaufträge mit Flotteneinsatz, passiven Lieferungen, Überstunden und Abschlussstatistik; Expeditionen mit fünf Regionen, Ortsmissionen, Endlosorten, Kartenfunden und Shards.
 - Materialbeschaffung mit Einzel- und Gruppenfahrten, vorausbezahlten Touren oder Kontoreserve, Offline-Abrechnung und getrennten Abbruchmöglichkeiten.
+- Ausbaupunkte aus einmaligen Ortslieferungen für dauerhafte Expeditions-/Überstundenmaxima; eigenständiges Bauplan-/Säulenmotiv.
 - Handelsimperium mit Ausbauten und Punkteverteilung; je Level drei verteilbare Punkte sowie je ein Expeditions- und Überstundenauffüller für 50 Punkte.
 - Stadthub mit Lastwombat-Boten, Vertrieb, Erträgen, Fundkisten und eigenem Ausbau über Werkzeugkästen; Vorräte, Herstellung, Stammkunden und Statistik.
 - Pyramiden-Event mit Event/Pass/Ränge, Solotest und Gemeinschaftsrunde; [Eventregeln und Grenzen](docs/events/pyramid.md).
