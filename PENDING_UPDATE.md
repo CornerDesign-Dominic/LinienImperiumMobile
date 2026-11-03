@@ -73,3 +73,7 @@ Noch nicht veröffentlicht; Veröffentlichung erst nach neuer Freigabe. Orts- un
 ## Season – gesammelt, nicht veröffentlicht
 
 Neuer Einstieg auf Start mit 30 aufsteigenden Stufen (1 oben, 30 unten), mittiger Timeline, Free links und Premium rechts. Alle Belohnungen sind eine vorläufige Vorschau aus vorhandenen Ressourcen. Kein Live-Fortschritt, Abholen oder Premiumkauf aktiviert. Vor Freischaltung sind Fortschrittsregeln, Laufzeit/Reset und Premiumzugang festzulegen. Details und Prüfumfang: [Season](docs/ui/season.md).
+
+## Kundenwarenbilder und kompakte Angebote – gesammelt
+
+Alle 15 Stammkundenwaren mit eigenen transparenten Motiven, bestehende fünf Grundwaren und fünf Edelwaren weiterverwendet. Gemeinsame Bildzuordnung in Angeboten, Auftragsdetails und Kundendetails. Halte-Pinnadel auf runder Fläche, ausgerichtete Fakten und dezenter Stammkunde-Hinweis. Keine Spielwertänderung. 25 Katalogwaren-Zuordnungen und 15 Alpha-Dateien geprüft, Serie visuell geprüft. Vollständige UI-/TypeScript-Prüfung lokal mangels Abhängigkeiten offen. Nicht veröffentlicht.
