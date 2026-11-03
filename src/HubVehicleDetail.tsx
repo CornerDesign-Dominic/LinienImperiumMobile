@@ -11,7 +11,7 @@ import {t} from './i18n';
 
 type Kind='capacity'|'speed';
 export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onClose,onSell}:any){
- const [kind,setKind]=useState<Kind|null>(null),[actions,setActions]=useState(false),[pending,setPending]=useState(false),[failed,setFailed]=useState(false);
+ const [kind,setKind]=useState<Kind|null>(null),[pending,setPending]=useState(false),[failed,setFailed]=useState(false);
  const inFlight=useRef(false),locked=busy||pending;
  const q=kind?truck.hubUpgrades[kind]:null,label=kind==='capacity'?'Laderaum':'Antrieb',unit=kind==='capacity'?'t':'km/s';
  const command=async(action:string,payload:any)=>{
@@ -23,15 +23,14 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
  const close=()=>{if(locked||inFlight.current)return;if(kind){setKind(null);setFailed(false);}else onClose();};
  const enough=q&&inventory.hubVehicleParts>=q.parts&&coins>=q.coins;
  return <AppModal visible transparent animationType="none" onRequestClose={close}><View style={s.overlay}><View style={s.modal} testID="hub-vehicle-detail">
-  <View style={s.header}><View style={{flex:1,minWidth:0}}><Txt muted style={s.caption}>{kind?`${t(courierModel(truck))} · ${t(courierName(truck))}`:'Stadthub'}</Txt><Txt style={s.heading}>{kind?`${t(label)} ${t('verbessern')}`:`${t(courierModel(truck))} · ${t(courierName(truck))}`}</Txt></View><Btn icon="close" iconOnly secondary disabled={locked} onPress={close}>Schließen</Btn></View>
+  <View style={s.header}><View style={{flex:1,minWidth:0}}>{!kind&&<Txt muted style={s.caption}>Stadthub</Txt>}<Txt style={s.heading}>{kind?`${t(label)} ${t('verbessern')}`:`${t(courierModel(truck))} · ${t(courierName(truck))}`}</Txt></View><Btn icon="close" iconOnly secondary disabled={locked} onPress={close}>Schließen</Btn></View>
   <ScrollView style={{flexShrink:1}} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
    {kind?<>
     <Txt muted style={s.stage}>Stufe {q.level} / {q.max}</Txt>
-    <View style={s.comparison}><View style={s.valueBox}><Txt muted style={s.caption}>Aktuell</Txt><Txt style={s.value}>{n(q.current,2)} {unit}</Txt></View><Icon name="arrow" size={18} color={C.gold}/><View style={[s.valueBox,{backgroundColor:C.greenWash}]}><Txt muted style={s.caption}>Nach Ausbau</Txt><Txt style={[s.value,{color:C.accent}]}>{n(q.next,2)} {unit}</Txt></View></View>
+    <View style={s.comparison}><View style={s.valueBox}><Txt muted style={s.caption}>Aktuell</Txt><Txt style={s.value}>{n(q.current,2)} {unit}</Txt></View><Icon name="arrow" size={18} color={C.gold}/><View style={[s.valueBox,s.afterBox]}><View pointerEvents="none" style={s.afterTint}/><Txt muted style={s.caption}>Nach Ausbau</Txt><Txt style={[s.value,{color:C.accent}]}>{n(q.next,2)} {unit}</Txt></View></View>
     <Txt style={s.sectionTitle}>Kosten</Txt>
-    <Txt muted style={s.caption}>Benötigt / Vorhanden</Txt>
-    <View style={s.cost}><ItemArt id="hubVehicleParts" size={36}/><View style={{flex:1}}><Txt style={s.label}>Werkzeugkästen</Txt><Txt style={[s.costValue,{color:inventory.hubVehicleParts>=q.parts?C.accent:C.red}]}>{n(q.parts)} / {n(inventory.hubVehicleParts)}</Txt></View></View>
-    <View style={s.cost}><Icon name="coin" size={36}/><View style={{flex:1}}><Txt style={s.label}>Imperium-Taler</Txt><Txt style={[s.costValue,{color:coins>=q.coins?C.accent:C.red}]}>{n(q.coins,2)} / {n(coins,2)} T</Txt></View></View>
+    <View accessible accessibilityLabel={`${t('Werkzeugkästen')}: ${n(q.parts)} ${t('benötigt')}, ${n(inventory.hubVehicleParts)} ${t('vorhanden')}`} style={s.cost}><ItemArt id="hubVehicleParts" size={36}/><View style={{flex:1}}><Txt style={s.label}>Werkzeugkästen</Txt><Txt style={[s.costValue,{color:inventory.hubVehicleParts>=q.parts?C.accent:C.red}]}>{n(q.parts)} / {n(inventory.hubVehicleParts)}</Txt></View></View>
+    <View accessible accessibilityLabel={`${t('Imperium-Taler')}: ${n(q.coins,2)} ${t('benötigt')}, ${n(coins,2)} ${t('vorhanden')}`} style={s.cost}><Icon name="coin" size={36}/><View style={{flex:1}}><Txt style={s.label}>Imperium-Taler</Txt><Txt style={[s.costValue,{color:coins>=q.coins?C.accent:C.red}]}>{n(q.coins,2)} / {n(coins,2)}</Txt></View></View>
     <Txt muted style={s.note}>Ausbauten wirken ab dem nächsten Stundenzyklus.</Txt>
     {(failed||error)&&<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}
     <Btn disabled={locked||!enough||q.level>=q.max} onPress={()=>command('hubVehicleUpgrade',{id:truck.id,kind})}>{pending?'Wird verbessert …':`${t(label)} ${t('ausbauen')}`}</Btn>
@@ -46,8 +45,7 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
     })}</View>
     <Txt muted style={s.note}>Ausbauten wirken ab dem nächsten Stundenzyklus.</Txt>
     {(failed||error)&&<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}
-    <Btn secondary disabled={locked} onPress={()=>command('hubTruck',{id:truck.id})}>{truck.hubAssigned?'Aus Hub nehmen':'Im Hub einsetzen'}</Btn>
-    {!!truck.sale&&<View style={s.actions}><Pressable accessibilityRole="button" accessibilityLabel={t('Weitere Aktionen')} accessibilityState={{expanded:actions}} disabled={locked} onPress={()=>setActions(value=>!value)} style={s.toggle}><Txt muted style={s.label}>Weitere Aktionen</Txt><Icon name="chevron" size={16} style={{transform:[{rotate:actions?'90deg':'0deg'}]}}/></Pressable>{actions&&<Btn secondary disabled={locked} onPress={()=>{onClose();onSell(truck);}}>Verkaufen · {n(truck.sale.coins,2)} T</Btn>}</View>}
+    {!truck.hubAssigned&&<Btn secondary disabled={locked} onPress={()=>command('hubTruck',{id:truck.id})}>Im Hub einsetzen</Btn>}
    </>}
   </ScrollView>
  </View></View></AppModal>;
@@ -57,5 +55,5 @@ const s=StyleSheet.create({
  header:{flexDirection:'row',alignItems:'center',gap:10,padding:16,borderBottomWidth:1,borderBottomColor:C.line},heading:{fontSize:19,lineHeight:25,fontWeight:'700'},content:{padding:16,paddingTop:12},caption:{fontSize:11,lineHeight:17},stage:{fontSize:12,marginBottom:12},
  identity:{flexDirection:'row',alignItems:'center',gap:12,marginBottom:8},status:{fontSize:13,fontWeight:'600',marginBottom:4},sectionTitle:{fontSize:14,fontWeight:'700',marginTop:10,marginBottom:8},
  upgrades:{borderWidth:1,borderColor:C.line,borderRadius:6,overflow:'hidden'},upgrade:{flexDirection:'row',alignItems:'center',gap:8,minHeight:76,padding:10},divider:{borderTopWidth:1,borderTopColor:C.line},upgradeTitle:{fontSize:14,fontWeight:'700'},current:{fontSize:12,fontWeight:'700',flexShrink:1,textAlign:'right'},dot:{width:6,height:6,borderRadius:3,backgroundColor:C.accent},
- comparison:{flexDirection:'row',alignItems:'center',gap:8,marginBottom:8},valueBox:{flex:1,minWidth:0,padding:10,borderRadius:6,backgroundColor:C.raised,gap:4},value:{fontSize:16,lineHeight:23,fontWeight:'700'},cost:{flexDirection:'row',alignItems:'center',gap:10,marginTop:12},label:{fontSize:12,lineHeight:18},costValue:{fontSize:14,lineHeight:21,fontWeight:'700'},note:{fontSize:10,lineHeight:16,marginTop:12,marginBottom:4},error:{fontSize:12,color:C.red,marginTop:10},actions:{borderTopWidth:1,borderTopColor:C.line,marginTop:14},toggle:{minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8}
+ comparison:{flexDirection:'row',alignItems:'center',gap:8,marginBottom:8},valueBox:{flex:1,minWidth:0,padding:10,borderRadius:6,backgroundColor:C.raised,gap:4,borderWidth:1,borderColor:C.line,overflow:'hidden'},afterBox:{borderColor:C.accent},afterTint:{position:'absolute',top:0,left:0,right:0,bottom:0,backgroundColor:'rgba(73,109,77,.14)'},value:{fontSize:16,lineHeight:23,fontWeight:'700'},cost:{flexDirection:'row',alignItems:'center',gap:10,marginTop:12},label:{fontSize:12,lineHeight:18},costValue:{fontSize:14,lineHeight:21,fontWeight:'700'},note:{fontSize:10,lineHeight:16,marginTop:12,marginBottom:4},error:{fontSize:12,color:C.red,marginTop:10}
 });

@@ -5,7 +5,7 @@ const now=Date.UTC(2026,9,24,12);
 function fixture(){let r=execute(null,'start',{id:'hamburg'},now,()=>0);r.state.xp=50*30*29;r.state.coins=1e6;r=execute(r.state,'buyHub',{},now,()=>0);r=execute(r.state,'hubVehicleBuy',{},now,()=>0);return r.view;}
 function setup(name,extra={}){
  const ui={C:require('../src/palette.json'),Txt:'Txt',Card:'Card',Row:'Row',Btn:'Btn',Pill:'Pill',Bar:'Bar',n:String,remaining:()=> '00:30:00'};
- const h=componentHarness('HubVehicles.tsx',{'./ui':ui,'./HubSales':{HubSales:'HubSales'},'./HubCrateCard':{HubCrateCard:'HubCrateCard'},'./HubVehicleDetail':{HubVehicleDetail:'HubVehicleDetail'},'./HubEarnings':{HubEarnings:'HubEarnings'}}),calls=[],props={data:fixture(),busy:false,clock:now,onCommand:async(...args)=>{calls.push(args);return {};},onSell:()=>{},...extra};
+ const h=componentHarness('HubVehicles.tsx',{'../assets/art/hub/locked-slot.png':1,'./ui':ui,'./HubSales':{HubSales:'HubSales'},'./HubCrateCard':{HubCrateCard:'HubCrateCard'},'./HubVehicleDetail':{HubVehicleDetail:'HubVehicleDetail'},'./HubEarnings':{HubEarnings:'HubEarnings'}}),calls=[],props={data:fixture(),busy:false,clock:now,onCommand:async(...args)=>{calls.push(args);return {};},onSell:()=>{},...extra};
  return {h,props,calls,render:()=>h.render(name,props)};
 }
 const button=(tree,label)=>{const b=nodes(tree,'Btn').find(b=>text(b)===label);assert.ok(b,label);return b;};
@@ -19,7 +19,7 @@ test('Hub actions reject rapid duplicate taps, recover from failure, and retain 
  nodes(x.render(),'Pressable').find(p=>text(p)==='Boten').props.onPress();assert.ok(!text(x.render()).includes('Erträge abholen'));assert.ok(nodes(x.render(),'Pressable').find(p=>p.props.accessibilityState?.selected&&text(p)==='Boten'));
 });
 test('Hub vehicles use resource and slot gates, exact upgrade commands, and keep destructive actions collapsed',async()=>{
- const x=setup('HubVehicles');let tree=x.render();press(tree,'Boten anwerben');tree=x.render();assert.equal(button(tree,`Anwerben · ${x.props.data.hubInfo.vehiclePrice} T`).props.disabled,false);
+ const x=setup('HubVehicles');let tree=x.render();press(tree,'Boten anwerben');tree=x.render();assert.equal(button(tree,`Anwerben · ${x.props.data.hubInfo.vehiclePrice}`).props.disabled,false);
  const vehicle=x.props.data.state.trucks.find(t=>!t.cardId&&t.tier<=1);nodes(tree,'Pressable').find(p=>p.props.accessibilityLabel?.includes(vehicle.displayName)).props.onPress();tree=x.render();assert.ok(!nodes(tree,'Btn').some(b=>text(b).startsWith('Verkaufen')));
  const detail=nodes(tree,'HubVehicleDetail')[0];assert.equal(detail.props.truck.id,vehicle.id);assert.equal(detail.props.inventory,x.props.data.state.inventory);
  x.props.data.hubLimit=1;assert.ok(!nodes(x.render(),'Pressable').some(p=>p.props.accessibilityLabel==='Boten anwerben'));
@@ -36,7 +36,9 @@ test('Hub vehicle detail gates upgrades, rejects duplicate taps and returns to o
  const upgrade=button(render(),'Laderaum ausbauen').props.onPress,first=upgrade();await upgrade();assert.equal(calls.length,1);assert.deepEqual(JSON.parse(JSON.stringify(calls[0])),['hubVehicleUpgrade',{id:truck.id,kind:'capacity'}]);
  finish(null);await first;assert.ok(text(render()).includes('Aktion fehlgeschlagen'));
  props.onCommand=async()=>({});await button(render(),'Laderaum ausbauen').props.onPress();assert.ok(text(render()).includes('Verbesserungen'));
- press(render(),'Weitere Aktionen');assert.ok(nodes(render(),'Btn').some(b=>text(b).startsWith('Verkaufen')));
+ assert.ok(!nodes(render(),'Btn').some(b=>text(b).startsWith('Verkaufen')||text(b)==='Aus Hub nehmen'));
+ assert.ok(!nodes(render(),'Pressable').some(b=>b.props.accessibilityLabel==='Weitere Aktionen'));
+ truck.hubAssigned=false;assert.ok(button(render(),'Im Hub einsetzen'));
 });
 test('Hub crates respect cooldown, show received parts separately and return after closing',async()=>{
  const x=setup('HubParts');let finish;x.props.onCommand=()=>new Promise(resolve=>finish=resolve);

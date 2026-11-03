@@ -20,11 +20,11 @@
     ],
     [
       "Payments",
-      "Freight payment = delivered tonnes × one-way km × 1.00 T/tkm × paid directions × (1 + customer payment skill / 1000) × (1 + active card payment bonuses / 100). Single Way pays outbound freight; Dual Way pays both directions. Load costs = tonnes × one-way km × 0.10 T/tkm × paid directions. Vehicle costs include the return journey. Completion bonus = contract volume × paid directions × 1.00 T/t × (1 + company bonus)."
+      "Freight payment = delivered tonnes × one-way km × 1.00/tkm × paid directions × (1 + customer payment skill / 1000) × (1 + active card payment bonuses / 100). Single Way pays outbound freight; Dual Way pays both directions. Load costs = tonnes × one-way km × 0.10/tkm × paid directions. Vehicle costs include the return journey. Completion bonus = contract volume × paid directions × 1.00/t × (1 + company bonus)."
     ],
     [
       "Time and refresh",
-      "Trip time = outbound distance / loaded speed + return distance / empty speed. On Dual Way the return trip is loaded too. Offers refresh every 15 minutes. Manual refresh costs 250 T × max(1, owned vehicles) × (1 + manual refreshes since the last automatic refresh). Held offers survive either refresh."
+      "Trip time = outbound distance / loaded speed + return distance / empty speed. On Dual Way the return trip is loaded too. Offers refresh every 15 minutes. Manual refresh costs 250 × max(1, owned vehicles) × (1 + manual refreshes since the last automatic refresh). Held offers survive either refresh."
     ]
   ],
   "special": [
@@ -72,7 +72,7 @@
     ],
     [
       "Cashbox",
-      "Each tonne earns 10 T sales − 3 T purchase. Each working hour yields 8–12 pickup clues. The cashbox fills after 6 uncollected cycles, then work pauses. Collecting a full cashbox starts a fresh purchase at minute zero; partial collection keeps the current cycle. Collect Imperium thalers, pickup clues and toolboxes together."
+      "Each tonne earns 10 sales − 3 purchase. Each working hour yields 8–12 pickup clues. The cashbox fills after 6 uncollected cycles, then work pauses. Collecting a full cashbox starts a fresh purchase at minute zero; partial collection keeps the current cycle. Collect Imperium thalers, pickup clues and toolboxes together."
     ],
     [
       "Upgrades",
@@ -114,7 +114,7 @@
   "company": [
     [
       "Departments",
-      "Dispatch, Workshop and Sales each cost 5,000 T to open. Dispatch: 5 + level offers, up to 15; next level costs 500 × new level T plus items. Workshop: −0.001 T/km per level, up to 50; cost 100 × ceil(new level/5) T plus items. Sales: 1 + level held offers, up to 4; next level costs 500 × new level T plus items."
+      "Dispatch, Workshop and Sales each cost 5,000 to open. Dispatch: 5 + level offers, up to 15; next level costs 500 × new level plus items. Workshop: −0.001/km per level, up to 50; cost 100 × ceil(new level/5) plus items. Sales: 1 + level held offers, up to 4; next level costs 500 × new level plus items."
     ],
     [
       "Transport upgrades",
