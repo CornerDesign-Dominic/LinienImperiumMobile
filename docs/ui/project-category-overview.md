@@ -18,21 +18,21 @@ Die vorhandenen Edelwarenbilder werden wiederverwendet. Das Empfehlungsmotiv zei
 
 Die Zuordnung steht in `functions/src/customer-identities.json` unter der stabilen Kunden-ID. Der mobile Server verwendet sie für Katalog, Auslosungsinformationen und sämtliche Auftragsansichten. Neue Sonderaufträge erhalten den aktuellen Titel; vorhandene gespeicherte Aufträge zeigen ihn auch bereit, laufend, erledigt oder abgelaufen. Ihre gespeicherten Namen, IDs, Kunden, Mengen, Konditionen, Fortschritte und Belohnungen werden dadurch nicht umgerechnet. Eine alte abweichende Regionsposition überschreibt die Kundenidentität nicht. Empfehlungsaufträge bleiben unverändert.
 
-Komplette frühere Sonderauftragstitel in Nachrichten werden nur bei der Ausgabe normalisiert; frei gewählte Firmennamen und generische Transportbegriffe bleiben erhalten. Bilder werden weiterverwendet. Die Titeländerung ist gesammelt, noch nicht veröffentlicht.
+Komplette frühere Sonderauftragstitel in Nachrichten werden nur bei der Ausgabe normalisiert; frei gewählte Firmennamen und generische Transportbegriffe bleiben erhalten. Bilder werden weiterverwendet. Veröffentlicht mit dem Sammelpaket vom 03.11.2026. Release- und Prüfnachweis: [Prüfstand](../../TEST_REPORT.md). Ein physischer Gerätetest ist nicht belegt.
 
 Historische Prüfung der Übersicht: Verhaltenstest für reale Anzahlen, stabile Priorisierung, unveränderte Spieldaten und korrekte Kategorie-/Laufendnavigation; TypeScript und Android-Export. Das Bild wurde visuell geprüft. Native Geräte- und Layoutprüfung ist in dieser Umgebung nicht verfügbar.
 
 
-## Laufende und Aufträge – gesammelt
+## Laufende und Aufträge
 
 Zwei gleich breite Reiter verwenden Gestaltung und Auswahlzustand der Einzelaufträge. **Laufende** zählt nur aktive Großaufträge, **Aufträge** alle gespeicherten bereiten Großaufträge über sämtliche Kategorien. Mehrere Aufträge einer Kategorie zählen einzeln; Einzelaufträge, erledigte und abgelaufene Aufträge zählen nicht in diese beiden Zahlen. Der normale Einstieg öffnet Aufträge. Ein Startseiten-Einstieg für offene Großauftragsprämien öffnet Laufende; dort bleiben diese Prämien erreichbar, ohne als aktive Transporte zu zählen. Ein kleiner Hinweis am Reiter und die zugängliche Beschriftung zeigen offene Belohnungen an.
 
 Beide Reiter bleiben unter dem Seitenkopf Großaufträge. Tabwechsel setzt die Scrollposition zurück; Zurück aus einer Auftragsdetailansicht erhält den zuvor gewählten Reiter. Die Kategorien behalten Bilder, feste Regionssortierung, Fragezeichen und ausdrückliche Startbestätigung. `projectSections` ist die gemeinsame Statusklassifikation für Zähler und Laufend-/Prämienansicht.
 
-Prüfung dieses Sammelstands: gezielte Klassifikations- und Sortierprüfungen für Mehrfachaufträge, Statuswechsel, Prämien und leere Bestände erfolgreich. Bestehende Kategorien-/Start-Komponententests sind um Reiterwahl, Zahlen und Prämienzugang erweitert; lokal wegen fehlendem React/TypeScript nicht ausführbar. Kein neuer Android-Export oder Gerätetest. Veröffentlichung erst nach erneuter Freigabe.
+Prüfung dieses Sammelstands: gezielte Klassifikations- und Sortierprüfungen für Mehrfachaufträge, Statuswechsel, Prämien und leere Bestände erfolgreich. Bestehende Kategorien-/Start-Komponententests sind um Reiterwahl, Zahlen und Prämienzugang erweitert; Veröffentlicht mit dem Sammelpaket vom 03.11.2026. Release- und Prüfnachweis: [Prüfstand](../../TEST_REPORT.md). Ein physischer Gerätetest ist nicht belegt.
 
 
-## Gemeinsame Laufend-Liste – gesammelt
+## Gemeinsame Laufend-Liste
 
 Aktive Transporte stehen vor abgeschlossenen Aufträgen mit noch abholbarer Prämie in einer gemeinsamen Liste ohne zusätzliche Prämienüberschrift. Beide Gruppen nutzen dieselben kompakten hellen Pergamentkarten mit schmalem Seltenheitsstreifen, vorhandener Kundenwarenillustration, Typ, aktuellem Titel, Kunde sowie tatsächlicher Menge und Strecke. Innerhalb jeder Gruppe gilt feste Seltenheits-/Regionspriorität; gleichartige Aufträge behalten ihre gespeicherte Reihenfolge. Sekündliche Timer beeinflussen diese Ordnung nicht.
 
@@ -40,4 +40,4 @@ Aktive Karten zeigen gelieferte/Gesamttonnen, Fortschrittsbalken, Frist und Fert
 
 Belohnung abholen sendet die bestehende autoritative `claim`-Aktion über den App-Commandguard. Ein zusätzlicher synchroner Kartenschutz verhindert Doppeltipps. Fehler bleiben auf der Karte sichtbar und ermöglichen einen erneuten Versuch. Nur ein bestätigter Abholstatus öffnet die vorhandene Belohnungsausgabe mit den echten gespeicherten Beträgen. Nach dem erfolgreichen Snapshot verschwindet die Karte aus der Liste; historische Auftragsdaten und Statistiken bleiben erhalten. Der getrennte Kopfbereich öffnet weiter die Details; die Abholtaste ist kein Kind dieser Detail-Schaltfläche. Fehlgeschlagene/abgelaufene Aufträge erhalten weder Stempel noch erfundene Prämie; ihre bestehende Detaildarstellung bleibt erhalten.
 
-Vier gezielte Status-/Sortier-/Backend-Abholprüfungen erfolgreich (einschließlich einmaliger Auszahlung und erhaltener Historie). Komponentenprüfungen für Abholen/Fehler/Doppeltipp, Kartenzeiten und Tabnavigation ergänzt; lokal mangels React/TypeScript nicht ausführbar. Noch kein App-Export oder native Layoutprüfung dieses Entwurfs. Keine Veröffentlichung vor erneuter Freigabe.
+Vier gezielte Status-/Sortier-/Backend-Abholprüfungen erfolgreich (einschließlich einmaliger Auszahlung und erhaltener Historie). Komponentenprüfungen für Abholen/Fehler/Doppeltipp, Kartenzeiten und Tabnavigation ergänzt; Veröffentlicht mit dem Sammelpaket vom 03.11.2026. Release- und Prüfnachweis: [Prüfstand](../../TEST_REPORT.md). Ein physischer Gerätetest ist nicht belegt.

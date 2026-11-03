@@ -52,7 +52,7 @@ Fahrzeugdetails verwenden [VehicleCardDetail](src/VehicleCardDetail.tsx): Stufe,
 
 ## Auftragskarten
 
-Großauftragskategorien und konkrete Auftragskarten verwenden Papierflächen, einen neutralen Außenrand und einen markanten linken Seltenheitsstreifen: Rare-Blau für Sonderaufträge, Epic-Violett für Empfehlungen und Legendary-Gold bei den vorhandenen Eventkarten. Typbeschriftungen und Bilder bleiben zusätzliche Orientierung. Die Großauftragsseite wechselt über zwei Reiter zwischen Laufende und Aufträge; deren Zahlen trennen aktive von bereitliegenden Aufträgen. Aktive und fertige Großaufträge mit offener Prämie stehen gemeinsam unter Laufende, mit vorhandenen Kundenwarenbildern und echten Mengen. Aktive zeigen Fortschritt und Serverprognose, fertige einen nativen grünen ERLEDIGT-Stempel in eigenem Platz sowie die direkte Abholtaste. Diese Anpassung ist gesammelt und noch nicht veröffentlicht.
+Großauftragskategorien und konkrete Auftragskarten verwenden Papierflächen, einen neutralen Außenrand und einen markanten linken Seltenheitsstreifen: Rare-Blau für Sonderaufträge, Epic-Violett für Empfehlungen und Legendary-Gold bei den vorhandenen Eventkarten. Typbeschriftungen und Bilder bleiben zusätzliche Orientierung. Die Großauftragsseite wechselt über zwei Reiter zwischen Laufende und Aufträge; deren Zahlen trennen aktive von bereitliegenden Aufträgen. Aktive und fertige Großaufträge mit offener Prämie stehen gemeinsam unter Laufende, mit vorhandenen Kundenwarenbildern und echten Mengen. Aktive zeigen Fortschritt und Serverprognose, fertige einen nativen grünen ERLEDIGT-Stempel in eigenem Platz sowie die direkte Abholtaste.
 
 ## Expedition und Botenstation
 
@@ -74,6 +74,6 @@ Illustrationen werden lokal gebündelt; es gibt keine Bildgenerierung oder exter
 
 Bei Änderungen die betroffenen realen Komponenten bei kleinen Displaybreiten, langen deutschen/englischen Namen, gesperrten und belegten Zuständen sowie großen Mengen prüfen. Export und Verhaltenstests belegen keine native Bildschärfe, Scrollrate oder Touchqualität. Aktuelle Prüfberichte gehören in [TEST_REPORT.md](TEST_REPORT.md); historische Prüfungen in Modulnotizen bleiben als solche gekennzeichnet.
 
-## Punkteverteiler – gesammelte Anpassung
+## Punkteverteiler
 
-Entwicklung zeigt permanente Basiswerte ohne Boni. Levelpunkte und Ausbaupunkte bleiben getrennte Bestände in einem gemeinsamen Übersichtsbereich; beide Verteiler verwenden denselben kompakten Aufbau ohne Hinweisabsatz. Verfügbarkeitsanzeigen und die vergleichbaren Nach-Ausbau-Vorschauen im Imperiumsausbau und Verteilnetz nutzen helles Material mit dünner Petrolkontur. Nur am Titel Imperiumsausbau steht in der Übersicht ein bezahlbarkeitsabhängiger goldener Hinweis. [Details und Prüfumfang](docs/ui/point-allocation.md). Noch nicht veröffentlicht.
+Entwicklung zeigt permanente Basiswerte ohne Boni. Levelpunkte und Ausbaupunkte bleiben getrennte Bestände in einem gemeinsamen Übersichtsbereich; beide Verteiler verwenden denselben kompakten Aufbau ohne Hinweisabsatz. Verfügbarkeitsanzeigen und die vergleichbaren Nach-Ausbau-Vorschauen im Imperiumsausbau und Verteilnetz nutzen helles Material mit dünner Petrolkontur. Nur am Titel Imperiumsausbau steht in der Übersicht ein bezahlbarkeitsabhängiger goldener Hinweis. [Details und Prüfumfang](docs/ui/point-allocation.md).

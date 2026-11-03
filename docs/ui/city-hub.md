@@ -15,4 +15,4 @@ Historische Prüfung bei Einführung: drei gezielte UI-Verhaltenstests ergänzen
 
 Der globale Bereichsname lautet Botenstation, englisch Courier Station. Menü, Seitenkopf, Händlerverweis, Hilfen, Zugänglichkeit und Belohnungsquellen verwenden dieselbe Bezeichnung. Interne `hub`-Schlüssel, Befehle und Dateinamen bleiben erhalten. Historische Speichertexte werden nur in der Präsentation normalisiert; gewählte Firmen-/Stadtnamen und Archivdateien bleiben unverändert.
 
-Die laufende Ertragszahl wird auf ganze Taler gerundet. Details zur Darstellung und unveränderten Auszahlung: [Ertragskarte](hub-earnings.md). Diese Änderungen sind gesammelt und noch nicht veröffentlicht.
+Die laufende Ertragszahl wird auf ganze Taler gerundet. Details zur Darstellung und unveränderten Auszahlung: [Ertragskarte](hub-earnings.md).

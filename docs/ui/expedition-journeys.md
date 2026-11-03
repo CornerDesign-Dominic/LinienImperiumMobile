@@ -24,12 +24,12 @@ Jede Region verwendet die bestehenden sieben Ortsindizes und einen achten Stammk
 - Die bisherigen Ortsmodale behalten Erkundung, Bonuslieferung, Fahrzeugwahl, Belohnungsabholung, Kundenfreischaltung, Fundchancen und Expedition bei. Sie verwenden nun die richtigen Orts- und Regionsnamen. Die 40 individuellen Nahansichten sind eingebunden; die aktuelle zustandsabhängige Darstellung steht in [Ortsmodale](expedition-place-modals.md). Ortsgeschichten sind weiterhin keine implementierte Funktion.
 - Serverindizes, Kunden-IDs, Freischaltungsregeln, Kosten, Zeiten, Belohnungen und Spielstände werden nicht verändert.
 
-## Ortsschilder und Regionskopf – gesammelt, noch nicht veröffentlicht
+## Ortsschilder und Regionskopf
 
 - Der Seitenkopf nutzt die gemeinsame Regionsidentität und aktualisiert sich mit der geöffneten Region; Zurück und Hilfe behalten ihre Funktionen.
 - Fertige Bonuslieferungen haben kein Häkchen mehr auf dem Schild. Ein Plus im Kreis kennzeichnet nur eine bereits erkundete, noch nicht gestartete optionale Bonusfahrt. Unterwegs bleibt ein Timer; noch nicht erkundete oder bereits erledigte Bonusfahrten erhalten kein Plus. Dasselbe gilt für den ersten Endlosort-Abschluss.
 - Der volle übersetzte Ortsname bleibt Teil der zugänglichen Schaltflächenbeschriftung. Sichtbare Wörter bilden einzeln untrennbare Textläufe innerhalb eines umbrechenden Containers. Die Schildbreite berücksichtigt das längste übersetzte Wort und den Platz für Nummer/Status; lange Namen sind nicht auf zwei Zeilen abgeschnitten.
-- Vier reine Statusprüfungen sind lokal erfolgreich: Erkundungsgrenze, fertige Orte, aktive/alte Missionsstände und erster Endlosort-Abschluss. Der bestehende Karten-Komponententest ist um Statuszeichen und „Die Wagenrast“ als ganze Wörter ergänzt. Er kann lokal wegen fehlendem TypeScript-/React-Paket nicht ausgeführt werden; kein neuer Browser-, Geräte- oder Android-Exportnachweis.
+- Vier reine Statusprüfungen sind lokal erfolgreich: Erkundungsgrenze, fertige Orte, aktive/alte Missionsstände und erster Endlosort-Abschluss. Der bestehende Karten-Komponententest ist um Statuszeichen und „Die Wagenrast“ als ganze Wörter ergänzt. Veröffentlicht mit dem Sammelpaket vom 03.11.2026. Release- und Prüfnachweis: [Prüfstand](../../TEST_REPORT.md). Ein physischer Gerätetest ist nicht belegt.
 
 ## Bilddateien
 

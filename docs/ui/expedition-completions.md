@@ -11,7 +11,7 @@ Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprü
 
 ## Dauerhafte Verteilung
 
-Ein Ausbaupunkt erhöht wahlweise das Expeditionsmaximum oder das Überstundenmaximum dauerhaft um eins. Eine eigene Verteilung zeigt die aktuellen und folgenden Maxima und warnt vor der Unwiderruflichkeit. Bestätigte Zuteilungen sind nicht zurücksetzbar; unvergebene Punkte bleiben gespeichert und über **Handelsimperium → Entwicklung** erreichbar. Einzelne Punkte oder der gesamte Vorrat können verteilt werden. Zusätzliche, während der Bearbeitung eintreffende Punkte löschen den Entwurf nicht.
+Ein Ausbaupunkt erhöht wahlweise das Expeditionsmaximum oder das Überstundenmaximum dauerhaft um eins. Eine eigene Verteilung zeigt die aktuellen und folgenden Maxima und erfordert eine ausdrückliche Bestätigung. Bestätigte Zuteilungen sind nicht zurücksetzbar; unvergebene Punkte bleiben gespeichert und über **Handelsimperium → Entwicklung** erreichbar. Einzelne Punkte oder der gesamte Vorrat können verteilt werden. Zusätzliche, während der Bearbeitung eintreffende Punkte löschen den Entwurf nicht.
 
 Aktuelle Energie wird durch die Verteilung nicht aufgefüllt. Die vorhandene Regeneration behält ihren anteiligen Fortschritt. Levelaufstiegs-Punkte bleiben ein separater Bestand mit ihrem bisherigen Ablauf.
 
@@ -38,8 +38,8 @@ Der Sammelbefehl zahlt reguläre Einzelaufträge und wiederholbare Expeditionsau
 
 Bereits automatisch ausgezahlte Altaufträge ohne gespeichertes Beutepaket bleiben bezahlt; noch vorhandene Informationsmeldungen dieser Aufträge werden entfernt, ohne Belohnungen zurückzunehmen oder erneut anzubieten. Ortsboni und Kundenfreischaltungen behalten die automatische Verarbeitung.
 
-## Gesammelte Folgeänderung: stille Abschlüsse
+## Stille Abschlüsse
 
 Der automatische Abschlussdialog und seine Weiterleitung zur Punkteverteilung sind aus der App entfernt. Der Server erzeugt keine neuen Abschlussmeldungen und leert Altmeldungen ohne erneute Gutschrift. Der bisherige Bestätigungsbefehl bleibt für ältere Clients kompatibel. Acht gezielte Runtime-Tests prüfen einmalige Offline-/Online-Gutschrift, Altstände, unabhängige Punkteverteilung und unveränderte Lootabholung; alle erfolgreich. Der entfernte reine Popup-Komponententest entfällt; der Verhaltenstest der manuellen Verteilung bleibt erhalten.
 
-Noch nicht veröffentlicht. Ein vollständiger App-/Geräte- und Veröffentlichungscheck gehört zum nächsten freigegebenen Sammelpaket.
+Veröffentlicht mit dem Sammelpaket vom 03.11.2026. Release- und Prüfnachweis: [Prüfstand](../../TEST_REPORT.md). Ein physischer Gerätetest ist nicht belegt.

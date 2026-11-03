@@ -1,6 +1,6 @@
 # Entwicklung und Punkteverteiler
 
-Gesammelt, nicht veröffentlicht. Maßgeblich sind `src/LevelUp.tsx`, `src/ExpansionPoints.tsx` und die gemeinsame Darstellung `src/PointAllocation.tsx`.
+Maßgeblich sind `src/LevelUp.tsx`, `src/ExpansionPoints.tsx` und die gemeinsame Darstellung `src/PointAllocation.tsx`.
 
 ## Darstellung
 
@@ -18,4 +18,4 @@ Die Basiswerte kommen direkt aus `view.development.{expedition,overtime}.base`, 
 
 ## Prüfung
 
-13 Backendtests in `tests/development.test.cjs` und `tests/expedition-completion.test.cjs` erfolgreich (darunter Pooltrennung, keine Energieauffüllung und Basiswerte ohne Boni). Komponententests für Basiswertvorschau trotz Boni, getrennte Bestände, Entwurfserhalt, unvollständige Level-Batches, Fehlerrückmeldung und parallele Bestätigung ergänzt bzw. angepasst. Lokal wegen fehlendem React/TypeScript nicht ausführbar. Kein neuer App-Export oder Gerätetest; vor Veröffentlichung visuell auf schmalem Gerät und in beiden Sprachen prüfen.
+13 Backendtests in `tests/development.test.cjs` und `tests/expedition-completion.test.cjs` erfolgreich (darunter Pooltrennung, keine Energieauffüllung und Basiswerte ohne Boni). Komponententests für Basiswertvorschau trotz Boni, getrennte Bestände, Entwurfserhalt, unvollständige Level-Batches, Fehlerrückmeldung und parallele Bestätigung ergänzt bzw. angepasst. Veröffentlicht mit dem Sammelpaket vom 03.11.2026. Release- und Prüfnachweis: [Prüfstand](../../TEST_REPORT.md). Ein physischer Gerätetest ist nicht belegt.

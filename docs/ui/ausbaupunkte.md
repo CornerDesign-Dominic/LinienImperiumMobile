@@ -12,7 +12,7 @@ Das Motiv ersetzt das bisherige Plus als Belohnung im Ortsmodal. Es erscheint au
 
 Gespeicherte Schlüssel wie `expansion`, `expansionPoints` und der Befehl `expansionAllocate` bleiben unverändert. Besitz, verfügbare Punkte, bereits verteilte Boni und Regeneration werden nicht umgerechnet. Neue Meldungen und Hilfe verwenden den neuen Namen. Alte gespeicherte Belohnungstexte werden bei der Ausgabe normalisiert; Profilnamen und historische Speichertexte bleiben erhalten. Historische Markdown-Archive bleiben unverändert.
 
-Die Namens-/Bildänderung selbst änderte weder automatische Gutschrift noch Abschluss- oder Verteilungsverhalten. Die danach gesammelte Folgeänderung entfernt die Abschlussinformation: Abschlüsse laufen still, Punkte werden ausschließlich auf Wunsch verteilt. Ausführliche Regeln: [Expeditionsabschlüsse](expedition-completions.md).
+Die Namens-/Bildänderung selbst änderte weder automatische Gutschrift noch Abschluss- oder Verteilungsverhalten. Die Folgeänderung entfernt die Abschlussinformation: Abschlüsse laufen still, Punkte werden ausschließlich auf Wunsch verteilt. Ausführliche Regeln: [Expeditionsabschlüsse](expedition-completions.md).
 
 ## Prüfung
 
