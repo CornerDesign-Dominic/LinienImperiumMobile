@@ -52,7 +52,7 @@ Fahrzeugdetails verwenden [VehicleCardDetail](src/VehicleCardDetail.tsx): Stufe,
 
 ## Auftragskarten
 
-Großauftragskategorien und konkrete Auftragskarten verwenden Papierflächen, einen neutralen Außenrand und einen markanten linken Seltenheitsstreifen: Rare-Blau für Sonderaufträge, Epic-Violett für Empfehlungen und Legendary-Gold bei den vorhandenen Eventkarten. Typbeschriftungen und Bilder bleiben zusätzliche Orientierung. Die Großauftragsseite wechselt über zwei Reiter zwischen Laufende und Aufträge; deren Zahlen trennen aktive von bereitliegenden Aufträgen. Diese Anpassung ist gesammelt und noch nicht veröffentlicht.
+Großauftragskategorien und konkrete Auftragskarten verwenden Papierflächen, einen neutralen Außenrand und einen markanten linken Seltenheitsstreifen: Rare-Blau für Sonderaufträge, Epic-Violett für Empfehlungen und Legendary-Gold bei den vorhandenen Eventkarten. Typbeschriftungen und Bilder bleiben zusätzliche Orientierung. Die Großauftragsseite wechselt über zwei Reiter zwischen Laufende und Aufträge; deren Zahlen trennen aktive von bereitliegenden Aufträgen. Aktive und fertige Großaufträge mit offener Prämie stehen gemeinsam unter Laufende, mit vorhandenen Kundenwarenbildern und echten Mengen. Aktive zeigen Fortschritt und Serverprognose, fertige einen nativen grünen ERLEDIGT-Stempel in eigenem Platz sowie die direkte Abholtaste. Diese Anpassung ist gesammelt und noch nicht veröffentlicht.
 
 ## Expedition und Botenstation
 
