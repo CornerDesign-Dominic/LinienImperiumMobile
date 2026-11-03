@@ -13,7 +13,9 @@ test('Premium shop migrates old saves without awarding money and discloses disab
  assert.equal(result.view.premiumShop.purchasesAvailable,false);
  assert.equal(result.view.premiumShop.name,'Hermes-Siegel');
  assert.equal(result.view.premiumShop.skinPrice,250);
- assert.deepEqual(result.view.premiumShop.packs.map(p=>[p.amount,p.referencePriceCents]),[[250,250],[500,500],[1000,1000],[2500,2500],[5000,5000]]);
+ assert.deepEqual(result.view.premiumShop.packs.map(p=>[p.amount,p.referencePriceCents]),[[250,250],[500,500],[1000,1000],[2000,2000],[3000,3000],[5000,5000]]);
+ assert.deepEqual(result.view.premiumShop.packs.map(p=>p.id),['premium-250','premium-500','premium-1000','premium-2000','premium-3000','premium-5000']);
+ assert.ok(result.view.premiumShop.packs.every(p=>p.currency==='EUR'&&p.amount===p.referencePriceCents),'100 Siegel per euro; no invented pack bonus');
  assert.equal(result.view.premiumShop.skins.filter(s=>s.price>0).length,0,'Never sell an unapproved image');
  assert.throws(()=>execute(game.state,'premiumGrant',{amount:5000},now),/Unbekannte Aktion/);
  assert.throws(()=>execute(game.state,'skinBuy',{id:'unpublished',price:0},now),/Skin nicht verfügbar/);
