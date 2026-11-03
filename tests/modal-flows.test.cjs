@@ -10,13 +10,13 @@ function giftSetup(overrides={}){
 }
 test('Gift result waits after the wheel stops, returns to the open crate and repeats with the real duplicate reward',async()=>{
  const {h,calls,render,crate,reward}=giftSetup();const open=button(crate(render()),'Öffnen · 10').props.onPress;
- await Promise.all([open(),open()]);assert.equal(calls.length,1,'rapid taps buy only once');
+ await Promise.all([open(),open()]);assert.equal(calls.length,1,'rapid taps buy only once');assert.equal(button(crate(render()),'Schließen').props.disabled,true);crate(render()).props.onRequestClose();assert.equal(crate(render()).props.visible,true,'closing during the reveal cannot discard a paid result');
  let tree=render();for(let steps=0;!text(crate(tree)).includes('Geschenk geöffnet');steps++){assert.ok(steps<30);h.next();tree=render();}
  assert.equal(reward(tree).props.visible,false);assert.equal(button(crate(tree),'Nochmal öffnen · 10').props.disabled,true);
  h.advance(349);assert.equal(reward(render()).props.visible,false);h.advance(1);tree=render();assert.equal(reward(tree).props.visible,true);assert.equal(crate(tree).props.visible,false);assert.ok(text(reward(tree)).includes('Neue Transportkarte'));assert.ok(!text(crate(tree)).includes('1 Transportkarte'));
  reward(tree).props.onClose();tree=render();assert.equal(crate(tree).props.visible,true);assert.equal(button(crate(tree),'Nochmal öffnen · 10').props.disabled,false);
  await button(crate(tree),'Nochmal öffnen · 10').props.onPress();h.advance(10000);tree=render();assert.equal(calls.length,2);assert.ok(text(reward(tree)).includes('+1 Common-Shard'));assert.ok(!text(crate(tree)).includes('+1 Common-Shard'));
- button(reward(tree),'Weiter').props.onPress();assert.equal(crate(render()).props.visible,true);h.unmount();assert.equal(h.pendingTimers(),0);
+ assert.equal(nodes(reward(tree),'Btn').length,0,'reward closes through its header X only');reward(tree).props.onClose();assert.equal(crate(render()).props.visible,true);h.unmount();assert.equal(h.pendingTimers(),0);
 });
 test('Gift request failure can be retried; skip uses the received result and leaving cancels delayed presentation',async()=>{
  const {h,props,calls,render,crate,reward}=giftSetup();props.onCommand=async()=>{throw Error('offline');};
@@ -38,4 +38,10 @@ test('Development modal stages all levels without saving on close and commits on
  const cancelled=setup();button(cancelled.modal(),'Verteilung bestätigen');nodes(cancelled.modal(),'Pressable').find(n=>n.props.accessibilityLabel==='Expeditionspunkte erhöhen').props.onPress();nodes(cancelled.modal(),'RewardModal')[0].props.onClose();assert.equal(cancelled.calls.length,0);assert.equal(nodes(cancelled.render(),'Btn').some(n=>text(n)==='Punkte verteilen'),true);cancelled.h.unmount();
  const saved=setup();let tree=saved.modal();assert.equal(button(tree,'Verteilung bestätigen').props.disabled,true);const plus=nodes(tree,'Pressable').find(n=>n.props.accessibilityLabel==='Expeditionspunkte erhöhen').props.onPress;for(let i=0;i<9;i++)plus();tree=saved.modal();assert.ok(text(tree).includes('50 → 56'));assert.ok(text(tree).includes('Boni +7'));assert.ok(nodes(tree,'Pressable').filter(n=>n.props.accessibilityLabel.endsWith('erhöhen')).every(n=>n.props.disabled));
  const confirm=button(tree,'Verteilung bestätigen').props.onPress;await Promise.all([confirm(),confirm()]);assert.equal(saved.calls.length,1);assert.deepEqual(saved.calls[0],{action:'levelBatch',expedition:6,overtime:0,points:6});assert.ok(!text(saved.render()).includes('Punkte verteilen'));saved.h.unmount();
+});
+
+test('Shared modal X exposes a localized close action and never invokes it while disabled',()=>{
+ const h=componentHarness('ModalCloseButton.tsx',{'./theme':{C:require('../src/palette.json')},'./i18n':{t:key=>key==='Schließen'?'Close':key}});let closed=0;
+ const props={onPress:()=>closed++,disabled:true};let tree=h.render('ModalCloseButton',props);assert.equal(tree.props.accessibilityLabel,'Close');assert.equal(tree.props.accessibilityState.disabled,true);tree.props.onPress();assert.equal(closed,0);
+ props.disabled=false;tree=h.render('ModalCloseButton',props);tree.props.onPress();assert.equal(closed,1);h.unmount();
 });

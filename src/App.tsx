@@ -9,7 +9,7 @@ import {LANGUAGES,t as translate,localizedHelp} from './i18n';
 import {Text,LanguageProvider,useLanguage} from './Language';
 import {itemName} from './items';
 import React,{useCallback,useEffect,useRef,useState} from 'react';
-import {ScrollView,ScrollViewInstance,StyleSheet,RefreshControl,TextInput,BackHandler,AppState,Alert,Platform,KeyboardAvoidingView} from 'react-native';
+import {ScrollView,ScrollViewInstance,StyleSheet,RefreshControl,TextInput,BackHandler,AppState,KeyboardAvoidingView} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {SafeAreaProvider,SafeAreaView,useSafeAreaInsets} from 'react-native-safe-area-context';
 import {StatusBar} from 'expo-status-bar';
@@ -110,7 +110,7 @@ function Game(){
  const back=()=>{if(completionNotice){closeCompletion();return true;}if(expansionOpen){setExpansionOpen(false);return true;}if(levelNotices.length){setLevelNotices(queue=>queue.slice(1));return true;}if(sheet){setSheet(null);return true;}if(screen==='orders'&&ordersTab==='saved'&&savedType){setSavedType(null);return true;}if(screen==='expeditions'&&region!==null){setRegion(null);scroll.current?.scrollTo({y:0,animated:false});return true;}if(trail.length){if(screen==='cardDetail')scroll.current?.scrollTo({y:0,animated:false});setScreen(trail[trail.length-1]);setTrail(v=>v.slice(0,-1));return true;}if(screen!=='home'){setScreen('home');return true;}return false;};
  useEffect(()=>{const handler=BackHandler.addEventListener('hardwareBackPress',back);return()=>handler.remove();},[screen,trail,sheet,projectId,region,levelNotices,ordersTab,savedType,completionNotice,expansionOpen,busy]);
  const act=(action:string,payload:Record<string,unknown>={})=>run(action,payload);
- const confirm=(title:string,body:string,onConfirm:()=>void)=>Platform.OS==='web'?setSheet({title,body,items:[{title:'Bestätigen',onPress:onConfirm}]}):Alert.alert(translate(title),translate(body),[{text:translate('Abbrechen'),style:'cancel'},{text:translate('Bestätigen'),onPress:onConfirm}]);
+ const confirm=(title:string,body:string,onConfirm:()=>void)=>setSheet({title,body,centered:true,items:[{title:'Bestätigen',primary:true,onPress:onConfirm}]});
  const choose=(title:string,items:any[],body?:string)=>setSheet({title,items,body});
  const g=data?.state,c=data?.catalog;
  const journeyOpen=screen==='expeditions'&&region!==null&&!!g?.profile&&!!data?.expeditionMap?.[region]?.open;

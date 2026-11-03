@@ -57,12 +57,11 @@ function DevelopmentModal({data,busy,onCommand,onClose,modalBlocked}:any){
 export function LevelUpNotice({levels,onClose}:{levels:number[];onClose:()=>void}){
  const level=levels.at(-1),count=levels.length;
  return <Modal visible={count>0} transparent animationType="none" onRequestClose={onClose}><View style={s.overlay}><SafeAreaView edges={[]} style={s.modal}><MaterialLayer surfaceStyle={s.modal}/>
-  <Txt style={s.congrats}>Herzlichen Glückwunsch!</Txt><Txt style={s.level}>Level {level}</Txt>
+  <Row style={{flexWrap:'nowrap',alignItems:'flex-start'}}><Txt style={[s.congrats,{flex:1,minWidth:0,textAlign:'left'}]}>Herzlichen Glückwunsch!</Txt><Btn icon="close" iconOnly secondary onPress={onClose}>Schließen</Btn></Row><Txt style={s.level}>Level {level}</Txt>
   <ItemAmount id="expeditionRefills" label={itemName('expeditionRefills',count)} amount={count}/>
   <ItemAmount id="overtimeRefills" label={itemName('overtimeRefills',count)} amount={count}/>
   <Txt style={s.reward}>+{count*3} Punkte zum Verteilen</Txt>
   {!!levels.filter(value=>value<=100&&value%5===0).length&&<Txt style={s.reward}>+{levels.filter(value=>value<=100&&value%5===0).length} Stadthub Fahrzeug</Txt>}
-  <Btn icon="close" iconOnly secondary onPress={onClose}>Schließen</Btn>
  </SafeAreaView></View></Modal>;
 }
 const s=StyleSheet.create({title:{fontSize:16,fontWeight:'700'},area:{paddingVertical:10,borderBottomWidth:1,borderColor:C.line},values:{flexDirection:'row',alignItems:'center',gap:8},value:{width:42,alignItems:'center'},caption:{fontSize:10},capacity:{flexDirection:'row',alignItems:'center',gap:8},controls:{flexDirection:'row',justifyContent:'center',alignItems:'center',gap:6},step:{minWidth:44,minHeight:44,borderRadius:10,borderWidth:1,borderColor:C.line,alignItems:'center',justifyContent:'center'},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},modal:{width:'100%',maxWidth:440,borderRadius:20,padding:20,backgroundColor:C.panel,borderWidth:1,borderColor:C.accent},congrats:{fontSize:19,fontWeight:'700',textAlign:'center'},level:{fontSize:26,fontWeight:'700',textAlign:'center',color:C.accent,marginTop:8,marginBottom:18,lineHeight:32},reward:{fontSize:13,lineHeight:21,marginBottom:8}});

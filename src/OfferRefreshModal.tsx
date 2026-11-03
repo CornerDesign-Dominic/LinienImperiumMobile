@@ -27,7 +27,7 @@ export function OfferRefreshModal({visible,cost,coins,busy,error,onClose,onConfi
      {!enough&&<Txt style={s.error}>Nicht genügend Imperium-Taler.</Txt>}
      {failed&&<Txt style={s.error}>{error||'Angebote konnten nicht gewechselt werden. Bitte erneut versuchen.'}</Txt>}
     </ScrollView>
-    <View style={s.actions}><Btn secondary disabled={locked} onPress={close}>Abbrechen</Btn><Btn disabled={locked||!enough} onPress={confirm}>{saving?'Wird gewechselt …':`Für ${n(cost)} wechseln`}</Btn></View>
+    <View style={s.actions}><Btn disabled={locked||!enough} onPress={confirm}>{saving?'Wird gewechselt …':`Für ${n(cost)} wechseln`}</Btn></View>
    </View>
   </SafeAreaView>
  </AppModal>;
