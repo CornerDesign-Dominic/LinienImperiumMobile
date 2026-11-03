@@ -1,0 +1,6 @@
+{
+  "tool": "built-in image_gen",
+  "asset": "petrol-button.jpg",
+  "prompt": "Use case: stylized-concept. Production UI material texture ONLY, edge-to-edge square surface with no objects, letters or frame. Weathered deep petrol green painted leather/aged painted metal, base dark desaturated teal near #254C47, for fantasy merchant game buttons. Soft irregular darker low-contrast patina clouds and scattered fine rubbed areas, subtle directional grain, occasional very muted olive-brown flecks concentrated near outer edges. A little dirty and handled, restrained subtle-to-medium wear. Center quiet enough behind small cream UI text but visibly less uniform than a flat color. No bright scratches, no peeling exposing white, no heavy grunge, no rust blobs, no border illustration, no bevel, no vignette to black, no embossing. Even diffuse lighting, matte surface, attractive handcrafted aged material. The texture will be fitted into narrow mobile buttons, so use broad gently varied marks instead of microscopic detail.",
+  "processing": "512x512 RGB JPEG quality84 optimize; no creative postprocessing"
+}

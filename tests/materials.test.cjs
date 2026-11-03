@@ -17,7 +17,7 @@ test('Material hosts preserve native events, refs, state styles and render-funct
  const {componentHarness}=require('./helpers/component-harness.cjs');
  const React=require('react');
  const native={View:'View',Image:'Image',Pressable:'Pressable',StyleSheet:{create:x=>x,absoluteFill:{position:'absolute'},flatten:x=>Array.isArray(x)?Object.assign({},...x.filter(Boolean)):x}};
- const {exports:m}=componentHarness('Material.tsx',{'react-native':native,'./materialRules':{materialForColor,materialOpacity},'../assets/art/materials/sales-parchment.jpg':1,'../assets/art/materials/sales-petrol.jpg':2});
+ const {exports:m}=componentHarness('Material.tsx',{'react-native':native,'./materialRules':{materialForColor,materialOpacity},'../assets/art/materials/sales-parchment.jpg':1,'../assets/art/materials/sales-petrol.jpg':2,'../assets/art/materials/petrol-button.jpg':3});
  const ref={},onPress=()=>{},onLayout=()=>{},style=({pressed})=>({backgroundColor:pressed?C.raised:C.accent});
  const node=m.MaterialPressable.render({style,onPress,disabled:true,children:({pressed})=>pressed?'pressed':'idle'},ref);
  assert.equal(node.props.onPress,onPress);assert.equal(node.props.ref,ref);assert.equal(node.props.disabled,true);assert.equal(node.props.style,style);
