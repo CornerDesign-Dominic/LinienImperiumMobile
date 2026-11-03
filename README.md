@@ -18,7 +18,7 @@ Transport-, Handels- und Entdeckungsspiel als native React-Native-/Expo-App für
 - Materialbeschaffung mit Einzel- und Gruppenfahrten, vorausbezahlten Touren oder Kontoreserve, Offline-Abrechnung und getrennten Abbruchmöglichkeiten.
 - Ausbaupunkte aus einmaligen Ortslieferungen für dauerhafte Expeditions-/Überstundenmaxima; eigenständiges Bauplan-/Säulenmotiv.
 - Handelsimperium mit Ausbauten und Punkteverteilung; je Level drei verteilbare Punkte sowie je ein Expeditions- und Überstundenauffüller für 50 Punkte.
-- Stadthub mit Lastwombat-Boten, Vertrieb, Erträgen, Fundkisten und eigenem Ausbau über Werkzeugkästen; Vorräte, Herstellung, Stammkunden und Statistik.
+- Botenstation mit Lastwombat-Boten, Vertrieb, Erträgen, Fundkisten und eigenem Ausbau über Werkzeugkästen; Vorräte, Herstellung, Stammkunden und Statistik.
 - Pyramiden-Event mit Event/Pass/Ränge, Solotest und Gemeinschaftsrunde; [Eventregeln und Grenzen](docs/events/pyramid.md).
 - Großhändler mit regionalen Geschenken und vorbereitetem Skin-/Hermes-Siegel-Shop. Echtgeldkäufe sind deaktiviert; aktuell ist nur der kostenlose Standard-Skin vorhanden. [Shopstand](docs/ui/premium-shop.md).
 
@@ -34,7 +34,7 @@ Spielaktionen benötigen Internet. Der Server berechnet Fortschritt anhand seine
 
 - `src/App.tsx` und die übrigen Komponenten unter `src/` rendern die native Oberfläche, keine WebView.
 - `functions/vendor/web-game.js` ist die gepinnte Web-Baseline (`CornerDesign-Dominic/LinienImperium`, Commit `3ffe8a3ba7956119359b8c16a4df0e4423acc6e7`). Deren ursprüngliche Regeln beschreiben nicht automatisch das heutige Mobile-Spiel.
-- `functions/src/engine.cjs` bindet die Baseline und die Mobile-Runtimes ein und stellt erlaubte Befehle und Ansichtsmodelle bereit. Touren, Karten, Fortschritt, Beschaffung und Stadthub werden dort für Mobile erweitert.
+- `functions/src/engine.cjs` bindet die Baseline und die Mobile-Runtimes ein und stellt erlaubte Befehle und Ansichtsmodelle bereit. Touren, Karten, Fortschritt, Beschaffung und Botenstation werden dort für Mobile erweitert.
 - Die authentifizierte callable Function `game` in `europe-west3` verarbeitet Aktionen serverseitig. Komprimierte Spielstände liegen in Firestore; Transaktionen und Anfragekennungen verhindern doppelte Mutationen bei Wiederholungen. Direkte Firestore-Clientzugriffe sind gesperrt.
 - Firebase-Projekt: `linienimperium`. Deployment verwendet Workload Identity Federation; Expo-Token und Android-Signierung werden über Secret-Verwaltung bereitgestellt, nicht über Repository-Dateien.
 

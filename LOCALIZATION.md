@@ -22,7 +22,7 @@ Serverzustand, Auftrags-/Karten-IDs, Command-Namen und Firebase-Dokumente bleibe
 
 ## Aktuelle Anzeigebegriffe
 
-Die mobile Präsentationsschicht normalisiert historische Webbegriffe: unter anderem Münzen → Imperium-Taler, Premium-Münzen → Hermes-Siegel, Regionalverkehr → Nahverkehr, Fahrzeugkarte → Transportkarte sowie Stadttransporter → Lastwombat-Boten. Die Zuordnung liegt im Serveradapter und in `functions/src/currency-names.cjs` bzw. `hub-courier.js`. Persistierte IDs und Nutzerprofile werden dabei nicht umbenannt. Übersetzungen müssen die tatsächlich ausgegebenen mobilen Begriffe abdecken; veraltete Quellschlüssel können für alte Servermeldungen weiterhin benötigt werden.
+Die mobile Präsentationsschicht normalisiert historische Webbegriffe: unter anderem Stadthub → Botenstation (englisch Courier Station), Erweiterungspunkt → Ausbaupunkt, Münzen → Imperium-Taler, Premium-Münzen → Hermes-Siegel, Regionalverkehr → Nahverkehr, Fahrzeugkarte → Transportkarte sowie Stadttransporter → Lastwombat-Boten. Die Zuordnung liegt im Serveradapter und in `functions/src/currency-names.cjs` bzw. `hub-courier.js`. Persistierte IDs und Nutzerprofile werden dabei nicht umbenannt. Übersetzungen müssen die tatsächlich ausgegebenen mobilen Begriffe abdecken; veraltete Quellschlüssel können für alte Servermeldungen weiterhin benötigt werden.
 
 `src/i18n.ts` übersetzt auch zusammengesetzte Beschriftungen und dynamische Nachrichten. Unbekannte Texte bleiben als deutsche Rückfalltexte sichtbar; dies ist kein Nachweis vollständiger englischer Abdeckung. Bei neuen UI-Texten deshalb Katalog, Platzhalter und tatsächliche Darstellung gemeinsam prüfen.
 

@@ -3,7 +3,7 @@ const file=path.resolve(__dirname,'../src/itemVisual.js'),m=new Module(file,modu
 const {itemVisual,romanTier}=m.exports;
 const {execute}=require('../functions/src/engine.cjs');
 test('Illustrations cover actual catalog materials, every rarity and supported stock order without changing IDs',()=>{
- const {view}=execute(null,'foundCompany',{companyName:'Art',cityName:'Hub'},1800000000000,()=>.5);
+ const {view}=execute(null,'foundCompany',{companyName:'Art',cityName:'Botenstation'},1800000000000,()=>.5);
  for(const id of Object.keys(view.state.inventory).filter(id=>!['gears','companyItemTkmRemainder'].includes(id)))assert.ok(itemVisual(id),id);
  for(const r of view.catalog.rarities)for(const kind of ['gear','shard'])assert.equal(itemVisual(`${kind}:${r.id}`).asset,`${kind}-${r.id}`);
  assert.equal(itemVisual('hubVehicleParts').asset,'hubVehicleParts');

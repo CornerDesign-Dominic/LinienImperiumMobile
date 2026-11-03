@@ -18,7 +18,7 @@ Jede vollständige Fahrzeugtour umfasst Hin- und gegebenenfalls Rückfahrt. Sie 
 
 Vor jeder Änderung werden fällige Lieferungen bis zur Serverzeit abgearbeitet. Eine Aufwertung exakt bei Ankunft ändert deshalb nicht die zu diesem Zeitpunkt bereits gestartete Folgetour. Für ETA, Resttouren, Kosten, Vergütung, XP und Überstundenbedarf werden laufende Momentaufnahmen mit den derzeit geplanten Folgetouren kombiniert. Die Simulation verändert keine echten Lieferungen und würfelt keine Belohnungen.
 
-Transportierende Expeditionsmissionen behalten ebenfalls die aktuelle Tour und berechnen den restlichen Transportplan mit den aktuellen Fahrzeugwerten. Ortsmissionen ohne Fahrzeugtour behalten ihre feste Missionsdauer. Der separate Stadthub verwendet weiterhin seine stündliche Verkaufs- und Kassenabrechnung.
+Transportierende Expeditionsmissionen behalten ebenfalls die aktuelle Tour und berechnen den restlichen Transportplan mit den aktuellen Fahrzeugwerten. Ortsmissionen ohne Fahrzeugtour behalten ihre feste Missionsdauer. Der separate Botenstation verwendet weiterhin seine stündliche Verkaufs- und Kassenabrechnung.
 
 Bestehende Flottentouren behalten Ladung, Endzeit und gespeicherte Abrechnung. Bestehende Einzelaufträge ohne Tourmomentaufnahme werden einmalig mit ihrem gespeicherten Start und ihrer gespeicherten Ladung initialisiert; historische Bonuswerte, die früher nicht gespeichert wurden, sind nicht rekonstruierbar. Es werden keine historischen Lieferungen neu vergütet. Stabile endlose Eventflotten werden für lange Offline-Zeiten rechnerisch gebündelt; bei Änderungen werden zunächst die Übergangstouren chronologisch abgearbeitet.
 

@@ -1,8 +1,8 @@
-# Stadthub-Boten
+# Boten der Botenstation
 
-Alle Stadthub-Boten verwenden das freigegebene Lastwombat-Motiv: ein einzelnes kräftiges Fabelwesen mit Fellkamm, beladenen Ledertaschen und petrolfarbener Decke im Kontorhof. Das optimierte quadratische JPEG wird über `HubCourierArt` in der dreispaltigen Übersicht, dem Detailfenster und dem Anwerbefenster gemeinsam angezeigt. Das bisherige LKW-Piktogramm entfällt dort. Es gibt keine Seltenheitskennzeichnung. Das inzwischen vorbereitete [Skinsystem](premium-shop.md) führt den Lastwombat als kostenlose eigene Standardgestaltung; weitere kaufbare Motive sind noch nicht verfügbar.
+Alle Boten der Botenstation verwenden das freigegebene Lastwombat-Motiv: ein einzelnes kräftiges Fabelwesen mit Fellkamm, beladenen Ledertaschen und petrolfarbener Decke im Kontorhof. Das optimierte quadratische JPEG wird über `HubCourierArt` in der dreispaltigen Übersicht, dem Detailfenster und dem Anwerbefenster gemeinsam angezeigt. Das bisherige LKW-Piktogramm entfällt dort. Es gibt keine Seltenheitskennzeichnung. Das inzwischen vorbereitete [Skinsystem](premium-shop.md) führt den Lastwombat als kostenlose eigene Standardgestaltung; weitere kaufbare Motive sind noch nicht verfügbar.
 
-Sichtbare Bezeichnungen lauten Boten, Bote 01 usw.; die Art heißt Lastwombat. Hilfe, Anwerbetexte, Werkzeugkastenbeschreibung und englische Texte sind angepasst. Der Server liefert zusätzlich displayName/displayModel. Der Client hat dieselben kanonischen Ausweichregeln für bereits geladene Spielstände. Bekannte Hub-IDs werden in Mitteilungen und Historien nur bei der Anzeige übersetzt; eigene Namen und Firmen-/Stadtnamen bleiben erhalten.
+Sichtbare Bezeichnungen lauten Boten, Bote 01 usw.; die Art heißt Lastwombat. Hilfe, Anwerbetexte, Werkzeugkastenbeschreibung und englische Texte sind angepasst. Der Server liefert zusätzlich displayName/displayModel. Der Client hat dieselben kanonischen Ausweichregeln für bereits geladene Spielstände. Bekannte Botenstation-IDs werden in Mitteilungen und Historien nur bei der Anzeige übersetzt; eigene Namen und Firmen-/Stadtnamen bleiben erhalten.
 
 Persistente LKW-IDs, Modelle, gespeicherte Ereignisse und Commands bleiben unverändert. Kaufpreis, Plätze, Werte, Ausbaukosten, Zuweisungen und Erträge ändern sich nicht. Andere Kartenfahrzeuge behalten ihre Namen und Bilder.
 

@@ -10,8 +10,9 @@ export function HubNotice({data,onOpen}:any){
  const full=hub.cashboxCycles>=6;
  const last=hub.cashboxCycles===5&&data.state.trucks.some((t:any)=>t.tier<=1&&t.hubAssigned);
  if(!full&&!last)return null;
- return <Pressable accessibilityRole="button" accessibilityLabel={translate(`Stadthub, ${full?'Kasse voll':'letzter Stundenzyklus'}`)} onPress={onOpen} style={[styles.card,full&&styles.full]}>
-  <View style={styles.row}><Txt style={{fontSize:13,fontWeight:'700'}}>Stadthub</Txt><View style={styles.status}><Txt gold style={{fontSize:12}}>{full?'Kasse voll':'Letzte Stunde'}</Txt><Icon name="chevron" size={17} color={C.gold}/></View></View>
+ return <Pressable accessibilityRole="button" accessibilityLabel={translate(`Botenstation, ${full?'Kasse voll':'letzter Stundenzyklus'}`)} onPress={onOpen} style={[styles.card,full&&styles.full]}>
+  <View style={styles.row}><Txt style={{fontSize:13,fontWeight:'700'}}>Botenstation</Txt><View style={styles.status}><Txt gold style={{fontSize:12}}>{full?'Kasse voll':'Letzte Stunde'}</Txt><Icon name="chevron" size={17} color={C.gold}/></View></View>
  </Pressable>;
 }
 const styles=StyleSheet.create({card:{paddingHorizontal:12,paddingVertical:10,marginBottom:12,borderWidth:1,borderColor:C.brass,borderRadius:12,backgroundColor:C.panel},full:{backgroundColor:C.goldWash,borderColor:C.gold},row:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:10},status:{flexDirection:'row',alignItems:'center',gap:10}});
+

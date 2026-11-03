@@ -18,9 +18,10 @@ function hubUnlocked() { return !!hub() || levelForXp(game.xp).level >= 5; }
 hubCapacity = () => Math.max(cityTruckCount(), Math.floor(levelForXp(game.xp).level / 5));
 const legacyBuyHub = buyHub;
 buyHub = () => {
-  if (!hubUnlocked()) { showToast('Stadthub ab Level 5 verfügbar.'); return false; }
+  if (!hubUnlocked()) { showToast('Botenstation ab Level 5 verfügbar.'); return false; }
   return legacyBuyHub();
 };
 function nextHubVehicleLevel() {
   return Math.max(5, (Math.max(cityTruckCount(), Math.floor(levelForXp(game.xp).level / 5)) + 1) * 5);
 }
+

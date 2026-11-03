@@ -61,7 +61,7 @@ export function LevelUpNotice({levels,onClose}:{levels:number[];onClose:()=>void
   <ItemAmount id="expeditionRefills" label={itemName('expeditionRefills',count)} amount={count}/>
   <ItemAmount id="overtimeRefills" label={itemName('overtimeRefills',count)} amount={count}/>
   <Txt style={s.reward}>+{count*3} Punkte zum Verteilen</Txt>
-  {!!levels.filter(value=>value<=100&&value%5===0).length&&<Txt style={s.reward}>+{levels.filter(value=>value<=100&&value%5===0).length} Stadthub Fahrzeug</Txt>}
+  {!!levels.filter(value=>value<=100&&value%5===0).length&&<Txt style={s.reward}>+{levels.filter(value=>value<=100&&value%5===0).length} {levels.filter(value=>value<=100&&value%5===0).length===1?'Botenplatz':'Botenplätze'}</Txt>}
  </SafeAreaView></View></Modal>;
 }
 const s=StyleSheet.create({title:{fontSize:16,fontWeight:'700'},area:{paddingVertical:10,borderBottomWidth:1,borderColor:C.line},values:{flexDirection:'row',alignItems:'center',gap:8},value:{width:42,alignItems:'center'},caption:{fontSize:10},capacity:{flexDirection:'row',alignItems:'center',gap:8},controls:{flexDirection:'row',justifyContent:'center',alignItems:'center',gap:6},step:{minWidth:44,minHeight:44,borderRadius:10,borderWidth:1,borderColor:C.line,alignItems:'center',justifyContent:'center'},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},modal:{width:'100%',maxWidth:440,borderRadius:20,padding:20,backgroundColor:C.panel,borderWidth:1,borderColor:C.accent},congrats:{fontSize:19,fontWeight:'700',textAlign:'center'},level:{fontSize:26,fontWeight:'700',textAlign:'center',color:C.accent,marginTop:8,marginBottom:18,lineHeight:32},reward:{fontSize:13,lineHeight:21,marginBottom:8}});

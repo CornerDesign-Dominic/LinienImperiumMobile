@@ -11,6 +11,7 @@ test('German is the default; unsupported preferences fall back to German and loc
 });
 test('Static and dynamic display messages localize without translating unknown names or identifiers',()=>{
  setLanguage('en');
+ assert.equal(t('Botenstation'),'Courier Station');assert.equal(t('Botenstation, Kasse voll'),'Courier Station, Cashbox full');
  assert.equal(t('EINSTELLUNGEN'),'SETTINGS');assert.equal(t('Flotte 3'),'Fleet 3');assert.equal(t('Flotte 2 einsetzen'),'Assign fleet 2');assert.equal(t('Großprojekt mit eigenen Überstunden'),'Fleet project with own overtime');
  assert.equal(t('Kurierwagen · Rang 2'),'Courier van · Rank 2');
  assert.equal(t('Sonderauftrag Materialbergung'),'Special contract Material recovery');

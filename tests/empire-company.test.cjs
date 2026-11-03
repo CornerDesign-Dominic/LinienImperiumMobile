@@ -29,6 +29,6 @@ test('Development uses maximum totals rather than current energy and keeps unspe
  const readouts=nodes(tree,'View').filter(node=>node.props.accessible&&node.props.accessibilityLabel);
  assert.ok(readouts.some(node=>node.props.accessibilityLabel.startsWith('Überstunden: '+data.state.overtimeCapacity+',')));
  assert.ok(readouts.some(node=>node.props.accessibilityLabel.startsWith('Expeditionspunkte: '+data.expeditionCapacity+',')));
- const entry=nodes(tree,'Btn').find(node=>text(node)==='Erweiterungspunkte verteilen · 2');assert.ok(entry);entry.props.onPress();assert.equal(opened,1);
+ const entry=nodes(tree,'Btn').find(node=>text(node)==='Ausbaupunkte verteilen · 2');assert.ok(entry);entry.props.onPress();assert.equal(opened,1);
  assert.ok(!text(tree).includes('Basiswert + Boni'));h.unmount();
 });

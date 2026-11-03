@@ -1,6 +1,6 @@
-# Stadthub-Erträge
+# Botenstation-Erträge
 
-Die kompakte Ertragskarte zeigt Münzbild und Münzbetrag. Kassenfüllstand und Einkaufszyklus sind getrennt. Der Sammelknopf holt Münzen, Abholhinweise und Werkzeugkästen gemeinsam ab; der Belohnungsdialog zeigt die tatsächlich gutgeschriebenen Mengen als Zeilen.
+Die kompakte Ertragskarte zeigt Münzbild und den laufenden Betrag auf ganze Imperium-Taler gerundet (kaufmännisch: ab 0,50 aufrunden), mit lokaler Tausendertrennung. Beispielsweise wird 11.810,66 als 11.811 angezeigt. Nur die Anzeige in `HubEarnings` ist gerundet; interne Berechnung, Kassenbestand und Auszahlung behalten ihre Präzision. Der zugängliche Text entspricht dem sichtbaren gerundeten Betrag. Kassenfüllstand und Einkaufszyklus sind getrennt. Der Sammelknopf holt Münzen, Abholhinweise und Werkzeugkästen gemeinsam ab; der Belohnungsdialog zeigt die tatsächlich gutgeschriebenen Mengen als Zeilen.
 
 ## Einkaufsleistung
 
@@ -12,7 +12,7 @@ Die Ware wird während der eingefrorenen Arbeitszeit verteilt; danach wird bis z
 
 ## Volle Kasse
 
-Nach sechs vollständigen Einkaufszyklen pausiert der Hub. Während der Pause laufen weder die Arbeitsstatistik noch Teileversuche weiter. Volle Kasse abholen startet sofort einen neuen Einkauf bei Minute 0. Teilabholungen ändern Startzeit und bereits bezahlten Zyklusanteil nicht. Teileversuche bleiben auf einmal pro Stunde und 24 pro UTC-Tag begrenzt; ein Neustart umgeht die Sperre nicht.
+Nach sechs vollständigen Einkaufszyklen pausiert die Botenstation. Während der Pause laufen weder die Arbeitsstatistik noch Teileversuche weiter. Volle Kasse abholen startet sofort einen neuen Einkauf bei Minute 0. Teilabholungen ändern Startzeit und bereits bezahlten Zyklusanteil nicht. Teileversuche bleiben auf einmal pro Stunde und 24 pro UTC-Tag begrenzt; ein Neustart umgeht die Sperre nicht.
 
 ## Darstellung
 
@@ -27,3 +27,4 @@ Vorhandene Stufen oberhalb von 20 werden einmalig auf 20 begrenzt; die dafür be
 ## Durchgehende Bildkarte
 
 Die Ertragskarte verwendet den vorhandenen Handelshof als vollflächigen Hintergrund mit dunklen transparenten Textflächen. Kopfzeile, Münzbetrag, Statusbereich und untere Abholfläche behalten feste Positionen. Die gesamte Karte ist in jedem Zustand 350 dp hoch: laufende Verteilung, Wartephase, volle Kasse und fehlende Ware. Der Zeitstrahl reserviert immer denselben Platz; bei Pause bleibt nur die abgedunkelte Achse ohne aktive Zeit- oder Warenmarker sichtbar. Die Hermes-Münze bleibt erhalten und steht mit dem Betrag als horizontal mittige Gruppe; lange Beträge dürfen zur verfügbaren Breite schrumpfen. Die Kopfzeile nennt nur „x / 6 Std.“ beziehungsweise „Kasse voll“. Der Abholstreifen ist ein eigener 46-dp-Button mit unveränderter Sammellogik und Sperre während laufender Anfragen.
+

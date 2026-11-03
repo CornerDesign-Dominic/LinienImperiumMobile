@@ -2,7 +2,7 @@
   "dashboard": [
     [
       "Player level",
-      "Delivered tonnes grant XP: tonnes × paid directions × (1 + active card XP bonuses / 100). Dual Way counts both directions. Every next level requires 100 × current level XP. Each level grants one expedition refill, one overtime refill and 3 allocation points. From level 5, every five levels unlocks a city hub vehicle slot, up to 20 at level 100."
+      "Delivered tonnes grant XP: tonnes × paid directions × (1 + active card XP bonuses / 100). Dual Way counts both directions. Every next level requires 100 × current level XP. Each level grants one expedition refill, one overtime refill and 3 allocation points. From level 5, every five levels unlocks a Courier Station vehicle slot, up to 20 at level 100."
     ],
     [
       "Imperium thalers",
@@ -44,7 +44,7 @@
   "fleet": [
     [
       "Garage",
-      "10 slots for card vehicles; each owned card may occupy one garage slot. It may also be used in fleets. City vehicles are managed at the city hub. Every expedition transport card can handle local and long-distance contracts."
+      "10 slots for card vehicles; each owned card may occupy one garage slot. It may also be used in fleets. City vehicles are managed at the Courier Station. Every expedition transport card can handle local and long-distance contracts."
     ],
     [
       "Speed and upgrades",
@@ -58,13 +58,13 @@
   "dealer": [
     [
       "Couriers",
-      "Recruit and upgrade Lastwombat couriers in the city hub: 25,000 Imperium thalers, starting carrying capacity 2 t."
+      "Recruit and upgrade Lastwombat couriers in the Courier Station: 25,000 Imperium thalers, starting carrying capacity 2 t."
     ]
   ],
   "hub": [
     [
-      "City hub and couriers",
-      "City hub unlocks at level 5, with one slot per five levels up to 20 at level 100. A Lastwombat courier costs 25,000 Imperium thalers and starts with 2 t. Upgrade cargo and drive in ten stages each with vehicle parts. Open three found crates daily, at least 30 minutes apart, resetting at 00:00 UTC. Each hourly purchase has one 50% chance for one vehicle part; no finds while the cashbox is full. Collect purchase parts with earnings."
+      "Courier Station and couriers",
+      "Courier Station unlocks at level 5, with one slot per five levels up to 20 at level 100. A Lastwombat courier costs 25,000 Imperium thalers and starts with 2 t. Upgrade cargo and drive in ten stages each with vehicle parts. Open three found crates daily, at least 30 minutes apart, resetting at 00:00 UTC. Each hourly purchase has one 50% chance for one vehicle part; no finds while the cashbox is full. Collect purchase parts with earnings."
     ],
     [
       "Hourly cycle",
@@ -86,11 +86,11 @@
     ],
     [
       "Items",
-      "Gears improve vehicle speed ranks; capacity modules increase capacity. Pickup clues craft private pickups. Supplier contacts upgrade city hub sales. Company upgrade items improve the company. Stored contracts remain here until started. Transport cards belong in the collection; shards stay here."
+      "Gears improve vehicle speed ranks; capacity modules increase capacity. Pickup clues craft private pickups. Supplier contacts upgrade Courier Station sales. Company upgrade items improve the company. Stored contracts remain here until started. Transport cards belong in the collection; shards stay here."
     ],
     [
       "Sources",
-      "Normal local and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Material expedition contracts have a 6% chance for 1/2/3 items according to rank, and a 0.3% chance for a capacity module. Hub cycles yield 8–12 pickup clues."
+      "Normal local and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Material expedition contracts have a 6% chance for 1/2/3 items according to rank, and a 0.3% chance for a capacity module. Courier Station cycles yield 8–12 pickup clues."
     ],
     [
       "Gear loot",
@@ -98,7 +98,7 @@
     ],
     [
       "Vehicle parts",
-      "Found crates grant 10–20 vehicle parts. Purchase finds are collected with city hub earnings. Upgrade cargo and drive in ten stages each; stage N costs 14 × N parts and 2,500 × N Imperium thalers."
+      "Found crates grant 10–20 vehicle parts. Purchase finds are collected with Courier Station earnings. Upgrade cargo and drive in ten stages each; stage N costs 14 × N parts and 2,500 × N Imperium thalers."
     ]
   ],
   "development": [

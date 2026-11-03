@@ -1,4 +1,4 @@
-# Stadthub: Fahrzeugdetail
+# Botenstation: Fahrzeugdetail
 
 Das Fahrzeugdetail hat einen festen Kopf mit Name und Schließen-Schaltfläche. Nur der Inhalt scrollt. Status und Kilometerstand stehen direkt beim vorhandenen Fahrzeugmotiv. Zwei kompakte Zeilen zeigen Laderaum und Antrieb mit aktuellem Wert und Ausbaustufe; ein dezenter Punkt kennzeichnet finanzierbare Ausbauten.
 
@@ -6,4 +6,5 @@ Eine Ausbauzeile wechselt innerhalb desselben nativen Modals in die Ausbauansich
 
 Der Zeitpunkt der Wirksamkeit (nächster Stundenzyklus), alle Kosten, Limits und Serverbefehle bleiben unverändert. Einsetzen/Herausnehmen ist direkt erreichbar; Verkaufen liegt unter eingeklappten weiteren Aktionen und nutzt die bestehende Verkaufsbestätigung.
 
-Prüfung: TypeScript, vollständige Testsuite und tatsächliche React-Native-Web-Darstellung bei 320/360/390/430 dp; Ausbau, Fehlerwiederholung/Doppeltipp-Sperre, Hub-Zuweisung und Verkaufsweiterleitung.
+Prüfung: TypeScript, vollständige Testsuite und tatsächliche React-Native-Web-Darstellung bei 320/360/390/430 dp; Ausbau, Fehlerwiederholung/Doppeltipp-Sperre, Botenstation-Zuweisung und Verkaufsweiterleitung.
+

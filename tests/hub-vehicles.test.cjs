@@ -15,7 +15,7 @@ test('One server-owned city model costs exactly 25,000 and 20 slots is a hard ma
  assert.equal(run(r.state,'buyTruck',{model:1}).state.coins,r.state.coins);
  assert.equal(r.view.state.trucks.find(t=>!t.cardId).speed,1);
 });
-test('Hub purchase obeys level, exact price and existing slot gates',()=>{
+test('Botenstation purchase obeys level, exact price and existing slot gates',()=>{
  let r=run(fresh(4),'buyHub');assert.equal(r.state.hubs.length,0);
  r=run(fresh(5),'buyHub');r.state.coins=24999;
  assert.equal(run(r.state,'hubVehicleBuy').state.trucks.length,1);
@@ -91,7 +91,7 @@ test('Legacy city vehicles migrate once without deleting vehicles, losing capaci
  assert.equal(migrated.model,'Stadttransporter');assert.equal(migrated.capacity,5);assert.equal(migrated.speed,1.25);assert.equal(migrated.hubSpeedLevel,10);assert.equal(r.state.inventory.capacityModules,beforeModules+7);
  const twice=run(r.state);assert.equal(twice.state.inventory.capacityModules,beforeModules+7);assert.deepEqual(twice.state.trucks,r.state.trucks);
 });
-test('Hub cycle view follows frozen hourly purchases and the actual 40-minute distribution window',()=>{
+test('Botenstation cycle view follows frozen hourly purchases and the actual 40-minute distribution window',()=>{
  const {hubCycle}=require('../src/hubCycle');let r=hubbed();const h=r.state.hubs[0],cycle=r.view.hubInfo.cycle;
  assert.equal(cycle.durationMs,H);assert.equal(cycle.workMs,40*60000);assert.equal(cycle.cashboxMax,6);
  assert.equal(cycle.quantity,Math.round(h.cycleCapacity*2/3*100)/100);
@@ -102,10 +102,10 @@ test('Hub cycle view follows frozen hourly purchases and the actual 40-minute di
  r.state.trucks.find(t=>!t.cardId).capacity=20;
  assert.equal(run(r.state).view.hubInfo.cycle.quantity,cycle.quantity);
 });
-test('Hub collection reports all credited rewards exactly once without changing the payout',()=>{
+test('Botenstation collection reports all credited rewards exactly once without changing the payout',()=>{
  let r=hubbed();r=run(r.state,'sync',{},now+H);const before=r.state,expected={coins:before.hubs[0].cashboxCoins,hints:before.hubs[0].cashboxHints,parts:before.hubs[0].cashboxParts};
  const coins=before.coins,hints=before.inventory.pickupHints,parts=before.inventory.hubVehicleParts;
- r=run(before,'hubCollect',{},now+H);assert.equal(r.view.claimSummary.source,'Stadthub');assert.equal(r.view.claimSummary.coins,expected.coins);assert.equal(r.view.claimSummary.pickupHints,expected.hints);assert.equal(r.view.claimSummary.hubVehicleParts,expected.parts);
+ r=run(before,'hubCollect',{},now+H);assert.equal(r.view.claimSummary.source,'Botenstation');assert.equal(r.view.claimSummary.coins,expected.coins);assert.equal(r.view.claimSummary.pickupHints,expected.hints);assert.equal(r.view.claimSummary.hubVehicleParts,expected.parts);
  assert.ok(Math.abs(r.state.coins-coins-expected.coins)<1e-6);assert.equal(r.state.inventory.pickupHints-hints,expected.hints);assert.equal(r.state.inventory.hubVehicleParts-parts,expected.parts);
  r=run(r.state,'hubCollect',{},now+H);assert.equal(r.view.claimSummary.coins,0);assert.equal(r.view.claimSummary.pickupHints,0);assert.equal(r.view.claimSummary.hubVehicleParts,0);
 });
@@ -189,6 +189,15 @@ test('Courier presentation keeps persistent IDs, state and non-hub names intact'
  assert.match(original.id,/^LKW-/);assert.equal(original.model,'Stadttransporter');
  assert.equal(shown.displayName,original.id.replace('LKW-','Bote '));assert.equal(shown.displayModel,'Lastwombat');
  assert.equal(shown.id,original.id);assert.equal(shown.capacity,original.capacity);
+ assert.equal(r.view.help.hub[0],'Botenstation');assert.equal(r.view.help.dealer[0],'Botenstation-Händler');
+ const {currencyText}=require('../functions/src/currency-names.cjs');
+ assert.equal(currencyText('Stadthub eröffnet. Hub-Ertrag abgeholt. Aus dem Stadthub entfernt.'),'Botenstation eröffnet. Botenstation-Ertrag abgeholt. Aus der Botenstation entfernt.');
+ const legacy='Stadthub: Vertrieb fertig.';r.state.events.push({text:legacy,at:now});
+ r.state.profile={companyName:'Mein Stadthub',cityName:'Stadthubhausen'};
+ r.state.events.push({text:'Mein Stadthub in Stadthubhausen meldet: Stadthub eröffnet.',at:now});
+ const refreshed=run(r.state);assert.equal(refreshed.state.events.at(-2).text,legacy);
+ assert.equal(refreshed.view.state.events.at(-2).text,'Botenstation: Vertrieb fertig.');
+ assert.equal(refreshed.view.state.events.at(-1).text,'Mein Stadthub in Stadthubhausen meldet: Botenstation eröffnet.');
  const {courierName,courierModel,courierText}=require('../functions/src/hub-courier.js');
  assert.equal(courierName({...original,name:'Eigener Name'}),'Eigener Name');
  assert.equal(courierModel({...original,model:'Eigenes Modell'}),'Eigenes Modell');
