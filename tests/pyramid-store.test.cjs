@@ -33,6 +33,16 @@ function server(){
  async function found(uid){await call(uid,'foundCompany',{companyName:'Firma '+uid,cityName:'Steinhafen'});await call(uid,'seat',{id:'navigator',template:0,seat:0});}
  return {records,call,saved,found,retryNext:()=>{discardNext=true;},time:value=>{at=value;},world:()=>records.get('communityEvents/pyramid')};
 }
+test('Test project grants survive callable retry without duplicate categories or changing another account',async()=>{
+ const s=server();await s.found('project-a');await s.found('project-b');
+ const requestId='test-project-grant-receipt-0001';
+ s.retryNext();await s.call('project-a','testProjects',{},requestId);
+ await s.call('project-a','testProjects',{},requestId);
+ const projects=s.saved('project-a').orders.filter(o=>['special','referral'].includes(o.kind));
+ assert.equal(projects.length,6);assert.equal(new Set(projects.map(o=>o.kind==='referral'?'referral':o.customer)).size,6);
+ assert.ok(projects.every(o=>o.status==='queued'));
+ assert.equal(s.saved('project-b').orders.filter(o=>['special','referral'].includes(o.kind)).length,0);
+});
 test('Shared registration counts accounts once, survives reset and locks configuration after 48 hours',async()=>{
  const s=server();await s.found('a');await s.found('b');
  const first=await s.call('a','eventRegister');assert.equal(first.testEvents[0].registration.registered,1);

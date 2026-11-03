@@ -2,6 +2,7 @@ import {MaterialView as View} from './Material';
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {C,Txt,n} from './ui';
+import customerIdentities from '../functions/src/customer-identities.json';
 export function Statistics({state:g}:any){
  const rows=[
   ['Frachtumsatz',`${n(g.stats.grossRevenue,2)}`],
@@ -12,6 +13,8 @@ export function Statistics({state:g}:any){
   ['Prämien',`${n(g.stats.contractBonusRevenue,2)}`],
   ['Touren',n(g.stats.trips)],
   ['Aufträge',n(g.completed)],
+  ...customerIdentities.map(customer=>[`Sonderaufträge · ${customer.customer}`,n(g.stats.projectCompletions?.specialByCustomer?.[customer.id]||0)]),
+  ['Empfehlungsaufträge gesamt',n(g.stats.projectCompletions?.referral||0)],
   ['Fracht',`${n(g.stats.tons,2)} t`],
   ['Strecke',`${n(g.stats.km,2)} km`],
   ['Transportleistung',`${n(g.stats.tonKm,2)} tkm`],

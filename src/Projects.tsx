@@ -7,7 +7,7 @@ import {Icon} from './Icon';
 import {LocationArt} from './LocationArt';
 import {ProjectCategoryArt} from './ProjectCategoryArt';
 import {itemName} from './items';
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {ScrollView,StyleSheet} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -23,16 +23,24 @@ function ProjectTile({order:o,clock,onOpen}:any){
   {o.status==='active'&&<><Bar value={o.delivered/o.volume*100}/><Row style={{marginBottom:0}}><Txt gold style={s.small}>Frist {remaining(o.project.deadlineAt,clock)}</Txt><Txt muted style={s.small}>Flotte {o.eta?remaining(o.eta,clock):'—'}</Txt></Row></>}
  </Card></Pressable>;
 }
-export function Projects({data,onRunning,onType}:any){
+export function Projects({data,onRunning,onOpen,onCommand,busy=false,modalBlocked=false}:any){
+ const [infoKey,setInfoKey]=useState<string|null>(null),[startId,setStartId]=useState<string|null>(null),[template,setTemplate]=useState<number|null>(null),[submitting,setSubmitting]=useState(false),[startError,setStartError]=useState('');
+ const starting=useRef(false);
+ const info=data.projectCatalog.find((entry:any)=>entry.key===infoKey),order=data.state.orders.find((entry:any)=>entry.id===startId&&entry.isProject&&entry.status==='queued');
+ const fleets=order?.templates?.filter((entry:any)=>entry.vehicles?.length)||[];
+ const close=()=>{if(!starting.current&&!busy){setInfoKey(null);setStartId(null);}};
+ const selectCategory=(entry:any,available:any[])=>{setStartError('');if(available.length){setStartId(available[0].id);setInfoKey(null);setTemplate(null);}else{setInfoKey(entry.key);setStartId(null);}};
+ const start=async()=>{if(starting.current||busy||!order||template===null||!onCommand)return;starting.current=true;setSubmitting(true);setStartError('');try{const result=await onCommand('projectStart',{id:order.id,template});if(result?.state?.orders?.find((entry:any)=>entry.id===order.id)?.status==='active'){setStartId(null);onOpen?.(order.id);}else setStartError(result?.message||'Auftrag konnte nicht gestartet werden.');}catch{setStartError('Auftrag konnte nicht gestartet werden.');}finally{starting.current=false;setSubmitting(false);}};
  const orders=data.state.orders.filter((o:any)=>o.isProject),active=orders.filter((o:any)=>o.status==='active');
  return <>
   <Pressable accessibilityRole="button" accessibilityLabel={translate(`Laufende Großaufträge, ${active.length}`)} onPress={onRunning}><Card style={s.running}><Row style={{marginBottom:0}}><Txt style={{fontWeight:'700',flex:1}}>Laufende Großaufträge</Txt><Pill>{active.length}</Pill><Icon name="chevron" size={17} color={C.accent}/></Row></Card></Pressable>
   {data.projectCatalog.map((info:any,index:number)=>({info,index,ready:orders.filter((o:any)=>o.status==='queued'&&o.projectInfo.key===info.key).length}))
    .sort((a:any,b:any)=>Number(b.ready>0)-Number(a.ready>0)||a.index-b.index).map(({info,ready}:any)=>{
    const referral=info.kind==='referral',name=(info.name||'').replace(/^(?:Großauftrag|Großprojekt|Sonderauftrag|Empfehlungsauftrag)\s+/,''),color=referral?C.epic:C.rare;
-   return <Pressable key={info.key} testID={`project-category-${info.key}`} accessibilityRole="button" accessibilityLabel={translate(`${projectTitle(info.name,info.kind)}, ${referral?'Alle Regionen':info.regionName}, Aufträge ${ready}`)} onPress={()=>onType(info.key)} style={({pressed})=>pressed&&{opacity:.8}}><Card style={[s.category,{borderColor:color}]}>
-    <View material={false} style={s.categoryArt}><ProjectCategoryArt region={info.region} referral={referral}/>{!referral&&<View material={false} style={s.regionLabel}><Txt style={s.regionName}>{info.regionName}</Txt></View>}</View>
+   return <Pressable key={info.key} testID={`project-category-${info.key}`} accessibilityRole="button" accessibilityLabel={translate(`${projectTitle(info.name,info.kind)}, ${referral?'Alle Regionen':info.regionName}, Aufträge ${ready}`)} onPress={()=>selectCategory(info,orders.filter((order:any)=>order.status==='queued'&&order.projectInfo.key===info.key))} style={({pressed})=>pressed&&{opacity:.8}}><Card style={[s.category,{borderColor:color}]}>
+    <View material={false} style={s.categoryArt}><ProjectCategoryArt preciousCargo={info.customer?.preciousCargo} referral={referral}/>{!referral&&<View material={false} style={s.regionLabel}><Txt style={s.regionName}>{info.regionName}</Txt></View>}</View>
     <View style={s.categoryCopy}>
+     <Pressable testID={`project-info-${info.key}`} accessibilityRole="button" accessibilityLabel={translate(`Informationen zu ${projectTitle(info.name,info.kind)}`)} onPress={event=>{event?.stopPropagation();setStartId(null);setInfoKey(info.key);}} material={false} style={s.infoButton}><Icon name="help" size={20} color={C.accent}/></Pressable>
      <Txt style={[s.categoryKind,{color}]}>{referral?'Empfehlung':'Sonderauftrag'}</Txt>
      <Txt style={s.categoryTitle}>{name}</Txt>
      <Txt muted style={s.categoryCustomer}>{referral?'Alle Stammkunden':info.customer.name}</Txt>
@@ -40,7 +48,13 @@ export function Projects({data,onRunning,onType}:any){
     </View>
    </Card></Pressable>;
   })}
+  <Modal visible={!!info&&!modalBlocked} transparent animationType="none" onRequestClose={close}><View style={s.overlay}><SafeAreaView edges={[]} style={s.sheet}><MaterialLayer surfaceStyle={s.sheet}/><Row style={{flexWrap:'nowrap'}}><Txt style={[s.title,{flex:1,minWidth:0}]}>{info?projectTitle(info.name,info.kind):'Auftragsinfo'}</Txt><Btn testID="project-info-close" icon="close" iconOnly secondary disabled={busy} onPress={close}>Schließen</Btn></Row><ScrollView keyboardShouldPersistTaps="handled">{info&&<ProjectBrief info={info}/>}</ScrollView></SafeAreaView></View></Modal>
+  <Modal visible={!!order&&!modalBlocked} transparent animationType="none" onRequestClose={close}><View style={s.overlay}><SafeAreaView edges={[]} style={s.sheet}><MaterialLayer surfaceStyle={s.sheet}/><Row style={{flexWrap:'nowrap'}}><Txt style={[s.title,{flex:1,minWidth:0}]}>Auftrag starten?</Txt><Btn testID="project-start-close" icon="close" iconOnly secondary disabled={busy||submitting} onPress={close}>Schließen</Btn></Row><ScrollView keyboardShouldPersistTaps="handled">{order&&<><Txt style={[s.title,{marginBottom:8}]}>{projectTitle(order.projectName,order.kind)}</Txt><Txt muted style={s.small}>{order.customerName}</Txt>{fact('Umfang',`${n(order.volume)} t · ${n(order.distance)} km`)}{fact('Frist ab Start',minutes(order.deadlineMs/1000))}<Txt style={[s.title,{marginTop:12,marginBottom:6}]}>Flotte wählen</Txt>{fleets.map((entry:any)=><Pressable key={entry.index} testID={`project-fleet-${entry.index}`} accessibilityRole="button" accessibilityState={{selected:template===entry.index,disabled:busy||submitting}} disabled={busy||submitting} onPress={()=>setTemplate(entry.index)} style={[s.fleetChoice,template===entry.index&&{borderColor:C.accent,backgroundColor:C.greenWash}]}><Txt style={{fontWeight:'700'}}>Flotte {entry.index+1}</Txt><Txt muted style={s.small}>{entry.vehicles.map((vehicle:any)=>vehicle.model).join(' · ')}</Txt></Pressable>)}{!fleets.length&&<Txt muted style={s.small}>Mindestens eine Karte muss in einer Flotte eingesetzt sein.</Txt>}</>}{!!startError&&<Txt style={[s.small,{color:C.red,marginTop:8}]}>{startError}</Txt>}</ScrollView><Btn testID="project-start-confirm" disabled={busy||submitting||template===null||!fleets.some((entry:any)=>entry.index===template)||!onCommand} onPress={start}>Auftrag starten</Btn></SafeAreaView></View></Modal>
  </>;
+}
+export function ProjectBrief({info}:any){
+ const sources=info.sources||[info];
+ return <><Txt style={[s.title,{marginBottom:8}]}>Belohnungen</Txt><View style={s.briefItems}>{['common','uncommon','rare','epic',...(info.legendary?['legendary']:[])].map(rarity=><ItemArt key={rarity} id={`gear:${rarity}`} size={36}/>)}<ItemArt id="capacityModules" size={36}/></View><Txt muted style={s.small}>Zahnräder nach Transportleistung</Txt><Txt muted style={s.small}>{info.epicMin}–{info.epicMax} Epic-Zahnräder · {n(info.epicChance,2)} %</Txt>{info.legendary&&<Txt muted style={s.small}>{info.legendary.min} Legendär-Zahnrad · {n(info.legendary.extraChance)} % für +1</Txt>}<Txt muted style={s.small}>Kapazitätsmodul · {n(info.moduleChance,2)} %</Txt><Txt muted style={[s.small,{marginTop:6}]}>Abschlussprämie nur innerhalb der Frist</Txt><Txt style={[s.title,{marginTop:16,marginBottom:8}]}>Herkunft</Txt>{sources.map((source:any)=><View key={source.region} style={{marginBottom:8}}><Txt style={{fontSize:12,fontWeight:'700'}}>{source.customer.name} · {source.regionName}</Txt><Txt muted style={s.small}>Endlosexpedition · {n(source.expeditionChance,2)} %</Txt><Txt muted style={s.small}>{source.customerSource} · {n(source.customerChance,2)} %</Txt></View>)}</>;
 }
 function ProjectInfo({info,onExpedition,onCustomers}:any){
  return <>
@@ -58,12 +72,11 @@ function ProjectInfo({info,onExpedition,onCustomers}:any){
 export function ProjectType({data,typeKey,onOpen,onExpedition,onCustomers}:any){
  const info=data.projectCatalog.find((p:any)=>p.key===typeKey);
  if(!info)return <Empty>Auftragstyp nicht verfügbar.</Empty>;
- const orders=data.state.orders.filter((o:any)=>o.isProject&&o.projectInfo.key===typeKey),ready=orders.filter((o:any)=>o.status==='queued'),history=orders.filter((o:any)=>['completed','failed'].includes(o.status)).slice().reverse();
+ const orders=data.state.orders.filter((o:any)=>o.isProject&&o.projectInfo.key===typeKey),ready=orders.filter((o:any)=>o.status==='queued');
  return <>
   <Row><ItemArt id={info.kind==='referral'?'referral':'special'} size={52}/><Txt style={[s.title,{flex:1}]}>{projectTitle(info.name,info.kind)}</Txt><Pill gold={info.kind==='referral'}>{info.kind==='referral'?'Epic':info.regionName}</Pill></Row><Txt muted style={{marginBottom:12}}>{info.kind==='referral'?'Alle Stammkunden':info.customer.name}</Txt>
   {ready.length?<>{section('Bereit')}{ready.map((o:any)=><ProjectTile key={o.id} order={o} onOpen={onOpen}/>)}</>:<Txt muted style={{marginBottom:12}}>Noch kein Auftrag bereit.</Txt>}
   <ProjectInfo info={info} onExpedition={onExpedition} onCustomers={onCustomers}/>
-  {!!history.length&&<>{section('Abschlüsse')}{history.map((o:any)=><ProjectTile key={o.id} order={o} onOpen={onOpen}/>)}</>}
  </>;
 }
 export function RunningProjects({data,clock,onOpen}:any){
@@ -98,11 +111,14 @@ export function ProjectDetail({data,id,busy,clock,onCommand,onExpedition,onCusto
 const s=StyleSheet.create({
  category:{flexDirection:'row',paddingHorizontal:0,paddingVertical:0,overflow:'hidden',minHeight:112,marginBottom:10,backgroundColor:C.panel,borderWidth:1},
  categoryArt:{width:'31%',minWidth:88,position:'relative',overflow:'hidden'},
- regionLabel:{position:'absolute',bottom:0,left:0,right:0,backgroundColor:'rgba(19,37,34,.70)',paddingHorizontal:6,paddingVertical:5},
- regionName:{fontSize:11,lineHeight:14,color:C.onInk,fontWeight:'600'},
+ regionLabel:{position:'absolute',bottom:0,left:0,right:0,paddingHorizontal:4,paddingVertical:5},
+ regionName:{fontSize:10,lineHeight:14,color:C.muted,fontWeight:'600',textAlign:'center'},
+ infoButton:{position:'absolute',right:0,top:0,width:44,height:44,alignItems:'center',justifyContent:'center',zIndex:1},
+ briefItems:{flexDirection:'row',flexWrap:'wrap',gap:6,marginBottom:8},
+ fleetChoice:{padding:10,minHeight:44,borderWidth:1,borderColor:C.line,borderRadius:5,marginBottom:7},
  categoryCopy:{flex:1,minWidth:0,paddingHorizontal:10,paddingVertical:9},
  categoryKind:{fontSize:9,lineHeight:12,fontWeight:'700',letterSpacing:.6,marginBottom:3},
- categoryTitle:{fontSize:16,lineHeight:20,fontWeight:'700',marginBottom:3},
+ categoryTitle:{fontSize:16,lineHeight:20,fontWeight:'700',marginBottom:3,paddingRight:28},
  categoryCustomer:{fontSize:11,lineHeight:15},
  categoryFooter:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:6,marginTop:7},
  available:{backgroundColor:C.accent,borderColor:C.brass,borderWidth:1,borderRadius:3,paddingHorizontal:7,paddingVertical:3},

@@ -31,8 +31,8 @@ export const itemAssets:Record<string,ImageSourcePropType>={
 export const sealAssets:Record<string,ImageSourcePropType>={
  'private':require('../assets/art/items/seals/private.png'),
  'customer':require('../assets/art/items/seals/customer.png'),
- 'material':require('../assets/art/items/seals/material.png'),
- 'character':require('../assets/art/items/seals/character.png'),
+ 'material':require('../assets/art/items/seals/material-cog.png'),
+ 'character':require('../assets/art/items/seals/transport-horse.png'),
  'referral':require('../assets/art/items/seals/referral.png'),
  'special':require('../assets/art/items/seals/special.png'),
 };

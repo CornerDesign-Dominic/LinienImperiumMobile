@@ -1,7 +1,7 @@
 'use strict';
 // Server-owned catalogue. Add a paid skin only together with its real, approved art.
 const SKINS=Object.freeze([Object.freeze({id:'wombat-standard',name:'Lastwombat',description:'Dein klassischer Stadtbote.',price:0,art:'wombat-standard'})]);
-const PACKS=Object.freeze([250,500,1000,2500,5000].map(amount=>Object.freeze({id:'premium-'+amount,amount,referencePriceCents:amount,currency:'EUR'})));
+const PACKS=Object.freeze([250,500,1000,2000,3000,5000].map(amount=>Object.freeze({id:'premium-'+amount,amount,referencePriceCents:amount,currency:'EUR'})));
 const STANDARD='wombat-standard';
 function premiumState(state){
  const old=state.premiumShop||{};

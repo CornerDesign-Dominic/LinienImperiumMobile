@@ -2,7 +2,7 @@
 
 The Großhändler has Geschenke, Skins and Aufladen tabs. The approved Hermes-Siegel is **Hermes-Siegel**, illustrated with an ornate gold winged-sandal coin, a narrow emerald ring and four small green gems. Ordinary coins are **Imperium-Taler**, illustrated by a gold coin with only a laurel wreath and an empty centre. Existing region gifts retain their existing ordinary-coin price and flow. The old nonfunctional price-ideas list is removed.
 
-The price anchor is 250 Hermes-Siegel = EUR 2.50 and one paid cosmetic = 250. Preview Hermes-Siegel packs are 250/500/1,000/2,500/5,000 for EUR 2.50/5/10/25/50 without assumed discounts. Every price is explicitly a preview and every real-money button is disabled. There is no simulated payment or premium-grant command.
+The price anchor is 250 Hermes-Siegel = EUR 2.50 and one paid cosmetic = 250. Preview Hermes-Siegel packs are 250/500/1,000/2,000/3,000/5,000 for EUR 2.50/5/10/20/30/50 without assumed discounts. Every price is explicitly a preview and every real-money button is disabled. There is no simulated payment or premium-grant command.
 
 ## Server and cosmetics
 
@@ -29,3 +29,7 @@ Validation: premium migration, pack values, unknown grant/skin rejection, server
 All current native UI coin presentations use `Icon('coin')` pointing to `assets/art/currency/imperium-taler.png`; premium shop balance and pack rows use `Icon('hermes')` pointing to `assets/art/currency/hermes-siegel.png`. Both are transparent 256px production icons generated through the built-in ImageGen from the approved visual references; exact prompts are in `assets/art/currency/currencies.prompts.json`. The old Hermes/laurel combined coin is no longer a live icon source. Existing decorative treasure-scenes are retained.
 
 Written labels/help use Imperium-Taler and Hermes-Siegel, with matching English names. The old ordinary-money `M` suffix is now `T` throughout mobile UI (including per-kilometre rates); the header announces the full currency name for accessibility. Internal `coins` and `premiumShop` fields, amounts, package ratios, costs and saved balances are unchanged. Legacy engine messages/help are normalized at the presentation boundary, preserving player-selected company/city names. Historic persisted events are not rewritten.
+
+## Approved pack artwork
+
+The six pack motifs progress from the canonical single Hermes-Siegel to a small stack, multiple stacks, small leather pouch, larger pouch with stacks and an open coin chest. Each is a separate transparent frameless asset, displayed in the same explicit 88px square with `contain`. Amount, currency name and reference price form separate lines so the currency name cannot wrap awkwardly beside an oversized image. The disabled purchase button uses a separate row. Prompts and source provenance are in `assets/art/currency/packs/prompts.json`. The 2,500/EUR25 preview has been replaced by 2,000/EUR20 and 3,000/EUR30. All packs retain 100 Siegel per euro; no bonus is implied.

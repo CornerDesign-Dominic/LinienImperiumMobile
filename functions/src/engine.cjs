@@ -30,6 +30,7 @@ const giftsRuntime = fs.readFileSync(path.join(__dirname, 'gifts-runtime.js'), '
 const tourRuntime = fs.readFileSync(path.join(__dirname, 'tour-runtime.js'), 'utf8');
 const progressionRuntime = fs.readFileSync(path.join(__dirname, 'progression-runtime.js'), 'utf8');
 const hubVehiclesRuntime = fs.readFileSync(path.join(__dirname, 'hub-vehicles-runtime.js'), 'utf8');
+const projectStatisticsRuntime = fs.readFileSync(path.join(__dirname, 'project-statistics-runtime.js'), 'utf8');
 const source = fs.readFileSync(path.join(__dirname, '../vendor/web-game.js'), 'utf8');
 const boundary = source.indexOf("  document.addEventListener('click'");
 if (boundary < 0) throw Error('Web engine boundary missing');
@@ -52,7 +53,7 @@ const bridge = `
   ${giftsRuntime}
   ${progressionRuntime}
   const originalNewGame=newGame;
-  newGame=(...args)=>{const state=originalNewGame(...args);state.inventory.expeditionRefills=0;state.companyTransportVersion=1;state.linearProgressionVersion=1;state.hubSystemVersion=1;state.inventory.hubVehicleParts=0;state.hubCrates={day:Math.floor(Date.now()/86400000),opened:0,lastOpenedAt:null};return state;};
+  newGame=(...args)=>{const state=originalNewGame(...args);state.inventory.expeditionRefills=0;state.companyTransportVersion=1;state.linearProgressionVersion=1;state.hubSystemVersion=1;state.inventory.hubVehicleParts=0;state.hubCrates={day:Math.floor(Date.now()/86400000),opened:0,lastOpenedAt:null};state.stats.projectCompletions={version:1,specialByCustomer:{},referral:0};return state;};
   awardTransportXp=xp=>{
     const before=levelForXp(game.xp,game).level;
     game.xp=round2(game.xp+xp);
@@ -189,7 +190,9 @@ const bridge = `
   ${hubVehiclesRuntime}
   ${transportRuntime}
   ${expeditionCompletionRuntime}
+  ${projectStatisticsRuntime}
   globalThis.mobile = {
+    projectCompletionStats, grantTestProjects,
     settleEventTours, refreshTourStarts, queueSingleVehicle, settleProcurementTimeline, startProcurement, startProcurementGroup, stopProcurement, stopProcurementGroup, claimProcurement,
     eventFleetOptions(distance = 240) {
       const order={distance,routeType:'single'};
@@ -499,7 +502,7 @@ function session(state, now=Date.now(), random=Math.random) {
   compiled.runInContext(context,{timeout:2000});
   const api=context.mobile;
   if(state) api.state=JSON.parse(JSON.stringify(state));
-  api.expansionState();api.migrateCompanyTransport();api.migrateLinearProgression();api.migrateHubVehicles();api.migrateTransportCards();
+  api.expansionState();api.migrateCompanyTransport();api.migrateLinearProgression();api.migrateHubVehicles();api.migrateTransportCards();api.projectCompletionStats();
   if(!Number.isSafeInteger(api.state.inventory.expeditionRefills)||api.state.inventory.expeditionRefills<0)api.state.inventory.expeditionRefills=0;
   prepareEvent(api.state);
   api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleProcurementTimeline(now);
@@ -594,7 +597,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     customerSkill:()=>a.allocateCustomerSkill(id(p.id),choice(p.kind,['pay','special','referral'])),
     pin:()=>a.toggleOrderPin(id(p.id)),refresh:()=>a.manualRefreshOrders(),level:()=>a.allocateLevel(num(p.expedition,3),p.overtime===undefined?3-num(p.expedition,3):num(p.overtime,3)),
     levelBatch:()=>a.allocateLevelBatch(num(p.expedition,300000),num(p.overtime,300000),num(p.points,300000)),
-    testCoins:()=>a.grantTestCoins(),testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>{const wallet=a.state.premiumShop; a.reset();a.state.premiumShop=wallet;}
+    testProjects:()=>a.grantTestProjects(),testCoins:()=>a.grantTestCoins(),testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>{const wallet=a.state.premiumShop; a.reset();a.state.premiumShop=wallet;}
   };
   if(!Object.hasOwn(calls,action))throw Error('Unbekannte Aktion');
   if(!a.state.startCity&&!['sync','start','foundCompany','reset'].includes(action))throw Error('Bitte zuerst deine Firma gründen.');

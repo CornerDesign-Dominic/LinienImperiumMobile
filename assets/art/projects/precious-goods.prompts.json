@@ -1,0 +1,32 @@
+{
+  "generator": "Built-in image_gen",
+  "transparent_background": true,
+  "optimization": "Resized to 384px RGBA PNG using Lanczos; original alpha preserved.",
+  "items": [
+    {
+      "file": "gold-jewelry",
+      "label": "Goldschmuck",
+      "prompt": "Use case: stylized-concept. Asset type: transparent frameless mobile fantasy merchant game commodity illustration. Subject: a tasteful compact arrangement of handcrafted gold jewelry: an ornate gold necklace coiled around two thick gold bracelets and a ruby-set brooch, no coins. Style: beautiful painterly realistic game item art, warm natural light, detailed material craftsmanship, clean readable compact silhouette at small size. Composition: whole object arrangement centered within a square canvas with 10 percent transparent margin on every side, three-quarter view, every object fully visible, no cropping. True transparent background. No frame, no tile, no parchment backdrop, no lettering, no price, no drop-shadow rectangle, no scenery, no people, no sparkles, no modern plastic. Designed to sit directly on warm parchment UI beside text. High quality consistent old-world merchant style."
+    },
+    {
+      "file": "fine-tapestries",
+      "label": "Feine Wandteppiche",
+      "prompt": "Use case: stylized-concept. Asset type: transparent frameless mobile fantasy merchant game commodity illustration. Subject: two luxurious rolled woven wall tapestries, one partly unrolled to reveal elegant burgundy, ivory and antique gold floral weaving, thick textile folds and short fringe, no carpet scene. Style: beautiful painterly realistic game item art, warm natural light, detailed material craftsmanship, clean readable compact silhouette at small size. Composition: whole object arrangement centered within a square canvas with 10 percent transparent margin on every side, three-quarter view, every object fully visible, no cropping. True transparent background. No frame, no tile, no parchment backdrop, no lettering, no price, no drop-shadow rectangle, no scenery, no people, no sparkles, no modern plastic. Designed to sit directly on warm parchment UI beside text. High quality consistent old-world merchant style."
+    },
+    {
+      "file": "precious-essences",
+      "label": "Kostbare Essenzen",
+      "prompt": "Use case: stylized-concept. Asset type: transparent frameless mobile fantasy merchant game commodity illustration. Subject: three precious small merchant essence flacons with elaborate brass stoppers: one amber glass, one deep teal glass, one ruby glass, sealed and trustworthy luxurious alchemical perfume bottles, no smoke. Style: beautiful painterly realistic game item art, warm natural light, detailed material craftsmanship, clean readable compact silhouette at small size. Composition: whole object arrangement centered within a square canvas with 10 percent transparent margin on every side, three-quarter view, every object fully visible, no cropping. True transparent background. No frame, no tile, no parchment backdrop, no lettering, no price, no drop-shadow rectangle, no scenery, no people, no sparkles, no modern plastic. Designed to sit directly on warm parchment UI beside text. High quality consistent old-world merchant style."
+    },
+    {
+      "file": "jade-artworks",
+      "label": "Jadekunstwerke",
+      "prompt": "Use case: stylized-concept. Asset type: transparent frameless mobile fantasy merchant game commodity illustration. Subject: one exquisitely hand-carved polished green jade miniature dragon on a small jade plinth, with one smaller jade pendant beside it, clearly precious carved jade trade goods, not a living dragon. Style: beautiful painterly realistic game item art, warm natural light, detailed material craftsmanship, clean readable compact silhouette at small size. Composition: whole object arrangement centered within a square canvas with 10 percent transparent margin on every side, three-quarter view, every object fully visible, no cropping. True transparent background. No frame, no tile, no parchment backdrop, no lettering, no price, no drop-shadow rectangle, no scenery, no people, no sparkles, no modern plastic. Designed to sit directly on warm parchment UI beside text. High quality consistent old-world merchant style."
+    },
+    {
+      "file": "amber-carvings",
+      "label": "Bernsteinschnitzereien",
+      "prompt": "Use case: stylized-concept. Asset type: transparent frameless mobile fantasy merchant game commodity illustration. Subject: a beautiful warm honey amber carved stag figurine with small simple antlers on a carved amber base and a smaller amber pendant beside it, glowing material in ordinary light not magical aura. Style: beautiful painterly realistic game item art, warm natural light, detailed material craftsmanship, clean readable compact silhouette at small size. Composition: whole object arrangement centered within a square canvas with 10 percent transparent margin on every side, three-quarter view, every object fully visible, no cropping. True transparent background. No frame, no tile, no parchment backdrop, no lettering, no price, no drop-shadow rectangle, no scenery, no people, no sparkles, no modern plastic. Designed to sit directly on warm parchment UI beside text. High quality consistent old-world merchant style."
+    }
+  ]
+}

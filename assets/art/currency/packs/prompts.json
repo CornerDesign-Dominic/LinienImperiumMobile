@@ -1,0 +1,31 @@
+{
+  "generator": "Built-in ImageGen",
+  "transparentBackground": true,
+  "references": [
+    "approved six-pack concept exec-f7696647-83be-4945-bc07-70704bb86f54.png",
+    "../hermes-siegel.png"
+  ],
+  "processing": "Preserve alpha, trim transparent margins then fit centered within 384px square with 16px padding; no artistic edits.",
+  "assets": [
+    {
+      "asset": "stack.png",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent game shop currency icon. Reference image1 is approved six-pack concept sheet for composition; reference image2 is canonical Hermes-Siegel coin design to preserve precisely. Render only ONE isolated motif requested below, no text, no numbers, no labels, no parchment, no frame, no background, genuine transparent alpha. Rich hand-painted realistic medieval merchant game illustration, warm gold, ornate winged sandal relief on coins, thin dark-green ring and only four small green accents, brown worn leather or chest where specified. Full object centered fully visible with transparent margin, square composition. Motif: small short stack of gold Hermes-Siegel, with one upright leaning coin showing winged sandal in front, matching 500 concept."
+    },
+    {
+      "asset": "stacks.png",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent game shop currency icon. Reference image1 is approved six-pack concept sheet for composition; reference image2 is canonical Hermes-Siegel coin design to preserve precisely. Render only ONE isolated motif requested below, no text, no numbers, no labels, no parchment, no frame, no background, genuine transparent alpha. Rich hand-painted realistic medieval merchant game illustration, warm gold, ornate winged sandal relief on coins, thin dark-green ring and only four small green accents, brown worn leather or chest where specified. Full object centered fully visible with transparent margin, square composition. Motif: three varying-height stacks of gold Hermes-Siegel and two upright leaning coins in front, matching 1000 concept."
+    },
+    {
+      "asset": "pouch.png",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent game shop currency icon. Reference image1 is approved six-pack concept sheet for composition; reference image2 is canonical Hermes-Siegel coin design to preserve precisely. Render only ONE isolated motif requested below, no text, no numbers, no labels, no parchment, no frame, no background, genuine transparent alpha. Rich hand-painted realistic medieval merchant game illustration, warm gold, ornate winged sandal relief on coins, thin dark-green ring and only four small green accents, brown worn leather or chest where specified. Full object centered fully visible with transparent margin, square composition. Motif: small filled open brown leather coin pouch tied with golden cord, gold Hermes-Siegel visible at mouth and one coin leaning in front, matching 2000 concept."
+    },
+    {
+      "asset": "large-pouch.png",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent game shop currency icon. Reference image1 is approved six-pack concept sheet for composition; reference image2 is canonical Hermes-Siegel coin design to preserve precisely. Render only ONE isolated motif requested below, no text, no numbers, no labels, no parchment, no frame, no background, genuine transparent alpha. Rich hand-painted realistic medieval merchant game illustration, warm gold, ornate winged sandal relief on coins, thin dark-green ring and only four small green accents, brown worn leather or chest where specified. Full object centered fully visible with transparent margin, square composition. Motif: larger full open brown leather pouch tied with golden cord, Hermes-Siegel coins at mouth and several stacks surrounding base, matching 3000 concept."
+    },
+    {
+      "asset": "chest.png",
+      "prompt": "Use case: stylized-concept. Asset type: production transparent game shop currency icon. Reference image1 is approved six-pack concept sheet for composition; reference image2 is canonical Hermes-Siegel coin design to preserve precisely. Render only ONE isolated motif requested below, no text, no numbers, no labels, no parchment, no frame, no background, genuine transparent alpha. Rich hand-painted realistic medieval merchant game illustration, warm gold, ornate winged sandal relief on coins, thin dark-green ring and only four small green accents, brown worn leather or chest where specified. Full object centered fully visible with transparent margin, square composition. Motif: open polished brown wood coin chest with brass fittings overflowing with gold Hermes-Siegel coins, a few neat stacks in front, matching 5000 concept. Entire lid and chest visible."
+    }
+  ]
+}
