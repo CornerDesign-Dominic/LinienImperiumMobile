@@ -50,3 +50,9 @@ Noch nicht veröffentlicht; Veröffentlichung erst nach neuer Freigabe. Orts- un
 - Bisheriger Stadthub heißt global Botenstation (Englisch Courier Station): Menüs, Überschriften, Hilfen, Zugänglichkeit, Belohnungsquellen und aktuelle Referenzen. Alte gespeicherte Meldungen werden nur bei der Ausgabe normalisiert; interne `hub`-Kennungen, Beträge und Eigennamen bleiben erhalten. Historische Archive unverändert.
 - Die laufende Ertragsanzeige rundet kaufmännisch auf ganze Taler und nutzt die Sprachformatierung. Berechnung, Speicherung und Auszahlung bleiben unverändert präzise.
 - 23 betroffene Runtime-Prüfungen erfolgreich; danach erweiterte Alttext-/Eigennamenprüfung und genaue Auszahlungsprüfung erneut erfolgreich. JSON, Übersetzungsplatzhalter, Syntax, Rundungsbeispiele und relative Links geprüft. UI-Harness lokal mangels React/TypeScript nicht ausführbar; vollständige UI-/Releaseprüfung bleibt vor Veröffentlichung erforderlich. Keine Veröffentlichung vor erneuter Nutzerfreigabe.
+
+## Regionale Sonderauftragstitel – gesammelt, nicht veröffentlicht
+
+- Kronenlande: Schmuck der Krone; Weite Ebenen: Edle Webwaren; Safranstraße: Kostbare Essenzen; Jadetal: Kunst aus Jade; Nordmark: Schätze des Nordens. Deutsch/Englisch und aktuelle Kategorie-/Startreferenzen sind angepasst.
+- Kunden-ID bestimmt den Titel in Kategorie, Herkunft, Start und allen Auftragszuständen. Neue Sonderaufträge erhalten ihn; Altaufträge werden nur zur Anzeige normalisiert. Empfehlungen, Ladungen, Mengen, Fortschritte und Belohnungen bleiben erhalten. Keine neuen Bilder.
+- Drei gezielte Backendfälle erfolgreich, einschließlich aller fünf Kunden sowie alter bereiter/laufender/abgeschlossener/abgelaufener Aufträge, Eigennamen und generischer Transporttexte. Übersetzungsprüfungen erweitert; lokaler UI-/TypeScript-Lauf mangels Abhängigkeiten offen. Veröffentlichung erst nach neuer Freigabe.

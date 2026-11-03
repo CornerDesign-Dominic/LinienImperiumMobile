@@ -87,7 +87,7 @@ Quellen: [Identitäten](functions/src/customer-identities.json), [Auslosungen](f
 
 ## 6. Großaufträge und Überstunden
 
-Sonder- und Empfehlungsaufträge werden mit einer gewählten Flottenvorlage gestartet. Kategorie-Fragezeichen erklären Herkunft und tatsächliche Beutechancen; vorhandene Aufträge verlangen eine ausdrückliche Startbestätigung. Abgeschlossene Kategorienverläufe entfallen aus der Ansicht, ausstehende Prämien und kumulative Statistiken bleiben erhalten.
+Sonder- und Empfehlungsaufträge werden mit einer gewählten Flottenvorlage gestartet. Die fünf Sonderauftragskategorien heißen Schmuck der Krone, Edle Webwaren, Kostbare Essenzen, Kunst aus Jade und Schätze des Nordens; die Zuordnung und Altauftragsdarstellung stehen in der [Kategorieübersicht](docs/ui/project-category-overview.md). Kategorie-Fragezeichen erklären Herkunft und tatsächliche Beutechancen; vorhandene Aufträge verlangen eine ausdrückliche Startbestätigung. Abgeschlossene Kategorienverläufe entfallen aus der Ansicht, ausstehende Prämien und kumulative Statistiken bleiben erhalten.
 
 Ein Überstundenpunkt entspricht 1.000 tkm. Passive Lieferung und Überstunden verwenden dieselbe zugrunde liegende Transportabrechnung. Bei endlichen Aufträgen werden nur noch lieferbare Teilmengen gebucht. Sonderaufträge haben grundsätzlich eine Stunde, Empfehlungen drei Stunden Frist; maßgeblich sind die gespeicherten Werte des konkreten Auftrags. Bereits gestartete Touren behalten ihre Snapshots.
 

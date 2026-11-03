@@ -15,6 +15,8 @@ test('Static and dynamic display messages localize without translating unknown n
  assert.equal(t('EINSTELLUNGEN'),'SETTINGS');assert.equal(t('Flotte 3'),'Fleet 3');assert.equal(t('Flotte 2 einsetzen'),'Assign fleet 2');assert.equal(t('Großprojekt mit eigenen Überstunden'),'Fleet project with own overtime');
  assert.equal(t('Kurierwagen · Rang 2'),'Courier van · Rank 2');
  assert.equal(t('Sonderauftrag Materialbergung'),'Special contract Material recovery');
+ assert.equal(t('Sonderauftrag Schmuck der Krone'),'Special contract Jewels of the Crown');
+ assert.equal(t('Sonderauftrag Schmuck der Krone, Kronenlande, Aufträge 2'),'Special contract Jewels of the Crown, Crownlands, contracts 2');
  assert.equal(t('Gibt 50 Expeditionspunkte – auch über das Maximum hinaus.'),'Adds 50 expedition points, even beyond the maximum.');
  assert.equal(t('Common-Zahnräder'),'Common gears');
  assert.equal(t('Regionalverkehr · Kurz · Single Way'),'Regional transport · Short · Single Way');

@@ -10,6 +10,23 @@ const customerIdentities = require('./customer-identities.json');
 const customerCargo = require('./customer-cargo.json');
 const customerCargoRuntime = fs.readFileSync(path.join(__dirname, 'customer-cargo-runtime.js'), 'utf8');
 const normalizeCustomerNames = text => typeof text==='string'?customerIdentities.reduce((value,identity)=>value.split(identity.legacyName).join(identity.customer),text):text;
+
+// Rename complete special-contract titles only; generic transport terms and saved state stay intact.
+const legacySpecialProjectTitles={nordbau:'Stadtversorgung',frischgut:'Baustellenlogistik',stahlwerk:'Materialbergung',alpenhandel:'Ferntransport',eurolog:'Handelsroute'};
+function normalizeSpecialProjectText(text,profile){
+ if(typeof text!=='string')return text;
+ const saved=[];
+ for(const name of [profile?.companyName,profile?.cityName].filter(Boolean)){
+  const token='\u0000project'+saved.length+'\u0000';
+  if(text.includes(name)){text=text.split(name).join(token);saved.push([token,name]);}
+ }
+ customerIdentities.forEach(identity=>{
+  for(const prefix of ['Großauftrag','Sonderauftrag'])text=text.split(prefix+' '+legacySpecialProjectTitles[identity.id]).join(prefix+' '+identity.specialProjectTitle);
+ });
+ for(const [token,name]of saved)text=text.split(token).join(name);
+ return text;
+}
+
 // Rewrite presentation text only; player-selected names and persistent IDs stay intact.
 function normalizeTransportNames(text,profile){
  if(typeof text!=='string')return text;
@@ -107,9 +124,16 @@ const bridge = `
     return true;
   };
   const mobileProjectNames = {
-    special:['Großauftrag Stadtversorgung','Großauftrag Baustellenlogistik','Großauftrag Materialbergung','Großauftrag Ferntransport','Großauftrag Handelsroute'],
+    special:EXPEDITION_CUSTOMER_IDS.map(id=>'Großauftrag '+customerIdentities.find(identity=>identity.id===id).specialProjectTitle),
     referral:['Großprojekt Hafenverbund','Großprojekt Versorgungskette','Großprojekt Industrieanlage','Großprojekt Fernkorridor','Großprojekt Kontinentalnetz']
   };
+  function mobileSpecialProjectRegion(order,fallback=0){
+    const customerRegion=EXPEDITION_CUSTOMER_IDS.indexOf(order.customer);
+    return customerRegion>=0?customerRegion:Number.isInteger(order.projectRegion)&&order.projectRegion>=0&&order.projectRegion<EXPEDITION_CUSTOMER_IDS.length?order.projectRegion:fallback;
+  }
+  function mobileSpecialProjectName(order,region=0){
+    return mobileProjectNames.special[mobileSpecialProjectRegion(order,region)]||order.projectName;
+  }
   function normalizeReferral(order){
     if(order.kind!=='referral'||order.status!=='queued')return;
     order.projectName=mobileProjectNames.referral[0];
@@ -118,7 +142,7 @@ const bridge = `
     order.category='national';order.routeType='single';order.deadlineMs=PROJECT_DEADLINES.referral;
   }
   const originalQueueCustomerTrip=queueCustomerTrip;
-  queueCustomerTrip=(source,kind)=>{const order=originalQueueCustomerTrip(source,kind);normalizeReferral(order);return order;};
+  queueCustomerTrip=(source,kind)=>{const order=originalQueueCustomerTrip(source,kind);normalizeReferral(order);if(kind==='special')order.projectName=mobileSpecialProjectName(order);return order;};
   function normalizeQueuedReferrals(){game.orders.forEach(normalizeReferral);}
   function mobileProjectInfo(kind,region,existing=null){
     const customer=customerById(EXPEDITION_CUSTOMER_IDS[region]),balance=PROJECT_BALANCE[kind];
@@ -126,7 +150,7 @@ const bridge = `
     const distance=existing?.distance ?? balance.distance+region*balance.distancePerRegion;
     const order={kind,category:customer.category,customer:customer.id,volume,distance,routeType:'single',...existing};
     const loot=GEAR_LOOT[kind],rules=SPECIAL_CHANCES[order.category];
-    return {key:kind==='referral'?'referral':kind+':'+region,rarity:kind==='referral'?'epic':'rare',kind,region,regionName:EXPEDITION_REGIONS[region],name:existing?.projectName||mobileProjectNames[kind][region],customer,
+    return {key:kind==='referral'?'referral':kind+':'+region,rarity:kind==='referral'?'epic':'rare',kind,region,regionName:EXPEDITION_REGIONS[region],name:kind==='special'?mobileSpecialProjectName(existing||{customer:customer.id},region):existing?.projectName||mobileProjectNames[kind][region],customer,
       volume,distance,deadlineMs:existing?.deadlineMs||PROJECT_DEADLINES[kind],
       premium:completionPremium(order),freight:freightRevenue(order),baseXp:volume,relationship:TRUST_REWARDS[kind],
       expeditionChance:round2((1-EXPEDITION_CARD_CHANCES.reduce((sum,c)=>sum+c.chance,0))*EXPEDITION_JOB_WEIGHTS.find(w=>w.kind===kind).chance*100),
@@ -398,6 +422,7 @@ const bridge = `
         const durationSeconds=project?null:orderDuration({...o,delivered:0},durationTruck);
         const possibleRewards = project ? [] : o.kind==='private' ? ['1–2 Lieferantenkontakte'] : ['Common-Zahnräder','Uncommon-Zahnräder',...(o.customer?['Rare-Zahnräder']:[]),...(o.kind==='normal'&&TRANSPORT_BASE[o.category]?['Fortschritt für Firmenausbau-Items']:[]),...(o.customer&&o.kind==='normal'?[round2(customerTripChance(o,'award')*100)+' % Chance auf Sonderauftrag']:[])];
         return { ...o, isProject: project,
+          projectName:o.kind==='special'?mobileSpecialProjectName(o):o.projectName,
           project:o.project?{...o.project,vehicles:o.project.vehicles.filter(v=>v.cardId).map(v=>({...v,
             pendingCardId:(fleetTemplate(o.project.template)||[])[v.slot]||null,
             pendingModel:vehicleCardById((fleetTemplate(o.project.template)||[])[v.slot])?.name||null}))}:undefined,
@@ -410,7 +435,7 @@ const bridge = `
           replacementChoices:assigned?game.trucks.filter(t=>canTruckTakeOrder(t,o)&&(free.has(t.id)||o.pendingTruckId===t.id)).map(t=>({id:t.id,model:t.model,capacity:t.capacity})):[],
           pendingTruckName:o.pendingTruckId?truckById(o.pendingTruckId)?.model:null,
           projection,
-          projectInfo:project?mobileProjectInfo(o.kind,o.projectRegion??Math.max(0,EXPEDITION_CUSTOMER_IDS.indexOf(o.customer)),o):null,
+          projectInfo:project?mobileProjectInfo(o.kind,o.kind==='special'?mobileSpecialProjectRegion(o):o.projectRegion??Math.max(0,EXPEDITION_CUSTOMER_IDS.indexOf(o.customer)),o):null,
           baseXp:round2(o.volume*paidLegs(o)), premium:completionPremium(o),
           possibleRewards, relationshipReward:o.customer?(TRUST_REWARDS[o.kind]||0):0,
           tripEndsAt:assigned?o.tripSnapshot?.endsAt:null,
@@ -645,9 +670,10 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   for(const mission of view.state.expedition.missions)mission.reward=normalizeNames(mission.reward);
   view.message=normalizeTransportNames(view.message,view.state.profile);
   view.message=currencyText(view.message,view.state.profile);
-  for(const event of view.state.events)event.text=currencyText(event.text,view.state.profile);
+  view.message=normalizeSpecialProjectText(view.message,view.state.profile);
+  for(const event of view.state.events)event.text=normalizeSpecialProjectText(currencyText(event.text,view.state.profile),view.state.profile);
   for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(text=>currencyText(text));
-  for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[currencyText(title),currencyText(body)]);
+  for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[normalizeSpecialProjectText(currencyText(title)),normalizeSpecialProjectText(currencyText(body))]);
   for(const mission of view.state.expedition.missions)mission.reward=currencyText(mission.reward,view.state.profile);
   for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[normalizeTransportNames(title),normalizeTransportNames(body)]);
   for(const mission of view.state.expedition.missions)mission.reward=normalizeTransportNames(mission.reward,view.state.profile);

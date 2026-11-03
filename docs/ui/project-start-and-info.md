@@ -6,6 +6,7 @@ Bei einem vorhandenen Auftrag öffnet die Karte eine Startbestätigung. Umfang, 
 
 Der abgeschlossene Kategorienverlauf entfällt. Laufende Aufträge und noch abzuholende Abschlussprämien bleiben unverändert zugänglich. Die Statistikaggregation erfolgt separat auf dem Server und verändert diesen Startablauf nicht.
 
-Die aktuellen Edelwarenbilder und die schlichte Regionsbeschriftung bleiben erhalten. Das Fragezeichen startet keinen Auftrag und konsumiert keinen Vorrat.
+Kategorie-, Hilfe-, Start- und Detailansichten verwenden dieselben kundenbezogenen [Sonderauftragstitel](project-category-overview.md), auch bei Altaufträgen. Die aktuellen Edelwarenbilder und die schlichte Regionsbeschriftung bleiben erhalten. Das Fragezeichen startet keinen Auftrag und konsumiert keinen Vorrat.
 
 Prüfung: zwei Kategorie-/Startablauftests sowie TypeScript. Die vorhandene Android-Exportprüfung des parallel erstellten Edelwarenpakets lief mit diesem lokalen Projects-Code erfolgreich. Keine native Geräte- oder visuelle Touchprüfung verfügbar.
+

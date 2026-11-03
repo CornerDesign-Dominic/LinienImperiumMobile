@@ -31,3 +31,32 @@ test('Every region creates customer projects from its three products and referra
   assert.equal(referral.volume,1100);assert.equal(referral.distance,240);
  }
 });
+
+test('Special titles follow stable customer IDs for new and legacy projects without rewriting saved terms',()=>{
+ const titles=['Schmuck der Krone','Edle Webwaren','Kostbare Essenzen','Kunst aus Jade','Schätze des Nordens'];
+ const legacy=['Stadtversorgung','Baustellenlogistik','Materialbergung','Ferntransport','Handelsroute'];
+ let game=execute(initial().state,'seat',{id:'navigator',template:0,seat:0},now,()=>.5);
+ game=execute(game.state,'testProjects',{},now,()=>.5);
+ assert.deepEqual(game.view.projectCatalog.filter(c=>c.kind==='special').map(c=>c.name),titles.map(name=>'Großauftrag '+name));
+ const referral=game.state.orders.find(o=>o.kind==='referral');
+ assert.equal(game.view.state.orders.find(o=>o.id===referral.id).projectName,referral.projectName);
+ for(const [region,identity]of identities.entries()){
+  const project=game.state.orders.find(o=>o.kind==='special'&&o.customer===identity.id);
+  assert.equal(project.projectName,'Großauftrag '+titles[region]);
+  const started=execute(game.state,'projectStart',{id:project.id,template:0},now,()=>.5);
+  for(const status of ['queued','active','completed','failed']){
+   const old=structuredClone(started.state),order=old.orders.find(o=>o.id===project.id);
+   order.status=status;order.projectName='Großauftrag '+legacy[region];order.projectRegion=(region+1)%5;
+   const terms=JSON.stringify({id:order.id,customer:order.customer,projectName:order.projectName,projectRegion:order.projectRegion,volume:order.volume,distance:order.distance,delivered:order.delivered,deadlineMs:order.deadlineMs,project:order.project});
+   const synced=execute(old,'sync',{},now,()=>.5),saved=synced.state.orders.find(o=>o.id===order.id),shown=synced.view.state.orders.find(o=>o.id===order.id);
+   assert.equal(shown.projectName,'Großauftrag '+titles[region]);assert.equal(shown.projectInfo.name,shown.projectName);
+   assert.equal(shown.projectInfo.key,'special:'+region);assert.equal(shown.status,status);
+   assert.equal(JSON.stringify({id:saved.id,customer:saved.customer,projectName:saved.projectName,projectRegion:saved.projectRegion,volume:saved.volume,distance:saved.distance,delivered:saved.delivered,deadlineMs:saved.deadlineMs,project:saved.project}),terms);
+  }
+ }
+ const old=structuredClone(game.state);old.profile.companyName='Großauftrag Materialbergung';
+ old.events.push({at:now,text:'Großauftrag Materialbergung meldet: Großauftrag Ferntransport 5 abgeschlossen. Belohnung bereit. Freier Ferntransport bleibt verfügbar.'});
+ const synced=execute(old,'sync',{},now,()=>.5);
+ assert.equal(synced.view.state.events.at(-1).text,'Großauftrag Materialbergung meldet: Großauftrag Kunst aus Jade 5 abgeschlossen. Belohnung bereit. Freier Ferntransport bleibt verfügbar.');
+ assert.equal(synced.state.events.at(-1).text,old.events.at(-1).text);
+});
