@@ -35,3 +35,10 @@ Die Tabelle hält belegte Restpunkte fest; sie beauftragt keine neue Spielfunkti
 ## Gesammelt: stille Expeditionsabschlüsse
 
 Noch nicht veröffentlicht; Veröffentlichung erst nach neuer Freigabe. Orts- und Regionsabschluss laufen ohne automatischen Dialog ab. Freie Ausbaupunkte stehen sofort im Handelsimperium zur manuellen Verteilung bereit. Alte reine Informationsmeldungen werden still entfernt; wiederholbare Expeditionsaufträge behalten ihre gemeinsame Lootabholung unter Einzelaufträge. Acht gezielte Backendtests erfolgreich; kein vollständiger App-/Gerätetest behauptet.
+
+## Expeditionskopf und Ortsschilder – gesammelt, nicht veröffentlicht
+
+- In der geöffneten Region ersetzt deren Name den allgemeinen Seitenkopf; der schwebende Doppeltitel entfällt.
+- Fertige Orte ohne Haken; Kreisplus nur bei verfügbarer Bonusfahrt, Timer bei laufender Fahrt. Der volle Ortsname bleibt zugänglich und bricht sichtbar an Wortgrenzen um.
+- Vier reine Statusprüfungen erfolgreich. Karten-Komponententest erweitert, lokal wegen fehlendem TypeScript-/React-Paket nicht ausführbar; noch kein neuer Export/Gerätetest. Details: [Reisekarten](docs/ui/expedition-journeys.md).
+- Teil desselben Sammelstands wie stille Abschlüsse; keine Veröffentlichung vor erneuter Nutzerfreigabe.

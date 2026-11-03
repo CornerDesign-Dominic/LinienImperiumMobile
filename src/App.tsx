@@ -1,3 +1,4 @@
+import {regionIdentities} from './regionIdentities';
 import {PageHeader} from './PageHeader';
 import {MaterialLayer} from './Material';
 import {MaterialView as View,MaterialPressable as Pressable} from './Material';
@@ -184,7 +185,7 @@ function Game(){
   }
  }
  return <SafeAreaView style={v.root} edges={['top','bottom']}><StatusBar style="light"/><View style={v.header}><Row style={{marginBottom:0,flexWrap:'nowrap'}}><View style={{flex:1}}><Txt style={{fontWeight:'700',fontSize:14,color:C.onInk}}>{data?`Level ${data.level.level} · ${n(data.level.within)} / ${n(data.level.need)} XP`:'Verbinden …'}</Txt></View><View accessible accessibilityLabel={translate(`${n(g?.coins)} Imperium-Taler`)} style={{flexDirection:'row',alignItems:'center',gap:6}}><Icon name="coin" size={18} color={C.brassLight}/><Txt style={{fontWeight:'700',color:C.brassLight}}>{n(g?.coins)}</Txt></View></Row><Bar value={data?data.level.within/data.level.need*100:0}/><TokenHeader data={data} clock={clock} onInventory={()=>go('inventory')}/></View>
- <PageHeader title={translate(data&&!g?.profile?'Firmengründung':NAMES[screen])} home={screen==='home'} onBack={back} onHelp={()=>go('help')}/>
+ <PageHeader title={translate(data&&!g?.profile?'Firmengründung':screen==='expeditions'&&region!==null?regionIdentities[region]?.title||NAMES[screen]:NAMES[screen])} home={screen==='home'} onBack={back} onHelp={()=>go('help')}/>
  {error?<Pressable onPress={()=>{setError('');run();}} style={v.error}><Txt style={{color:C.red,fontSize:12}}>{error} · Erneut versuchen</Txt></Pressable>:null}
  {journeyOpen?<View style={{flex:1}}>{body()}</View>:<ScrollView style={{backgroundColor:C.bg}} automaticallyAdjustKeyboardInsets ref={scroll} contentContainerStyle={[v.content,screen==='expeditions'&&v.expeditionContent]} keyboardShouldPersistTaps="handled" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>run()} tintColor={C.accent}/>}><MaterialLayer surfaceStyle={{backgroundColor:C.bg}} quiet/>
  {body()}

@@ -5,7 +5,7 @@ function compile(name,requireOverride){const file=path.resolve(__dirname,'../src
 const {regionRoutes}=compile('regionRoutes.ts',id=>{if(id.endsWith('.jpg'))return {uri:id,width:2172,height:724};throw Error(id);});
 const flatten=style=>typeof style==='function'?flatten(style({pressed:false})):Array.isArray(style)?Object.assign({},...style.filter(Boolean).map(flatten)):style||{};
 function elements(node,type){if(!node||typeof node!=='object')return [];return [...(node.type===type?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(c=>elements(c,type))];}
-function render(region,discovered,opened=[],regions=[],width=390,height=620){
+function render(region,discovered,opened=[],regions=[],width=390,height=620,stateOverride={},missions=[]){
  let state=0;
  const {ExpeditionJourney}=compile('ExpeditionJourney.tsx',id=>{
   if(id==='react')return {...React,useState:()=>[[{width,height},true,true][state++],()=>{}],useRef:()=>({current:null}),useMemo:f=>f(),useEffect:()=>{}};
@@ -18,7 +18,7 @@ function render(region,discovered,opened=[],regions=[],width=390,height=620){
   if(id.endsWith('.png'))return {uri:id,width:887,height:1774};
   if(id==='./regionRoutes')return {regionRoutes};if(id==='./journeyLayout')return layout;throw Error(id);
  });
- return ExpeditionJourney({map:{index:region},maps:Array.from({length:5},(_,i)=>({open:i<=region+1})),state:{discovered,deliveries:Array(7).fill(false),finalClaimed:false},missions:[],accountId:'test',onPlace:p=>opened.push(p),onRegion:r=>regions.push(r)});
+ return ExpeditionJourney({map:{index:region},maps:Array.from({length:5},(_,i)=>({open:i<=region+1})),state:{discovered,deliveries:Array(7).fill(false),finalClaimed:false,...stateOverride},missions,accountId:'test',onPlace:p=>opened.push(p),onRegion:r=>regions.push(r)});
 }
 test('Five paintings map the seven existing places and final destination in their agreed order',()=>{
  const finals=['Kronenhafen','Weidenhafen','Karawanserei der sieben Bögen','Handelshof am Jadetor','Handelsfeste am Eisstrom'];
@@ -60,4 +60,20 @@ test('Region arrows respect locks and boundaries; saved positions clamp after re
  const reset=layout.journeyGeometry(390,620,regionRoutes[0].places,0);assert.ok(layout.journeyOffset(reset,390,7,1)<=reset.contentWidth-390);
  assert.equal(layout.journeyFocus(3,[true,false,true,false,false,false,false],false),1);assert.equal(layout.journeyFocus(3,[true,true,true,false,false,false,false],false),3);assert.equal(layout.journeyFocus(7,Array(7).fill(true),true),7);
  for(const size of [[0,620],[390,NaN],[Infinity,620]])assert.equal(layout.journeyGeometry(...size,regionRoutes[0].places,0),null);
+});
+
+
+test('Place signs wrap whole translated words and show only actionable bonus markers',()=>{
+ const completed=Array(7).fill(false);completed[0]=true;
+ const tree=render(1,4,[],[],320,390,{deliveries:completed},[{kind:'delivery',place:1,status:'active'}]);
+ const places=elements(tree,'Pressable').filter(n=>/^journey-place-/.test(n.props.testID));
+ const icons=place=>elements(place,'Icon').map(n=>n.props.name);
+ assert.deepEqual(icons(places[0]),[]);assert.deepEqual(icons(places[1]),['timer']);
+ assert.deepEqual(icons(places[2]),['plus']);assert.deepEqual(icons(places[3]),['plus']);assert.deepEqual(icons(places[4]),[]);
+ assert.ok(places[3].props.accessibilityLabel.includes('Bonuslieferung verfügbar'));
+ const name=elements(places[3],'View').find(n=>n.props.testID==='journey-name-3');
+ assert.deepEqual(elements(name,'Text').map(n=>n.props.children),['Die','Wagenrast']);
+ assert.ok(elements(name,'Text').every(n=>n.props.numberOfLines===1));
+ assert.equal(flatten(name.props.style).flexWrap,'wrap');
+ assert.ok(!elements(tree,'Text').some(n=>n.props.children==='Region'),'No second floating region title');
 });
