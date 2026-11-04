@@ -34,7 +34,7 @@ export function HubEarnings({hub,cycle,clock,busy,onCollect}:any){
  </View>;
 }
 const s=StyleSheet.create({
- card:{height:308,width:'100%',borderWidth:1,borderColor:C.line,borderRadius:8,overflow:'hidden',backgroundColor:C.ink,marginBottom:10},
+ card:{height:308,width:'100%',borderWidth:1,borderColor:C.line,borderRadius:8,overflow:'hidden',backgroundColor:C.ink,marginBottom:5},
  image:{position:'absolute',top:0,bottom:0,left:0,right:0,width:'100%',height:'100%'},
  heading:{height:36,flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:8,paddingHorizontal:12,backgroundColor:'rgba(21,33,33,0.72)'},
  title:{fontSize:14,lineHeight:20,fontWeight:'700',color:C.onInk},cashboxText:{fontSize:11,lineHeight:16,color:C.onInk,flexShrink:1},

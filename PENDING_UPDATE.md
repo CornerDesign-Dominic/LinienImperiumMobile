@@ -68,3 +68,7 @@ Fünf individuelle Bildergeschichten mit je sechs neuen Motiven: Herstellung bis
 ## Gesammelt: Überstundenmodal
 
 Ein Dialog mit 1/5/10, tatsächlicher Tonnage-/Restvorratsvorschau und direkter Bestätigung. „Frist sichern · X Punkte“ nennt den Serverbedarf, bei 0 deaktiviert; fehlende Prognose und unzureichender Vorrat gesondert behandelt. Überstundenauffüller vollständig aus diesem Dialog entfernt. Zwei reine Berechnungstests erfolgreich; UI-/Typprüfung vor Veröffentlichung offen. [Details](docs/ui/project-overtime.md).
+
+## Gesammelt: globale kompakte Abstände
+
+Kartenaußenabstände ungefähr halbiert, gemeinsame Innenabstände rund 20–25 % reduziert, seitlicher Seitenrand 9 → 7. Startnavigation und wichtige Listenüberschreibungen angeglichen. Schrift, Bilder, Tippflächen, Modalinsets und Safe Areas unverändert; bereits kompakte Raster behalten geeignete Ausnahmen. Quellprüfung erfolgt; Typ-/UI-Prüfung und Android-Export im Releaseworkflow offen. [Details](docs/ui/global-spacing.md).
