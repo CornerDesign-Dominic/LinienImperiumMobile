@@ -52,3 +52,7 @@ Alle fünf Abschlussbilder ersetzt: kleinere regional verzierte Pergamente auf s
 ## Gesammelt: Ausbaupunkte im Levelaufstieg mit Bild
 
 Ausbaupunkte werden im Levelaufstiegsmodal wie die Auffüller als Belohnungszeile mit dem vorhandenen Ausbaupunktebild, Bezeichnung und rechts ausgerichteter Anzahl dargestellt. Die bisherige reine Plus-Textzeile entfällt. Mehrere Aufstiege zeigen weiterhin korrekt drei Punkte je Level; Gutschrift und Verteilung unverändert. Fünf vorhandene Punkte-Komponentenprüfungen erfolgreich. Noch nicht veröffentlicht.
+
+## Gesammelt: XP-Bild und feste Belohnungszahlen
+
+Neues illustriertes XP-Gildenbuch mit Stern und Lorbeer ersetzt das Statistikpiktogramm im Belohnungsmodal. XP-Icon behält Originalfarben. Mengen stehen unter ihrer Bezeichnung und nutzen die volle freie Breite neben dem Bild mit fester 17-Pixel-Schrift, ohne automatische Verkleinerung; auch größere Talerbeträge. Auszahlung/Formatierung unverändert. Typprüfung und gezielter Belohnungstest inklusive großem Betrag erfolgreich. PNG 512 × 512 mit Transparenz visuell geprüft, dekodiert und Upload-Blob-SHA abgeglichen. Kein physischer Gerätetest. Noch nicht veröffentlicht.
