@@ -2,24 +2,31 @@
 
 ## Letzter belegter App-Prüfstand
 
-Geprüfter und veröffentlichter Spielcode: `5e8010fc7cd47e337c5af62d5498b2841b85257d`, 04.11.2026.
-Nachweis: [Mobile preview – Lauf 41854923005](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/41854923005).
+Geprüfter und veröffentlichter Spielcode: `cf8038e133c46d5e5ab82fa832cf6898010b7843`, 04.11.2026.
+Nachweis: [Mobile preview – Lauf 41907917201](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/41907917201).
 
 | Prüfung | Belegtes Ergebnis |
 | --- | --- |
 | TypeScript | Erfolgreicher Workflow-Schritt |
-| Automatisierte Tests | 302 bestanden, 0 Fehler, 0 übersprungen |
+| Automatisierte Tests | 320 bestanden, 0 Fehler, 0 übersprungen |
 | Android-Export | Erfolgreicher Workflow-Schritt |
 | Firebase-Server und Firestore-Regeln | Deployment erfolgreich |
 | Echte Spiel-API | Smoke-Test erfolgreich |
 | Android-OTA, Kanal preview | Erfolgreich veröffentlicht |
 | Neue APK / physischer Gerätetest / iOS | Nicht durch diesen Lauf belegt |
 
-Das Paket enthält gemeinsame Ausbaupunkte, kompakte Großauftragskarten, 30 regionale Geschichtsbilder, ein neues Überstundenmodal, Beschaffungsmodale, globale Abstände und die Angebotsbutton-Beschriftung.
+- Großauftragseinnahmen und XP werden bis zur bestätigten Abholung gesammelt; Überstunden folgen derselben Abrechnung. Altgutschriften werden nicht erneut ausgezahlt.
+- Erledigte Großaufträge öffnen das Detail mit Übergabeschein und „Belohnung entgegennehmen“. Zusätzliche Prämien-/Informationskarten und direkter Abholbutton in der Liste entfallen.
+- Einzelaufträge öffnen direkt die unveränderte Fahrzeugwahl; Auftragsdetailseite entfernt, Pinnadel ohne Kreis.
+- Kundendetails zeigen vier Waren nebeneinander sowie kompakte Angaben zu Verkehr und Herkunft.
+- Handelsimperium mit neuem Säulenbau und Kisten-Lorbeer-Bannern; kompakte Ausbaupunktedarstellung ohne Titel „Entwicklung“.
+- Bildkorrekturen: Safran-Karawane und Tragekiste, sichere Kronenlande-Kutsche und zeremonielle Ankunft.
+- Botenstation ohne normalen Lauftext „Verteilung läuft“; kompakte Beschaffungsdauer direkt neben der Stoppuhr.
+- Garage regulär neun Plätze (3 × 3), bestehender Überhang bleibt bis zur manuellen Entfernung erhalten.
 
-Die Übernahme bestehender Punkte, unveränderte gekaufte Maxima, gemeinsame neue Gutschriften und Wiederholungsbelege sind automatisch geprüft. Bei der Vorprüfung wurde die unsichere Überstundenbestätigung per Vorratsvergleich durch eine serverseitige, im Befehlsbeleg wiederholbar abrufbare Bestätigung ersetzt. Regressionstests decken erfolgreiche Ausgaben trotz gleichzeitig regeneriertem Vorrat und erneut übertragene Anfragen ab. Veraltete UI-Testerwartungen und die Komponenteneinbindung wurden vor dem erfolgreichen Endlauf aktualisiert.
+Die neuen Prüfungen decken unter anderem aufgeschobene Großauftragseinnahmen und XP, Überstunden, Altbestände ohne Doppelzahlung, fehlgeschlagene Aufträge, Cloud-Wiederholungsbelege, direkte Einzelauftragszuweisung sowie die Neuner-Garagengrenze und erhaltene Altüberhänge ab. Der erste Veröffentlichungslauf wurde vor Deployment durch eine veraltete Erwartung „je Tour“ gestoppt. Nach Anpassung und zusätzlicher Prüfung der gemeinsamen Stoppuhr-/Zeitzeile ist der vollständige Lauf erfolgreich. Die im lokalen Textcheckout fehlende bestehende Fahrzeugbilddatei liegt im Repository korrekt vor; die Bilddateiprüfung besteht im vollständigen Workflow.
 
-Alle 30 neuen JPEGs sind 1200 × 800 Pixel, vollständig dekodiert und ihre Repository-Blob-Hashes stimmen mit den geprüften Originaldateien überein. Gesamter Assetumfang rund 9 MB. Die regionale Bildserie wurde visuell kontrolliert; kein physischer Layout-/Gerätetest behauptet.
+Vier korrigierte regionale Produktionsbilder sind 1200 × 800 Pixel; das neue Handelsimperiumbild ist 1200 × 675 Pixel. Die Bildarbeiter haben Motive visuell kontrolliert, die JPEGs vollständig dekodiert und Upload-Blob-SHAs abgeglichen. Kein physischer Layout-/Gerätetest behauptet.
 
 ## Teststrategie
 
