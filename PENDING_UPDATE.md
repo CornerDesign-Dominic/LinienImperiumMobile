@@ -45,4 +45,8 @@ Die Tabelle hält belegte Restpunkte fest; sie beauftragt keine neue Spielfunkti
 
 ## Gesammelt: Angebotsmodal – Aktualisieren
 
-Der Bestätigungsbutton im Modal „Neue Angebote?“ heißt „Aktualisieren“ (Englisch „Refresh“), beim Speichern „Wird aktualisiert …“. Preis bleibt separat sichtbar; Kosten, gehaltene Angebote und Bestätigungslogik bleiben unverändert. Nur Beschriftung und Übersetzung geprüft; kein neuer Release. Das Beispiel für kompaktere Großauftragskarten ist ein Entwurf, noch keine beauftragte Layoutänderung.
+Der Bestätigungsbutton im Modal „Neue Angebote?“ heißt „Aktualisieren“ (Englisch „Refresh“), beim Speichern „Wird aktualisiert …“. Preis bleibt separat sichtbar; Kosten, gehaltene Angebote und Bestätigungslogik bleiben unverändert. Nur Beschriftung und Übersetzung geprüft; kein neuer Release. 
+
+## Gesammelt: kompakte Großauftragskarten
+
+Angenommener Entwurf umgesetzt: kleinere vorhandene Warenbilder, kompakte Titel-/Kunden-/Frachtzeilen mit Häuschen vor dem Kundennamen und Kiste vor der Tonnenzahl. Laufende mit gelieferter/Gesamtmenge, schmalem Balken und gemeinsamer Zeitzeile; fertige mit kleinem ERLEDIGT-Stempel und kompakter „Abholen“-Taste ohne Leerfläche. Namen umbrechen ohne Abschneiden; Sortierung, Prämienlogik und Schutz vor Doppeltipps unverändert. Vier reine Status-/Sortier-/Backendtests erfolgreich; UI-/Typ- und Geräteprüfung lokal nicht belegt. [Details](docs/ui/project-category-overview.md). Noch nicht veröffentlicht.

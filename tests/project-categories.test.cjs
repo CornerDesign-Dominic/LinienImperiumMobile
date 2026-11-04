@@ -149,7 +149,7 @@ test('Completed project card claims once, keeps errors visible and does not open
  let resolve,reject,calls=0,opened=0,stopped=0;
  const props={order,clock:1800000000000,onOpen:()=>opened++,onCommand:(action,args)=>{assert.equal(action,'claim');assert.deepEqual(JSON.parse(JSON.stringify(args)),{id:'done'});calls++;return new Promise((yes,no)=>{resolve=yes;reject=no;});}};
  const render=()=>h.render('RunningProjectCard',props),claim=tree=>nodes(tree,'Btn').find(n=>n.props.testID==='project-claim-done');
- let tree=render();assert.ok(text(tree).includes('ERLEDIGT'));assert.ok(!text(tree).includes('Frist'));assert.ok(!text(tree).includes('Fertig in'));
+ let tree=render();assert.equal(text(claim(tree)),'Abholen');assert.ok(nodes(tree,'Icon').some(n=>n.props.name==='home'));assert.ok(nodes(tree,'Icon').some(n=>n.props.name==='orders'));assert.ok(text(tree).includes('ERLEDIGT'));assert.ok(!text(tree).includes('Frist'));assert.ok(!text(tree).includes('Fertig in'));
  nodes(tree,'Pressable').find(n=>n.props.testID==='project-open-done').props.onPress();assert.equal(opened,1);
  const tap=()=>claim(tree).props.onPress({stopPropagation(){stopped++;}});
  const first=tap();tap();assert.equal(calls,1);assert.equal(opened,1);assert.equal(stopped,2);
@@ -167,7 +167,7 @@ test('Active project card uses snapshot ETA and deadline without promising compl
  const h=componentHarness('Projects.tsx',{'./Language':{Text:'Text'},'./LocationArt':{LocationArt:'LocationArt'},'./ProjectCategoryArt':{ProjectCategoryArt:'ProjectCategoryArt'},'./ui':{C:require('../src/palette.json'),Txt:'Txt',Card:'Card',Row:'Row',Btn:'Btn',Bar:'Bar',Pill:'Pill',Empty:'Empty',n:String,remaining:(at,now)=>String(at-now)}});
  const order={id:'trip',kind:'referral',status:'active',projectName:'Hafenverbund',customerName:'Alle Stammkunden',volume:1100,delivered:550,distance:240,projectInfo:{},project:{deadlineAt:9000},eta:6000,projection:{feasible:true}};
  const render=()=>h.render('RunningProjectCard',{order,clock:1000});
- let tree=render();assert.ok(text(tree).includes('550 / 1100 t'));assert.ok(text(tree).includes('Frist8000'));assert.ok(text(tree).includes('Fertig in5000'));assert.equal(nodes(tree,'Bar')[0].props.value,50);assert.equal(nodes(tree,'Btn').length,0);assert.ok(!text(tree).includes('ERLEDIGT'));
+ let tree=render();assert.ok(text(tree).includes('550 / 1100 t'));assert.ok(text(tree).includes('Frist 8000'));assert.ok(text(tree).includes('Fertig in 5000'));assert.equal(nodes(tree,'Bar')[0].props.value,50);assert.equal(nodes(tree,'Btn').length,0);assert.ok(!text(tree).includes('ERLEDIGT'));
  order.eta=12000;assert.ok(text(render()).includes('Voraussichtlich nach Fristende'));
  order.eta=500;assert.ok(text(render()).includes('Wird aktualisiert'));
  order.eta=null;order.projection.feasible=false;assert.ok(text(render()).includes('Nicht erreichbar'));
