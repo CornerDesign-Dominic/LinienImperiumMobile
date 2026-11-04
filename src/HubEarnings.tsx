@@ -15,8 +15,8 @@ export function HubEarnings({hub,cycle,clock,busy,onCollect}:any){
   <View style={s.heading}><Txt style={s.title}>Erträge</Txt><Txt style={s.cashboxText}>{full?'Kasse voll':`${hub.cashboxCycles} / ${max} Std.`}</Txt></View>
   <View style={s.amountRow}><Icon name="coin" size={32}/><Text testID="hub-earnings-amount" adjustsFontSizeToFit minimumFontScale={.6} numberOfLines={1} style={s.amount}>{n(hub.cashboxCoins)}</Text></View>
   <View style={s.scenery}/>
-  <View style={s.cycle}>
-   <View style={s.statusArea}><Txt style={s.status}>{status}</Txt>{full&&<Txt style={s.small}>Erträge abholen, um fortzufahren</Txt>}</View>
+  <View style={[s.cycle,status==='Verteilung läuft'&&{height:92}]}>
+   {status!=='Verteilung läuft'&&<View style={s.statusArea}><Txt style={s.status}>{status}</Txt>{full&&<Txt style={s.small}>Erträge abholen, um fortzufahren</Txt>}</View>}
    <View testID="hub-earnings-timeline" style={s.timeline} accessible accessibilityLabel={active?`Einkaufszyklus: ${state.minutes} von ${cycle.durationMs/60000} Minuten. Ware leer nach ${cycle.workMs/60000} Minuten.`:status}>
     <View style={[s.markerArea,!active&&s.hidden]}>
      {active&&state.emptyAt!==null&&<View style={[s.event,{left:`${state.emptyAt*100}%`,transform:[{translateX:state.emptyAt>.85?-104:-52}]}]}><Image source={require('../assets/art/hub/parcel.png')} accessible={false} resizeMode="contain" fadeDuration={0} style={s.parcel}/><Txt style={s.eventText}>Ware leer · {n(cycle.workMs/60000,1)} Min.</Txt></View>}

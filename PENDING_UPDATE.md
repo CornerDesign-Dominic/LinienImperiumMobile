@@ -41,3 +41,7 @@ Die Tabelle hält belegte Restpunkte fest; sie beauftragt keine neue Spielfunkti
 - Spielveröffentlichungen erfolgen weiterhin auf ausdrücklichen Wunsch über den dokumentierten Workflow. Dokumentationspflege startet keinen manuellen Release und setzt keinen Veröffentlichungsmarker.
 
 
+
+## Gesammelt: Ertragskarte ohne Lauftext
+
+In der Botenstation entfällt der sichtbare Text „Verteilung läuft“ einschließlich seiner reservierten Zeile. Die Zeitleiste bleibt erhalten; die frei werdende Fläche kommt dem Hintergrundbild zugute. Abweichende Statushinweise (volle Kasse, fehlende Ware, wartender Einkauf), Zugänglichkeit, Berechnung und Abholen bleiben erhalten. Gezielter Quelldiff geprüft; noch nicht veröffentlicht.
