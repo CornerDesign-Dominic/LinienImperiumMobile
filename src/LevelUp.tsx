@@ -1,6 +1,7 @@
 import {MaterialLayer} from './Material';
 import {MaterialView as View} from './Material';
 import {ItemAmount} from './ItemArt';
+import {Icon} from './Icon';
 import {itemName} from './items';
 import React,{useEffect,useRef,useState} from 'react';
 import {Image,StyleSheet} from 'react-native';
@@ -48,7 +49,7 @@ export function LevelUpNotice({levels,onClose}:{levels:number[];onClose:()=>void
   <Row style={{flexWrap:'nowrap',alignItems:'flex-start'}}><Txt style={[s.congrats,{flex:1,minWidth:0,textAlign:'left'}]}>Herzlichen Glückwunsch!</Txt><Btn icon="close" iconOnly secondary onPress={onClose}>Schließen</Btn></Row><Txt style={s.level}>Level {level}</Txt>
   <ItemAmount id="expeditionRefills" label={itemName('expeditionRefills',count)} amount={count}/>
   <ItemAmount id="overtimeRefills" label={itemName('overtimeRefills',count)} amount={count}/>
-  <Txt style={s.reward}>+{count*3} Ausbaupunkte</Txt>
+  <Row style={{flexWrap:'nowrap',justifyContent:'flex-start',gap:8,marginBottom:8}}><Icon name="expansion" size={44}/><Txt style={{flex:1,minWidth:0,fontSize:12}}>Ausbaupunkte</Txt><Txt style={{fontSize:13,fontWeight:'700'}}>{n(count*3)}</Txt></Row>
   {!!levels.filter(value=>value<=100&&value%5===0).length&&<Txt style={s.reward}>+{levels.filter(value=>value<=100&&value%5===0).length} {levels.filter(value=>value<=100&&value%5===0).length===1?'Botenplatz':'Botenplätze'}</Txt>}
  </SafeAreaView></View></Modal>;
 }

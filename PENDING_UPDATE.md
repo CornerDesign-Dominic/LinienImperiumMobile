@@ -48,3 +48,7 @@ Separate Anzeige „Verfügbare Punkte“ in der oberen Handelsimperiumkarte ink
 ## Gesammelt: Regionale Übergabescheine verziert
 
 Alle fünf Abschlussbilder ersetzt: kleinere regional verzierte Pergamente auf sichtbaren Tischen, passende Schleifen und plastisch geprägte Wachssiegel; je zwei dezente regionale Dekostücke. Die echte, übersetzbare Beschriftung bleibt erhalten und wird in zurückhaltender sepiafarbener historischer Serifenschrift in der freien Papiermitte gesetzt. Kundenname bleibt dynamisch, Abschluss-/Abhollogik unverändert. Fünf Produktions-JPEGs 1200 × 800, Motive visuell geprüft, vollständig dekodiert und Upload-Blob-SHAs abgeglichen; Typprüfung erfolgreich. Kein physischer Gerätetest. Neue Prompt-Provenienz: assets/art/project-stories/receipt-redesign-prompts.json. Noch nicht veröffentlicht.
+
+## Gesammelt: Ausbaupunkte im Levelaufstieg mit Bild
+
+Ausbaupunkte werden im Levelaufstiegsmodal wie die Auffüller als Belohnungszeile mit dem vorhandenen Ausbaupunktebild, Bezeichnung und rechts ausgerichteter Anzahl dargestellt. Die bisherige reine Plus-Textzeile entfällt. Mehrere Aufstiege zeigen weiterhin korrekt drei Punkte je Level; Gutschrift und Verteilung unverändert. Fünf vorhandene Punkte-Komponentenprüfungen erfolgreich. Noch nicht veröffentlicht.
