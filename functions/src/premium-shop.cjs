@@ -8,7 +8,7 @@ function premiumState(state){
  // Preserve purchased entitlements even when a cosmetic leaves the catalogue.
  const owned=Array.isArray(old.ownedSkins)?[...new Set(old.ownedSkins.filter(id=>typeof id==='string'&&/^[-a-z0-9]{1,80}$/.test(id)))]:[];
  if(!owned.includes(STANDARD))owned.unshift(STANDARD);
- state.premiumShop={balance:Number.isSafeInteger(old.balance)&&old.balance>=0?old.balance:0,ownedSkins:owned,equippedSkin:owned.includes(old.equippedSkin)&&SKINS.some(s=>s.id===old.equippedSkin)?old.equippedSkin:STANDARD};
+ state.premiumShop={balance:Number.isSafeInteger(old.balance)&&old.balance>=0?old.balance:0,ownedSkins:owned,ownedSeasonPasses:Array.isArray(old.ownedSeasonPasses)?[...new Set(old.ownedSeasonPasses.filter(id=>typeof id==='string'&&/^[-a-z0-9]{1,80}$/.test(id)))]:[],equippedSkin:owned.includes(old.equippedSkin)&&SKINS.some(s=>s.id===old.equippedSkin)?old.equippedSkin:STANDARD};
  return state.premiumShop;
 }
 function purchaseSkin(state,id,catalogue=SKINS){

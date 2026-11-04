@@ -167,7 +167,7 @@ function Game(){
    case 'wholesaler':return <Wholesaler onGifts={()=>go('gifts')} shop={data.premiumShop} busy={busy} onCommand={run}/>;
    case 'gifts':return <Gifts data={data} busy={busy} onCommand={act} modalBlocked={!!sheet||levelNotices.length>0}/>;
    case 'statistics':return <Statistics state={g}/>;
-   case 'season':return <Season/>;
+   case 'season':return <Season pass={data.seasonPass} coins={data.state.coins} busy={busy} onCommand={run}/>;
    case 'events':return <Events events={data.testEvents||[]} busy={busy}
     onStart={(event,settings)=>choose(event.status==='ended'?'Event erneut starten?':'Event starten?',[
      {title:event.status==='ended'?'Erneut starten':'Starten',primary:true,onPress:async()=>{const next=await act('eventStart',{id:event.id,run:event.run,...settings});if(next?.testEvents.some((entry:TestEvent)=>entry.id===event.id&&entry.status==='running')){setEventId(event.id);go('eventProject');}}}

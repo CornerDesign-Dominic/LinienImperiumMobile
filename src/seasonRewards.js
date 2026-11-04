@@ -1,4 +1,4 @@
-// Preview catalogue only. Progression, purchases and live claims are not enabled.
+// Preview catalogue only. Progression and live claims are not enabled.
 const reward=(id,amount)=>Object.freeze({id,amount});
 const rows=[
  [reward('gear:common',10),reward('gear:common',25)],

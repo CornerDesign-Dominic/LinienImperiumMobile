@@ -5,6 +5,7 @@ const vm = require('node:vm');
 const itemNames = require('./item-names.json');
 const {currencyText}=require('./currency-names.cjs');
 const {premiumState,purchaseSkin,equipSkin,premiumShopView}=require('./premium-shop.cjs');
+const {seasonPassView,purchaseSeasonPass}=require('./season-pass.cjs');
 const {courierName,courierModel,courierText}=require('./hub-courier.js');
 const customerIdentities = require('./customer-identities.json');
 const customerCargo = require('./customer-cargo.json');
@@ -566,6 +567,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     eventFleet:()=>assignEventFleet(a.state,id(p.id),num(p.run),num(p.template,2),a.eventFleetOptions(distance()),now),
     singleVehicle:()=>a.queueSingleVehicle(id(p.order),id(p.truck)),
     sync:()=>{},start:()=>a.chooseStartCity(id(p.id)),foundCompany:()=>a.foundCompany(companyProfile(p)),
+    seasonPassBuy:()=>purchaseSeasonPass(a.state,id(p.id)),
     skinBuy:()=>purchaseSkin(a.state,id(p.id)),skinEquip:()=>equipSkin(a.state,id(p.id)),
     garageAdd:()=>a.addCardToGarage(id(p.id)),garageRemove:()=>a.removeCardFromGarage(id(p.id)),
     garageReplace:()=>a.replaceGarageCard(id(p.id),id(p.replacement)),
@@ -638,6 +640,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   // Reward-label normalization is presentation only, including legacy point names.
   view.state.expedition={...view.state.expedition,missions:view.state.expedition.missions.map(mission=>({...mission}))};
   view.premiumShop=premiumShopView(a.state);
+  view.seasonPass=seasonPassView(a.state);
   for(const truck of view.state.trucks)if(!truck.cardId&&truck.tier<=1){truck.displayName=courierName(truck);truck.displayModel=courierModel(truck);}
   view.testEvents=eventViews(a.state,a.eventFleetOptions(a.state.eventTests?.['large-project-own-overtime']?.distance||240),eventContext.world,eventContext.ranking);
   if(action.startsWith('event'))view.message=ok;

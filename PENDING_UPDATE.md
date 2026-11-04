@@ -19,6 +19,10 @@ Alle seit der vorherigen Freigabe gesammelten Änderungen sind veröffentlicht:
 
 Das vorherige Paket `5e8010fc7cd47e337c5af62d5498b2841b85257d` bleibt einschließlich Ausbaupunkten, regionalen Geschichten und Überstundenmodal enthalten; das aktuelle Paket ersetzt die zuvor direkte Großauftragsabholung in der Liste durch den Detailablauf. Nachweise: [Prüfstand](TEST_REPORT.md), [Modulnotizen](docs/README.md). Neue Wünsche werden wieder bis zur nächsten ausdrücklichen Veröffentlichungsfreigabe gesammelt.
 
+## Gesammelt, noch nicht veröffentlicht
+
+- Premium-Seasonpass als Platzhalter: Anzeige 500 Hermes-Siegel, bestätigter Testkauf für 1.000 Imperium-Taler. Zugriff wird je Season serverseitig gespeichert; Fortschritt/Abholen bleiben Vorschau. Backend und App zusammen ausrollen. [Details](docs/ui/season.md).
+
 ## Noch offene Punkte
 
 | Bereich | Tatsächlicher Stand / nächster Schritt |
@@ -28,7 +32,7 @@ Das vorherige Paket `5e8010fc7cd47e337c5af62d5498b2841b85257d` bleibt einschlie�
 | Echtgeldkäufe | Großhändler zeigt Vorschaupakete; echte Kaufbuttons sind deaktiviert. Store-Produkte, Billing und serverseitige Kaufprüfung fehlen. Einzelheiten: [Premium-Shop](docs/ui/premium-shop.md). |
 | Pyramiden-Event | Legendäre Passkarte bleibt Platzhalter; wiederkehrende Gemeinschaftsrunden und produktive Skalierung sind noch nicht abgeschlossen. [Eventregeln und Grenzen](docs/events/pyramid.md). |
 | iOS | Gemeinsame App vorbereitet; signierter iPhone-Build und Gerätetest sind gesonderte Arbeit. |
-| Season | Veröffentlichte 30-Stufen-Vorschau ohne Fortschritt, Abholen oder Premiumkauf. Vor Aktivierung Fortschrittsregeln, Laufzeit/Reset, Premiumzugang und endgültigen Loot festlegen. [Season](docs/ui/season.md). |
+| Season | Veröffentlichte 30-Stufen-Vorschau ohne Fortschritt, Abholen oder Premiumkauf; Testkauf ist separat gesammelt, noch nicht ausgerollt. Vor Aktivierung Fortschrittsregeln, Laufzeit/Reset, Premiumzugang und endgültigen Loot festlegen. [Season](docs/ui/season.md). |
 | Expeditionsbilder | Audit: fünf Panoramen mit je 2172 × 724 Pixeln werden auf mehrere Bildschirmbreiten vergrößert; kein globaler Unschärfefilter, keine höher aufgelöste Originaldatei nachgewiesen. Kein Bildtausch beauftragt. |
 | Startangebote | Früherer Vorschlag für kleinere Einstiegsangebote bleibt unbeschlossen. Nicht als aktuelle Regel übernehmen; bei Wiederaufnahme gegen die heutigen, für beide Verkehrsarten nutzbaren Transportkarten prüfen. |
 

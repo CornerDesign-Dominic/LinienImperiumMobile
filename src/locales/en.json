@@ -1344,5 +1344,19 @@
   "Einsatz nicht bestätigt. Bitte erneut versuchen.": "Contribution not confirmed. Please try again.",
   "Wird eingesetzt …": "Applying …",
   "{0} Punkte einsetzen": "Use {0} points",
-  "Belohnung entgegennehmen": "Collect reward"
+  "Belohnung entgegennehmen": "Collect reward",
+  "Premium-Seasonpass": "Premium season pass",
+  "Premium freigeschaltet": "Premium unlocked",
+  "Preis: 500 Hermes-Siegel": "Price: 500 Hermes seals",
+  "Platzhalter: vorübergehend für 1.000 Imperium-Taler erhältlich. Es werden keine Hermes-Siegel abgezogen.": "Placeholder: temporarily available for 1,000 Imperium thalers. No Hermes seals will be deducted.",
+  "Für 1.000 Imperium-Taler freischalten": "Unlock for 1,000 Imperium thalers",
+  "Seasonpass wird geladen …": "Loading season pass …",
+  "Die Season ist eine Vorschau. Fortschritt und Belohnungsabholung sind noch nicht verfügbar.": "This season is a preview. Progression and reward collection are not yet available.",
+  "Premium freischalten": "Unlock Premium",
+  "Premium-Seasonpass für diese Season freischalten?": "Unlock the Premium season pass for this season?",
+  "Angezeigter Preis: 500 Hermes-Siegel. Für diesen Platzhalter werden einmalig 1.000 Imperium-Taler abgezogen.": "Displayed price: 500 Hermes seals. This placeholder costs a one-time payment of 1,000 Imperium thalers.",
+  "Fortschritt und Belohnungsabholung sind noch nicht verfügbar.": "Progression and reward collection are not yet available.",
+  "Für 1.000 Taler kaufen": "Buy for 1,000 thalers",
+  "Die Season ist eine Vorschau. Premium kann testweise für 1.000 Imperium-Taler statt 500 Hermes-Siegel freigeschaltet werden. Fortschritt und Belohnungsabholung sind noch nicht verfügbar.": "This season is a preview. Premium can be unlocked for testing with 1,000 Imperium thalers instead of 500 Hermes seals. Progression and reward collection are not yet available.",
+  "Seasonpass nicht verfügbar. Bitte neu laden.": "Season pass unavailable. Please reload."
 }
