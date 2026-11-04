@@ -1,19 +1,16 @@
 import {MaterialView as View,MaterialPressable as Pressable} from './Material';
-import {ItemArt,ItemAmount} from './ItemArt';
+import {ItemArt} from './ItemArt';
 import {t as translate} from './i18n';
-import {Icon,IconName} from './Icon';
-import {itemName,rarityColor} from './items';
+import {Icon} from './Icon';
+import {itemName} from './items';
 import {VehicleArt} from './VehicleArt';
 import {OrderArtwork,OfferPinArtwork} from './OrderArtwork';
-import React,{useState} from 'react';
-import {OrderVehiclePicker} from './OrderVehiclePicker';
-import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
+import React from 'react';
 import {StyleSheet} from 'react-native';
-import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining,minutes} from './ui';
+import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining} from './ui';
 // Keep static image/frame trees out of the one-second countdown updates.
 const OrderTransportArt=React.memo(VehicleArt);
 const durationBand=(seconds:number)=>seconds<=300?'Kurz':seconds<=900?'Mittel':'Lang';
-const transportSummary=(o:any,seconds?:number)=>`${o.transportLabel||({international:'Fernverkehr',city:'Stadtverkehr',national:'Nahverkehr'} as Record<string,string>)[o.category]||'Nahverkehr'} · ${seconds!=null?durationBand(seconds):o.durationBand||durationBand(o.durationSeconds??o.forecast?.seconds??0)}`;
 const unavailable=(o:any)=>o.vehicleStatus==='missing'?'Passender LKW fehlt':'Passender LKW im Einsatz';
 const rankStyle=(rank:number)=>rank===3?{backgroundColor:C.blueWash,borderColor:C.rare,borderLeftColor:C.rare}:rank===2?{backgroundColor:C.greenWash,borderColor:C.uncommon,borderLeftColor:C.uncommon}:{backgroundColor:C.raised,borderColor:C.common,borderLeftColor:C.common};
 const expeditionRank=(job:any)=>[1,2,3].includes(job.tier)?job.tier:1;
@@ -116,76 +113,4 @@ export function RunningOrders({data,clock,busy,onOpen,onClaim,onMission}:any){
 
 }
 
-function VehicleOrderQuote({quote:q,selected=false,onSelect,busy,active=false,relationship=0,card}:any){
- const [expanded,setExpanded]=useState(false);
- const metric=(label:string,value:string,profit=false)=><View style={styles.metric}><Txt muted style={styles.metricLabel}>{label}</Txt><Txt style={[styles.metricValue,profit&&{color:q.totalProfit<0?C.red:C.accent}]}>{value}</Txt></View>;
- const facts=<>
-  <Row style={{marginBottom:7,flexWrap:'nowrap'}}>{card&&<VehicleArt card={card} style={{width:48}}/>}<Txt style={{fontWeight:'700',flex:1}}>{q.model} · {n(q.capacity,1)} t</Txt>{onSelect&&<View style={{width:20}}>{selected&&<Icon name="check" size={18} color={C.accent}/>}</View>}</Row>
-  <View style={styles.metrics}>
-   {metric(active?'Resttouren':'Touren',n(q.trips+(active?1:0)))}
-   {metric(active?'Restzeit':'Dauer',minutes(q.seconds))}
-   {metric('XP',n(q.xp,2))}
-   {metric('Gewinn',`${n(q.totalProfit,2)}`,true)}
-  </View>
- </>;
- const fact=(label:string,value:string)=><Row style={{marginBottom:5}}><Txt muted style={styles.small}>{label}</Txt><Txt style={styles.small}>{value}</Txt></Row>;
- return <View style={[styles.vehicle,selected&&{borderColor:C.accent,backgroundColor:C.greenWash}]}>
-  {onSelect?<Pressable accessibilityRole="button" accessibilityLabel={translate(`${q.model}, ${q.id} auswählen`)} accessibilityState={{selected,disabled:busy}} disabled={busy} onPress={onSelect}>{facts}</Pressable>:facts}
-  <Pressable accessibilityRole="button" accessibilityLabel={translate(expanded?'Weniger Infos':'Weitere Infos')} accessibilityState={{expanded}} onPress={()=>setExpanded(value=>!value)} hitSlop={{top:7,bottom:7}} style={styles.quoteDisclosure}><Txt style={styles.metricLabel}>{expanded?'Weniger Infos':'Weitere Infos'}</Txt><Icon name="chevron" size={13} style={{transform:[{rotate:expanded?'90deg':'0deg'}]}}/></Pressable>
-  {expanded&&<View style={styles.quoteDetails}>
-   {fact('Auftragsertrag',`${n(q.revenue,2)}`)}
-   {fact('Betriebskosten',`${n(q.cost,2)}`)}
-   {fact('Abschlussprämie',`${n(q.bonus,2)}`)}
-   {!!relationship&&fact('Beziehung',`+${relationship}`)}
-   <Txt muted style={styles.metricLabel}>Gewinn inklusive Abschlussprämie.</Txt>
-   {active&&<Txt muted style={styles.metricLabel}>Laufende Tour gespeichert, Folgetouren mit aktuellen Werten. XP und Gewinn gelten für den gesamten Auftrag.</Txt>}
-  </View>}
- </View>;
-}
-function PossibleOrderRewards({labels,modalBlocked=false}: {labels:string[];modalBlocked?:boolean}){
- const [open,setOpen]=useState(false);
- const appearance=(label:string):{icon:IconName;color:string}=>{
-  if(label.includes('Common-Zahnräder'))return {icon:'gear',color:rarityColor('common')};
-  if(label.includes('Uncommon-Zahnräder'))return {icon:'gear',color:rarityColor('uncommon')};
-  if(label.includes('Rare-Zahnräder'))return {icon:'gear',color:rarityColor('rare')};
-  if(label.includes('Lieferantenkontakte'))return {icon:'customers',color:C.gold};
-  if(label.includes('Firmenausbau-Items'))return {icon:'company',color:C.gold};
-  if(label.includes('Sonderauftrag'))return {icon:'projects',color:rarityColor('rare')};
-  return {icon:'reward',color:C.gold};
- };
- return <Card style={{padding:12}}><Row style={{marginBottom:4,flexWrap:'nowrap'}}><Txt style={[styles.small,{flex:1}]}>Mögliche Belohnungen</Txt><Btn icon="help" iconOnly secondary onPress={()=>setOpen(true)}>Mögliche Belohnungen</Btn></Row><View style={styles.possibleRewards}>{labels.map(label=>{
-  const {icon,color}=appearance(label);
-  return <Pressable key={label} accessibilityRole="button" accessibilityLabel={translate(label)} onPress={()=>setOpen(true)} style={[styles.possibleItem,{borderColor:color}]}>{icon==='gear'?<ItemArt id={`gear:${label.includes('Uncommon')?'uncommon':label.includes('Rare')?'rare':'common'}`} size={38}/>:icon==='customers'?<ItemArt id="supplierContacts" size={38}/>:icon==='company'?<ItemArt id="companyItems" size={38}/>:icon==='projects'?<ItemArt id="special" size={38}/>:<Icon name={icon} color={color} size={24}/>}</Pressable>;
- })}</View><ExpeditionPlaceModal visible={open&&!modalBlocked} title="Mögliche Belohnungen" onClose={()=>setOpen(false)}>{labels.map(label=><Txt key={label} style={{marginBottom:8}}>{label}</Txt>)}</ExpeditionPlaceModal></Card>;
-}
-
-export function OrderDetail({data,id,busy,clock,onCommand,onBack,onSwitch,modalBlocked=false}:any){
- const o=data.state.orders.find((o:any)=>o.id===id&&!o.isProject);
- const [picking,setPicking]=useState(false);
- if(!o)return <Card><Txt muted>Angebot nicht mehr verfügbar.</Txt><Btn secondary onPress={onBack}>Zur Übersicht</Btn></Card>;
- const active=o.status==='active',done=o.status==='completed',forecast=o.forecast;
- const truck=data.state.trucks.find((t:any)=>t.id===o.truckId);
- const fact=(label:string,value:string)=><Row><Txt muted>{label}</Txt><Txt style={{textAlign:'right'}}>{value}</Txt></Row>;
- const reward=o.completionReward;
- return <>
-  <Card><Row><OrderArtwork cargo={o.cargo} size={44}/><Txt style={[styles.title,{flex:1}]}>{o.cargo}</Txt><Txt muted style={styles.small}>{o.id}</Txt></Row><Txt muted>{transportSummary(o,!active&&!done?forecast?.seconds:undefined)}</Txt><Row style={{marginTop:12}}><Txt>{n(o.volume,1)} t · {n(o.distance)} km</Txt><Pill gold={!!o.customer}>{o.customer?o.customerName:o.routeType==='dual'?'Dual Way':'Single Way'}</Pill></Row>
-   {active&&<><Bar value={progress(o,clock)}/>{fact('LKW',truck?.model||'—')}{fact('Restzeit',remaining(o.runningEndsAt||clock,clock))}{fact('Geliefert',`${n(o.delivered,1)} / ${n(o.volume)} t`)}
-    {o.pendingTruckName&&<Txt gold style={styles.small}>Ab nächster Tour: {o.pendingTruckName}</Txt>}
-    <Btn secondary disabled={busy} onPress={()=>onSwitch(o)}>Fahrzeug für nächste Tour wechseln</Btn>
-   </>}
-  </Card>
-  {!done&&<PossibleOrderRewards labels={o.possibleRewards||[]} modalBlocked={modalBlocked}/>}
-  {!active&&!done&&<Card>
-   <Btn disabled={busy} style={{marginTop:0}} onPress={()=>setPicking(true)}>Fahrzeug wählen</Btn>
-   {!o.choices.length&&<Txt muted style={[styles.small,{marginTop:8}]}>{unavailable(o)}</Txt>}
-   {o.status==='available'&&<Btn secondary disabled={busy} onPress={()=>onCommand('pin',{id:o.id})}>{o.pinned?'Freigeben':'Angebot halten'}</Btn>}
-  </Card>}
-  {picking&&!active&&!done&&<OrderVehiclePicker key={o.id} data={data} choices={o.vehicleChoices||o.choices.map((q:any)=>({...q,free:true}))} summary={`${translate(o.cargo)} · ${n(o.volume,1)} t · ${n(o.distance)} km`} busy={busy} clock={clock} modalBlocked={modalBlocked} onClose={()=>setPicking(false)} onStart={async(truck:string)=>{
-   const next=await onCommand(o.kind==='private'?'assignPrivate':o.crafted?'assignCrafted':'assign',{order:o.id,truck});
-   return next?.state.orders.find((order:any)=>order.id===o.id)?.status==='active';
-  }}/>}
-  {active&&forecast&&<Card><Txt style={styles.title}>Fahrzeug</Txt><VehicleOrderQuote card={data.catalog.cards.find((card:any)=>card.id===truck?.cardId)} quote={{...forecast,seconds:Math.max(0,((o.runningEndsAt||clock)-clock)/1000)}} active relationship={o.relationshipReward}/></Card>}
-  {done&&reward?<Card><Txt style={[styles.title,{marginBottom:12}]}>Abschlussprämie</Txt>{fact('Imperium-Taler',`${n(reward.coins,2)}`)}{Object.entries(reward.gears||{}).filter(([,amount])=>Number(amount)>0).map(([rarity,amount])=><View key={rarity}><ItemAmount id={`gear:${rarity}`} label={`${data.catalog.rarities.find((r:any)=>r.id===rarity)?.label||rarity}-Zahnräder`} amount={Number(amount)}/></View>)}{reward.companyItems>0&&<ItemAmount id="companyItems" amount={reward.companyItems}/>}{reward.capacityModule&&<ItemAmount id="capacityModules" amount={1}/>}{reward.supplierContacts>0&&<ItemAmount id="supplierContacts" amount={reward.supplierContacts}/>}{!reward.claimedAt?<Btn disabled={busy} onPress={()=>onCommand('claim',{id:o.id})}>Prämie abholen</Btn>:<Txt muted>Abgeholt</Txt>}</Card>:null}
- </>;
-}
-const styles=StyleSheet.create({compactOffer:{position:'relative',paddingHorizontal:8,paddingVertical:6,minHeight:90},offerMain:{flexDirection:'row',alignItems:'center',gap:9,minHeight:84},offerCargo:{width:'29%',alignSelf:'stretch',position:'relative',overflow:'hidden'},offerDivider:{width:StyleSheet.hairlineWidth,alignSelf:'stretch',backgroundColor:C.line,marginVertical:2},offerCopy:{flex:1,minWidth:0},offerTitle:{paddingRight:30},offerFacts:{flexDirection:'row',flexWrap:'wrap',columnGap:13,rowGap:2,marginTop:4,paddingRight:25},offerFact:{flexDirection:'row',alignItems:'center',gap:6},factValue:{fontSize:11,lineHeight:16},pinButton:{position:'absolute',right:6,top:3,width:44,height:44,alignItems:'center',justifyContent:'center',borderRadius:22,backgroundColor:C.raised,borderWidth:1,borderColor:C.line},customerLine:{flexDirection:'row',flexWrap:'wrap',alignItems:'center',columnGap:6,rowGap:2},customerName:{flexShrink:1},customerBadge:{fontSize:9,lineHeight:14},leftTraits:{justifyContent:'flex-start',columnGap:9,rowGap:4,flexWrap:'wrap'},compactTrait:{flexShrink:0},traits:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:5,marginTop:6,borderTopWidth:StyleSheet.hairlineWidth,borderTopColor:C.line,paddingTop:5},trait:{flexDirection:'row',alignItems:'center',gap:4,flexShrink:1},traitLabel:{fontSize:11,lineHeight:16},signal:{width:15,height:14,flexDirection:'row',alignItems:'flex-end',gap:2,paddingBottom:1},directions:{height:19,width:18,justifyContent:'center'},tabs:{flexDirection:'row',gap:5,marginBottom:6},tab:{flex:1,minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:5,borderWidth:1,borderColor:C.line,backgroundColor:C.panel,borderRadius:5},activeTab:{backgroundColor:C.accent,borderColor:C.ink},tabLabel:{fontSize:12,fontWeight:'700'},tabCount:{fontSize:11,color:C.muted},selectedTabText:{color:C.onInk},metrics:{flexDirection:'row',flexWrap:'wrap',gap:6},metric:{width:'48%',minWidth:0,flexDirection:'row',alignItems:'baseline',gap:5},metricLabel:{fontSize:10,lineHeight:15},metricValue:{fontSize:11,lineHeight:16,fontWeight:'700',flexShrink:1},quoteDisclosure:{minHeight:30,flexDirection:'row',alignItems:'center',justifyContent:'space-between',borderTopWidth:1,borderTopColor:C.line,marginTop:5},quoteDetails:{paddingTop:2},possibleRewards:{flexDirection:'row',flexWrap:'wrap',gap:6},possibleItem:{width:44,height:44,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderRadius:6},possibleLabel:{fontSize:10,lineHeight:14,textAlign:'center'},title:{fontSize:15,fontWeight:'700'},small:{fontSize:12,lineHeight:17},section:{fontSize:13,fontWeight:'700',color:C.muted,marginTop:10,marginBottom:9},offer:{paddingHorizontal:9,paddingVertical:8,backgroundColor:C.panel,borderColor:C.line,borderLeftWidth:3,marginBottom:5},saved:{paddingHorizontal:10,paddingVertical:7,backgroundColor:C.panel,borderColor:C.line,minHeight:78},running:{paddingHorizontal:9,paddingVertical:8,backgroundColor:C.greenWash,borderColor:C.accent},refresh:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginBottom:8},refreshClock:{flexDirection:'row',alignItems:'center',gap:5,flexShrink:0},refreshTime:{fontSize:12,lineHeight:18,fontVariant:['tabular-nums']},refreshButton:{flex:1,maxWidth:210,minHeight:44,paddingHorizontal:10,paddingVertical:5,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderBottomWidth:3,borderColor:C.line,borderRadius:5},refreshButtonLabel:{fontSize:12,lineHeight:17,fontWeight:'700',textAlign:'center'},refreshCost:{fontSize:11,lineHeight:16,textAlign:'center'},runningCard:{paddingHorizontal:9,paddingVertical:9},runningMain:{flexDirection:'row',alignItems:'center',gap:10},transportArt:{width:80},runningCopy:{flex:1,minWidth:0},runningHeading:{flexDirection:'row',alignItems:'flex-start',gap:5},runningTitle:{flex:1,fontSize:14,lineHeight:19},countdown:{fontSize:11,lineHeight:19,fontVariant:['tabular-nums']},transportName:{fontSize:11,lineHeight:16,marginTop:1},delivery:{flexDirection:'row',alignItems:'center',gap:8,marginTop:3},deliveryCount:{fontSize:11,lineHeight:16},deliveryBar:{flex:1},savedMain:{flexDirection:'row',alignItems:'center',gap:9},savedCopy:{flex:1,minWidth:0},savedTitle:{fontSize:15,lineHeight:20,fontWeight:'700'},savedCount:{minWidth:28,minHeight:28,padding:4,borderWidth:1,borderColor:C.line,borderRadius:4,alignItems:'center',justifyContent:'center',backgroundColor:C.accent},savedCountText:{fontSize:14,fontWeight:'700',color:C.onInk},vehicle:{padding:10,borderWidth:1,borderColor:C.line,borderRadius:10,marginTop:10}});
+const styles=StyleSheet.create({compactOffer:{position:'relative',paddingHorizontal:8,paddingVertical:6,minHeight:90},offerMain:{flexDirection:'row',alignItems:'center',gap:9,minHeight:84},offerCargo:{width:'29%',alignSelf:'stretch',position:'relative',overflow:'hidden'},offerDivider:{width:StyleSheet.hairlineWidth,alignSelf:'stretch',backgroundColor:C.line,marginVertical:2},offerCopy:{flex:1,minWidth:0},offerTitle:{paddingRight:30},offerFacts:{flexDirection:'row',flexWrap:'wrap',columnGap:13,rowGap:2,marginTop:4,paddingRight:25},offerFact:{flexDirection:'row',alignItems:'center',gap:6},factValue:{fontSize:11,lineHeight:16},pinButton:{position:'absolute',right:6,top:3,width:44,height:44,alignItems:'center',justifyContent:'center'},customerLine:{flexDirection:'row',flexWrap:'wrap',alignItems:'center',columnGap:6,rowGap:2},customerName:{flexShrink:1},customerBadge:{fontSize:9,lineHeight:14},leftTraits:{justifyContent:'flex-start',columnGap:9,rowGap:4,flexWrap:'wrap'},compactTrait:{flexShrink:0},traits:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:5,marginTop:6,borderTopWidth:StyleSheet.hairlineWidth,borderTopColor:C.line,paddingTop:5},trait:{flexDirection:'row',alignItems:'center',gap:4,flexShrink:1},traitLabel:{fontSize:11,lineHeight:16},signal:{width:15,height:14,flexDirection:'row',alignItems:'flex-end',gap:2,paddingBottom:1},directions:{height:19,width:18,justifyContent:'center'},tabs:{flexDirection:'row',gap:5,marginBottom:6},tab:{flex:1,minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:5,borderWidth:1,borderColor:C.line,backgroundColor:C.panel,borderRadius:5},activeTab:{backgroundColor:C.accent,borderColor:C.ink},tabLabel:{fontSize:12,fontWeight:'700'},tabCount:{fontSize:11,color:C.muted},selectedTabText:{color:C.onInk},metrics:{flexDirection:'row',flexWrap:'wrap',gap:6},metric:{width:'48%',minWidth:0,flexDirection:'row',alignItems:'baseline',gap:5},metricLabel:{fontSize:10,lineHeight:15},metricValue:{fontSize:11,lineHeight:16,fontWeight:'700',flexShrink:1},quoteDisclosure:{minHeight:30,flexDirection:'row',alignItems:'center',justifyContent:'space-between',borderTopWidth:1,borderTopColor:C.line,marginTop:5},quoteDetails:{paddingTop:2},possibleRewards:{flexDirection:'row',flexWrap:'wrap',gap:6},possibleItem:{width:44,height:44,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderRadius:6},possibleLabel:{fontSize:10,lineHeight:14,textAlign:'center'},title:{fontSize:15,fontWeight:'700'},small:{fontSize:12,lineHeight:17},section:{fontSize:13,fontWeight:'700',color:C.muted,marginTop:10,marginBottom:9},offer:{paddingHorizontal:9,paddingVertical:8,backgroundColor:C.panel,borderColor:C.line,borderLeftWidth:3,marginBottom:5},saved:{paddingHorizontal:10,paddingVertical:7,backgroundColor:C.panel,borderColor:C.line,minHeight:78},running:{paddingHorizontal:9,paddingVertical:8,backgroundColor:C.greenWash,borderColor:C.accent},refresh:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginBottom:8},refreshClock:{flexDirection:'row',alignItems:'center',gap:5,flexShrink:0},refreshTime:{fontSize:12,lineHeight:18,fontVariant:['tabular-nums']},refreshButton:{flex:1,maxWidth:210,minHeight:44,paddingHorizontal:10,paddingVertical:5,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderBottomWidth:3,borderColor:C.line,borderRadius:5},refreshButtonLabel:{fontSize:12,lineHeight:17,fontWeight:'700',textAlign:'center'},refreshCost:{fontSize:11,lineHeight:16,textAlign:'center'},runningCard:{paddingHorizontal:9,paddingVertical:9},runningMain:{flexDirection:'row',alignItems:'center',gap:10},transportArt:{width:80},runningCopy:{flex:1,minWidth:0},runningHeading:{flexDirection:'row',alignItems:'flex-start',gap:5},runningTitle:{flex:1,fontSize:14,lineHeight:19},countdown:{fontSize:11,lineHeight:19,fontVariant:['tabular-nums']},transportName:{fontSize:11,lineHeight:16,marginTop:1},delivery:{flexDirection:'row',alignItems:'center',gap:8,marginTop:3},deliveryCount:{fontSize:11,lineHeight:16},deliveryBar:{flex:1},savedMain:{flexDirection:'row',alignItems:'center',gap:9},savedCopy:{flex:1,minWidth:0},savedTitle:{fontSize:15,lineHeight:20,fontWeight:'700'},savedCount:{minWidth:28,minHeight:28,padding:4,borderWidth:1,borderColor:C.line,borderRadius:4,alignItems:'center',justifyContent:'center',backgroundColor:C.accent},savedCountText:{fontSize:14,fontWeight:'700',color:C.onInk},vehicle:{padding:10,borderWidth:1,borderColor:C.line,borderRadius:10,marginTop:10}});

@@ -11,6 +11,7 @@ test('List holding is a separate action, respects authoritative slots, and alway
  const first=game.view.state.orders.find(o=>o.status==='available');
  let tree=render(first),buttons=nodes(tree,'Pressable'),pin=buttons.find(b=>b.props.testID===`order-pin-${first.id}`);
  assert.equal(pin.props.disabled,false);assert.equal(pin.props['aria-pressed'],false);
+ const hit=pin.props.style[0];assert.equal(hit.width,44);assert.equal(hit.height,44);assert.equal(hit.backgroundColor,undefined);assert.equal(hit.borderWidth,undefined);assert.equal(hit.borderRadius,undefined);
  pin.props.onPress({stopPropagation(){stopped++;}});
  assert.deepEqual(pinned,[first.id]);assert.deepEqual(opened,[]);assert.equal(stopped,1);
  buttons.find(b=>b.props.testID===`order-open-${first.id}`).props.onPress();assert.deepEqual(opened,[first.id]);

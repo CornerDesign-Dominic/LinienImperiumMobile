@@ -4,13 +4,13 @@ Implementierungsnotiz zum mobilen Quellstand. Frühere Testzahlen und Layoutprü
 
 ## Übersicht
 
-Drei Reiter: Laufende, Angebote, Aufträge. Angebote ist die erste Auswahl; bei einer Rückkehr aus den Details bleibt der Reiter erhalten. Alte Einstiege aus Vorräten navigieren zum Reiter Aufträge. Dort bleiben die bisherigen Auftragsgruppen und gestapelten Expeditionsaufträge verfügbar. Zurück geht innerhalb einer Gruppe zuerst zur Gruppenübersicht.
+Drei Reiter: Laufende, Angebote, Aufträge. Angebote ist die erste Auswahl; beim Öffnen und Schließen der Fahrzeugwahl bleiben Reiter, Gruppe und Scrollposition erhalten. Alte Einstiege aus Vorräten navigieren zum Reiter Aufträge. Dort bleiben die bisherigen Auftragsgruppen und gestapelten Expeditionsaufträge verfügbar. Zurück geht innerhalb einer Gruppe zuerst zur Gruppenübersicht.
 
 Laufende enthält aktive Einzelaufträge und aktive Endlos-Expeditionsaufträge. Fertige, noch nicht abgeholte Einzelaufträge und der gemeinsame Button Belohnungen abholen stehen oben. Ein Belohnungssymbol mit Anzahl am Reiter bleibt auch von den anderen Reitern aus sichtbar. Angebotswechsel und Countdown befinden sich ausschließlich bei Angebote.
 
 ## Fahrzeugwahl
 
-Die Auftragsdetails enthalten einen Button Fahrzeug wählen und kompakte Belohnungsicons mit Erklärung beim Antippen. Ein Modal zeigt geeignete Garagenfahrzeuge als Dreispalten-Kartenraster mit römischer Kartenstufe, Bild und Namen. Die normalen Fahrzeugwerte sind durch Touren, Gesamtdauer und Gesamtgewinn dieses Auftrags ersetzt.
+Antippen eines verfügbaren oder gespeicherten Einzelauftrags öffnet direkt die bestehende Fahrzeugwahl; eine Detailseite gibt es nicht mehr. Die Angebotsliste und das Modal erhalten keine zusätzlichen Inhalte. Ein Modal zeigt geeignete Garagenfahrzeuge als Dreispalten-Kartenraster mit römischer Kartenstufe, Bild und Namen. Die normalen Fahrzeugwerte sind durch Touren, Gesamtdauer und Gesamtgewinn dieses Auftrags ersetzt.
 
 Keine Vorauswahl. Antippen markiert nur die Karte. Erst danach erscheint am unteren Modalrand ein schwebender Startbereich mit ausgewähltem Fahrzeug, Dauer, Gewinn und Auftrag starten. Der Bereich bleibt beim Scrollen sichtbar; die Liste erhält entsprechenden unteren Abstand. Auswahl und Sortierung bleiben vor dem Start änderbar. Ein Seltenheitswechsel entfernt die Auswahl, damit kein unsichtbares Fahrzeug gestartet wird. Schließen und erneutes Öffnen beginnt ohne Auswahl.
 
@@ -18,7 +18,11 @@ Die Sortierung hat zwei dauerhaft sichtbare Buttons nebeneinander: Gewinn und Ge
 
 Die Serveransicht liefert vehicleChoices inklusive geeigneter belegter Fahrzeuge; die bisherigen choices enthalten für ältere Clients weiterhin nur freie Fahrzeuge. Sämtliche normalen Auftragszahlen stammen aus denselben Dauer-/Ertragsfunktionen wie der tatsächliche Start. jobChoices liefert dieselben Werte für gespeicherte Expeditionsaufträge einschließlich der vorhandenen 15-Sekunden-Testbegrenzung und des dort geltenden Münzertrags. Es werden keine Preise oder Zeiten vom Client an den Server übergeben.
 
-Auftrag starten sendet den bestehenden passenden Befehl assign, assignPrivate, assignCrafted oder mission. Ein lokaler Sperrverweis und deaktivierte Bedienelemente verhindern Doppelstarts. Nur bestätigte Starts schließen das Modal und wechseln zu Laufende; bei Fehlern bleibt eine erneute Auswahl bzw. ein erneuter Versuch möglich. Die Zuweisungsprüfung auf dem Server bleibt maßgeblich.
+Auftrag starten sendet den bestehenden passenden Befehl assign, assignPrivate, assignCrafted oder mission. Ein lokaler Sperrverweis und deaktivierte Bedienelemente verhindern Doppelstarts. Nur bestätigte Starts schließen das Modal; der ursprüngliche Reiter und die Vorratsgruppe bleiben erhalten, außerhalb der Auftragsliste gestartete Aufträge wechseln zu Laufende; bei Fehlern bleibt eine erneute Auswahl bzw. ein erneuter Versuch möglich. Die Zuweisungsprüfung auf dem Server bleibt maßgeblich.
+
+Die Pinnadel der Angebotsliste hat keinen sichtbaren Kreis, Hintergrund oder Rand mehr. Die unsichtbare 44-Pixel-Tippfläche und die getrennte Halteaktion bleiben erhalten; ein Tipp auf die Nadel öffnet keine Fahrzeugwahl. Laufende Aufträge öffnen direkt die vorhandene Ersatzfahrzeugauswahl, ohne Startauswahl für einen bereits laufenden Auftrag.
+
+Aktuelle gezielte Prüfung: Typprüfung und 18 Tests erfolgreich; kein neuer Export oder physischer Gerätetest. Noch nicht veröffentlicht.
 
 ## Historische Verifikation bei Einführung
 
