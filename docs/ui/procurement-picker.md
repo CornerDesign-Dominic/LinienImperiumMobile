@@ -1,9 +1,11 @@
-# Beschaffung: Fahrzeugauswahl
+# Beschaffung: Orts- und Fahrzeugauswahl
 
-Aktuelle Referenz zu `src/Procurement.tsx` (Quellstand 03.11.2026). Die frühere dreispaltige Auswahl nur freier Fahrzeuge ist ersetzt.
+Gesammelt, nicht veröffentlicht (04.11.2026). Zwei Schritte bleiben erhalten: zuerst ausschließlich Region wählen, danach Fahrzeuge und Touren planen.
 
-Das Planungsmodal zeigt Garagentransporte direkt in zwei Spalten. Jede Karte enthält das vorhandene Fahrzeugbild, den vollständigen Namen und die vom Server berechnete Dauer je Tour. Mehrere freie Fahrzeuge sind auswählbar; erneut antippen entfernt die Auswahl. Haken und Status kennzeichnen gewählte Fahrzeuge. Belegte Fahrzeuge bleiben sichtbar, ausgegraut und deaktiviert. Höchstens zehn Fahrzeuge dürfen gewählt werden.
+Die Regionskarten zeigen links ein kleines vorhandenes Regionsbild, rechts den aktuellen Regionsnamen und den Serverpreis je Tour mit dem bestehenden Imperium-Taler-Bild. Gesperrte Regionen sind leicht ausgegraut, mit Schloss gekennzeichnet und deaktiviert. Kein Expeditionslink und keine neue Beute- oder Dauervorschau in diesem Dialog.
 
-Kapazität und Rohgeschwindigkeit werden nicht zusätzlich wiederholt. Die Dauer verwendet dieselbe Berechnung wie die Beschaffung; der Client erfindet keine eigene Laufzeit. Tourenzahl beziehungsweise Reserve und Startvalidierung bleiben serverseitig. Auswahldaten werden bei neuen Serverantworten mit dem Frei-Status abgeglichen.
+Das Planungsmodal zeigt Garagentransporte in drei Spalten. Vorhandene Fahrzeugbilder mit Seltenheitsfassung, vollständige umbrechende Namen, tatsächliche serverberechnete Dauer je Tour und Auswahlstatus bleiben erhalten. Mehrfachauswahl bis zehn Fahrzeuge, belegte deaktivierte Fahrzeuge, Feste Tourenzahl/Bis Reserve, Max und Startvalidierung bleiben unverändert. Die Karte wächst bei langen Texten; keine feste Höhe oder Ellipse.
 
-Details zum gemeinsamen Tourenvorrat: [Beschaffungsgruppen](procurement-groups.md). Übersicht und Ablaufdialog: [Beschaffungsübersicht](procurement-overview.md). Frühere Testberichte zur alten Dreispaltenauswahl sind keine Layoutprüfung dieser Fassung; aktuelle Prüfbezüge stehen in [tests/README.md](../../tests/README.md).
+Gezielte Komponentenprüfungen decken Bilder, Münzsymbol, gesperrte Ortswahl ohne Expeditionslink, drei Spalten, tatsächliche Tourdauer, Mehrfachauswahl und die übertragenen Fahrzeug-IDs ab. Drei Komponentenprüfungen lokal mit den bereits vorhandenen React-/TypeScript-Abhängigkeiten erfolgreich; kein neuer Geräte-/Exportnachweis. Vor Veröffentlichung über den normalen Workflow prüfen.
+
+[Beschaffungsgruppen](procurement-groups.md) · [Beschaffungsübersicht](procurement-overview.md)
