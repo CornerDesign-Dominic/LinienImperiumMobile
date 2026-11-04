@@ -44,3 +44,7 @@ Die Tabelle hält belegte Restpunkte fest; sie beauftragt keine neue Spielfunkti
 ## Gesammelt: Punktestand nur im Verteilbutton
 
 Separate Anzeige „Verfügbare Punkte“ in der oberen Handelsimperiumkarte inklusive Zeile entfernt, unabhängig vom Guthaben. Bei positiven Punkten bleibt der vorhandene Verteilbutton mit Anzahl; Basismaxima und Verteilmodal unverändert. Fünf gezielte Komponentenprüfungen erfolgreich. Noch nicht veröffentlicht.
+
+## Gesammelt: Regionale Übergabescheine verziert
+
+Alle fünf Abschlussbilder ersetzt: kleinere regional verzierte Pergamente auf sichtbaren Tischen, passende Schleifen und plastisch geprägte Wachssiegel; je zwei dezente regionale Dekostücke. Die echte, übersetzbare Beschriftung bleibt erhalten und wird in zurückhaltender sepiafarbener historischer Serifenschrift in der freien Papiermitte gesetzt. Kundenname bleibt dynamisch, Abschluss-/Abhollogik unverändert. Fünf Produktions-JPEGs 1200 × 800, Motive visuell geprüft, vollständig dekodiert und Upload-Blob-SHAs abgeglichen; Typprüfung erfolgreich. Kein physischer Gerätetest. Neue Prompt-Provenienz: assets/art/project-stories/receipt-redesign-prompts.json. Noch nicht veröffentlicht.
