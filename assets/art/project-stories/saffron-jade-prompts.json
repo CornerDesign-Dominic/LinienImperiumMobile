@@ -38,10 +38,19 @@
   {
     "region": "saffron",
     "stage": 4,
-    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Two porters carry carvedcedar brasscornerchest of amber essence bottles through richly detailed spicecourtyard toward creamrobed indigosashed merchant at carved tradingroom doorway, final handover location, carpetshade and brass incenseburner. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
-    "method": "builtin image_gen",
-    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-4c818e57-b8cb-4eec-b943-2bcd8d78a012.png",
-    "file": "saffron/stage-4.jpg"
+    "prompt": "Edit this production story illustration, maintaining its richly detailed painterly realistic historical fantasy style, warm light, landscape 3:2 composition and beautiful Safranstraße courtyard with carved sandstone shop, spice baskets and essence bottles, fountain, greenery, welcoming merchant at right. Correct ONLY the physically impossible crate-carrying mechanism. The ornate reddish brown CLOSED chest is cargo being delivered by two porters toward the merchant. Rebuild its carry support convincingly: chest hangs noticeably BELOW wooden shoulder carrying poles with a clear visible AIR GAP between pole and lid. Use sturdy thick rope slings looped OVER poles and running vertically DOWN outside the chest and completely UNDER the chest to support its weight, like a real suspended cargo sling. Make the supporting slings clearly visible and easy to understand, two load-bearing bands under the chest. Poles stay entirely OUTSIDE and ABOVE the chest, do not pass through its walls, corners, lid or brass hardware. No wooden poles emerging from or merging into the crate. Porters have natural anatomy and plausible hands supporting the pole ends on shoulders. If two poles cause confusing overlap, use a single straight shoulder pole supported by the two porters in front and behind, with the closed chest hanging below it in two clearly visible under-crate rope slings; absolutely prioritize mechanically credible carry geometry. Keep crate and porters clear of merchant and steps. Cargo remains fully closed and latched, no exposed contents. No text, labels, UI, borders, or modern objects. Deliver finished landscape illustration, 1200x800 desired.",
+    "method": "builtin image_gen edit",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-22d69ae0-c16d-443c-99c7-8dad24d090d1.png",
+    "file": "saffron/stage-4.jpg",
+    "previousPrompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Two porters carry carvedcedar brasscornerchest of amber essence bottles through richly detailed spicecourtyard toward creamrobed indigosashed merchant at carved tradingroom doorway, final handover location, carpetshade and brass incenseburner. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "previousOriginal": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-4c818e57-b8cb-4eec-b943-2bcd8d78a012.png",
+    "editReference": "saffron/stage-4.jpg (previous production artwork)",
+    "revision": "2026-11-04: closed chest suspended below a single shoulder pole in two visible supporting rope slings; removed crate-penetrating poles",
+    "processing": "Resized to 1200x800 RGB JPEG, quality 88, optimized. No compositing or baked UI.",
+    "width": 1200,
+    "height": 800,
+    "bytes": 375404,
+    "git_blob_sha": "89bc1dbb20f46f0ec71634cc28f8e9f9f53c92ff"
   },
   {
     "region": "saffron",

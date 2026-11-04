@@ -71,3 +71,7 @@ Kundendetails zeigen drei normale Produkte plus Edelware nebeneinander mit beste
 ## Gesammelt: Handelssitz im Handelsimperium
 
 Neue obere Karte mit prächtigem Säulenbau und einheitlichen Kisten-Lorbeer-Siegeln auf burgunderroten Bannern; Bild und kompakter Punkteteil verbunden. Titel „Entwicklung“ entfernt. Tatsächlicher gemeinsamer Ausbaupunktestand, permanente Basismaxima und bestehende manuelle Verteilung bleiben maßgeblich; null Punkte erzeugen keinen Verteilbutton. Hero maximal 210 logische Pixel, unterer Imperiumsausbau unverändert. Typprüfung und zwölf gezielte Komponententests erfolgreich; Produktions-JPEG visuell/dekodiert und Upload-SHA geprüft. Kein neuer Geräte-/Exporttest. Noch nicht veröffentlicht. [Details](docs/ui/point-allocation.md).
+
+## Gesammelt: Safranstraßen-Tragekiste korrigiert
+
+Das fünfte Geschichtsbild (80–99 %) ist ersetzt: Die geschlossene, verzierte Kiste hängt mit erkennbarem Abstand unter einer durchgehenden Schulterstange. Zwei kräftige Seilschlingen um und unter der Kiste tragen die Last; Holzstangen durchdringen weder Kistenkörper noch Beschläge. Gewürzhof, Essenzflaschen und empfangender Händler bleiben erhalten. Motiv und Tragemechanik visuell geprüft, Produktions-JPEG 1200 × 800 vollständig dekodiert und Git-Blob-SHA beim Upload abgeglichen. Kein neuer App-Export oder Gerätetest. Noch nicht veröffentlicht.
