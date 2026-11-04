@@ -42,3 +42,7 @@ Die Tabelle hält belegte Restpunkte fest; sie beauftragt keine neue Spielfunkti
 - Nach Abschluss den Eintrag entfernen oder mit Nachweis in die Historie übernehmen; keine vollständigen Modulbeschreibungen hier duplizieren.
 - Spielveröffentlichungen erfolgen weiterhin auf ausdrücklichen Wunsch über den dokumentierten Workflow. Dokumentationspflege startet keinen manuellen Release und setzt keinen Veröffentlichungsmarker.
 
+
+## Gesammelt: Angebotsmodal – Aktualisieren
+
+Der Bestätigungsbutton im Modal „Neue Angebote?“ heißt „Aktualisieren“ (Englisch „Refresh“), beim Speichern „Wird aktualisiert …“. Preis bleibt separat sichtbar; Kosten, gehaltene Angebote und Bestätigungslogik bleiben unverändert. Nur Beschriftung und Übersetzung geprüft; kein neuer Release. Das Beispiel für kompaktere Großauftragskarten ist ein Entwurf, noch keine beauftragte Layoutänderung.
