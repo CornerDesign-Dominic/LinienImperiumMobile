@@ -3,9 +3,39 @@
   "stages": [
     "Inside sunlit European goldsmith atelier circa1800: elderly artisan carefully sets ruby into gold necklace using tiny tools at wooden workbench; casket open next to him. Workshop windows show tiled town roofs. Focus on actual craftsmanship, no carriage needed.",
     "Outside goldsmith shop in cobbled courtyard: courier carefully packs ruby necklace into velvet casket, guards beside him; horsecarriage ready behind, departure preparations.",
-    "Elevated landscape view: the two bay horses pull dark carriage across an old stonebridge through deep green forest over river; burgundy guards escort, warm late-afternoon light.",
-    "Elevated medium-wide view: same dark carriage and guards arrive at fortified prosperous town gate with royal banners, tiled roofs and merchants beyond, late-afternoon.",
+    "Elevated landscape view: two bay horses pull closed black-and-gold carriage across old stonebridge through wooded river valley toward royal town. Curtains drawn behind closed window glass; securely locked jewelry casket hidden inside, no exposed jewelry or open lid. Burgundy/gold mounted guards escort. Any sheathed sword sits naturally outside rider's left leg without crossing horse anatomy; credible reins, harness and wheels.",
+    "Ceremonial arrival before royal town gate: stopped black-and-gold carriage, calm bay horses, young teal-coated messenger just stepping down from open side doorway with one foot on carriage step and one descending. Burgundy/gold guards lined up and bystanders watch him. Nearby attendant holds only closed latched walnut casket; no visible jewels. Warm riverside royal town architecture, natural limbs and sheathed weapons.",
     "Final approach inside royal tradinghouse courtyard: courier carries same closed walnutcasket in both hands walking up stone steps, two burgundy guards respectfully beside him, grand doorway and waiting receiver, no actual handover.",
     "ONLY an antique blank royal delivery receipt scroll seen straight overhead on muted darkwood surface. Fine ivory parchment, delicately curled ends, subtle gold royal ornaments and laurel motifs around narrow edges, burgundy waxseal bottomcorner; large CLEAN EMPTY center for app-localized text. No people, no landscape, no text or fake writing. Landscape3:2."
+  ],
+  "revisions": [
+    {
+      "date": "2026-11-04",
+      "asset": "stage-2.jpg",
+      "tool": "image_gen.imagegen",
+      "reference": "stage-2.jpg (previous production image)",
+      "prompt": "Use case: precise-object-edit. Edit the supplied historical game illustration, preserving the same coherent black and gold closed passenger carriage, burgundy-and-gold mounted guards, wooded stone bridge over rushing river, distant royal riverside town and castle, late afternoon lighting, detailed realistic painterly art, landscape 3:2. CRITICAL FIX 1: The valuable jewelry must be securely transported out of sight. Replace the open side window/passenger displaying an open jewelry box with a proper CLOSED glass carriage window, subtle natural reflections and fully drawn burgundy curtains behind the glass. No jewelry, no open casket, no hands holding cargo at a window; the locked jewelry casket is inside behind curtains and not visible. CRITICAL FIX 2: Fix both mounted escorts' weapon geometry. Their swords stay safely inside closed dark leather sheaths attached naturally to the riders' LEFT hips with believable short suspension straps, resting outside their own left thigh, never extending through the horse's body or across the wrong side. Use natural cloak occlusion for the nearest guard's sheath if needed, do not force a visible blade. No drawn weapons, no loose floating sword, no sword crossing horse or rider anatomy. Keep two guards and the carriage driver, all traveling toward the distant town along the bridge, anatomically correct horses, coherent reins, harness, wheels and axle. Preserve composition and recognizable setting, improve only secure transport and correct equipment. No text, UI, colored route line or overlay.",
+      "reason": "Protect jewelry inside closed carriage; correct escort weapon geometry.",
+      "output": {
+        "width": 1200,
+        "height": 800,
+        "format": "JPEG",
+        "gitBlobSha": "3f6c122a95f6da3e0d088596ca4bad8618a2b30a"
+      }
+    },
+    {
+      "date": "2026-11-04",
+      "asset": "stage-3.jpg",
+      "tool": "image_gen.imagegen",
+      "reference": "stage-3.jpg (previous production image)",
+      "prompt": "Use case precise-object-edit. Correct the supplied historical trading-game illustration, preserving the recognizable rich black/gold horse carriage, the young curly dark-haired messenger in petrol teal coat, burgundy/gold uniformed guards, warm stone royal city gate and bustling riverside town with castle beyond, 3:2 landscape painterly realism, lateafternoon sunlight. Change the action to a dignified ceremonial ARRIVAL just outside the city gate: carriage is clearly STOPPED on the cobbled approach, both horses standing calmly with all hooves grounded, carriage SIDE DOOR OPEN. The messenger is JUST STEPPING DOWN FROM THE CARRIAGE: one foot on the carriage's small lower door-step, the other descending toward the ground, one hand steadying himself at doorframe, clearly connected spatially to open doorway, NOT already walking along road, not floating, not duplicated. A single small CLOSED dark walnut jewelry casket with gold latch may be held securely by a nearby attendant; no open jewelry boxes or exposed jewels anywhere. Guards are formally lined up to greet and protect him, their bodies/faces and watching bystanders clearly oriented toward the messenger as he exits. Compose the messenger at center by the open door, with respectful burgundy guards forming a welcoming line on either side, not facing away toward empty gate. No violent or threatening action. Any escort weapon must be sheathed and anatomically natural, no blade or scabbard through a horse. Preserve fine architectural detail, plausible wagon wheels/axles/reins, human limbs and exit posture. Closed luggage, ceremonial guards, all attention on arrival. No text/UI/map overlays.",
+      "reason": "Show actual ceremonial arrival and messenger exiting carriage, with closed secure casket.",
+      "output": {
+        "width": 1200,
+        "height": 800,
+        "format": "JPEG",
+        "gitBlobSha": "d8daf85b9541be149b1126c1dbad5629ff8a6577"
+      }
+    }
   ]
 }

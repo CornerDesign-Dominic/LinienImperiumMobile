@@ -75,3 +75,7 @@ Neue obere Karte mit prächtigem Säulenbau und einheitlichen Kisten-Lorbeer-Sie
 ## Gesammelt: Safranstraßen-Tragekiste korrigiert
 
 Das fünfte Geschichtsbild (80–99 %) ist ersetzt: Die geschlossene, verzierte Kiste hängt mit erkennbarem Abstand unter einer durchgehenden Schulterstange. Zwei kräftige Seilschlingen um und unter der Kiste tragen die Last; Holzstangen durchdringen weder Kistenkörper noch Beschläge. Gewürzhof, Essenzflaschen und empfangender Händler bleiben erhalten. Motiv und Tragemechanik visuell geprüft, Produktions-JPEG 1200 × 800 vollständig dekodiert und Git-Blob-SHA beim Upload abgeglichen. Kein neuer App-Export oder Gerätetest. Noch nicht veröffentlicht.
+
+## Gesammelt: Kronenlande sicherer Transport und feierliche Ankunft
+
+Zwei Geschichtsbilder ersetzt: Auf der Steinbrücke bleibt der Schmuck sicher in der geschlossenen Kutsche; Glasfenster und Vorhänge sind geschlossen, Wachwaffen plausibel am Reiter geführt. Vor dem Stadttor hält dieselbe schwarz-goldene Kutsche, der Bote steigt gerade aus; aufgereihte Wachen und Zuschauer begrüßen ihn, die Schatulle bleibt verschlossen. Keine Änderungen an Fortschritt oder Spiellogik. Beide Motive visuell geprüft, Produktions-JPEGs mit je 1200 × 800 vollständig dekodiert und hochgeladene Git-Blob-SHAs mit den lokalen Dateien abgeglichen. Prompts und Änderungsherkunft dokumentiert. Noch nicht veröffentlicht.
