@@ -64,7 +64,7 @@ export function ProjectBrief({info}:any){
 function ProjectInfo({info,onExpedition,onCustomers}:any){
  return <>
   <Card>{fact('Umfang',`${n(info.volume)} t · ${n(info.distance)} km`)}{fact('Frist',minutes(info.deadlineMs/1000))}<Txt muted style={s.small}>Beginnt beim Start · mind. 1 Karte in einer Flotte</Txt></Card>
-  <Card><Txt style={[s.title,{marginBottom:12}]}>Belohnungen</Txt>{fact('Basisfracht',`${n(info.freight,2)}`)}{fact('Abschlussprämie',`${n(info.premium,2)}`)}{fact('Basis-XP',n(info.baseXp))}{fact('Beziehung',`+${info.relationship}`)}<Txt muted style={s.small}>Fahrzeugboni und Betriebskosten kommen hinzu.</Txt>
+  <Card><Txt style={[s.title,{marginBottom:12}]}>Belohnungen</Txt>{fact('Basisfracht',`${n(info.freight)}`)}{fact('Abschlussprämie',`${n(info.premium)}`)}{fact('Basis-XP',n(info.baseXp))}{fact('Beziehung',`+${info.relationship}`)}<Txt muted style={s.small}>Fahrzeugboni und Betriebskosten kommen hinzu.</Txt>
    <Txt style={[s.title,{marginVertical:12}]}>Beute</Txt><View style={{flexDirection:'row',gap:6,marginBottom:8}}>{['common','uncommon','rare','epic',...(info.legendary?['legendary']:[])].map(rarity=><ItemArt key={rarity} id={`gear:${rarity}`} size={36}/>)}<ItemArt id="capacityModules" size={36}/></View><Txt muted style={s.small}>Common-/Uncommon-/Rare-Zahnräder · tkm-abhängig</Txt>
    <Txt muted style={s.loot}>{info.epicMin}–{info.epicMax} Epic-Zahnräder · {n(info.epicChance,2)} %</Txt>
    {info.legendary&&<Txt muted style={s.loot}>{info.legendary.min} Legendär-Zahnrad · {n(info.legendary.extraChance)} % für +1</Txt>}

@@ -24,7 +24,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
   const amount=summary[id]||0;
   if(amount>0)rewards.push({id,label:itemName(id,amount),amount,icon,color:C.accent});
  }
- const amountText=(reward:Reward)=>`+${n(reward.amount,reward.id==='coins'||reward.id==='xp'?2:0)}`;
+ const amountText=(reward:Reward)=>`+${n(reward.id==='coins'?Math.round(reward.amount):reward.amount,reward.id==='xp'?2:0)}`;
  return <View style={styles.content}>
   <View style={styles.source}>
    <Txt muted style={styles.sourceText}>{summary.source||'Einzelaufträge'}</Txt>

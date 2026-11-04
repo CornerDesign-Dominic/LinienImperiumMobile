@@ -159,7 +159,7 @@ function Game(){
    case 'company':return <><DevelopmentCard data={data} busy={busy} onCommand={act} modalBlocked={!!sheet||levelNotices.length>0}/><TransportSummary data={data} onImprove={()=>go('transportUpgrade')}/></>;
    case 'transportUpgrade':return <TransportEditor data={data} busy={busy} onSave={(upgrades:any[])=>act('transportBatch',{upgrades})} onInventory={()=>go('inventory')}/>;
    case 'dealer':return <Card><Txt muted>Boten werden direkt in der Botenstation angeworben und ausgebaut.</Txt><Btn onPress={()=>go('hub')}>Zur Botenstation</Btn></Card>;
-   case 'hub':return <HubScreen data={data} busy={busy} clock={clock} onCommand={act} modalBlocked={levelNotices.length>0} onSell={(truck:any)=>confirm('Boten abgeben?',`${n(truck.sale.coins,2)} Erlös. Werkzeugkästen werden nicht erstattet.`,()=>act('sell',{id:truck.id}))}/>;
+   case 'hub':return <HubScreen data={data} busy={busy} clock={clock} onCommand={act} modalBlocked={levelNotices.length>0} onSell={(truck:any)=>confirm('Boten abgeben?',`${n(truck.sale.coins)} Erlös. Werkzeugkästen werden nicht erstattet.`,()=>act('sell',{id:truck.id}))}/>;
    case 'inventory':return <Inventory modalBlocked={levelNotices.length>0} data={data} busy={busy} onNavigate={go} onUseRefill={(kind:string)=>act(kind==='expedition'?'expeditionRefill':'refill')}/>;
    case 'crafting':return <Crafting data={data} busy={busy} onCommand={act}/>;
    case 'customers':return <CustomerList data={data} onOpen={(id:string)=>{setCustomerId(id);go('customerDetail');}}/>;

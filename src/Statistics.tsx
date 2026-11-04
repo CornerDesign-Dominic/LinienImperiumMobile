@@ -5,12 +5,12 @@ import {C,Txt,n} from './ui';
 import customerIdentities from '../functions/src/customer-identities.json';
 export function Statistics({state:g}:any){
  const rows=[
-  ['Frachtumsatz',`${n(g.stats.grossRevenue,2)}`],
+  ['Frachtumsatz',`${n(g.stats.grossRevenue)}`],
   ['Betriebskosten',`${n(g.stats.operatingCosts,2)}`],
   ['Beschaffungskosten',`${n(g.procurement?.spent,2)}`],
   ['Beschaffung: hinterlegtes Guthaben',`${n((g.procurement?.runs||[]).reduce((sum:number,r:any)=>sum+r.escrow,0),2)}`],
   ['Erfolgreiche Abholungen',n(g.procurement?.completed)],
-  ['Prämien',`${n(g.stats.contractBonusRevenue,2)}`],
+  ['Prämien',`${n(g.stats.contractBonusRevenue)}`],
   ['Touren',n(g.stats.trips)],
   ['Aufträge',n(g.completed)],
   ...customerIdentities.map(customer=>[`Sonderaufträge · ${customer.customer}`,n(g.stats.projectCompletions?.specialByCustomer?.[customer.id]||0)]),
@@ -19,7 +19,7 @@ export function Statistics({state:g}:any){
   ['Strecke',`${n(g.stats.km,2)} km`],
   ['Transportleistung',`${n(g.stats.tonKm,2)} tkm`],
   ['Spieler-XP',n(g.xp)],
-  ['Test-Taler',`${n(g.stats.testCoinsGranted,2)}`],
+  ['Test-Taler',`${n(g.stats.testCoinsGranted)}`],
   ['CO₂ (Schätzung)',`${n(g.stats.tonKm*.05275,1)} kg`]
  ];
  return <View style={styles.list}>{rows.map(([label,value],index)=><View key={label} style={[styles.row,index>0&&styles.divider]}>

@@ -56,3 +56,7 @@ Ausbaupunkte werden im Levelaufstiegsmodal wie die Auffüller als Belohnungszeil
 ## Gesammelt: XP-Bild und feste Belohnungszahlen
 
 Neues illustriertes XP-Gildenbuch mit Stern und Lorbeer ersetzt das Statistikpiktogramm im Belohnungsmodal. XP-Icon behält Originalfarben. Mengen stehen unter ihrer Bezeichnung und nutzen die volle freie Breite neben dem Bild mit fester 17-Pixel-Schrift, ohne automatische Verkleinerung; auch größere Talerbeträge. Auszahlung/Formatierung unverändert. Typprüfung und gezielter Belohnungstest inklusive großem Betrag erfolgreich. PNG 512 × 512 mit Transparenz visuell geprüft, dekodiert und Upload-Blob-SHA abgeglichen. Kein physischer Gerätetest. Noch nicht veröffentlicht.
+
+## Gesammelt: Taler-Belohnungen ohne Nachkommastellen
+
+Globale Anzeigenprüfung: Belohnungsmodal, Einzelauftrags-Gewinnvorschau inklusive Vorlesen und Auswahlzusammenfassung, Großauftrags-Basisfracht/Abschlussprämie, Flotten-Frachtvergütung, Einnahmen-/Prämien-/Testtalerstatistik und Botenverkaufserlös zeigen gerundete ganze Taler. Botenstation, Kopfzeile und Season waren bereits ganzzahlig formatiert. Interne Abrechnung sowie XP, Ladungsmengen und Kostenraten unverändert. Typprüfung und gezielte Belohnungs-/Auftragsprüfungen erfolgreich; Rundung kleiner und großer Beträge geprüft. Noch nicht veröffentlicht.
