@@ -2,7 +2,7 @@
   "dashboard": [
     [
       "Player level",
-      "Delivered tonnes grant XP: tonnes × paid directions × (1 + active card XP bonuses / 100). Dual Way counts both directions. Every next level requires 100 × current level XP. Each level grants one expedition refill, one overtime refill and 3 allocation points. From level 5, every five levels unlocks a Courier Station vehicle slot, up to 20 at level 100."
+      "Delivered tonnes grant XP: tonnes × paid directions × (1 + active card XP bonuses / 100). Dual Way counts both directions. Every next level requires 100 × current level XP. Each level grants one expedition refill, one overtime refill and 3 upgrade points. From level 5, every five levels unlocks a Courier Station vehicle slot, up to 20 at level 100."
     ],
     [
       "Imperium thalers",
@@ -82,7 +82,7 @@
   "inventory": [
     [
       "Refills",
-      "Each level grants one expedition refill, one overtime refill and 3 allocation points. Each refill adds 50 points when used, even above your maximum. Natural regeneration pauses at or above the maximum."
+      "Each level grants one expedition refill, one overtime refill and 3 upgrade points. Each refill adds 50 points when used, even above your maximum. Natural regeneration pauses at or above the maximum."
     ],
     [
       "Items",
@@ -112,6 +112,10 @@
     ]
   ],
   "company": [
+    [
+      "Upgrade points",
+      "Level-ups award 3 upgrade points; one-time place deliveries award 1 each. All points share one balance under Development and permanently increase either the expedition or overtime maximum by 1. You may allocate only part of the balance. Current energy is not refilled."
+    ],
     [
       "Departments",
       "Dispatch, Workshop and Sales each cost 5,000 to open. Dispatch: 5 + level offers, up to 15; next level costs 500 × new level plus items. Workshop: −0.001/km per level, up to 50; cost 100 × ceil(new level/5) plus items. Sales: 1 + level held offers, up to 4; next level costs 500 × new level plus items."

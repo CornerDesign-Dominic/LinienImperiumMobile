@@ -21,7 +21,7 @@ Diese Dokumentation beschreibt **Linien Imperium Online / Projekt 117**, die nat
 - [Season mit Free- und Premium-Weg](ui/season.md)
 
 - [Regionale Transportkarten](gameplay/regional-transport-cards.md) und [Kartenboni](ui/card-bonus-steps.md)
-- [Firmen-Transportausbau](transport-upgrades.md) und [Entwicklungspunkte](ui/company-development-points.md)
+- [Firmen-Transportausbau](transport-upgrades.md) und [Ausbaupunkte und Entwicklung](ui/company-development-points.md)
 - [Einzelauftragsnavigation](single-orders-flow.md), [Reiter und Zuweisung](ui/single-order-tabs-and-assignment.md)
 - [Großauftragsstart und Hilfe](ui/project-start-and-info.md), [Abschlussstatistik](ui/project-statistics.md)
 - [Ausbaupunkte und Motiv](ui/ausbaupunkte.md), [Expeditionsabschlüsse](ui/expedition-completions.md), [Ortsmodale](ui/expedition-place-modals.md)
@@ -51,3 +51,4 @@ Bei einem Widerspruch gilt der tatsächlich ausgeführte mobile Code für das he
 | [Mobile-Testhistorie](archive/mobile-test-history.md) | Frühere Prüfberichte; Ergebnisse gelten nur für den jeweiligen damaligen Stand |
 
 Stand der ersten Bereinigung: 03.11.2026, mobile Grundlage `22aa4dad756df65e71dd89dde98afdc6558f4b61`. Spätere Codeänderungen müssen die betroffenen Referenzen mitführen.
+

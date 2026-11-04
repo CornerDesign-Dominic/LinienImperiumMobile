@@ -71,6 +71,7 @@ const bridge = `
   ${progressionRuntime}
   const originalNewGame=newGame;
   newGame=(...args)=>{const state=originalNewGame(...args);state.inventory.expeditionRefills=0;state.companyTransportVersion=1;state.linearProgressionVersion=1;state.hubSystemVersion=1;state.inventory.hubVehicleParts=0;state.hubCrates={day:Math.floor(Date.now()/86400000),opened:0,lastOpenedAt:null};state.stats.projectCompletions={version:1,specialByCustomer:{},referral:0};return state;};
+  const awardedUpgradeLevels=[];
   awardTransportXp=xp=>{
     const before=levelForXp(game.xp,game).level;
     game.xp=round2(game.xp+xp);
@@ -79,8 +80,9 @@ const bridge = `
     game.inventory.expeditionRefills=(game.inventory.expeditionRefills||0)+levels;
     game.inventory.overtimeRefills=(game.inventory.overtimeRefills||0)+levels;
     game.pendingLevelUps ||= [];
-    for(let level=before+1;level<=after;level++)game.pendingLevelUps.push(level);
-    addEvent('Level '+after+' erreicht! '+levels+' Expeditionsauffüller, '+levels+' Überstundenauffüller und '+(3*levels)+' Punkte zum Verteilen.');
+    for(let level=before+1;level<=after;level++){game.pendingLevelUps.push(level);awardedUpgradeLevels.push(level);}
+    expansionState();
+    addEvent('Level '+after+' erreicht! '+levels+' Expeditionsauffüller, '+levels+' Überstundenauffüller und '+(3*levels)+' Ausbaupunkte zum Verteilen.');
   };
   const originalExpeditionDuration = expeditionDuration;
   expeditionDuration = (...args) => expeditionTestDuration ?? originalExpeditionDuration(...args);
@@ -226,6 +228,7 @@ const bridge = `
       }))||null}));
     },
     get state() { return game; }, set state(value) { game = value; },
+    get awardedUpgradeLevels() { return awardedUpgradeLevels; },
     expansionState, acknowledgeExpeditionCompletions, allocateExpansionPoints, migrateCompanyTransport, migrateTransportCards, capturePointClocks, reconcilePointClocks,
     migrateHubVehicles, buyHubVehicle, upgradeHubVehicle, openHubCrate,
     migrateLinearProgression, newGame, save, loadGame, shortenTestMissions, normalizeQueuedReferrals, settleTrips, settleFleetProjects, settleExpeditions, settleHub,
@@ -302,26 +305,13 @@ const bridge = `
       return true;
     },
     removeSeat(template, seat) { const slots = fleetTemplate(template); if (slots) slots[seat] = null; },
+    // Compatibility commands use the same authoritative balance and never refill energy.
     allocateLevel(expedition, overtime) {
-      if (!game.pendingLevelUps?.length || expedition + overtime !== 3) return false;
-      game.expedition.levelCapacityBonus = (game.expedition.levelCapacityBonus || 0) + expedition;
-      game.expedition.points += expedition;
-      game.overtimeCapacity = (game.overtimeCapacity ?? 100) + overtime;
-      game.overtimePoints = (game.overtimePoints ?? 100) + overtime;
-      const level = game.pendingLevelUps.shift();
-      addEvent('Level ' + level + ': ' + expedition + ' Expeditionspunkte und ' + overtime + ' Überstundenpunkte dauerhaft zugewiesen.');
-      return true;
+      if(expedition+overtime!==3||expansionState().available<3)return false;
+      return allocateExpansionPoints(expedition,overtime,expansionState().available);
     },
     allocateLevelBatch(expedition, overtime, points) {
-      const available=(game.pendingLevelUps?.length||0)*3;
-      if(!available||points!==available||expedition+overtime!==available)throw Error('Verfügbare Punkte haben sich geändert. Bitte Verteilung prüfen.');
-      game.expedition.levelCapacityBonus=(game.expedition.levelCapacityBonus||0)+expedition;
-      game.expedition.points+=expedition;
-      game.overtimeCapacity=(game.overtimeCapacity??100)+overtime;
-      game.overtimePoints=(game.overtimePoints??100)+overtime;
-      game.pendingLevelUps=[];
-      addEvent(available+' Entwicklungspunkte verteilt: '+expedition+' Expedition, '+overtime+' Überstunden.');
-      return true;
+      return allocateExpansionPoints(expedition,overtime,points);
     },
     sell(id) { if (!openSaleDialog(id)) return false; return confirmSale(); },
     claimSingleRewards() {
@@ -464,9 +454,9 @@ const bridge = `
       return {state: {...game,trucks,orders,overtimeCapacity:overtimeCapacity()}, serverTime:now, catalog, cardVehicles, jobChoices, procurement:procurementView(now),
         level:levelForXp(game.xp,game), expeditionCapacity:expeditionCapacity(),
         expansion:{...expansionState(),expeditionMaximum:expeditionCapacity(),overtimeMaximum:overtimeCapacity()},
-        development:{points:(game.pendingLevelUps?.length||0)*3,
-          expedition:{base:50+(game.expedition.levelCapacityBonus||0),bonus:expeditionCapacity()-50-(game.expedition.levelCapacityBonus||0)},
-          overtime:{base:game.overtimeCapacity??100,bonus:overtimeCapacity()-(game.overtimeCapacity??100)}},
+        development:{points:expansionState().available,
+          expedition:{base:50+(game.expedition.levelCapacityBonus||0)+expansionState().expedition,bonus:expeditionCapacity()-50-(game.expedition.levelCapacityBonus||0)-expansionState().expedition},
+          overtime:{base:(game.overtimeCapacity??100)+expansionState().overtime,bonus:overtimeCapacity()-(game.overtimeCapacity??100)-expansionState().overtime}},
         regeneration:{expeditionNextAt:game.expedition.points<expeditionCapacity()?game.expedition.lastRegenAt+expeditionInterval():null,expeditionIntervalMs:expeditionInterval(),overtimeNextAt:game.overtimePoints<overtimeCapacity()?game.overtimeLastRegenAt+OVERTIME_REGEN_MS:null},
         templates:[0,1,2].map(i=>fleetTemplate(i)),
         fleetPreviews:[0,1,2].map(index=>(projectFleetVehicles(index)||[]).map(vehicle=>({
@@ -652,9 +642,10 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>[title,title==='Missionen'?'Jeder der sieben Orte hat eine einmalige Bonuslieferung. Ihr Abschluss gibt automatisch 1 Ausbaupunkt. Die erste Endlosort-Lieferung schaltet den regionalen Stammkunden frei und gibt 1 Kapazitätsmodul, sofern noch nicht erhalten. Fahrzeuge kommen aus der Garage.':body]);
   view.help.expeditions[1].push(['Automatische Abschlüsse','Ortslieferungen werden automatisch gutgeschrieben. Ausführbare Material- und Transportkartenaufträge aus Dauerexpeditionen werden dagegen gemeinsam über den Sammelbutton der Einzelaufträge eingesammelt. Ortslieferungen geben 1 Ausbaupunkt statt einer festen Erhöhung des Expeditionsmaximums. Jeder Punkt erhöht wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1. Bestätigte Verteilungen sind nicht rückgängig zu machen. Unvergebene Punkte bleiben im Handelsimperium unter Entwicklung verfügbar. Der Abschluss passiert still im Hintergrund. Die Punkte stehen anschließend unter Entwicklung zur manuellen Verteilung bereit.']);
   view.help.customers[1]=view.help.customers[1].map(([title,body])=>[title.replace(/Fähigkeit/g,'Verbesserung').replace(/fähigkeit/g,'verbesserung'),body.replace(/Fähigkeit/g,'Verbesserung').replace(/fähigkeit/g,'verbesserung')]);
-  view.help.dashboard[1]=view.help.dashboard[1].map(([title,body])=>[title,title==='Spielerlevel'?'<p>Transportierte Tonnen geben XP: gelieferte Tonnen × bezahlte Richtungen × (1 + aktive Karten-XP-Boni / 100). Bei Dual Way zählen beide Richtungen. Jeder nächste Aufstieg benötigt 100 × aktuelles Level XP. Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 dauerhaft verteilbare Punkte. Ab Level 5 wird alle fünf Level ein weiterer Botenplatz freigeschaltet, maximal 20 bei Level 100.</p>':body]);
+  view.help.dashboard[1]=view.help.dashboard[1].map(([title,body])=>[title,title==='Spielerlevel'?'<p>Transportierte Tonnen geben XP: gelieferte Tonnen × bezahlte Richtungen × (1 + aktive Karten-XP-Boni / 100). Bei Dual Way zählen beide Richtungen. Jeder nächste Aufstieg benötigt 100 × aktuelles Level XP. Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 dauerhaft verteilbare Ausbaupunkte. Ab Level 5 wird alle fünf Level ein weiterer Botenplatz freigeschaltet, maximal 20 bei Level 100.</p>':body]);
   view.help.company[0]='Handelsimperium';
   view.help.company[1]=view.help.company[1].map(([title,body])=>title==='Transportsegmente'?[title,'Prämie: 1.000 Stufen, je +1 Prozentpunkt. Neue Stufe N kostet 1.000 × N M und 1 + abrunden((N−1)/25) Firmenausbau-Items. Regional- und Fernverkehr getrennt. Menge und Reichweite: je 100 Stufen; bisherige Endwerte und Gesamtkosten bleiben erhalten. Prämien wirken auf die Abschlussprämie der jeweiligen Kategorie, nicht auf Frachtvergütung oder Beute.']: [title,body]);
+  view.help.company[1].unshift(['Ausbaupunkte','Levelaufstiege geben 3 Ausbaupunkte, einmalige Ortslieferungen je 1. Alle Punkte liegen in einem gemeinsamen Vorrat unter Entwicklung und erhöhen wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1. Auch Teilmengen können verteilt werden. Die aktuelle Energie wird nicht aufgefüllt.']);
   view.help.development[1]=view.help.development[1].map(([title,body])=>title==='Herstellung'?[title,'100 Abholhinweise ergeben eine Privatabholung. Rahmensplitter lassen sich zur nächsthöheren Seltenheit kombinieren. Firmenausbau-Items werden vorerst nicht zur Herstellung verwendet.']:[title,body]);
   view.help.inventory[1]=view.help.inventory[1].map(([title,body])=>[title,body.replace('Firmenausbau-Items dienen Firmenausbauten und Kundenaufträgen.','Firmenausbau-Items dienen Firmenausbauten.')]);
   view.help.personnel[1]=[['Transportkarten','25 regionale Landtransporter: zwei Common, eine Uncommon, eine Rare und eine Epic pro Region. Jede Karte hat eigene Grundkapazität und Grundgeschwindigkeit sowie genau einen Bonus. Die Staffel bis Stufe 10 steht im Kartendetail.'],['Wirkungsbereiche','Eigenboni unterstützen nur das Fahrzeug. Flottenboni unterstützen alle Fahrzeuge derselben Flotte einschließlich des Bonusgebers. Garagenboni gelten, solange die Karte in der Garage eingesetzt ist, auch während Einzelaufträgen und Beschaffung. Gleiche Transportboni verschiedener Karten addieren sich. Laufende Touren behalten ihre Werte bis zur nächsten Abfahrt.'],['Punkteboni','Königliche Postkutsche: mehr Überstundenmaximum. Oasenkarawane: mehr Expeditionsmaximum. Jeweils +5/10/15/20/25/30/40/50/60/70 Punkte. Jade-Kundschaftergespann: Expeditionsintervall um 10/20/30/40/50/60/75/90/105/120 Sekunden kürzer. Nur in der Garage aktiv. Das Einsetzen füllt keine Punkte auf. Überschuss bleibt nach dem Entfernen erhalten; Regeneration pausiert bis unter das Maximum. Timerwechsel erhalten den anteiligen Fortschritt.']];
@@ -665,8 +656,8 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   view.help.dealer[0]='Botenstation-Händler';
   view.help.hub[1]=[['Zyklus und Leistung','Ein Einkauf alle 60 Minuten. Die mögliche Stundenmenge folgt aus Kapazität und beladener sowie leerer Fahrgeschwindigkeit aller eingesetzten Fahrzeuge. Vertrieb Stufe 0 kauft Ware für 40 Minuten ein; jede der 20 Stufen erhöht die Auslastung um 30 Sekunden bis auf 50 Minuten. Danach warten Boten bis zum nächsten Einkauf. Laufende Einkäufe behalten ihre Werte.'],['Kasse und Abholung','Die Kasse fasst sechs abgeschlossene Einkaufszyklen. Bei voller Kasse pausiert die Botenstation. Volle Kasse abholen startet sofort einen neuen Einkauf bei Minute 0. Teilabholungen verändern den laufenden Zyklus nicht. Imperium-Taler und sämtliche weiteren Erträge werden gemeinsam eingesammelt.'],['Vertrieb','Lieferantenkontakte und Firmenausbau-Items erweitern die Einkaufsmenge. 20 Stufen von 40 bis 50 Minuten Auslastung. Der Ausbau kostet nur Lieferantenkontakte und Firmenausbau-Items und dauert je Zielstufe zwölf Stunden.']];
   view.help.hub[1].unshift(['Freischaltung','Botenstation ab Level 5. Alle fünf Level ein Platz, maximal 20 bei Level 100. Ein Lastwombat-Bote kostet 25.000 Imperium-Taler und startet mit 2 t. Werkzeugkästen verbessern Kapazität und Antrieb in je zehn Stufen. Drei Fundkisten täglich, mindestens 30 Minuten Abstand; Tageswechsel um 00:00 UTC. Beim stündlichen Einkauf: einmal 50 % Chance auf einen Werkzeugkasten, keine Funde bei voller Kasse. Werkzeugkästen aus Einkäufen mit den Erträgen abholen.']);
-  view.help.inventory[1].unshift(['Auffüller','Pro Levelaufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 verteilbare Punkte. Beide Auffüller geben beim Benutzen 50 Punkte.']);
-  for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[title,body.replace(/Je Aufstieg: sofort 50 Expeditionspunkte, ein speicherbares Refill-Paket für 50 Überstundenpunkte sowie 5 dauerhaft verteilbare Punkte/g,'Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller sowie 3 dauerhaft verteilbare Punkte').replace(/Pro Level-up erhältst du ein speicherbares Überstundenauffüller für (?:50|100) Punkte\./g,'Auffüller werden in den Vorräten aufbewahrt.')]);
+  view.help.inventory[1].unshift(['Auffüller','Pro Levelaufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 Ausbaupunkte. Beide Auffüller geben beim Benutzen 50 Punkte.']);
+  for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[title,body.replace(/Je Aufstieg: sofort 50 Expeditionspunkte, ein speicherbares Refill-Paket für 50 Überstundenpunkte sowie 5 dauerhaft verteilbare Punkte/g,'Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller sowie 3 dauerhaft verteilbare Ausbaupunkte').replace(/Pro Level-up erhältst du ein speicherbares Überstundenauffüller für (?:50|100) Punkte\./g,'Auffüller werden in den Vorräten aufbewahrt.')]);
   for(const mission of view.state.expedition.missions)mission.reward=normalizeNames(mission.reward);
   view.message=normalizeTransportNames(view.message,view.state.profile);
   view.message=currencyText(view.message,view.state.profile);
@@ -677,8 +668,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   for(const mission of view.state.expedition.missions)mission.reward=currencyText(mission.reward,view.state.profile);
   for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[normalizeTransportNames(title),normalizeTransportNames(body)]);
   for(const mission of view.state.expedition.missions)mission.reward=normalizeTransportNames(mission.reward,view.state.profile);
-  const knownLevels=new Set(state?.pendingLevelUps||[]);
-  const levelUps=view.state.pendingLevelUps.filter(level=>!knownLevels.has(level));
+  const levelUps=[...a.awardedUpgradeLevels];
   if(levelUps.length)view.levelUps=levelUps;
   if(['assign','assignPrivate','assignCrafted'].includes(action)&&view.state.orders.find(o=>o.id===p.order)?.status==='active')view.message='Auftrag gestartet.';
   if(action==='hubCrate'&&ok!==false)view.hubCrateParts=ok;
@@ -686,7 +676,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   if(['claimSingles','hubCollect'].includes(action)&&ok!==false)view.claimSummary=ok;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;
   if(action==='customerBatch')view.customerBatchApplied=ok===true;
-  if(action==='expansionAllocate')view.expansionAllocationApplied=ok===true;
+  if(['expansionAllocate','levelBatch','level'].includes(action))view.expansionAllocationApplied=ok===true;
   if(action==='draw'&&ok!==false){
     const order=view.state.orders.find(o=>!oldOrders.has(o.id));
     const job=view.state.expedition.jobs.find(j=>!oldJobs.has(j.id));
@@ -705,4 +695,5 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   return {state:JSON.parse(JSON.stringify(a.state)),view:JSON.parse(JSON.stringify(view))};
 }
 module.exports={execute,session};
+
 

@@ -27,17 +27,17 @@ test('Legacy collected bonuses remain assigned, pending deliveries become free p
  assert.equal(out.state.coins,r.state.coins);assert.equal(out.state.expedition.levelCapacityBonus,4);
  assert.equal(cmd(out.state).view.expeditionCapacity,55);
 });
-test('Permanent allocation is atomic, bounded, independent of level-up points and never refills energy',()=>{
+test('Permanent allocation is atomic, bounded, shared with level-up points and never refills energy',()=>{
  let r=initial();r.state.expedition.missions=[mission(1),mission(2),mission(3)];
  r=cmd(r.state,'sync',{},now+15000);r.state.expedition.points=4;r.state.overtimePoints=7;r.state.pendingLevelUps=[2];
  const saved=JSON.stringify(r.state);
  for(const p of [{expedition:4,overtime:0,points:3},{expedition:1,overtime:0,points:2},{expedition:-1,overtime:2,points:3},{expedition:.5,overtime:0,points:3},{expedition:0,overtime:0,points:3}])assert.throws(()=>cmd(r.state,'expansionAllocate',p,now+15000));
  assert.equal(JSON.stringify(r.state),saved);
- const allocated=cmd(r.state,'expansionAllocate',{expedition:1,overtime:2,points:3},now+15000);
+ const allocated=cmd(r.state,'expansionAllocate',{expedition:1,overtime:2,points:6},now+15000);
  assert.equal(allocated.view.expeditionCapacity,51);assert.equal(allocated.view.state.overtimeCapacity,102);
  assert.equal(allocated.state.expedition.points,4);assert.equal(allocated.state.overtimePoints,7);
- assert.equal(allocated.view.expansion.available,0);assert.equal(allocated.view.development.points,3);
- assert.throws(()=>cmd(allocated.state,'expansionAllocate',{expedition:0,overtime:1,points:3}),/geändert/);
+ assert.equal(allocated.view.expansion.available,3);assert.equal(allocated.view.development.points,3);
+ assert.throws(()=>cmd(allocated.state,'expansionAllocate',{expedition:0,overtime:1,points:6}),/geändert/);
  assert.equal(cmd(allocated.state).view.expeditionCapacity,51);
 });
 test('Expansion allocation resumes paused regeneration with retained progress instead of resetting the clock',()=>{
@@ -91,3 +91,4 @@ test('Legacy saved point rewards use the new display name without rewriting hist
  const {currencyText}=require('../functions/src/currency-names.cjs');
  assert.equal(currencyText('Erweiterungspunkte GmbH: 1 Erweiterungspunkt erhalten',{companyName:'Erweiterungspunkte GmbH'}),'Erweiterungspunkte GmbH: 1 Ausbaupunkt erhalten');
 });
+

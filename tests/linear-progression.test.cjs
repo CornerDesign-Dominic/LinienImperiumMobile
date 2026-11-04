@@ -17,7 +17,7 @@ test('Old quadratic saves keep their level and fractional progress exactly once 
  const s=at(1);delete s.linearProgressionVersion;s.xp=32500+1352;s.pendingLevelUps=[26];s.inventory.expeditionRefills=3;s.inventory.overtimeRefills=4;
  const before=structuredClone(s);const result=sync(s);
  assert.deepEqual(s,before);assert.deepEqual(result.view.level,{level:26,within:1300,need:2600});
- assert.equal(result.state.linearProgressionVersion,1);assert.deepEqual(result.state.pendingLevelUps,[26]);assert.equal(result.state.inventory.expeditionRefills,3);assert.equal(result.state.inventory.overtimeRefills,4);assert.equal(result.view.levelUps,undefined);
+ assert.equal(result.state.linearProgressionVersion,1);assert.deepEqual(result.state.pendingLevelUps,[]);assert.equal(result.view.expansion.available,3);assert.equal(result.state.inventory.expeditionRefills,3);assert.equal(result.state.inventory.overtimeRefills,4);assert.equal(result.view.levelUps,undefined);
  const again=sync(result.state);assert.equal(again.state.xp,result.state.xp);assert.deepEqual(again.view.level,result.view.level);
 });
 test('Legacy level floors survive migration, but do not leave a hidden XP catch-up span',()=>{
@@ -53,3 +53,4 @@ test('Crossing several levels queues each real reward once, including each fifth
  assert.deepEqual(r.view.levelUps,[5,6]);assert.equal(r.state.inventory.expeditionRefills,2);assert.equal(r.state.inventory.overtimeRefills,2);assert.equal(r.view.hubLimit,1);
  r=sync(r.state);assert.equal(r.view.levelUps,undefined);assert.equal(r.state.inventory.expeditionRefills,2);
 });
+

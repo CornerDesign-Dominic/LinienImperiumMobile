@@ -50,3 +50,9 @@ Der Bestätigungsbutton im Modal „Neue Angebote?“ heißt „Aktualisieren“
 ## Gesammelt: kompakte Großauftragskarten
 
 Angenommener Entwurf umgesetzt: kleinere vorhandene Warenbilder, kompakte Titel-/Kunden-/Frachtzeilen mit Häuschen vor dem Kundennamen und Kiste vor der Tonnenzahl. Laufende mit gelieferter/Gesamtmenge, schmalem Balken und gemeinsamer Zeitzeile; fertige mit kleinem ERLEDIGT-Stempel und kompakter „Abholen“-Taste ohne Leerfläche. Namen umbrechen ohne Abschneiden; Sortierung, Prämienlogik und Schutz vor Doppeltipps unverändert. Vier reine Status-/Sortier-/Backendtests erfolgreich; UI-/Typ- und Geräteprüfung lokal nicht belegt. [Details](docs/ui/project-category-overview.md). Noch nicht veröffentlicht.
+
+## Gesammelt: ein gemeinsamer Ausbaupunktevorrat
+
+Nutzerentscheidung vom 04.11.2026 ersetzt die frühere Trennung: Levelaufstiege (je 3) und einmalige Ortslieferungen (je 1) geben dieselben Ausbaupunkte. Ein Bestand, ein Einstieg und ein manueller Verteiler; 6 bisherige Levelpunkte plus 1 Expeditionspunkt ergeben 7 Ausbaupunkte. Auch Teilmengen sind verteilbar. Alte offene Levelgutschriften werden einmalig übernommen; bereits gekaufte Maxima, Boni, Energie und Regeneration bleiben erhalten. Die alten Befehle verwenden denselben autoritativen Vorrat. Details: [Gemeinsame Ausbaupunkte](docs/ui/point-allocation.md).
+
+16 gezielte Backend-/Wiederholungsprüfungen erfolgreich. Erweiterter lokaler Lauf: 203 von 204 Prüfungen erfolgreich; der einzige Fehler betrifft die im lokalen Textcheckout fehlende vorhandene Fahrzeugbilddatei `navigator`, keine geänderte Spiellogik. Komponentenprüfungen angepasst, lokal ohne React/TypeScript nicht ausführbar. JS-Syntax und beide Übersetzungs-JSON geprüft. Vollständige Typprüfung, App-Export und Releaseprüfung vor der nächsten ausdrücklich freigegebenen Veröffentlichung; noch nicht veröffentlicht.

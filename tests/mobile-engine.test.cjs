@@ -143,7 +143,7 @@ test('Test grants persist points above capacity and XP produces normal level rew
  const xp=execute(overtime.state,'testGrant',{kind:'xp',amount:100},now,fixed);
  assert.equal(xp.state.xp,100);assert.equal(xp.view.level.level,2);
  assert.equal(xp.state.expedition.points,150);assert.equal(xp.state.inventory.overtimeRefills,1);
- assert.deepEqual(xp.state.pendingLevelUps,[2]);
+ assert.deepEqual(xp.state.pendingLevelUps,[]);assert.equal(xp.view.expansion.available,3);
  const large=execute(xp.state,'testGrant',{kind:'xp',amount:1000},now,fixed);
  assert.equal(large.state.xp,1100);
  assert.equal(large.state.inventory.overtimeRefills,large.view.level.level-1);
@@ -210,16 +210,16 @@ test('Each pending level grants exactly three permanent capacity points and cann
   const overtime=3-expedition;
   const result=execute(earned.state,'level',{expedition,overtime},now,fixed);
   assert.equal(result.view.expeditionCapacity,earned.view.expeditionCapacity+expedition);
-  assert.equal(result.state.overtimeCapacity,earned.state.overtimeCapacity+overtime);
-  assert.equal(result.state.expedition.points,earned.state.expedition.points+expedition);
-  assert.equal(result.state.overtimePoints,earned.state.overtimePoints+overtime);
+  assert.equal(result.view.development.overtime.base,earned.view.development.overtime.base+overtime);
+  assert.equal(result.state.expedition.points,earned.state.expedition.points);
+  assert.equal(result.state.overtimePoints,earned.state.overtimePoints);
   assert.deepEqual(result.state.pendingLevelUps,[]);
   assert.equal(result.state.inventory.overtimeRefills,1);
   const twice=execute(result.state,'level',{expedition,overtime},now,fixed);
   assert.equal(twice.state.overtimeCapacity,result.state.overtimeCapacity);
  }
  const invalid=execute(earned.state,'level',{expedition:2,overtime:2},now,fixed);
- assert.deepEqual(invalid.state.pendingLevelUps,[2]);
+ assert.deepEqual(invalid.state.pendingLevelUps,[]);assert.equal(invalid.view.expansion.available,3);
  assert.equal(invalid.state.overtimeCapacity,earned.state.overtimeCapacity);
  assert.throws(()=>execute(earned.state,'level',{expedition:5},now,fixed),/Ungültige/);
 });
@@ -585,10 +585,10 @@ test('Every new level grants one of each stored 50-point filler and three alloca
  assert.equal(gained.state.inventory.expeditionRefills,levels);assert.equal(gained.state.inventory.overtimeRefills,levels);
  assert.equal(gained.state.expedition.points,start.state.expedition.points);
  assert.equal(gained.state.overtimePoints,start.state.overtimePoints);
- assert.equal(gained.state.pendingLevelUps.length,levels);
+ assert.deepEqual(gained.state.pendingLevelUps,[]);assert.equal(gained.view.expansion.available,levels*3);
  const again=execute(gained.state,'sync',{},now,fixed);assert.equal(again.state.inventory.expeditionRefills,levels);
  const allocated=execute(again.state,'level',{expedition:1,overtime:2},now,fixed);
- assert.equal(allocated.view.expeditionCapacity,gained.view.expeditionCapacity+1);assert.equal(allocated.state.overtimeCapacity,gained.state.overtimeCapacity+2);
+ assert.equal(allocated.view.expeditionCapacity,gained.view.expeditionCapacity+1);assert.equal(allocated.view.development.overtime.base,gained.view.development.overtime.base+2);
  for(const [action,field,points] of [['expeditionRefill','expeditionRefills','expedition'],['refill','overtimeRefills','overtime']]){
   const used=execute(gained.state,action,{},now,fixed);
   assert.equal(used.state.inventory[field],levels-1);
@@ -601,7 +601,7 @@ test('Every new level grants one of each stored 50-point filler and three alloca
 test('Legacy saves receive an empty expedition filler slot without retroactive rewards and both fillers consume only once',()=>{
  const original=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed).state;
  delete original.inventory.expeditionRefills;original.inventory.overtimeRefills=2;original.pendingLevelUps=[2];
- const migrated=execute(original,'sync',{},now,fixed);assert.equal(migrated.state.inventory.expeditionRefills,0);assert.equal(migrated.state.inventory.overtimeRefills,2);assert.deepEqual(migrated.state.pendingLevelUps,[2]);
+ const migrated=execute(original,'sync',{},now,fixed);assert.equal(migrated.state.inventory.expeditionRefills,0);assert.equal(migrated.state.inventory.overtimeRefills,2);assert.deepEqual(migrated.state.pendingLevelUps,[]);assert.equal(migrated.view.expansion.available,3);
  const empty=execute(migrated.state,'expeditionRefill',{},now,fixed);assert.equal(empty.state.expedition.points,migrated.state.expedition.points);
  migrated.state.inventory.expeditionRefills=1;migrated.state.expedition.levelCapacityBonus=100;migrated.state.expedition.points=10;migrated.state.expedition.lastRegenAt=now-60000;
  const used=execute(migrated.state,'expeditionRefill',{},now,fixed);assert.equal(used.state.expedition.points,60);assert.equal(used.view.regeneration.expeditionNextAt,now+9*60000);assert.equal(used.state.inventory.expeditionRefills,0);
@@ -656,3 +656,4 @@ test('Every expedition exposes its actual absolute find chances and conditional 
   assert.equal(finds.orders.find(o=>o.kind==='referral').name,'Empfehlungsauftrag Hafenverbund');
  }
 });
+

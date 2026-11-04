@@ -17,7 +17,7 @@ Transport-, Handels- und Entdeckungsspiel als native React-Native-/Expo-App für
 - Großaufträge mit Flotteneinsatz, passiven Lieferungen, Überstunden und Abschlussstatistik; Expeditionen mit fünf Regionen, Ortsmissionen, Endlosorten, Kartenfunden und Shards.
 - Materialbeschaffung mit Einzel- und Gruppenfahrten, vorausbezahlten Touren oder Kontoreserve, Offline-Abrechnung und getrennten Abbruchmöglichkeiten.
 - Ausbaupunkte aus einmaligen Ortslieferungen für dauerhafte Expeditions-/Überstundenmaxima; eigenständiges Bauplan-/Säulenmotiv.
-- Handelsimperium mit Ausbauten und Punkteverteilung; je Level drei verteilbare Punkte sowie je ein Expeditions- und Überstundenauffüller für 50 Punkte.
+- Handelsimperium mit Ausbauten und Punkteverteilung; gemeinsamer Vorrat von Ausbaupunkten aus Levelaufstiegen (je 3) und Ortslieferungen (je 1) sowie je ein Expeditions- und Überstundenauffüller für 50 Punkte.
 - Botenstation mit Lastwombat-Boten, Vertrieb, Erträgen, Fundkisten und eigenem Ausbau über Werkzeugkästen; Vorräte, Herstellung, Stammkunden und Statistik.
 - Pyramiden-Event mit Event/Pass/Ränge, Solotest und Gemeinschaftsrunde; [Eventregeln und Grenzen](docs/events/pyramid.md).
 - Großhändler mit regionalen Geschenken und vorbereitetem Skin-/Hermes-Siegel-Shop. Echtgeldkäufe sind deaktiviert; aktuell ist nur der kostenlose Standard-Skin vorhanden. [Shopstand](docs/ui/premium-shop.md).
@@ -66,3 +66,4 @@ Die APK lädt kompatible OTA-Updates beim Start; sie werden nach einem Neustart 
 ## Erstmalige Cloud-Einrichtung
 
 Nur für eine neue bzw. wiederherzustellende Umgebung: `scripts/setup-firebase-access.sh`, anschließend durch den Projektinhaber `scripts/finish-firebase-access.sh` in Google Cloud Shell ausführen. Die Skripte richten den Deployment-Zugang, benötigte APIs und Zugriff auf die Android-Testsignatur ein. Danach **Mobile preview** manuell starten. Die vorhandene Umgebung benötigt diese Einrichtung nicht für jedes Update.
+

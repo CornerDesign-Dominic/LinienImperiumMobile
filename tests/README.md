@@ -9,7 +9,7 @@ Aktuelle Prüfergebnisse gehören mit Commit, Datum und Workflow nach [TEST_REPO
 | Bereich | Was abgesichert wird | Wichtige Testgruppen |
 | --- | --- | --- |
 | Server, Aufträge, Flotten | Eingabevalidierung, Taler/XP/Kosten, Zuteilung, Reservierungen, Überstunden, Fristen, laufende Touren bei Verbesserungen, Offline-Abrechnung, keine Doppelbelohnung | mobile-engine, tour-updates, order-selection, fleet-details |
-| Karten, Geschenke, Entwicklung | Alle 25 Karten, Boni, Ausbauten, Garagenwechsel, Drop-Pools, Duplikate/Shards, Punkteverteilung, Basis/Boni-Trennung, Migration alter Spielstände | transport-cards, gifts, development, collection-stats, empire-company |
+| Karten, Geschenke, Entwicklung | Alle 25 Karten, Boni, Ausbauten, Garagenwechsel, Drop-Pools, Duplikate/Shards, Gemeinsamer Ausbaupunktevorrat (6+1=7), Teilverteilung, Basis/Boni-Trennung, Migration alter Spielstände | transport-cards, gifts, unified-upgrade-points, development, collection-stats, empire-company |
 | Beschaffung und Botenstation | Freischaltung, Einzel-/Gruppenfahrten, Reserven/Vorauszahlungen/Erstattungen, Abbruch, Offline-Zeitlinie, tägliche Kisten, 30-Minuten-Grenzen, Werkzeugkästen und Botenlimits | procurement, procurement-groups, procurement-ui, hub-vehicles, hub-ui, hub-sales |
 | Events und Fortschritt | Eventzustände, Pass, Gemeinschaftsfortschritt/Ränge, Fristen, Transaktionswiederholung ohne Doppelgutschrift, Levelkurve und alte Spielstände | events, pyramid, pyramid-store, pyramid-ui, linear-progression |
 | Großauftragskategorien und Statistik | Kategoriezuordnung, Hilfs-/Startabläufe, Abschlusszähler pro Kunde bzw. global für Empfehlungen, Erhalt bei Migration | project-categories, project-statistics |
@@ -37,3 +37,4 @@ Die frühere Prüfung der 188 Fälle reduzierte redundante Engine-Vorbereitungen
 Die Tests prüfen lokale Logik, ausgewählte Komponentenentscheidungen und simulierte Firestore-Transaktionen. Die Hook-/Timerprüfungen in `helpers/component-harness.cjs` ersetzen weder React Native noch einen Browser oder ein echtes Gerät: Layout, Gesten, Animationseindruck, Accessibility und native Modalübergänge bleiben Teil der separaten Sicht-/Bedienprüfung.
 
 Echte Firebase-Berechtigungen, Netzwerkausfälle und der veröffentlichte Server werden lokal nicht vollständig geprüft. `scripts/smoke-backend.cjs` prüft nach Deployment die echte Gastanmeldung, Speicherung, Anfragewiederholung und Zugriffssperre ohne Authentifizierung. Ein grüner Testlauf allein belegt keine erfolgte Veröffentlichung und keine vollständige Sicherheit des Spiels.
+

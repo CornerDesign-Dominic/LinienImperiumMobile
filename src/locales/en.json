@@ -1304,8 +1304,7 @@
   "Die Season führt von Stufe 1 oben bis Stufe 30 unten. Links stehen die kostenlosen Belohnungen, rechts die Premium-Belohnungen.": "The season runs from level 1 at the top to level 30 at the bottom. Free rewards are on the left and Premium rewards on the right.",
   "Die Belohnungen sind eine erste Vorschau. Die Season ist noch nicht gestartet; Premium ist noch nicht verfügbar.": "These rewards are an initial preview. The season has not started yet; Premium is not available yet.",
   "Punkte zur Verfügung": "Points available",
-  "Levelpunkte verteilen": "Allocate level points",
-  "Levelpunkte verteilen · {0}": "Allocate level points · {0}",
   "Aktualisieren": "Refresh",
-  "Abholen": "Collect"
+  "Abholen": "Collect",
+  "Level {0} erreicht! {1} Expeditionsauffüller, {2} Überstundenauffüller und {3} Ausbaupunkte zum Verteilen.": "Level {0} reached! {1} expedition refills, {2} overtime refills and {3} upgrade points to allocate."
 }

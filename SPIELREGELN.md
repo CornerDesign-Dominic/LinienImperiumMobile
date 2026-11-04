@@ -17,12 +17,12 @@ Maßgeblich ist die vom Server ausgeführte Kombination aus [Engine](functions/s
 | --- | --- |
 | XP bis zum nächsten Level bei aktuellem Level L | `100 × L` |
 | Gesamt-XP zum Erreichen von Level L | `50 × L × (L − 1)` |
-| Belohnung je Levelaufstieg | 1 Expeditionsauffüller, 1 Überstundenauffüller, 3 Entwicklungspunkte |
+| Belohnung je Levelaufstieg | 1 Expeditionsauffüller, 1 Überstundenauffüller, 3 Ausbaupunkte |
 | Wirkung beider Auffüller | Je +50 aktuelle Punkte der zugehörigen Art; Übermaximum erlaubt |
 | Startmaximum Expedition / Überstunden | 50 / 100 |
 | Grundregeneration | Je 1 Punkt alle 10 Minuten, nur unter dem jeweiligen Maximum |
 
-Entwicklungspunkte werden unter **Handelsimperium → Entwicklung** auf die beiden Grundmaxima verteilt. Die gemeinsame Bestätigung verteilt alle derzeit offenen Levelpunkte; sie erhöht auch den jeweiligen aktuellen Punktestand um die zugeteilte Menge. Ausrüstungsboni kommen separat dazu.
+Ausbaupunkte aus Levelaufstiegen und Ortslieferungen liegen in einem gemeinsamen Vorrat unter **Handelsimperium → Entwicklung**. Ein Punkt erhöht wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1. Auch Teilmengen können bestätigt werden. Die aktuelle Energie wird nicht aufgefüllt; Ausrüstungsboni kommen separat dazu.
 
 **Ausbaupunkte** sind ein anderer Bestand: Jede neue einmalige Ortslieferung gibt einen freien Punkt. Dieser erhöht wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1, **ohne** aktuelle Energie aufzufüllen. Eine bestätigte Verteilung ist nicht rückgängig zu machen; unvergebene Punkte bleiben gespeichert. Alte bereits gutgeschriebene Ortsboni bleiben durch Migration erhalten.
 
@@ -149,3 +149,4 @@ Diese Werte sind im geprüften Quellstand tatsächlich aktiv und dürfen nicht m
 | Premium | Referenzpreise und Motive vorhanden, echte Kaufbuttons deaktiviert. |
 
 Historische Preis-, Level-, Refill- und Missionszeitangaben sind keine heutige Spielregel. Änderungen an diesem Dokument sollen mit den betroffenen Runtime-Modulen und Detaildokumenten gemeinsam gepflegt werden; Testberichte belegen nur den jeweils angegebenen Prüflauf.
+

@@ -31,13 +31,13 @@ test('Reduced motion keeps the short gift reveal pause and insufficient balance 
 });
 test('Development modal stages all levels without saving on close and commits one bounded allocation only on confirmation',async()=>{
  const data={development:{points:6,overtime:{base:100,bonus:10},expedition:{base:50,bonus:7}}};
- function setup(){const h=componentHarness('LevelUp.tsx'),calls=[],props={data,busy:false,onCommand:async(action,payload)=>{calls.push({action,...payload});props.data={development:{...data.development,points:0}};return props.data;}};
- const render=()=>h.render('DevelopmentCard',props);button(render(),'Levelpunkte verteilen · 6').props.onPress();// Render the real child component so its hooks and confirmation handler run.
+ function setup(){const h=componentHarness('LevelUp.tsx'),calls=[],props={data,busy:false,onCommand:async(action,payload)=>{calls.push({action,...payload});props.data={development:{...data.development,points:0}};return {...props.data,expansionAllocationApplied:true};}};
+ const render=()=>h.render('DevelopmentCard',props);button(render(),'Ausbaupunkte verteilen · 6').props.onPress();// Render the real child component so its hooks and confirmation handler run.
  const element=(tree)=>{const visit=node=>{if(!node||typeof node!=='object')return undefined;if(typeof node.type==='function'&&node.type.name==='DevelopmentModal')return node;for(const c of require('react').Children.toArray(node.props?.children)){const found=visit(c);if(found)return found;}};return visit(tree);};
  const modal=()=>{const e=element(render());assert.ok(e);return h.render(e.type,e.props);};return {h,calls,render,modal};}
- const cancelled=setup();button(cancelled.modal(),'Verteilung bestätigen');nodes(cancelled.modal(),'PointAllocationRow')[0].props.onIncrease();nodes(cancelled.modal(),'RewardModal')[0].props.onClose();assert.equal(cancelled.calls.length,0);assert.equal(nodes(cancelled.render(),'Btn').some(n=>text(n)==='Levelpunkte verteilen · 6'),true);cancelled.h.unmount();
+ const cancelled=setup();button(cancelled.modal(),'Verteilung bestätigen');nodes(cancelled.modal(),'PointAllocationRow')[0].props.onIncrease();nodes(cancelled.modal(),'RewardModal')[0].props.onClose();assert.equal(cancelled.calls.length,0);assert.equal(nodes(cancelled.render(),'Btn').some(n=>text(n)==='Ausbaupunkte verteilen · 6'),true);cancelled.h.unmount();
  const saved=setup();let tree=saved.modal();assert.equal(button(tree,'Verteilung bestätigen').props.disabled,true);const plus=nodes(tree,'PointAllocationRow')[0].props.onIncrease;for(let i=0;i<9;i++)plus();tree=saved.modal();const row=nodes(tree,'PointAllocationRow')[0];assert.equal(row.props.current,50,'preview uses the permanent base without bonuses');assert.equal(row.props.amount,6,'rapid increments stay bounded by the available points');assert.equal(nodes(tree,'PointsBalance')[0].props.remaining,0);assert.ok(!text(tree).includes('Boni +7'));
- const confirm=button(tree,'Verteilung bestätigen').props.onPress;await Promise.all([confirm(),confirm()]);assert.equal(saved.calls.length,1);assert.deepEqual(saved.calls[0],{action:'levelBatch',expedition:6,overtime:0,points:6});assert.ok(!text(saved.render()).includes('Levelpunkte verteilen · 6'));saved.h.unmount();
+ const confirm=button(tree,'Verteilung bestätigen').props.onPress;await Promise.all([confirm(),confirm()]);assert.equal(saved.calls.length,1);assert.deepEqual(saved.calls[0],{action:'expansionAllocate',expedition:6,overtime:0,points:6});assert.ok(!text(saved.render()).includes('Ausbaupunkte verteilen · 6'));saved.h.unmount();
 });
 
 test('Shared modal X exposes a localized close action and never invokes it while disabled',()=>{
@@ -45,3 +45,4 @@ test('Shared modal X exposes a localized close action and never invokes it while
  const props={onPress:()=>closed++,disabled:true};let tree=h.render('ModalCloseButton',props);assert.equal(tree.props.accessibilityLabel,'Close');assert.equal(tree.props.accessibilityState.disabled,true);tree.props.onPress();assert.equal(closed,0);
  props.disabled=false;tree=h.render('ModalCloseButton',props);tree.props.onPress();assert.equal(closed,1);h.unmount();
 });
+

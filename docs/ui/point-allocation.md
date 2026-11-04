@@ -1,21 +1,19 @@
-# Entwicklung und Punkteverteiler
+# Entwicklung und gemeinsame Ausbaupunkte
 
-Maßgeblich sind `src/LevelUp.tsx`, `src/ExpansionPoints.tsx` und die gemeinsame Darstellung `src/PointAllocation.tsx`.
+Gesammelt am 04.11.2026, noch nicht veröffentlicht. Diese Nutzerentscheidung ersetzt die frühere Trennung von Levelpunkten und Ausbaupunkten.
 
-## Darstellung
+Alle dauerhaft verteilbaren Punkte heißen Ausbaupunkte. Levelaufstiege geben weiterhin 3, einmalige Ortslieferungen weiterhin 1. Beide Quellen zahlen in denselben Vorrat ein: 6 bisherige Levelpunkte plus 1 Expeditions-Ausbaupunkt ergeben 7 Ausbaupunkte. Entwicklung zeigt einen Bestand und einen Button „Ausbaupunkte verteilen“; Home verwendet denselben Bestand. Ein manueller Verteildialog zeigt Rest/Gesamt und Basiswert → Basiswert plus Entwurf. Auch Teilmengen können bestätigt werden; kein Hinweisabsatz und kein automatisches Öffnen.
 
-Ein Entwicklungsbereich mit permanentem Überstunden- und Expeditionsbasiswert. Keine Gesamtsumme mit Kartenboni und keine zusätzliche Mini-Gleichung. Der globale Ressourcenheader zeigt weiterhin echte Maxima mit allen Boni.
+Übersicht und Vorschau zeigen permanente Basismaxima ohne Karten-/Entdeckungsboni; der globale Ressourcenheader behält echte Gesamtmaxima. Punkteanzeigen verwenden helle Materialfläche mit dünner Petrolkontur. Nur am Titel Imperiumsausbau steht in der Übersicht ein bezahlbarkeitsabhängiger goldener Hinweis; gezielte Detailaktionen bleiben erhalten.
 
-Levelpunkte und Ausbaupunkte haben getrennte, benannte Einstiege und Bestände. Die Dialoge verwenden denselben kompakten Zeilenaufbau: Basiswert → Basiswert plus Entwurf, Minus/Plus, Rest/Gesamt und Bestätigung. Kein Hinweisabsatz. Die Verteilung startet ausschließlich manuell.
+## Autorität, Übernahme und Kompatibilität
 
-Punkteanzeigen einschließlich oberem Verfügbarkeitsbadge verwenden helle Materialfläche, dünne Petrolkontur und Petroltext nach dem Muster der Boten-Ausbauvorschau. Derselbe Stil ersetzt die dekorativen grünen Nach-Ausbau-Flächen im Imperiumsausbau-Detail und Verteilnetz. Semantische Statusflächen, aktive Tabs und Auswahlkennzeichnung bleiben unverändert; keine globale Palettenänderung.
+`game.expansion.available` ist der einzige gespeicherte freie Punktestand. Die alte unzugeteilte Liste `pendingLevelUps` wird serverseitig mit 3 Punkten je Eintrag in diesen Bestand übernommen und geleert. Neue Levelgutschriften nutzen denselben Weg; bereits zugeteilte Kapazitäten und frühere Expeditionsgutschriften bleiben erhalten. Wiederholte Synchronisierung zählt keine Punkte erneut. `view.development.points` ist ausschließlich ein Anzeigespiegel, kein zweiter Vorrat.
 
-In der Imperiumsausbau-Übersicht bleibt genau ein goldener Hinweis am Titel, sofern irgendein Ausbau nach echten Serverkosten und Vorräten bezahlbar ist. Untergruppen und einzelne Werte erhalten keine Punkte. Der Detaileditor behält seine gezielten Verfügbarkeitshinweise und Aktionen.
+`expansionAllocate` speichert eine positive Teilmenge gegen den erwarteten aktuellen Gesamtbestand. Alte Befehle `levelBatch` und `level` verwenden denselben Vorrat. Veraltete erwartete Bestände werden abgewiesen; der alte Einzel-Level-Befehl kann weiterhin genau 3 Punkte zuteilen. Zuteilungen erhöhen nur Maxima, füllen aktuelle Energie nicht auf und erhalten Regenerationsfortschritt. Request-Belege verhindern erneute Ausgabe bei wiederholten Cloud-Anfragen. Server vor dem neuen Client ausrollen.
 
-## Unveränderte Regeln
-
-Die Basiswerte kommen direkt aus `view.development.{expedition,overtime}.base`, nicht aus einer geschätzten Rückrechnung. `levelBatch` verbraucht weiterhin vollständige Levelpunkt-Batches, `expansionAllocate` kann weiterhin einen Teil seines eigenen Bestands verteilen. Es gibt keine neue Poolzusammenlegung, Migration oder automatische Ausgabe. Entwürfe bleiben bei neu eintreffenden Punkten erhalten und werden nur bei unzureichendem Bestand zurückgesetzt. Serverbestätigung, Fehleranzeige und Doppeltippschutz bleiben erhalten.
+Entwürfe bleiben bei neu eintreffenden Punkten erhalten und werden nur bei unzureichendem Bestand zurückgesetzt. Bestätigung, sichtbare Fehler und Doppeltippschutz bleiben erhalten.
 
 ## Prüfung
 
-13 Backendtests in `tests/development.test.cjs` und `tests/expedition-completion.test.cjs` erfolgreich (darunter Pooltrennung, keine Energieauffüllung und Basiswerte ohne Boni). Komponententests für Basiswertvorschau trotz Boni, getrennte Bestände, Entwurfserhalt, unvollständige Level-Batches, Fehlerrückmeldung und parallele Bestätigung ergänzt bzw. angepasst. Veröffentlicht mit dem Sammelpaket vom 03.11.2026. Release- und Prüfnachweis: [Prüfstand](../../TEST_REPORT.md). Ein physischer Gerätetest ist nicht belegt.
+Gezielte Backendtests decken 6+1=7, wiederholte Übernahme ohne Doppelgutschrift, erhaltene alte Maxima, gemeinsame neue Level-/Ortsgutschriften, Teilverteilung, alte Befehle, unveränderte Energie und Regeneration sowie Cloud-Wiederholungen ab. Angepasste Komponentenprüfungen decken einen einzigen Einstieg, Basisvorschau, Entwurf und Bestätigung ab. Ein neuer vollständiger App-Export oder physischer Gerätetest ist noch nicht belegt.

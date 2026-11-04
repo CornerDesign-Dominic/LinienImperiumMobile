@@ -38,6 +38,13 @@ function expansionState(){
       if(mission.claimedAt||mission.status==='completed'&&mission.kind==='endless')mission.completionRecorded=true;
     }
   }
+  // Canonical currency: every source deposits into expansion.available. Consume
+  // the old unspent level ledger exactly once; legacy allocated capacity stays put.
+  if(game.pendingLevelUps?.length){
+    game.expansion.available+=game.pendingLevelUps.length*3;
+    game.pendingLevelUps=[];
+  }
+  game.upgradePointsVersion=1;
   // Old endless completions were already paid. Never turn them into pending loot.
   for(const mission of game.expedition.missions)if(mission.kind==='endless'&&mission.status==='completed'&&!mission.completionReward){mission.completionRecorded=true;mission.claimedAt??=mission.endsAt||Date.now();}
   // Milestones settle silently. Discard legacy informational notices; rewards and
@@ -95,4 +102,5 @@ function allocateExpansionPoints(expedition,overtime,expected){
   addEvent(total+' Ausbaupunkte dauerhaft verteilt.');
   return true;
 }
+
 

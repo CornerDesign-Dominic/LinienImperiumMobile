@@ -76,4 +76,5 @@ Bei Änderungen die betroffenen realen Komponenten bei kleinen Displaybreiten, l
 
 ## Punkteverteiler
 
-Entwicklung zeigt permanente Basiswerte ohne Boni. Levelpunkte und Ausbaupunkte bleiben getrennte Bestände in einem gemeinsamen Übersichtsbereich; beide Verteiler verwenden denselben kompakten Aufbau ohne Hinweisabsatz. Verfügbarkeitsanzeigen und die vergleichbaren Nach-Ausbau-Vorschauen im Imperiumsausbau und Verteilnetz nutzen helles Material mit dünner Petrolkontur. Nur am Titel Imperiumsausbau steht in der Übersicht ein bezahlbarkeitsabhängiger goldener Hinweis. [Details und Prüfumfang](docs/ui/point-allocation.md).
+Entwicklung zeigt permanente Basiswerte ohne Boni. Alle Ausbaupunkte liegen unabhängig von ihrer Herkunft in einem gemeinsamen Vorrat mit genau einem Einstieg und Verteildialog ohne Hinweisabsatz. Verfügbarkeitsanzeigen und die vergleichbaren Nach-Ausbau-Vorschauen im Imperiumsausbau und Verteilnetz nutzen helles Material mit dünner Petrolkontur. Nur am Titel Imperiumsausbau steht in der Übersicht ein bezahlbarkeitsabhängiger goldener Hinweis. [Details und Prüfumfang](docs/ui/point-allocation.md).
+
