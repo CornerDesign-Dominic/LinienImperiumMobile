@@ -21,14 +21,18 @@ test('Empire upgrade availability agrees with actual server costs, item shortage
  h.unmount();
 });
 
-test('Development shows permanent bases and keeps each point pool reachable',()=>{
+test('Development shows permanent bases and opens one allocator for the combined point balance',()=>{
  const initial=execute(null,'start',{id:'hamburg'},now,()=>.5);
  initial.state.overtimePoints=1;initial.state.expedition.points=2;
- const data=execute(initial.state,'sync',{},now,()=>.5).view;data.expansion.available=2;
- let opened=0;const h=componentHarness('LevelUp.tsx'),tree=h.render('DevelopmentCard',{data,busy:false,onExpansion:()=>opened++});
+ initial.state.pendingLevelUps=[2,3];initial.state.expansion.available=1;
+ const data=execute(initial.state,'sync',{},now,()=>.5).view;
+ assert.equal(data.development.points,7);assert.equal(data.expansion.available,7);
+ const h=componentHarness('LevelUp.tsx'),props={data,busy:false,onCommand:async()=>undefined};
+ const tree=h.render('DevelopmentCard',props);
  assert.ok(text(tree).includes(String(data.development.overtime.base)));assert.ok(text(tree).includes(String(data.development.expedition.base)));
  assert.ok(!text(tree).includes(' + '));
- const entry=nodes(tree,'Btn').find(node=>text(node)==='Ausbaupunkte verteilen · 2');assert.ok(entry);entry.props.onPress();assert.equal(opened,1);
+ const entries=nodes(tree,'Btn');assert.equal(entries.length,1);assert.equal(text(entries[0]),'Ausbaupunkte verteilen · 7');
+ entries[0].props.onPress();
+ assert.equal(nodes(h.render('DevelopmentCard',props),h.exports.DevelopmentModal).length,1);
  assert.ok(!text(tree).includes('Basiswert + Boni'));h.unmount();
 });
-
