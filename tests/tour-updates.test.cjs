@@ -29,7 +29,7 @@ function fleet(ids=['navigator','r1_rare'],distance=120){
  return cmd(r.state,'projectStart',{id:'TEST',template:0});
 }
 const activeVehicles=r=>order(r).project.vehicles.filter(v=>v.cargo>0);
-const booked=r=>({tons:order(r).delivered,revenue:r.state.stats.grossRevenue,cost:r.state.stats.operatingCosts,xp:r.state.xp,trips:r.state.stats.trips});
+const booked=r=>({tons:order(r).delivered,revenue:r.state.stats.grossRevenue,cost:r.state.stats.operatingCosts,xp:r.state.xp,accruedRevenue:order(r).deferredTransport?.revenue||0,accruedXp:order(r).deferredTransport?.xp||0,trips:r.state.stats.trips});
 
 test('Single: speed upgrades preserve the current end and accounting, then change the following tour',()=>{
  const start=single(),old=JSON.parse(JSON.stringify(order(start).tripSnapshot));
@@ -331,9 +331,11 @@ test('Fleet: projected remaining revenue, cost and XP match actual settlement af
  const before=booked(r),projection=viewOrder(r).projection;
  const finished=cmd(r.state,'sync',{},projection.eta);
  assert.equal(order(finished).status,'completed');
- assert.equal(round(finished.state.stats.grossRevenue-before.revenue),projection.revenue);
+ assert.equal(finished.state.stats.grossRevenue,before.revenue,'Freight remains unpaid until claim');
+ assert.equal(round(order(finished).deferredTransport.revenue-before.accruedRevenue),projection.revenue);
  assert.equal(round(finished.state.stats.operatingCosts-before.cost),projection.cost);
- assert.equal(round(finished.state.xp-before.xp),projection.xp);
+ assert.equal(finished.state.xp,before.xp,'XP remains unpaid until claim');
+ assert.equal(round(order(finished).deferredTransport.xp-before.accruedXp),projection.xp);
  function round(v){return Math.round(v*100)/100;}
 });
 

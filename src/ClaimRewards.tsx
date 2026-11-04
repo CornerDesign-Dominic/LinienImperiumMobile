@@ -7,7 +7,7 @@ import {itemName,rarityColor} from './items';
 import {C,Txt,n} from './ui';
 
 type Summary={
- count?:number;shards?:Record<string,number>;source?:string;pickupHints?:number;hubVehicleParts?:number;coins:number;gears:Record<string,number>;
+ count?:number;xp?:number;shards?:Record<string,number>;source?:string;pickupHints?:number;hubVehicleParts?:number;coins:number;gears:Record<string,number>;
  capacityModules:number;companyItems:number;supplierContacts:number;
 };
 type Reward={id:string;label:string;amount:number;icon:IconName;color:string};
@@ -15,6 +15,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
  const [contentWidth,setContentWidth]=useState(240);
  const rewards:Reward[]=[];
  if(summary.coins>0)rewards.push({id:'coins',label:'Imperium-Taler',amount:summary.coins,icon:'coin',color:C.gold});
+ if((summary.xp||0)>0)rewards.push({id:'xp',label:'XP',amount:summary.xp!,icon:'statistics',color:C.accent});
  for(const rarity of rarities){
   const amount=summary.gears?.[rarity.id]||0;
   if(amount>0)rewards.push({id:`gear:${rarity.id}`,label:`${rarity.label}-${amount===1?'Zahnrad':'Zahnräder'}`,amount,icon:'gear',color:rarityColor(rarity.id)});
@@ -24,7 +25,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
   const amount=summary[id]||0;
   if(amount>0)rewards.push({id,label:itemName(id,amount),amount,icon,color:C.accent});
  }
- const amountText=(reward:Reward)=>`+${n(reward.amount,reward.id==='coins'?2:0)}`;
+ const amountText=(reward:Reward)=>`+${n(reward.amount,reward.id==='coins'||reward.id==='xp'?2:0)}`;
  const amountWidth=(reward:Reward)=>Math.min(144,Math.max(64,amountText(reward).length>8?contentWidth*.4:64));
  return <View onLayout={event=>setContentWidth(event.nativeEvent.layout.width)} style={styles.content}>
   <View style={styles.source}>
@@ -33,7 +34,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
   </View>
   <ScrollView testID="claim-reward-list" style={styles.scroll} contentContainerStyle={styles.loot} showsVerticalScrollIndicator>
    {rewards.map((reward,index)=><View key={reward.id} testID={`claim-reward-${reward.id}`} style={[styles.row,index>0&&styles.separator]}>
-    <View style={styles.art}>{reward.id==='coins'?<Icon name="coin" size={52}/>:<ItemArt id={reward.id} size={52}/>}</View>
+    <View style={styles.art}>{(reward.id==='coins'||reward.id==='xp')?<Icon name={reward.icon} size={52}/>:<ItemArt id={reward.id} size={52}/>}</View>
     <Txt style={styles.label}>{reward.label}</Txt>
     <View style={[styles.amountColumn,{width:amountWidth(reward)}]}>
      <Text literal numberOfLines={1} style={[styles.amount,{color:reward.color,fontSize:Math.min(17,(amountWidth(reward)-2)/(amountText(reward).length*.65))}]}>{amountText(reward)}</Text>

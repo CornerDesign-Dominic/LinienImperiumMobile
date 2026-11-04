@@ -14,6 +14,12 @@ Jede vollständige Fahrzeugtour umfasst Hin- und gegebenenfalls Rückfahrt. Sie 
 - Beim Pyramiden-Event wird die Ladung bereits am Ende der Hinfahrt gezählt; die eingefrorene Tour endet weiterhin nach der leeren Rückfahrt. Eventüberstunden sind separate Sofortlieferungen und verändern diese laufenden Touren nicht.
 - Überstunden in endlichen Kundenaufträgen buchen Teilmengen nach der gespeicherten Tourabrechnung. Eine vollständig dadurch erledigte Tour kann die nächste Tour mit neuen Werten starten. Bei fehlenden Nachfolgefahrzeugen wird nur die noch bewegliche Ladung beschleunigt und entsprechend abgerechnet.
 
+## Auszahlung von Großaufträgen
+
+Sonder- und Empfehlungsaufträge sammeln Frachtvergütung und Transport-XP in einem serverseitigen Auftragsguthaben. Weder passive Teillieferungen noch Überstunden erhöhen während der Laufzeit das verfügbare Taler- oder XP-Konto. Erst der erfolgreiche Abschluss und das manuelle Abholen zahlen dieses Guthaben gemeinsam mit der Abschlussprämie aus; Levelaufstiege entstehen erst dann. Betriebskosten werden unverändert bei der jeweiligen Lieferung abgezogen. Transportmengen, Kilometer und Tourstatistiken zählen weiterhin beim tatsächlichen Transport.
+
+Aktive Altaufträge behalten bereits bezahlte Teilmengen. Nur nach der Umstellung neu gebuchte Anteile landen im Guthaben; historische Werte werden nicht nachberechnet oder zurückgenommen. Fertige Altaufträge ohne Guthaben zahlen nur ihre noch offene Abschlussprämie. Fehlgeschlagene/abgelaufene Aufträge geben kein neues Guthaben frei. Erneutes Synchronisieren, Abholen oder Wiederholen derselben Cloud-Anfrage zahlt nichts doppelt. Einzelaufträge, Beschaffung, Botenstation und separate Eventmechaniken behalten ihre bisherigen Auszahlungsregeln.
+
 ## Prognosen, Speicherung und Zeit
 
 Vor jeder Änderung werden fällige Lieferungen bis zur Serverzeit abgearbeitet. Eine Aufwertung exakt bei Ankunft ändert deshalb nicht die zu diesem Zeitpunkt bereits gestartete Folgetour. Für ETA, Resttouren, Kosten, Vergütung, XP und Überstundenbedarf werden laufende Momentaufnahmen mit den derzeit geplanten Folgetouren kombiniert. Die Simulation verändert keine echten Lieferungen und würfelt keine Belohnungen.
@@ -32,5 +38,5 @@ Die ursprünglichen Web-Regressionsprüfungen bleiben unverändert. Die mobilen 
 
 ## Beschaffung
 
-`procurement-runtime.js` hält jede gestartete Runde mit unveränderlicher Startzeit, Dauer, Ankunft und Preis fest. Nur Folgerunden lesen das Fahrzeugtempo erneut. Die Garage bleibt exklusiv; dieselbe Karte darf unabhängig in Flottenprojekten fahren. Vorausbezahltes Guthaben gehört dem Auftrag, nicht dem frei verfügbaren Konto. Reservefahrten bezahlen bei Abfahrt, enden bei Unterschreiten der Reserve dauerhaft und werden nicht von späteren Einnahmen reaktiviert. Offline-Abrechnung verarbeitet Beschaffungsankünfte chronologisch, bucht bis dahin fällige Transporteinnahmen und prüft erst dann Folgeabfahrten. Erfolgszähler und Loot entstehen nur nach vollständiger Runde; Abholung bewegt gespeicherten Loot einmalig in die Vorräte.
+`procurement-runtime.js` hält jede gestartete Runde mit unveränderlicher Startzeit, Dauer, Ankunft und Preis fest. Nur Folgerunden lesen das Fahrzeugtempo erneut. Die Garage bleibt exklusiv; dieselbe Karte darf unabhängig in Flottenprojekten fahren. Vorausbezahltes Guthaben gehört dem Auftrag, nicht dem frei verfügbaren Konto. Reservefahrten bezahlen bei Abfahrt, enden bei Unterschreiten der Reserve dauerhaft und werden nicht von späteren Einnahmen reaktiviert. Offline-Abrechnung verarbeitet Beschaffungsankünfte chronologisch, bucht bis dahin unmittelbar fällige Einzelauftragseinnahmen und prüft erst dann Folgeabfahrten. Noch nicht abgeholtes Großauftragsguthaben finanziert keine Reservefahrten. Erfolgszähler und Loot entstehen nur nach vollständiger Runde; Abholung bewegt gespeicherten Loot einmalig in die Vorräte.
 

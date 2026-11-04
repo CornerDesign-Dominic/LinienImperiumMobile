@@ -578,7 +578,15 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     projectStart:()=>a.startFleetProject(id(p.id),num(p.template,2)),overtime:()=>p.amount==='max'?a.spendMaxOvertime(id(p.id)):a.spendOvertime(id(p.id),num(p.amount)),refill:()=>a.useOvertimeRefill(),expeditionRefill:()=>a.useExpeditionRefill(),
     giftOpen:()=>a.openRegionGift(num(p.region,4)),
     claimSingles:()=>a.claimSingleRewards(),
-    claim:()=>a.claimOrderReward(id(p.id)),claimAll:()=>{for(const order of a.state.orders)a.applyOrderReward(order);},
+    claim:()=>{
+      const order=a.state.orders.find(order=>order.id===id(p.id)),claimedAt=order?.completionReward?.claimedAt;
+      a.claimOrderReward(id(p.id));
+      const reward=order?.completionReward;
+      if(order?.project&&['special','referral'].includes(order.kind)&&!claimedAt&&reward?.claimedAt)return {
+        count:1,source:'Großaufträge',coins:reward.totalCoins??reward.coins,...(reward.xp>0?{xp:reward.xp}:{}),
+        gears:reward.gears||{},capacityModules:Number(Boolean(reward.capacityModule)),companyItems:reward.companyItems||0,supplierContacts:reward.supplierContacts||0
+      };
+    },claimAll:()=>{for(const order of a.state.orders)a.applyOrderReward(order);},
     discover:()=>a.discoverExpeditionPlace(num(p.region,4)),draw:()=>a.drawExpeditionJob(num(p.region,4)),
     mission:()=>a.startExpeditionMission(num(p.region,4),choice(p.kind,['delivery','final','endless']),id(p.truck),num(p.place)),
     claimMission:()=>a.claimExpeditionMission(num(p.id)),
@@ -674,6 +682,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   if(action==='hubCrate'&&ok!==false)view.hubCrateParts=ok;
   if(action==='giftOpen'&&ok!==false)view.giftFind=ok;
   if(['claimSingles','hubCollect'].includes(action)&&ok!==false)view.claimSummary=ok;
+  if(action==='claim'&&ok&&typeof ok==='object')view.claimSummary=ok;
   if(action==='overtime')view.overtimeApplied=ok===true;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;
   if(action==='customerBatch')view.customerBatchApplied=ok===true;

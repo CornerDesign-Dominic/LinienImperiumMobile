@@ -88,15 +88,63 @@ function projectProjection(order, now = Date.now()) {
   return {eta:copy.delivered>=copy.volume-1e-9?now:null,feasible:copy.delivered>=copy.volume-1e-9,...pending};
 }
 projectEstimatedEnd = (order, now = Date.now()) => projectProjection(order,now).eta ?? Infinity;
-const originalBookProjectDelivery=bookProjectDelivery;
+// Only new deliveries enter this ledger. Previously delivered legacy fractions
+// were already paid, so never reconstruct earnings from delivered/booked totals.
+function deferredProjectTransport(order){
+  if(!order.deferredTransport)order.deferredTransport={version:1,revenue:0,xp:0};
+  return order.deferredTransport;
+}
+function describeProjectPayout(order){
+  const reward=order.completionReward;
+  if(!reward)return;
+  const pending=order.deferredTransport;
+  reward.transportCoins=round2(pending?.revenue||0);
+  reward.xp=round2(pending?.xp||0);
+  reward.totalCoins=round2(reward.coins+reward.transportCoins);
+}
 bookProjectDelivery=(order,vehicle,cargo)=>{
-  const before={revenue:game.stats.grossRevenue,cost:game.stats.operatingCosts,xp:game.xp};
-  originalBookProjectDelivery(order,vehicle,cargo);
-  order.bookedTransport ||= {revenue:0,cost:0,xp:0};
-  for(const key of ['revenue','cost','xp']){
-    const after=key==='xp'?game.xp:key==='cost'?game.stats.operatingCosts:game.stats.grossRevenue;
-    order.bookedTransport[key]=round2(order.bookedTransport[key]+after-before[key]);
+  cargo=Math.min(cargo,vehicle.cargo,order.volume-order.delivered);
+  if(cargo<=0)return;
+  const originalCargo=vehicle.tripCargo||vehicle.cargo,before=vehicle.tripDelivered||0;
+  const after=Math.min(originalCargo,before+cargo);
+  const totals=vehicle.tripAccounting||{
+    ...tourEconomics(order,vehicle,originalCargo,order.delivered-before),
+    xp:originalCargo*paidLegs(order)*(1+activeCardBonus(vehicle,'xp')/100),
+    km:order.distance*drivenLegs(order)
+  };
+  const share=value=>round2(value*after/originalCargo)-round2(value*before/originalCargo);
+  const revenue=share(totals.revenue),cost=share(totals.cost),xp=share(totals.xp),km=share(totals.km);
+  const pending=deferredProjectTransport(order);
+  pending.revenue=round2(pending.revenue+revenue);pending.xp=round2(pending.xp+xp);
+  // Operating costs still arise at delivery; no income or level-up is advanced.
+  game.coins=round2(game.coins-cost);
+  game.stats.operatingCosts=round2(game.stats.operatingCosts+cost);
+  game.stats.tons+=cargo;game.stats.km=round2(game.stats.km+km);game.stats.tonKm+=cargo*order.distance;
+  order.bookedTransport||={revenue:0,cost:0,xp:0};
+  for(const [key,value]of Object.entries({revenue,cost,xp}))order.bookedTransport[key]=round2(order.bookedTransport[key]+value);
+  order.delivered=Math.min(order.volume,order.delivered+cargo);
+  if(order.volume-order.delivered<1e-9)order.delivered=order.volume;
+  vehicle.tripDelivered=after;vehicle.cargo=Math.max(0,originalCargo-after);
+  const record=game.trucks.find(item=>item.cardId===vehicle.cardId)||game.expedition.characters[vehicle.cardId]?.parkedTruck;
+  if(record)record.kmDriven=round2((record.kmDriven||0)+km);
+  if(vehicle.cargo<1e-9){vehicle.cargo=0;vehicle.nextAt=null;game.stats.trips++;if(record)record.toursCompleted=(record.toursCompleted||0)+1;}
+};
+const finishProjectBeforeDeferredPayout=finishFleetProject;
+finishFleetProject=(order,at)=>{finishProjectBeforeDeferredPayout(order,at);if(order.status==='completed')describeProjectPayout(order);};
+const applyRewardBeforeDeferredPayout=applyOrderReward;
+applyOrderReward=order=>{
+  if(!order?.project||!PROJECT_DEADLINES[order.kind])return applyRewardBeforeDeferredPayout(order);
+  if(order.status!=='completed'||!order.completionReward||order.completionReward.claimedAt)return false;
+  describeProjectPayout(order);
+  if(!applyRewardBeforeDeferredPayout(order))return false;
+  const pending=order.deferredTransport;
+  if(pending&&!pending.claimedAt){
+    pending.claimedAt=order.completionReward.claimedAt;
+    game.coins=round2(game.coins+pending.revenue);
+    game.stats.grossRevenue=round2(game.stats.grossRevenue+pending.revenue);
+    awardTransportXp(pending.xp);
   }
+  return true;
 };
 settleFleetProjects=(now=Date.now())=>{
   let changed=false;

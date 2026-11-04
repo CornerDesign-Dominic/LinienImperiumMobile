@@ -27,6 +27,6 @@ function projectClaimSummary(previousOrders,nextOrders,id){
  const next=nextOrders.find(order=>order.id===id&&order.isProject);
  const reward=next?.completionReward;
  if(previous?.status!=='completed'||!previous.completionReward||previous.completionReward.claimedAt||next?.status!=='completed'||!reward?.claimedAt)return null;
- return {count:1,coins:reward.coins,gears:reward.gears||{},capacityModules:Number(Boolean(reward.capacityModule)),companyItems:reward.companyItems||0,supplierContacts:reward.supplierContacts||0};
+ return {count:1,coins:reward.totalCoins??reward.coins,...(reward.xp>0?{xp:reward.xp}:{}),gears:reward.gears||{},capacityModules:Number(Boolean(reward.capacityModule)),companyItems:reward.companyItems||0,supplierContacts:reward.supplierContacts||0};
 }
 module.exports={projectSections,orderedProjectCategories,orderedRunningProjects,projectClaimSummary};
