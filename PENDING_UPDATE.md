@@ -79,3 +79,7 @@ Das fünfte Geschichtsbild (80–99 %) ist ersetzt: Die geschlossene, verzierte 
 ## Gesammelt: Kronenlande sicherer Transport und feierliche Ankunft
 
 Zwei Geschichtsbilder ersetzt: Auf der Steinbrücke bleibt der Schmuck sicher in der geschlossenen Kutsche; Glasfenster und Vorhänge sind geschlossen, Wachwaffen plausibel am Reiter geführt. Vor dem Stadttor hält dieselbe schwarz-goldene Kutsche, der Bote steigt gerade aus; aufgereihte Wachen und Zuschauer begrüßen ihn, die Schatulle bleibt verschlossen. Keine Änderungen an Fortschritt oder Spiellogik. Beide Motive visuell geprüft, Produktions-JPEGs mit je 1200 × 800 vollständig dekodiert und hochgeladene Git-Blob-SHAs mit den lokalen Dateien abgeglichen. Prompts und Änderungsherkunft dokumentiert. Noch nicht veröffentlicht.
+
+## Gesammelt: Kompakte Zeitangabe in Beschaffungsfahrzeugen
+
+In der dreispaltigen Fahrzeugwahl steht die Dauer direkt neben der Stoppuhr in einer Zeile; der sichtbare Zusatz „je Tour“ entfällt. Die Kartenhöhe folgt dem verkürzten Inhalt ohne feste Leerzeilen. Gesprochene Beschriftung und Mehrfachauswahl bleiben erhalten. Gezielter JSX-/Stildiff geprüft; native Layoutprüfung steht noch aus. Noch nicht veröffentlicht.
