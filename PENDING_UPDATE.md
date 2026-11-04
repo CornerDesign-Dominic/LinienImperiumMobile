@@ -67,3 +67,7 @@ Angebote und gespeicherte Einzelaufträge öffnen direkt das unveränderte Fahrz
 ## Gesammelt: Kundenwaren und Herkunft
 
 Kundendetails zeigen drei normale Produkte plus Edelware nebeneinander mit bestehenden Bildern und vollständigen Namen. Verkehr und kanonische Herkunft stehen darunter in zwei kompakten Feldern mit Transport-/Expeditionsicon. Drei Komponentenprüfungen und TSX-Syntax erfolgreich, native Layoutprüfung offen. Noch nicht veröffentlicht. [Details](docs/ui/customer-cargo.md).
+
+## Gesammelt: Handelssitz im Handelsimperium
+
+Neue obere Karte mit prächtigem Säulenbau und einheitlichen Kisten-Lorbeer-Siegeln auf burgunderroten Bannern; Bild und kompakter Punkteteil verbunden. Titel „Entwicklung“ entfernt. Tatsächlicher gemeinsamer Ausbaupunktestand, permanente Basismaxima und bestehende manuelle Verteilung bleiben maßgeblich; null Punkte erzeugen keinen Verteilbutton. Hero maximal 210 logische Pixel, unterer Imperiumsausbau unverändert. Typprüfung und zwölf gezielte Komponententests erfolgreich; Produktions-JPEG visuell/dekodiert und Upload-SHA geprüft. Kein neuer Geräte-/Exporttest. Noch nicht veröffentlicht. [Details](docs/ui/point-allocation.md).

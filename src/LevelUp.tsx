@@ -3,7 +3,7 @@ import {MaterialView as View} from './Material';
 import {ItemAmount} from './ItemArt';
 import {itemName} from './items';
 import React,{useEffect,useRef,useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {Image,StyleSheet} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
@@ -14,10 +14,13 @@ export function DevelopmentCard({data,busy,onCommand,modalBlocked=false}:any){
  const [open,setOpen]=useState(false),development=data.development;
  if(!development)return null;
  return <>
-  <Card style={{padding:12,borderColor:development.points?C.accent:C.line}}>
-   <Row style={{marginBottom:7,flexWrap:'nowrap'}}><Txt style={s.title}>Entwicklung</Txt><PointInfo>Verfügbare Punkte: {n(development.points)}</PointInfo></Row>
+  <Card style={[s.headquartersCard,{borderColor:development.points?C.accent:C.line}]}>
+   <Image testID="empire-headquarters-art" source={require('../assets/art/company/headquarters.jpg')} resizeMode="cover" accessible={false} fadeDuration={0} style={s.headquartersArt}/>
+   <View style={s.developmentBody}>
+   <Row style={{marginBottom:7,justifyContent:'flex-end'}}><PointInfo>Verfügbare Punkte: {n(development.points)}</PointInfo></Row>
    {(['overtime','expedition'] as const).map(kind=><Row key={kind} style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={{fontSize:12,flex:1}}>{kind==='overtime'?'Überstunden':'Expeditionspunkte'}</Txt><Txt style={{fontSize:17,fontWeight:'700'}}>{n(development[kind].base)}</Txt></Row>)}
    {development.points>0&&<Btn secondary icon="expansion" disabled={busy} onPress={()=>setOpen(true)}>Ausbaupunkte verteilen · {n(development.points)}</Btn>}
+   </View>
   </Card>
   {open&&<DevelopmentModal data={data} busy={busy} onCommand={onCommand} onClose={()=>setOpen(false)} modalBlocked={modalBlocked}/>}
  </>;
@@ -50,6 +53,6 @@ export function LevelUpNotice({levels,onClose}:{levels:number[];onClose:()=>void
   {!!levels.filter(value=>value<=100&&value%5===0).length&&<Txt style={s.reward}>+{levels.filter(value=>value<=100&&value%5===0).length} {levels.filter(value=>value<=100&&value%5===0).length===1?'Botenplatz':'Botenplätze'}</Txt>}
  </SafeAreaView></View></Modal>;
 }
-const s=StyleSheet.create({title:{fontSize:16,fontWeight:'700'},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},modal:{width:'100%',maxWidth:440,borderRadius:20,padding:20,backgroundColor:C.panel,borderWidth:1,borderColor:C.accent},congrats:{fontSize:19,fontWeight:'700',textAlign:'center'},level:{fontSize:26,fontWeight:'700',textAlign:'center',color:C.accent,marginTop:8,marginBottom:18,lineHeight:32},reward:{fontSize:13,lineHeight:21,marginBottom:8}});
+const s=StyleSheet.create({headquartersCard:{padding:0,overflow:'hidden'},headquartersArt:{width:'100%',aspectRatio:16/9,maxHeight:210},developmentBody:{padding:11},title:{fontSize:16,fontWeight:'700'},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},modal:{width:'100%',maxWidth:440,borderRadius:20,padding:20,backgroundColor:C.panel,borderWidth:1,borderColor:C.accent},congrats:{fontSize:19,fontWeight:'700',textAlign:'center'},level:{fontSize:26,fontWeight:'700',textAlign:'center',color:C.accent,marginTop:8,marginBottom:18,lineHeight:32},reward:{fontSize:13,lineHeight:21,marginBottom:8}});
 
 

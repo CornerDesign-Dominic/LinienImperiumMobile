@@ -15,7 +15,7 @@ function componentHarness(file,imports={}){
  const exports={};const required=id=>{
   if(Object.hasOwn(imports,id))return imports[id];
   if(id==='react')return hooks;
-  if(id==='react-native')return {View:'View',Pressable:'Pressable',Modal:'Modal',ScrollView:'ScrollView',StyleSheet:{create:x=>x},AccessibilityInfo:{isReduceMotionEnabled:async()=>false}};
+  if(id==='react-native')return {Image:'Image',View:'View',Pressable:'Pressable',Modal:'Modal',ScrollView:'ScrollView',StyleSheet:{create:x=>x},AccessibilityInfo:{isReduceMotionEnabled:async()=>false}};
   if(id==='react-native-safe-area-context')return {SafeAreaView:'SafeAreaView'};
   if(id==='./Material')return {MaterialView:'View',MaterialPressable:'Pressable',MaterialLayer:'MaterialLayer'};
   if(id==='./i18n')return {t:String};
@@ -26,6 +26,7 @@ function componentHarness(file,imports={}){
   if(id==='./PointAllocation')return {PointInfo:'PointInfo',PointsBalance:'PointsBalance',PointAllocationRow:'PointAllocationRow',pointInfoStyle:{}};
   if(id==='./AppModal')return {AppModal:'Modal'};
   if(id==='./ModalCloseButton')return {ModalCloseButton:'ModalCloseButton'};
+  if(id==='../assets/art/company/headquarters.jpg')return 'headquarters-art';
   if(id==='./ItemArt')return {ItemArt:'ItemArt',ItemAmount:'ItemAmount'};
   if(id==='./Icon')return {Icon:'Icon'};
   if(id==='./HubCourierArt')return {HubCourierArt:'HubCourierArt'};

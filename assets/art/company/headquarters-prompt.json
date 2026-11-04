@@ -1,0 +1,13 @@
+{
+  "file": "headquarters.jpg",
+  "purpose": "Production Handelsimperium headquarters hero illustration",
+  "generator": "OpenAI builtin imagegen",
+  "date": "2026-11-04",
+  "prompt": "Use case historical-scene. Produce ONE production landscape illustration ONLY for a mobile historical trading game. Reference image role: visual reference for the grand columned merchant headquarters in its TOP artwork only, NOT edit target UI. Recreate a magnificent neoclassical merchants' palace of pale cream stone, grand tall Corinthian columns, triangular sculpted pediment, wide steps and forecourt, tasteful fountain, flowering planters and small historical horse-drawn freight carriage with wooden crates. Rich but grounded early1800s architecture, sunny warm golden lateafternoon, realistic highly detailed painterly game illustration. Broad panoramic16:9 composition, fullbleed scene, architecture central with principal columns/entrance safely in central crop; keep upper roof and lower steps visible. IMPORTANT ALL fabric flags/banners dark burgundy red, each bears SAME clearly legible small GOLD heraldic emblem of a WOODEN CARGO CRATE enclosed by a LAUREL WREATH. No ship emblems anywhere on banners or crates, no letters, no words. Emblem symmetrical, simplestylized cubecrate with diagonalcrossbrace within goldlaurelleaves. Hero image should convey successful trading empire. No UI, no paper frame, no labels, no numbers, no text, no menus, no bars, no logos outside the historically woven emblems, no modern vehicles. Entire output is scenery artwork in landscape16:9 aspect ratio.",
+  "reference": "User-approved UI concept (reference artwork only; no UI copied)",
+  "processing": "Resized to 1200x675 RGB JPEG, quality 88, optimized. No compositing or baked UI.",
+  "width": 1200,
+  "height": 675,
+  "bytes": 373490,
+  "git_blob_sha": "82ffbcec9bd0a464ac6b0d9cbf46814efd229d32"
+}

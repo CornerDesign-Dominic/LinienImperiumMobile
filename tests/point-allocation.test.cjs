@@ -27,3 +27,18 @@ test('Development shows one seven-point balance and one allocator entry for all 
  const h=componentHarness('LevelUp.tsx'),props={data:data(),onExpansion(){},onCommand(){}};props.data.development.points=7;props.data.expansion.available=7;
  const tree=h.render('DevelopmentCard',props),buttons=nodes(tree,'Btn');assert.equal(buttons.length,1);assert.equal(text(buttons[0]),'Ausbaupunkte verteilen · 7');assert.ok(text(tree).includes('Verfügbare Punkte: 7'));assert.ok(!text(tree).includes('Levelpunkte'));
 });
+
+test('Headquarters card retains authoritative base maxima and a truthful empty point balance',()=>{
+ const h=componentHarness('LevelUp.tsx'),props={data:data(),busy:false,onCommand(){}};
+ props.data.development.points=0;props.data.expansion.available=0;
+ const tree=h.render('DevelopmentCard',props);
+ assert.ok(text(tree).includes('Verfügbare Punkte: 0'));
+ assert.ok(!text(tree).includes('Entwicklung'));
+ assert.equal(nodes(tree,'Btn').length,0,'no allocation action without points');
+ assert.equal(nodes(tree,'Image').length,1);
+ const card=nodes(tree,'Card')[0];assert.ok(nodes(card,'Image').length===1,'art and values belong to the same card');
+ const values=nodes(tree,'Txt').map(text);
+ assert.ok(values.includes('121'));assert.ok(values.includes('76'));
+ assert.ok(!values.includes('130'));assert.ok(!values.includes('100'),'card bonuses stay out of the base preview');
+ h.unmount();
+});
