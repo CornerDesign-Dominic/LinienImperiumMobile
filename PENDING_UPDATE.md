@@ -1,24 +1,22 @@
 # Offene Arbeiten und Veröffentlichungsstand
 
-Stand: 03.11.2026. Veröffentlichtes Sammelpaket: `12729dbf25ab76f3b9ed75432105e0c4a59c845f`.
+Stand: 04.11.2026. Veröffentlichtes Sammelpaket: `5e8010fc7cd47e337c5af62d5498b2841b85257d`.
 
 ## Letzte Veröffentlichung
 
-[Mobile-preview-Lauf 41728496322](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/41728496322) hat Typprüfung, 290 Tests, Android-Export, Firebase-Deployment, Live-API-Prüfung und Android-OTA erfolgreich abgeschlossen. Keine neue APK; kein physischer Gerätetest.
+[Mobile-preview-Lauf 41854923005](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/41854923005) bestätigt Typprüfung, 302 bestandene Tests, Android-Export, Firebase-Deployment, Live-API-Prüfung und Android-OTA im Kanal preview. Keine neue APK und kein physischer Gerätetest.
 
-Das freigegebene Paket enthält:
+Veröffentlicht sind alle bis zur Freigabe vom 04.11.2026 gesammelten Anpassungen:
 
-- Stille Expeditionsabschlüsse mit automatischer Ausbaupunkt-Gutschrift, Regionskopf, Bonus-Kreisplus und Umbrüche an Wortgrenzen.
-- Globale Botenstation-Bezeichnung und auf ganze Taler gerundete laufende Ertragsanzeige.
-- Regionale Großauftragstitel, Reiter mit echten Anzahlen, feste Seltenheits-/Regionssortierung und Seltenheitsstreifen.
-- Gemeinsame Liste laufender und fertiger Großaufträge mit ERLEDIGT-Stempel und direkter, abgesicherter Prämienabholung.
-- Eigene Bilder aller 15 Stammkundenwaren und kompakte Angebotskarten.
-- Gemeinsame Punkteverteiler mit Basiswerten, getrennten Punktebeständen und hellen Petrol-Infoflächen; ein Verfügbarkeitshinweis am Imperiumsausbau.
-- Season-Einstieg mit 30 Stufen, Free links und Premium rechts als vorläufige Vorschau.
+- Gemeinsamer Ausbaupunktevorrat aus Levelaufstiegen und Ortslieferungen, einmalige Übernahme alter Guthaben, ein Verteildialog und Teilverteilung.
+- Kompakte Großauftragskarten mit Kunden-/Tonnenicons, direkter Prämienabholung und erhaltener Sortierung.
+- Fünf regionale Großauftragsgeschichten mit insgesamt 30 neuen Bildern und Übergabeschein erst bei bestätigtem Abschluss; keine farbige Wegmarkierung. Flottenwechsel-Button und Prognosekarte entfernt, Neuberechnung ab nächster Tour erhalten.
+- Überstundenmodal mit Punktebedarf zur Fristsicherung, Liefervorschau, direkter Bestätigung und serverseitigem Beleg gegen Mehrfachausgabe; Auffüller aus diesem Modal entfernt.
+- Beschaffungsregionen mit kleinen Bildern und Münzpreis, gesperrte Regionen deaktiviert ohne Weiterleitung; Fahrzeug-Mehrfachauswahl in drei Spalten.
+- Global kompaktere Karten-, Innen- und Seitenabstände bei erhaltenen Schrift-/Bildgrößen und Tippflächen.
+- Bestätigungsbutton im Angebotsmodal „Aktualisieren“.
 
-Details und genaue Grenzen stehen in den jeweiligen [Modulnotizen](docs/README.md); der aktuelle Prüfnachweis steht in [TEST_REPORT.md](TEST_REPORT.md). Ausbaupunkte-Name und Bauplan-/Säulenmotiv waren bereits im vorherigen Paket `ca6f08d621f6f11aee0f57078dced1434fc6ffab` veröffentlicht.
-
-Neue Wünsche werden ab jetzt wieder gesammelt; die nächste Spielveröffentlichung benötigt eine neue ausdrückliche Freigabe.
+Die vorherigen veröffentlichten Änderungen bleiben enthalten; Nachweise: [Prüfstand](TEST_REPORT.md), [Modulnotizen](docs/README.md). Neue Wünsche werden ab jetzt bis zur nächsten ausdrücklichen Veröffentlichungsfreigabe gesammelt.
 
 ## Noch offene Punkte
 
@@ -43,32 +41,3 @@ Die Tabelle hält belegte Restpunkte fest; sie beauftragt keine neue Spielfunkti
 - Spielveröffentlichungen erfolgen weiterhin auf ausdrücklichen Wunsch über den dokumentierten Workflow. Dokumentationspflege startet keinen manuellen Release und setzt keinen Veröffentlichungsmarker.
 
 
-## Gesammelt: Angebotsmodal – Aktualisieren
-
-Der Bestätigungsbutton im Modal „Neue Angebote?“ heißt „Aktualisieren“ (Englisch „Refresh“), beim Speichern „Wird aktualisiert …“. Preis bleibt separat sichtbar; Kosten, gehaltene Angebote und Bestätigungslogik bleiben unverändert. Nur Beschriftung und Übersetzung geprüft; kein neuer Release. 
-
-## Gesammelt: kompakte Großauftragskarten
-
-Angenommener Entwurf umgesetzt: kleinere vorhandene Warenbilder, kompakte Titel-/Kunden-/Frachtzeilen mit Häuschen vor dem Kundennamen und Kiste vor der Tonnenzahl. Laufende mit gelieferter/Gesamtmenge, schmalem Balken und gemeinsamer Zeitzeile; fertige mit kleinem ERLEDIGT-Stempel und kompakter „Abholen“-Taste ohne Leerfläche. Namen umbrechen ohne Abschneiden; Sortierung, Prämienlogik und Schutz vor Doppeltipps unverändert. Vier reine Status-/Sortier-/Backendtests erfolgreich; UI-/Typ- und Geräteprüfung lokal nicht belegt. [Details](docs/ui/project-category-overview.md). Noch nicht veröffentlicht.
-
-## Gesammelt: ein gemeinsamer Ausbaupunktevorrat
-
-Nutzerentscheidung vom 04.11.2026 ersetzt die frühere Trennung: Levelaufstiege (je 3) und einmalige Ortslieferungen (je 1) geben dieselben Ausbaupunkte. Ein Bestand, ein Einstieg und ein manueller Verteiler; 6 bisherige Levelpunkte plus 1 Expeditionspunkt ergeben 7 Ausbaupunkte. Auch Teilmengen sind verteilbar. Alte offene Levelgutschriften werden einmalig übernommen; bereits gekaufte Maxima, Boni, Energie und Regeneration bleiben erhalten. Die alten Befehle verwenden denselben autoritativen Vorrat. Details: [Gemeinsame Ausbaupunkte](docs/ui/point-allocation.md).
-
-16 gezielte Backend-/Wiederholungsprüfungen erfolgreich. Erweiterter lokaler Lauf: 203 von 204 Prüfungen erfolgreich; der einzige Fehler betrifft die im lokalen Textcheckout fehlende vorhandene Fahrzeugbilddatei `navigator`, keine geänderte Spiellogik. Komponentenprüfungen angepasst, lokal ohne React/TypeScript nicht ausführbar. JS-Syntax und beide Übersetzungs-JSON geprüft. Vollständige Typprüfung, App-Export und Releaseprüfung vor der nächsten ausdrücklich freigegebenen Veröffentlichung; noch nicht veröffentlicht.
-
-## Gesammelt: Beschaffungsmodale
-
-Ortsauswahl mit kleinen Regionsbildern links und Serverpreis je Tour mit Münzbild. Gesperrte Regionen sind ausgegraut und mit Schloss deaktiviert, ohne Expeditionsweiterleitung. Anschließende Fahrzeugauswahl in drei Spalten mit erhaltener Mehrfachauswahl und echter Tourdauer. Tourenzahl/Reserve und Startregeln unverändert. Drei gezielte Komponentenprüfungen erfolgreich; kein Gerätetest oder neuer Export. Noch nicht veröffentlicht. [Details](docs/ui/procurement-picker.md).
-
-## Gesammelt: regionale Großauftragsgeschichten
-
-Fünf individuelle Bildergeschichten mit je sechs neuen Motiven: Herstellung bis Ankunft/letzte Meter, danach ausschließlich ein regionaler Übergabeschein bei bestätigtem Abschluss. Szenen wechseln nach tatsächlich gelieferter Tonnage bei 0/20/40/60/80 Prozent; der Beleg erst bei 100 Prozent und Serverstatus completed. Keine farbige Wegmarkierung, kein separater Fortschrittsbalken im Detail. Tonnen und Zeiten bleiben außerhalb des Bildes. Flottenwechsel-Button und Prognosekarte entfernt; Neuberechnung ab nächster Tour unverändert. 30 JPEGs visuell/dekodiert geprüft und Blobintegrität verifiziert, vier Stufen-/Zuordnungstests erfolgreich. Vollständiger App-/Typ-/Gerätetest vor Release offen. [Bildergeschichten](docs/ui/project-stories.md). Nicht veröffentlicht.
-
-## Gesammelt: Überstundenmodal
-
-Ein Dialog mit 1/5/10, tatsächlicher Tonnage-/Restvorratsvorschau und direkter Bestätigung. „Frist sichern · X Punkte“ nennt den Serverbedarf, bei 0 deaktiviert; fehlende Prognose und unzureichender Vorrat gesondert behandelt. Überstundenauffüller vollständig aus diesem Dialog entfernt. Zwei reine Berechnungstests erfolgreich; UI-/Typprüfung vor Veröffentlichung offen. [Details](docs/ui/project-overtime.md).
-
-## Gesammelt: globale kompakte Abstände
-
-Kartenaußenabstände ungefähr halbiert, gemeinsame Innenabstände rund 20–25 % reduziert, seitlicher Seitenrand 9 → 7. Startnavigation und wichtige Listenüberschreibungen angeglichen. Schrift, Bilder, Tippflächen, Modalinsets und Safe Areas unverändert; bereits kompakte Raster behalten geeignete Ausnahmen. Quellprüfung erfolgt; Typ-/UI-Prüfung und Android-Export im Releaseworkflow offen. [Details](docs/ui/global-spacing.md).

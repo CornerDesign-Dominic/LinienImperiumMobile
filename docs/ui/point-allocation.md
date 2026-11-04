@@ -1,6 +1,6 @@
 # Entwicklung und gemeinsame Ausbaupunkte
 
-Gesammelt am 04.11.2026, noch nicht veröffentlicht. Diese Nutzerentscheidung ersetzt die frühere Trennung von Levelpunkten und Ausbaupunkten.
+Diese Nutzerentscheidung ersetzt die frühere Trennung von Levelpunkten und Ausbaupunkten.
 
 Alle dauerhaft verteilbaren Punkte heißen Ausbaupunkte. Levelaufstiege geben weiterhin 3, einmalige Ortslieferungen weiterhin 1. Beide Quellen zahlen in denselben Vorrat ein: 6 bisherige Levelpunkte plus 1 Expeditions-Ausbaupunkt ergeben 7 Ausbaupunkte. Entwicklung zeigt einen Bestand und einen Button „Ausbaupunkte verteilen“; Home verwendet denselben Bestand. Ein manueller Verteildialog zeigt Rest/Gesamt und Basiswert → Basiswert plus Entwurf. Auch Teilmengen können bestätigt werden; kein Hinweisabsatz und kein automatisches Öffnen.
 
@@ -16,4 +16,4 @@ Entwürfe bleiben bei neu eintreffenden Punkten erhalten und werden nur bei unzu
 
 ## Prüfung
 
-Gezielte Backendtests decken 6+1=7, wiederholte Übernahme ohne Doppelgutschrift, erhaltene alte Maxima, gemeinsame neue Level-/Ortsgutschriften, Teilverteilung, alte Befehle, unveränderte Energie und Regeneration sowie Cloud-Wiederholungen ab. Angepasste Komponentenprüfungen decken einen einzigen Einstieg, Basisvorschau, Entwurf und Bestätigung ab. Ein neuer vollständiger App-Export oder physischer Gerätetest ist noch nicht belegt.
+Gezielte Backendtests decken 6+1=7, wiederholte Übernahme ohne Doppelgutschrift, erhaltene alte Maxima, gemeinsame neue Level-/Ortsgutschriften, Teilverteilung, alte Befehle, unveränderte Energie und Regeneration sowie Cloud-Wiederholungen ab. Angepasste Komponentenprüfungen decken einen einzigen Einstieg, Basisvorschau, Entwurf und Bestätigung ab. Veröffentlicht am 04.11.2026. Typprüfung, vollständige Tests und Android-Export sind im [aktuellen Prüfnachweis](../../TEST_REPORT.md) belegt; kein physischer Gerätetest.

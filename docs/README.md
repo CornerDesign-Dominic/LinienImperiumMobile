@@ -19,17 +19,18 @@ Diese Dokumentation beschreibt **Linien Imperium Online / Projekt 117**, die nat
 ## Spielmechaniken im Detail
 
 - [Season mit Free- und Premium-Weg](ui/season.md)
-
 - [Regionale Transportkarten](gameplay/regional-transport-cards.md) und [Kartenboni](ui/card-bonus-steps.md)
 - [Firmen-Transportausbau](transport-upgrades.md) und [Ausbaupunkte und Entwicklung](ui/company-development-points.md)
 - [Einzelauftragsnavigation](single-orders-flow.md), [Reiter und Zuweisung](ui/single-order-tabs-and-assignment.md)
-- [Großauftragsstart und Hilfe](ui/project-start-and-info.md), [Abschlussstatistik](ui/project-statistics.md)
+- [Großauftragsstart und Hilfe](ui/project-start-and-info.md), [kompakte Übersicht](ui/project-category-overview.md), [Bildergeschichten](ui/project-stories.md), [Überstundenmodal](ui/project-overtime.md), [Abschlussstatistik](ui/project-statistics.md)
 - [Ausbaupunkte und Motiv](ui/ausbaupunkte.md), [Expeditionsabschlüsse](ui/expedition-completions.md), [Ortsmodale](ui/expedition-place-modals.md)
-- [Beschaffungsgruppen](ui/procurement-groups.md), [Beschaffungsübersicht](ui/procurement-overview.md)
+- [Beschaffungsgruppen](ui/procurement-groups.md), [Beschaffungsübersicht](ui/procurement-overview.md), [Orts- und Fahrzeugauswahl](ui/procurement-picker.md)
 - [Boten der Botenstation und Werkzeugkästen](ui/hub-vehicle-parts.md), [Erträge](ui/hub-earnings.md), [Vertrieb](ui/hub-sales.md)
 - [Pyramiden-Event](events/pyramid.md), [Premiumshop und Kaufgrenzen](ui/premium-shop.md)
 
 Weitere Implementierungsnotizen liegen unter [ui](ui), gestalterische Kontextnotizen unter [design](design). Diese Dateien erläutern ihren jeweiligen Bereich; sie sind keine eigenständigen Release- oder Freigabelisten. Assetbezogene README-Dateien unter `assets/art` beschreiben Quellen und Zuordnungen.
+
+Gemeinsame Darstellung: [Globale Abstände](ui/global-spacing.md) und [gemeinsamer Ausbaupunkteverteiler](ui/point-allocation.md).
 
 ## So werden die Dateien gepflegt
 

@@ -43,13 +43,13 @@ Belohnung abholen sendet die bestehende autoritative `claim`-Aktion über den Ap
 Vier gezielte Status-/Sortier-/Backend-Abholprüfungen erfolgreich (einschließlich einmaliger Auszahlung und erhaltener Historie). Komponentenprüfungen für Abholen/Fehler/Doppeltipp, Kartenzeiten und Tabnavigation ergänzt; Veröffentlicht mit dem Sammelpaket vom 03.11.2026. Release- und Prüfnachweis: [Prüfstand](../../TEST_REPORT.md). Ein physischer Gerätetest ist nicht belegt.
 
 
-## Kompaktere Laufend-Karten – gesammelt, nicht veröffentlicht
+## Kompaktere Laufend-Karten
 
 Der am 04.11.2026 angenommene Entwurf verkleinert ausschließlich konkrete laufende und fertige Großauftragskarten. Vorhandenes Warenbild links (58 × 66 dp), kleine Typzeile, Titel und Kunde rechts. Ein Häuschen (`home`) steht vor dem Kundennamen, das vorhandene Kistenicon (`orders`, wie bei Einzelaufträgen) vor der Tonnenzahl. Laufende Karten verbinden gelieferte/Gesamttonnen und Strecke in einer Zeile, danach folgen der schmale Fortschrittsbalken und eine gemeinsame Frist-/Fertig-in-Zeile. Fertige zeigen Gesamtmenge/Strecke und eine kompakte gemeinsame Aktionszeile mit kleinem ERLEDIGT-Stempel und „Abholen“. Die bisherige hohe Stempelfläche entfällt; die Abholtaste behält mindestens 44 dp Höhe.
 
 Titel und Kundennamen werden nicht abgeschnitten; Zeiten und Aktionen dürfen auf schmalen Ansichten umbrechen. Keine festgesetzte Kartenhöhe, keine neuen Motive, Kundennamen oder Seltenheiten aus dem rein illustrativen Beispiel. Vorhandene Sortierung, Status-/Zählerregeln, Detailnavigation, Serverprognosen, Fehlerrückmeldung und Doppeltippschutz bleiben bestehen.
 
-Prüfung: bestehende Claim-/Zeit-Komponententests um kurze Abholbeschriftung, beide Icons und gemeinsame Zeitzeile angepasst. Vier reine Status-/Sortier-/Backend-Abholtests lokal erfolgreich. Komponenten-/Typprüfung und native Layoutkontrolle lokal mangels React/TypeScript nicht ausführbar; vor Veröffentlichung im regulären Workflow prüfen. Kein Release ausgelöst.
+Prüfung: bestehende Claim-/Zeit-Komponententests um kurze Abholbeschriftung, beide Icons und gemeinsame Zeitzeile angepasst. Vier reine Status-/Sortier-/Backend-Abholtests lokal erfolgreich. Veröffentlicht am 04.11.2026. Typprüfung, vollständige Tests und Android-Export sind im [aktuellen Prüfnachweis](../../TEST_REPORT.md) belegt; kein physischer Gerätetest.
 
 ## Detail: regionale Bildergeschichten – gesammelt
 

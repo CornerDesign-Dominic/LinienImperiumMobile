@@ -1,6 +1,6 @@
 # Großaufträge: regionale Bildergeschichten
 
-Gesammelt, noch nicht veröffentlicht. Fünf Regionen erhalten je sechs neue, zusammenhängende Illustrationen. Die ersten fünf Szenen erzählen Herstellung, Verpackung/Aufbruch, Reise, Ankunft und letzte Meter zum Übergabeort. Das sechste Motiv ist ausschließlich ein regional gestalteter Übergabeschein.
+Fünf Regionen erhalten je sechs neue, zusammenhängende Illustrationen. Die ersten fünf Szenen erzählen Herstellung, Verpackung/Aufbruch, Reise, Ankunft und letzte Meter zum Übergabeort. Das sechste Motiv ist ausschließlich ein regional gestalteter Übergabeschein.
 
 | Region | Individuelle Reise |
 | --- | --- |
@@ -22,4 +22,4 @@ Der Button zum Flottenwechsel und die Prognosekarte entfallen. Flottenänderunge
 
 ## Dateien und Prüfung
 
-30 neue JPEGs unter assets/art/project-stories; regionale prompts.json halten die exakten Erzeugungsanweisungen fest. src/projectStory.js bestimmt die Stufe, ProjectStory.tsx bindet lokale Bilder statisch ein. Vier gezielte Tests prüfen Grenzen, bestätigten Abschluss, Kundenidentität und defensive Fälle. JPEGs wurden vollständig dekodiert und Repository-Blobs gegen lokale SHA-1 geprüft. Vollständige Typ-/App-/Geräteprüfung ist vor Veröffentlichung noch erforderlich.
+30 neue JPEGs unter assets/art/project-stories; regionale prompts.json halten die exakten Erzeugungsanweisungen fest. src/projectStory.js bestimmt die Stufe, ProjectStory.tsx bindet lokale Bilder statisch ein. Vier gezielte Tests prüfen Grenzen, bestätigten Abschluss, Kundenidentität und defensive Fälle. JPEGs wurden vollständig dekodiert und Repository-Blobs gegen lokale SHA-1 geprüft. Veröffentlicht am 04.11.2026. Typprüfung, vollständige Tests und Android-Export sind im [aktuellen Prüfnachweis](../../TEST_REPORT.md) belegt; kein physischer Gerätetest.

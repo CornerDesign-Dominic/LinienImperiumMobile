@@ -4,4 +4,4 @@ Gemeinsame Card-Abstände in `src/ui.tsx`: Außenabstand 10 → 5, Innenabständ
 
 Schriftgrößen, Illustrationen, Mindesthöhen und 44-Pixel-Tippflächen unverändert. Modale, Safe Areas, Ressourcenheader, Bottom-Navigation und Expeditionslandschaften werden nicht pauschal skaliert; Modale behalten ihre bestehenden Ränder. Abschnittstrennung bleibt sichtbar. Keine Änderung an Spielwerten oder Aktionen.
 
-Gezielte Quellprüfung der geänderten Layoutwerte und unveränderten Tippflächen; vollständige Typ-/Komponentenprüfung und Android-Export im Veröffentlichungsworkflow erforderlich. Physische Geräteprüfung nicht belegt.
+Gezielte Quellprüfung der geänderten Layoutwerte und unveränderten Tippflächen; Veröffentlicht am 04.11.2026. Typprüfung, vollständige Tests und Android-Export sind im [aktuellen Prüfnachweis](../../TEST_REPORT.md) belegt; kein physischer Gerätetest.
