@@ -64,3 +64,7 @@ Ortsauswahl mit kleinen Regionsbildern links und Serverpreis je Tour mit Münzbi
 ## Gesammelt: regionale Großauftragsgeschichten
 
 Fünf individuelle Bildergeschichten mit je sechs neuen Motiven: Herstellung bis Ankunft/letzte Meter, danach ausschließlich ein regionaler Übergabeschein bei bestätigtem Abschluss. Szenen wechseln nach tatsächlich gelieferter Tonnage bei 0/20/40/60/80 Prozent; der Beleg erst bei 100 Prozent und Serverstatus completed. Keine farbige Wegmarkierung, kein separater Fortschrittsbalken im Detail. Tonnen und Zeiten bleiben außerhalb des Bildes. Flottenwechsel-Button und Prognosekarte entfernt; Neuberechnung ab nächster Tour unverändert. 30 JPEGs visuell/dekodiert geprüft und Blobintegrität verifiziert, vier Stufen-/Zuordnungstests erfolgreich. Vollständiger App-/Typ-/Gerätetest vor Release offen. [Bildergeschichten](docs/ui/project-stories.md). Nicht veröffentlicht.
+
+## Gesammelt: Überstundenmodal
+
+Ein Dialog mit 1/5/10, tatsächlicher Tonnage-/Restvorratsvorschau und direkter Bestätigung. „Frist sichern · X Punkte“ nennt den Serverbedarf, bei 0 deaktiviert; fehlende Prognose und unzureichender Vorrat gesondert behandelt. Überstundenauffüller vollständig aus diesem Dialog entfernt. Zwei reine Berechnungstests erfolgreich; UI-/Typprüfung vor Veröffentlichung offen. [Details](docs/ui/project-overtime.md).

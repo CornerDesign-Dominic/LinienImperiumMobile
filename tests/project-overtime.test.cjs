@@ -1,0 +1,5 @@
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const {overtimeQuote:q}=require('../src/projectOvertime');
+const order={status:'active',volume:520,delivered:76,distance:200,project:{deadlineAt:10000},eta:9000,overtimeForDeadline:0};
+test('Overtime preview reflects stock and remaining-tonnage caps',()=>{assert.deepEqual(q(order,92,5,0),{points:5,tons:25,after:87,required:0,deadlineEnabled:false,canConfirm:true});assert.equal(q(order,2,10,0).tons,10);assert.equal(q({...order,delivered:519},92,10,0).points,1);assert.equal(q({...order,delivered:519},92,10,0).tons,1);});
+test('Deadline need is shown in full but insufficient or invalid forecasts cannot promise securing it',()=>{assert.equal(q(order,92,'max',0).canConfirm,false);const short=q({...order,eta:12000,overtimeForDeadline:100},92,'max',0);assert.equal(short.required,100);assert.equal(short.canConfirm,false);assert.equal(q({...order,eta:null},92,'max',0).required,null);assert.equal(q(order,92,5,10000).canConfirm,false);});

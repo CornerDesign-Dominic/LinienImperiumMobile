@@ -1332,5 +1332,16 @@
   "Bernsteinwaren werden auf den Schlitten verladen": "Amber goods are loaded onto the sled",
   "Der Schlittenzug durchquert den Winterwald": "The sled train crosses the winter forest",
   "Ankunft an der Handelsfeste": "Arrival at the trading fort",
-  "Die Waren erreichen das warme Kontor": "The goods reach the warm trading office"
+  "Die Waren erreichen das warme Kontor": "The goods reach the warm trading office",
+  "1 Punkt liefert hier {0} t sofort.": "1 point delivers {0} t instantly here.",
+  "Frist bereits gesichert · 0 Punkte": "Deadline already secured · 0 points",
+  "Fristbedarf nicht verfügbar": "Deadline requirement unavailable",
+  "Frist sichern · {0} Punkte": "Secure deadline · {0} points",
+  "Nicht genügend Überstundenpunkte für die Fristsicherung.": "Not enough overtime points to secure the deadline.",
+  "Dein Einsatz": "Your contribution",
+  "Sofort geliefert": "Delivered instantly",
+  "Vorrat danach": "Balance afterwards",
+  "Einsatz nicht bestätigt. Bitte erneut versuchen.": "Contribution not confirmed. Please try again.",
+  "Wird eingesetzt …": "Applying …",
+  "{0} Punkte einsetzen": "Use {0} points"
 }

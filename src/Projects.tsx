@@ -1,3 +1,4 @@
+import {ProjectOvertimeModal} from './ProjectOvertimeModal';
 import {ProjectStory} from './ProjectStory';
 import {MaterialLayer} from './Material';
 import {MaterialView as View,MaterialPressable as Pressable} from './Material';
@@ -118,17 +119,16 @@ export function RunningProjects({data,clock,onOpen,onCommand,busy=false}:any){
  return <>{orders.length?orders.map((o:any)=><RunningProjectCard key={o.id} order={o} clock={clock??data.serverTime} onOpen={onOpen} onCommand={onCommand} busy={busy}/>):<Empty>Keine Großaufträge unterwegs.</Empty>}</>;
 }
 export function ProjectDetail({data,id,busy,clock,onCommand,onExpedition,onCustomers,onInventory,onFleet,modalBlocked=false}:any){
- const [overtime,setOvertime]=useState(false),[more,setMore]=useState(false),[amount,setAmount]=useState<number|'max'>(1);
- useEffect(()=>{setAmount(1);setOvertime(false);},[id]);
+ const [overtime,setOvertime]=useState(false),[more,setMore]=useState(false);
+ useEffect(()=>{setOvertime(false);},[id]);
  const o=data.state.orders.find((o:any)=>o.id===id&&o.isProject),active=o?.status==='active';
  useEffect(()=>{if(!active)setOvertime(false);},[active]);
  if(!o)return <Empty>Großauftrag nicht verfügbar.</Empty>;
  const info=o.projectInfo,reward=o.completionReward,points=data.state.overtimePoints;
- const needed=Math.max(0,Math.ceil((o.volume-o.delivered)*o.distance/1000)),selected=amount==='max'?(o.overtimeForDeadline||0):Math.min(amount,needed);
  return <>
   {active?<>
    <Card><ProjectStory order={o}/><View style={s.times}><View style={{flex:1}}><Txt muted style={s.small}>Frist</Txt><Txt gold>{remaining(o.project.deadlineAt,clock)}</Txt></View><View style={{flex:1,alignItems:'flex-end'}}><Txt muted style={s.small}>Flotte braucht</Txt><Txt style={o.eta>o.project.deadlineAt?{color:C.red}:null}>{o.eta?remaining(o.eta,clock):'—'}</Txt></View></View><Txt muted style={[s.small,{marginTop:10}]}>{n(o.delivered,1)} / {n(o.volume)} t · {projectTitle(o.projectName,o.kind)}</Txt></Card>
-   <View style={{flexDirection:'row',gap:8,alignItems:'stretch'}}><Btn secondary endIcon="chevron" endIconRotation={90} style={{width:'33%',minWidth:0,minHeight:58}} disabled={busy||clock>=o.project.deadlineAt} onPress={()=>setOvertime(true)}>{amount==='max'?'Max':`${amount} ${amount===1?'Punkt':'Punkte'}`}</Btn><Btn style={{flex:1,minWidth:0,minHeight:58}} disabled={busy||clock>=o.project.deadlineAt||(points>0&&selected===0)} onPress={()=>points>0?onCommand('overtime',{id:o.id,amount}):setOvertime(true)}>Überstunden einsetzen</Btn></View>
+   <Btn disabled={busy||clock>=o.project.deadlineAt} onPress={()=>setOvertime(true)}>Überstunden einsetzen</Btn>
    <Card style={{marginTop:12}}><Row><Txt style={s.title}>Eingesetzte Flotte</Txt><Pill>Flotte {o.project.template+1}</Pill></Row>{o.project.vehicles.map((vehicle:any)=><View key={vehicle.slot??vehicle.cardId} style={s.vehicle}><Txt style={{fontWeight:'700'}}>{vehicle.model}</Txt>{vehicle.cargo>0&&vehicle.nextAt?<Row style={{marginTop:6,marginBottom:0,flexWrap:'nowrap'}}><Txt gold style={s.small}>{remaining(vehicle.nextAt,clock)}</Txt><Txt muted style={s.small}>{n(vehicle.cargo,2)} t bei Ankunft</Txt></Row>:<Txt muted style={[s.small,{marginTop:6}]}>Keine weitere Tour</Txt>}{vehicle.pendingCardId!==undefined&&vehicle.pendingCardId!==vehicle.cardId&&<Txt gold style={s.small}>{vehicle.pendingModel?`Danach: ${vehicle.pendingModel}`:'Wird nach der Tour entfernt'}</Txt>}</View>)}</Card>
    <Btn secondary onPress={()=>setMore(!more)}>{more?'Weniger Infos':'Belohnungen & Infos'}</Btn>{more&&<View style={{marginTop:12}}><ProjectInfo info={info} onExpedition={onExpedition} onCustomers={onCustomers}/></View>}
   </>:<>
@@ -139,7 +139,8 @@ export function ProjectDetail({data,id,busy,clock,onCommand,onExpedition,onCusto
    {o.status==='failed'&&<Empty>Frist abgelaufen · keine Abschlussprämie</Empty>}
    <ProjectInfo info={info} onExpedition={onExpedition} onCustomers={onCustomers}/>
   </>}
-  <Modal visible={overtime&&active&&!modalBlocked} transparent animationType="none" onRequestClose={()=>setOvertime(false)}><View style={s.overlay}><SafeAreaView edges={[]} style={s.sheet}><MaterialLayer surfaceStyle={s.sheet}/><Row style={{flexWrap:'nowrap'}}><Txt style={[s.title,{flex:1,minWidth:0}]}>Überstunden</Txt><Btn icon="close" iconOnly secondary style={{marginTop:0}} onPress={()=>setOvertime(false)}>Schließen</Btn></Row><ScrollView keyboardShouldPersistTaps="handled">{points>0&&<><Row><Txt muted>Vorrat</Txt><Txt gold>{n(points)} Punkte</Txt></Row><View style={{flexDirection:'row',gap:6,marginVertical:12}}>{([1,5,10,'max'] as const).map(value=><Pressable key={value} accessibilityRole="button" accessibilityLabel={translate(value==='max'?'Max wählen':`${value} Punkte wählen`)} accessibilityState={{selected:amount===value,disabled:busy}} disabled={busy} onPress={()=>{setAmount(value);setOvertime(false);}} style={[s.preset,amount===value&&{borderColor:C.accent,backgroundColor:C.greenWash}]}><Txt>{value==='max'?'Max':value}</Txt></Pressable>)}</View><Txt muted style={s.small}>Max · {n(o.overtimeForDeadline)} Punkte bis zur Frist</Txt></>}<ItemAmount id="overtimeRefills" amount={data.state.inventory.overtimeRefills}/><Btn secondary disabled={busy||!data.state.inventory.overtimeRefills} onPress={()=>onCommand('refill',{})}>{itemName('overtimeRefills')} · {n(data.state.inventory.overtimeRefills)}</Btn></ScrollView></SafeAreaView></View></Modal>
+  {overtime&&active&&<ProjectOvertimeModal key={o.id} order={o} points={points} busy={busy} clock={clock} visible={!modalBlocked} onClose={()=>setOvertime(false)} onCommand={onCommand}/>}
+
  </>;
 }
 const s=StyleSheet.create({
