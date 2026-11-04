@@ -674,6 +674,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   if(action==='hubCrate'&&ok!==false)view.hubCrateParts=ok;
   if(action==='giftOpen'&&ok!==false)view.giftFind=ok;
   if(['claimSingles','hubCollect'].includes(action)&&ok!==false)view.claimSummary=ok;
+  if(action==='overtime')view.overtimeApplied=ok===true;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;
   if(action==='customerBatch')view.customerBatchApplied=ok===true;
   if(['expansionAllocate','levelBatch','level'].includes(action))view.expansionAllocationApplied=ok===true;

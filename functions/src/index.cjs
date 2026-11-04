@@ -28,14 +28,14 @@ exports.game = onCall({region:'europe-west3', serviceAccount:'mobile-game-runtim
       let result;
       try {result=execute(state,previous?.exists?'sync':action,previous?.exists?{}:payload,now,Math.random,eventContext);}catch(error){throw new HttpsError('invalid-argument',error.message);}
       // A retried command is not applied twice, but its sync arrivals must still persist.
-      if(previous?.exists){for(const key of ['claimSummary','levelUps','hubCrateParts','giftFind','expeditionFind','customerBatchApplied','expansionAllocationApplied'])if(previous.data()[key])result.view[key]=previous.data()[key];if(previous.data().action==='transportBatch')result.view.transportBatchApplied=true;}
+      if(previous?.exists){for(const key of ['claimSummary','levelUps','hubCrateParts','giftFind','expeditionFind','customerBatchApplied','expansionAllocationApplied','overtimeApplied'])if(previous.data()[key])result.view[key]=previous.data()[key];if(previous.data().action==='transportBatch')result.view.transportBatchApplied=true;}
       if(previous?.exists&&JSON.stringify(result.state)===JSON.stringify(state)){refreshRanking(result.view,eventContext,request.auth.uid,result.state);return result.view;}
       eventContext.persist(result.state);
       refreshRanking(result.view,eventContext,request.auth.uid,result.state);
       const snapshot=gzipSync(JSON.stringify(result.state));
       if(snapshot.length>900000)throw new HttpsError('resource-exhausted','Spielstand zu groß. Bitte Support kontaktieren.');
       tx.set(gameRef,{snapshot,revision:(record.revision||0)+1,requests:[...requests,now],updatedAt:Timestamp.fromMillis(now)});
-      if(receipt&&!previous?.exists)tx.set(receipt,{action,...(result.view.expansionAllocationApplied?{expansionAllocationApplied:true}:{}),...(result.view.customerBatchApplied?{customerBatchApplied:true}:{}),...(result.view.levelUps?{levelUps:result.view.levelUps}:{}),...(result.view.claimSummary?{claimSummary:result.view.claimSummary}:{}),...(result.view.hubCrateParts?{hubCrateParts:result.view.hubCrateParts}:{}),...(result.view.giftFind?{giftFind:result.view.giftFind}:{}),...(result.view.expeditionFind?{expeditionFind:result.view.expeditionFind}:{}),createdAt:Timestamp.fromMillis(now),expireAt:Timestamp.fromMillis(now+7*86400000)});
+      if(receipt&&!previous?.exists)tx.set(receipt,{action,...(result.view.overtimeApplied?{overtimeApplied:true}:{}),...(result.view.expansionAllocationApplied?{expansionAllocationApplied:true}:{}),...(result.view.customerBatchApplied?{customerBatchApplied:true}:{}),...(result.view.levelUps?{levelUps:result.view.levelUps}:{}),...(result.view.claimSummary?{claimSummary:result.view.claimSummary}:{}),...(result.view.hubCrateParts?{hubCrateParts:result.view.hubCrateParts}:{}),...(result.view.giftFind?{giftFind:result.view.giftFind}:{}),...(result.view.expeditionFind?{expeditionFind:result.view.expeditionFind}:{}),createdAt:Timestamp.fromMillis(now),expireAt:Timestamp.fromMillis(now+7*86400000)});
       return result.view;
     });
     return compactResponse(view,request.data?.responseCache);

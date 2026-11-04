@@ -11,7 +11,7 @@ export function ProjectOvertimeModal({order,points,busy,clock,visible,onClose,on
  const confirm=async()=>{
   if(locked||pending.current||!q.canConfirm)return;
   pending.current=true;setSaving(true);setFailed(false);
-  try{const result=await onCommand('overtime',{id:order.id,amount});if(result?.state&&result.state.overtimePoints<points)onClose();else setFailed(true);}catch{setFailed(true);}finally{pending.current=false;setSaving(false);}
+  try{const result=await onCommand('overtime',{id:order.id,amount});if(result?.overtimeApplied===true)onClose();else setFailed(true);}catch{setFailed(true);}finally{pending.current=false;setSaving(false);}
  };
  return <ExpeditionPlaceModal visible={visible} title="Überstunden einsetzen" onClose={close}>
   <Row><Txt muted>Verfügbar</Txt><PointInfo>{n(points)} Punkte</PointInfo></Row>
