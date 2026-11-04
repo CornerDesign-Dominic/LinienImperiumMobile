@@ -1,0 +1,98 @@
+[
+  {
+    "region": "saffron",
+    "stage": 0,
+    "prompt": "Historical-scene game production artwork, painterly realism landscape 3:2. Saffronstreet story scene1: desert oasis perfumer workshop, brass and copper distillation still, middle-aged artisan in cream robe and indigo sash crafting fragrant essences, amber glass bottles with red stoppers, carved cedar padded chest with brass corners on table. Sunlit adobe arches, palms outside. High oblique perspective, richly detailed, warm sand and saffron colors, no text letters symbols UI border watermark or coloredpath. This is manufacturing before shipment, no transport in scene.",
+    "method": "builtin image_gen",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-7f039e1a-fdb2-4f9f-b734-7ff1337f08c4.png",
+    "file": "saffron/stage-0.jpg"
+  },
+  {
+    "region": "saffron",
+    "stage": 1,
+    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Amber essence bottles with red stoppers packed in padded carved cedar chest with brasscorners; creamrobed indigosashed merchant supervises loading chest onto camelcaravan outside adobe oasis perfumery, palmshade, earlydeparture. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "method": "builtin image_gen",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-29b9e0ac-79d8-4f60-b7a7-00254f8884d8.png",
+    "file": "saffron/stage-1.jpg"
+  },
+  {
+    "region": "saffron",
+    "stage": 2,
+    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Camel caravan carrying carved cedar brasscorner chests travels across white saltterraces into winding ochre rockpass, creamrobed indigosashed merchant leads firstcamel, expansive desert mountains, individual journey landscape. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "method": "builtin image_gen",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-664816a7-0b99-41fc-afdb-32e03e019662.png",
+    "file": "saffron/stage-2.jpg"
+  },
+  {
+    "region": "saffron",
+    "stage": 3,
+    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Camel caravan carrying carvedcedar brasscornerchests arrives at lively desert bazaar caravanserai with seven monumental adobe arches, creamrobed indigosashed merchant leads through arch, saffronawnings, closearrivalview. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "method": "builtin image_gen",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-c67309cf-1822-402f-89eb-e9fd4cc95000.png",
+    "file": "saffron/stage-3.jpg"
+  },
+  {
+    "region": "saffron",
+    "stage": 4,
+    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Two porters carry carvedcedar brasscornerchest of amber essence bottles through richly detailed spicecourtyard toward creamrobed indigosashed merchant at carved tradingroom doorway, final handover location, carpetshade and brass incenseburner. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "method": "builtin image_gen",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-4c818e57-b8cb-4eec-b943-2bcd8d78a012.png",
+    "file": "saffron/stage-4.jpg"
+  },
+  {
+    "region": "saffron",
+    "stage": 5,
+    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. ONLY blank old delivery scroll of warm sand parchment lyingflat frontal topdown, curledtopbottom edges, elegant restrained desert geometricborder in ochre and indigo, small darkred waxseal lowercorner, generous completely BLANK central60percent for later code typography. No scenery people objects exceptscroll, no writing letters numbers glyphs or watermark. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "method": "builtin image_gen",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-c6d73ac6-4da9-4142-8d05-7fcf55135ae7.png",
+    "file": "saffron/stage-5.jpg"
+  },
+  {
+    "region": "jade",
+    "stage": 0,
+    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Jadevalley riverside artisan workshop, craftsman in forestgreen robe carving small translucent jade dragon sculpture on woodenbench, jadechips and handtools, protective darkwood chest with greencloth lining and brasscorners, bamboo and canal visible through openwall, manufacture scene. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "method": "builtin image_gen",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-568fe1c6-d7c5-4841-afcb-1270cefb0a8d.png",
+    "file": "jade/stage-0.jpg"
+  },
+  {
+    "region": "jade",
+    "stage": 1,
+    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Forestgreenrobed merchant supervising porters loading darkwood protective chest with brasscorners and greencloth lining onto small wooden riverfreighter, jade sculpture carefully padded inside, bamboo riverdock and tiled workshop, departure scene. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "method": "builtin image_gen",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-fee45bcb-0b26-447f-ac0e-5d999fc4a985.png",
+    "file": "jade/stage-1.jpg"
+  },
+  {
+    "region": "jade",
+    "stage": 2,
+    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Small wooden riverfreighter carries darkwood brasscorner chests along tranquil narrow waterway beside stepped emerald ricepaddies, passing beneath tall stonearchbridge, forestgreenrobed merchant at boatbow, high oblique expansive journey view. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "method": "builtin image_gen",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-ce8d378e-f528-4fcb-bde4-6db8223cd17c.png",
+    "file": "jade/stage-2.jpg"
+  },
+  {
+    "region": "jade",
+    "stage": 3,
+    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Small wooden freighter with darkwood brasscorner chests arrives in bustling canaltradingtown of whitewalls dark curvedtiles, forestgreenrobed merchant signals to dockporters, distant jadegreen gateway tradinghall, closerarrival view. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "method": "builtin image_gen",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-1ea99286-69e3-48db-9678-78092b5b600b.png",
+    "file": "jade/stage-3.jpg"
+  },
+  {
+    "region": "jade",
+    "stage": 4,
+    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Two porters carry darkwood brasscorner chest with greencloth glimpse up broad stone steps toward jadegreen gateway tradinghall, forestgreenrobed merchant guides from entrance, distinctive bamboo courtyard and carvedstone balustrades, final destination scene. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "method": "builtin image_gen",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-dd1b358e-8be8-4572-9077-0eae3acea853.png",
+    "file": "jade/stage-4.jpg"
+  },
+  {
+    "region": "jade",
+    "stage": 5,
+    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. ONLY blank deliveryscroll of pale cream fibrous ricepaper, lyingflat frontal topdown with gently curled horizontalends, fine restrained ink bamboo and cloud ornaments around outerborder, small vermilion squareseal lowercorner without lettering, generous completely BLANK central60percent for later code typography. No scenery people objects exceptscroll, no writing letters numbers glyphs or watermark. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "method": "builtin image_gen",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-7d01f3eb-ca46-4850-b358-a26716bd4ca9.png",
+    "file": "jade/stage-5.jpg"
+  }
+]

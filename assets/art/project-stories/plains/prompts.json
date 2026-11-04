@@ -1,0 +1,13 @@
+{
+  "base": "Use case historical-scene. Production landscape 3:2 historical trading-game illustration, painterly realistic detailed cinematic raised viewpoint, no text UI borders numbers or coloredpath. Plains narrative continuity: crimson and ochre woven carpets with diamond patterns, tied by indigo straps, cream canvas coveredwagon dark timber wheels pulled by two brown oxen; middle-aged female trader wearing ochre jacket indigo shawl and leather hat, sandy-haired male wagoner. Warm golden prairie and cottonwood riverlands. ",
+  "stages": [
+    "Interior wooden frontier weaving workshop, woman works large wooden loom making crimson ochre diamondpattern carpet, finished rolls tied indigo straps stacked nearby, golden prairie outside windows, focus on actual textileproduction.",
+    "Weaving workshop courtyard: womantrader and wagoner lift carpetrolls with indigostraps into creamcanvas coveredwagon, brownoxen harnessedready, timber loom visible throughdoor, departurepreparation.",
+    "Elevated mediumwide prairie riverford journey: two brownoxen pull creamcanvas coveredwagon through shallow sparkling water, trader onbank watching secured carpetrolls, ochrecliffs and cottonwood trees, careful safe rivercrossing.",
+    "Same coveredwagon loadedcarpets arrives at riverside timbertrading settlement: busy wooden docks, pitchedroof warehouses, cornfields and prairie behind, oxenteam approaching gate, sunnyafternoon.",
+    "Close elevated view tradingpost porch: ochrejacket indigoscarf trader and sandyhaired wagoner carry crimson diamondpattern carpetrolls from same creamcanvas coveredwagon up woodensteps to waiting merchant, barnwood counters and warm lanterns, finaldelivery approach.",
+    "ONLY old blank rustic delivery receipt scroll viewed overhead on weatheredwood. Warm rough handmade paper, rolledtop/bottom edges, narrow woven crimson ochre diamondpattern borders and simple ochre waxseal corner. Huge CLEAN EMPTY center for localized apptext. No text fakewriting people landscapes. Landscape3:2."
+  ],
+  "stage0Replacement": "Use case historical-scene. ONE SINGLE fullbleed landscape3:2 image, NO split panels, NO collage, no montage. Inside a frontier weaving workshop circa1800, middleaged woman in ochrejacket and indigo shawl works a large woodenloom creating a crimson ochre diamondpattern carpet. Close-medium elevated view centered on the loom, her hands working shuttle, rolls of finishedmatching carpets tied by indigostraps on right. Timberwalls, tools, spun wool, window onto goldenprairie far background only. Painterly realistic detailed cinematic trading-game art. No vehicle or road in this scene. No borders no UI no text.",
+  "method": "builtin image_gen; original PNG retained; JPEG1200x800 quality85"
+}

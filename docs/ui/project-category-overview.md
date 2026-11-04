@@ -50,3 +50,7 @@ Der am 04.11.2026 angenommene Entwurf verkleinert ausschließlich konkrete laufe
 Titel und Kundennamen werden nicht abgeschnitten; Zeiten und Aktionen dürfen auf schmalen Ansichten umbrechen. Keine festgesetzte Kartenhöhe, keine neuen Motive, Kundennamen oder Seltenheiten aus dem rein illustrativen Beispiel. Vorhandene Sortierung, Status-/Zählerregeln, Detailnavigation, Serverprognosen, Fehlerrückmeldung und Doppeltippschutz bleiben bestehen.
 
 Prüfung: bestehende Claim-/Zeit-Komponententests um kurze Abholbeschriftung, beide Icons und gemeinsame Zeitzeile angepasst. Vier reine Status-/Sortier-/Backend-Abholtests lokal erfolgreich. Komponenten-/Typprüfung und native Layoutkontrolle lokal mangels React/TypeScript nicht ausführbar; vor Veröffentlichung im regulären Workflow prüfen. Kein Release ausgelöst.
+
+## Detail: regionale Bildergeschichten – gesammelt
+
+Die bisherigen generischen Transportbilder und der getrennte Detail-Fortschrittsbalken werden durch sechs kundenspezifische regionale Szenen ersetzt. Die letzte Szene zeigt ausschließlich den Übergabeschein. Keine farbige Wegmarkierung. Flottenwechsel-Schaltfläche und Prognosekarte entfallen; laufende Touren und Berechnung nach Flottenwechsel behalten ihre Regeln. [Finale Gestaltung und Prüfumfang](project-stories.md).

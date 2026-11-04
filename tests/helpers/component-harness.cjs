@@ -20,6 +20,7 @@ function componentHarness(file,imports={}){
   if(id==='./Material')return {MaterialView:'View',MaterialPressable:'Pressable',MaterialLayer:'MaterialLayer'};
   if(id==='./i18n')return {t:String};
   if(id==='./projectSections')return require('../../src/projectSections.js');
+  if(id==='./ProjectStory')return {ProjectStory:'ProjectStory'};
   if(id==='./ui')return {C:require('../../src/palette.json'),Txt:'Txt',Card:'Card',Row:'Row',Btn:'Btn',Pill:'Pill',n:String};
   if(id==='./PointAllocation')return {PointInfo:'PointInfo',PointsBalance:'PointsBalance',PointAllocationRow:'PointAllocationRow',pointInfoStyle:{}};
   if(id==='./AppModal')return {AppModal:'Modal'};

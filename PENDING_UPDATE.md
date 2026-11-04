@@ -60,3 +60,7 @@ Nutzerentscheidung vom 04.11.2026 ersetzt die frühere Trennung: Levelaufstiege 
 ## Gesammelt: Beschaffungsmodale
 
 Ortsauswahl mit kleinen Regionsbildern links und Serverpreis je Tour mit Münzbild. Gesperrte Regionen sind ausgegraut und mit Schloss deaktiviert, ohne Expeditionsweiterleitung. Anschließende Fahrzeugauswahl in drei Spalten mit erhaltener Mehrfachauswahl und echter Tourdauer. Tourenzahl/Reserve und Startregeln unverändert. Drei gezielte Komponentenprüfungen erfolgreich; kein Gerätetest oder neuer Export. Noch nicht veröffentlicht. [Details](docs/ui/procurement-picker.md).
+
+## Gesammelt: regionale Großauftragsgeschichten
+
+Fünf individuelle Bildergeschichten mit je sechs neuen Motiven: Herstellung bis Ankunft/letzte Meter, danach ausschließlich ein regionaler Übergabeschein bei bestätigtem Abschluss. Szenen wechseln nach tatsächlich gelieferter Tonnage bei 0/20/40/60/80 Prozent; der Beleg erst bei 100 Prozent und Serverstatus completed. Keine farbige Wegmarkierung, kein separater Fortschrittsbalken im Detail. Tonnen und Zeiten bleiben außerhalb des Bildes. Flottenwechsel-Button und Prognosekarte entfernt; Neuberechnung ab nächster Tour unverändert. 30 JPEGs visuell/dekodiert geprüft und Blobintegrität verifiziert, vier Stufen-/Zuordnungstests erfolgreich. Vollständiger App-/Typ-/Gerätetest vor Release offen. [Bildergeschichten](docs/ui/project-stories.md). Nicht veröffentlicht.
