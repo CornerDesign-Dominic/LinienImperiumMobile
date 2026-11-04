@@ -180,13 +180,13 @@ test('Collection previews cover rank rarity transitions, parked cards and capped
 });
 
 test('Garage replacement works in a full garage, preserves position and parked upgrades',()=>{
- let r=setup();for(const card of cards.slice(1,10))r=equip(r,card.id);
+ let r=setup();for(const card of cards.slice(1,9))r=equip(r,card.id);
  const replacement=cards[10].id;r=own(r,replacement,3);
  const original=r.state.trucks.find(t=>t.cardId==='navigator');original.kmDriven=1234;original.moduleCapacityLevel=2;original.capacity=2.2;
  r.state.inventory.capacityModules=2;r=cmd(r.state,'cardCapacity',{id:replacement});
  const expectedCapacity=r.view.cardVehicles[replacement].capacity,coins=r.state.coins,modules=r.state.inventory.capacityModules;
  const swapped=cmd(r.state,'garageReplace',{id:'navigator',replacement});
- assert.equal(swapped.state.trucks.length,10);assert.equal(swapped.state.trucks[0].cardId,replacement);
+ assert.equal(swapped.state.trucks.length,9);assert.equal(swapped.state.trucks[0].cardId,replacement);
  assert.equal(swapped.state.trucks[0].capacity,expectedCapacity);
  assert.equal(swapped.state.expedition.characters.navigator.parkedTruck.kmDriven,1234);
  assert.equal(swapped.state.expedition.characters.navigator.parkedTruck.capacity,2.2);
@@ -210,4 +210,19 @@ test('Busy garage vehicles cannot be replaced or lose their running assignment',
  assert.equal(next.state.trucks[0].cardId,'navigator');assert.equal(next.state.trucks.length,1);
  assert.equal(next.state.orders.find(o=>o.id===order.id).truckId,truck.id);
  assert.equal(next.state.expedition.characters.navigator.parkedTruck,undefined);
+});
+
+test('Garage rejects a tenth vehicle and preserves legacy overflow until removal',()=>{
+ let r=setup();for(const card of cards.slice(1,9))r=equip(r,card.id);
+ assert.equal(r.state.trucks.length,9);r=own(r,cards[9].id);
+ r=cmd(r.state,'garageAdd',{id:cards[9].id});assert.equal(r.state.trucks.length,9);
+ r.state.trucks.push({...r.state.trucks[0],id:'KARTE-'+cards[9].id,cardId:cards[9].id});
+ r=cmd(r.state);assert.equal(r.state.trucks.length,10);
+ r=own(r,cards[10].id);
+ const rejected=cmd(r.state,'garageReplace',{id:'navigator',replacement:cards[10].id});
+ assert.deepEqual(rejected.state.trucks.map(t=>t.id),r.state.trucks.map(t=>t.id));
+ r=cmd(rejected.state,'garageRemove',{id:cards[9].id});assert.equal(r.state.trucks.length,9);
+ assert.equal(cmd(r.state,'garageAdd',{id:cards[9].id}).state.trucks.length,9);
+ r=cmd(r.state,'garageRemove',{id:cards[8].id});
+ assert.equal(cmd(r.state,'garageAdd',{id:cards[9].id}).state.trucks.length,9);
 });

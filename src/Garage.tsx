@@ -20,7 +20,7 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
   return <VehicleCardTile data={data} card={card} stats={{...stats,capacity:t.capacity,speed:stats?.speed??t.speed,costPerKm:stats?.costPerKm??t.costPerKm}} showDetails onPress={()=>setSelected(t.id)}/>;
  };
  return <>
-  {Array.from({length:4},(_,row)=><View key={row} style={styles.row}>{[0,1,2].map(col=>{const index=row*3+col;return <React.Fragment key={col}>{index<10?tile(regular[index],index):<View style={{flex:1,minWidth:0}}/>}</React.Fragment>;})}</View>)}
+  {Array.from({length:Math.ceil(Math.max(9,regular.length)/3)},(_,row)=><View key={row} style={styles.row}>{[0,1,2].map(col=>{const index=row*3+col;return <React.Fragment key={col}>{index<Math.max(9,regular.length)?tile(regular[index],index):<View style={{flex:1,minWidth:0}}/>}</React.Fragment>;})}</View>)}
   <Modal transparent visible={(!!truck||adding)&&!modalBlocked} animationType="none" onRequestClose={()=>{setSelected(null);setAdding(false);setSaveFailed(false);}}>
    <View style={styles.overlay}><View style={styles.detail}>
     <Row style={{flexWrap:'nowrap'}}><Txt style={styles.title}>{adding?(truck?'Fahrzeug wechseln':'Fahrzeug wählen'):truck?.model}</Txt><Btn icon="close" iconOnly secondary onPress={()=>{setSelected(null);setAdding(false);setSaveFailed(false);}}>Schließen</Btn></Row>
@@ -37,7 +37,7 @@ export function Garage({data,busy,clock,onCommand,modalBlocked=false}:any){
       <Fact label="Status" value={truck.procurementId?'Materialbeschaffung':truck.free?'Bereit':'Im Einsatz'}/>
       {!!truck.busyUntil&&<><Bar value={truck.progress}/><Txt gold>{remaining(truck.busyUntil,clock)}</Txt></>}
      </>} actions={<View style={{flexDirection:'row',gap:8}}>
-      <Btn style={{flex:1}} disabled={busy||!truck.free} onPress={()=>{setSaveFailed(false);setAdding(true);}}>Wechseln</Btn>
+      <Btn style={{flex:1}} disabled={busy||!truck.free||regular.length>9} onPress={()=>{setSaveFailed(false);setAdding(true);}}>Wechseln</Btn>
       <Btn style={{flex:1}} secondary disabled={busy||!truck.free} onPress={async()=>{setSaveFailed(false);const result=await onCommand('garageRemove',{id:truck.cardId});if(result&&!result.state.trucks.some((t:any)=>t.id===truck.id))setSelected(null);else setSaveFailed(true);}}>Entfernen</Btn>
      </View>}/>}
 

@@ -1,3 +1,7 @@
+// Garage limit is authoritative; preserve existing overflow until manual removal.
+const originalGarageAdd = addCardToGarage;
+addCardToGarage = id => regularTruckCount() >= 9 ? false : originalGarageAdd(id);
+
 // Regional card rules run inside the mobile engine; city vehicles keep their own track.
 cardBonusValue = (card, level = game.expedition.characters[card.id]?.level || 1) =>
   card.bonusLevels[clamp(Math.floor(level), 1, 10) - 1];

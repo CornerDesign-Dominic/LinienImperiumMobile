@@ -237,7 +237,7 @@ const bridge = `
     giveCharacterShard, combineExpeditionShards, buyTruck, upgradeTruckRarity,
     replaceGarageCard(cardId,replacementId) {
       const index=game.trucks.findIndex(truck=>truck.cardId===cardId),replacement=vehicleCardById(replacementId);
-      if(index<0||cardId===replacementId||!replacement||!game.expedition.characters[replacementId]||game.trucks.some(truck=>truck.cardId===replacementId)||regularTruckCount()>10)return false;
+      if(index<0||cardId===replacementId||!replacement||!game.expedition.characters[replacementId]||game.trucks.some(truck=>truck.cardId===replacementId)||regularTruckCount()>9)return false;
       // All validation precedes removal. Reuse busy/reservation checks and keep
       // both changes in the same server transaction, including a full garage.
       if(!removeCardFromGarage(cardId))return false;

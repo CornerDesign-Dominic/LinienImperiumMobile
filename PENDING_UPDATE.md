@@ -83,3 +83,7 @@ Zwei Geschichtsbilder ersetzt: Auf der Steinbrücke bleibt der Schmuck sicher in
 ## Gesammelt: Kompakte Zeitangabe in Beschaffungsfahrzeugen
 
 In der dreispaltigen Fahrzeugwahl steht die Dauer direkt neben der Stoppuhr in einer Zeile; der sichtbare Zusatz „je Tour“ entfällt. Die Kartenhöhe folgt dem verkürzten Inhalt ohne feste Leerzeilen. Gesprochene Beschriftung und Mehrfachauswahl bleiben erhalten. Gezielter JSX-/Stildiff geprüft; native Layoutprüfung steht noch aus. Noch nicht veröffentlicht.
+
+## Gesammelt: Garage auf neun Plätze reduziert
+
+Regulär drei Reihen mit je drei Fahrzeugplätzen; serverseitig höchstens neun Garagenfahrzeuge. Wechsel bei voller Neuner-Garage bleibt möglich. Bestehende zehn Fahrzeuge werden nicht gelöscht oder versteckt: Altüberhang bleibt sichtbar und kann entfernt werden; weiteres Einsetzen bzw. Wechseln erst unter Einhaltung der neuen Grenze. Bestehende Touren bleiben erhalten. 17 von 18 Transportkartenprüfungen erfolgreich, einschließlich neuer Grenz-/Altbestandsprüfung; einzige lokale Bilddateiprüfung scheitert an fehlendem bestehenden navigator-Asset. Noch nicht veröffentlicht.
