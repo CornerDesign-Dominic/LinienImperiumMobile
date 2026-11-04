@@ -39,6 +39,9 @@ export function CustomerDetail({data,id,busy,onSave}:any){
  const valid=assigned>0&&left>=0&&SKILLS.every(skill=>(customer.skills[skill.kind]||0)+draft[skill.kind]<=skill.limit);
  const region=data.expeditionMap.find((r:any)=>r.customer.id===id);
  const category=data.catalog.categories.find((c:any)=>c.id===customer.category);
+ const products=Array.isArray(customer.products)&&customer.products.length?customer.products:[customer.cargo];
+ const goods=[...products,customer.preciousCargo].filter((product,index,all):product is string=>typeof product==='string'&&product.length>0&&all.indexOf(product)===index);
+ const origin=regionIdentities.find(identity=>identity.id===id)?.title||customer.regionName||region?.name||'Expedition';
  return <>
   <View style={styles.summary}><CustomerScene customer={customer} detail/></View>
   <Card><Row><Txt style={styles.title}>Verbesserungen</Txt>{editing&&<Pill gold>{Math.max(0,left)} {left===1?'Punkt':'Punkte'}</Pill>}</Row>
@@ -54,12 +57,24 @@ export function CustomerDetail({data,id,busy,onSave}:any){
    </View>;})}
    {assigned>0&&<Btn disabled={busy||!valid} onPress={async()=>{const result=await onSave(id,draft,customer.skills);if(result?.customerBatchApplied)setDraft({pay:0,special:0,referral:0});}}>Speichern</Btn>}
   </Card>
-  <Card><Row style={{alignItems:'flex-start',gap:12}}><Txt muted>Waren</Txt><View style={{flex:1,minWidth:0}}>{(customer.products||[customer.cargo]).map((product:string)=><View key={product} style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-end',gap:8,marginBottom:4}}><OrderArtwork cargo={product} size={32}/><Txt style={{flexShrink:1,textAlign:'right'}}>{product}</Txt></View>)}</View></Row><Row><Txt muted>Verkehr</Txt><Txt>{category?.label||customer.category}</Txt></Row><Row style={{marginBottom:0}}><Txt muted>Herkunft</Txt><Txt>{customer.regionName||region?.name||'Expedition'}</Txt></Row></Card>
+  <Card>
+   <Txt style={[styles.title,{marginBottom:8}]}>Waren</Txt>
+   <View testID="customer-goods" style={styles.goods}>{goods.map(product=><View key={product} style={styles.good}>
+    <OrderArtwork cargo={product} size={44}/><Txt style={styles.goodName}>{product}</Txt>
+   </View>)}</View>
+   <View style={styles.metadata}>
+    <View testID="customer-traffic" style={styles.metadataField}><View style={styles.metadataLabel}><Icon name="truck" size={16}/><Txt muted style={styles.small}>Verkehr</Txt></View><Txt style={styles.metadataValue}>{category?.label||customer.category}</Txt></View>
+    <View testID="customer-origin" style={styles.metadataField}><View style={styles.metadataLabel}><Icon name="expedition" size={16}/><Txt muted style={styles.small}>Herkunft</Txt></View><Txt style={styles.metadataValue}>{origin}</Txt></View>
+   </View>
+  </Card>
  </>;
 }
 const styles=StyleSheet.create({summary:{backgroundColor:C.ink,borderColor:C.line,borderWidth:1,borderRadius:6,overflow:'hidden',marginBottom:5},
+ goods:{flexDirection:'row',alignItems:'flex-start',gap:6},good:{flex:1,minWidth:0,alignItems:'center',gap:5},goodName:{fontSize:10,lineHeight:14,textAlign:'center',alignSelf:'stretch'},
+ metadata:{flexDirection:'row',gap:8,marginTop:12},metadataField:{flex:1,minWidth:0,padding:8,borderWidth:1,borderColor:C.line,borderRadius:5,backgroundColor:C.raised},metadataLabel:{flexDirection:'row',alignItems:'center',gap:5,marginBottom:4},metadataValue:{fontSize:12,lineHeight:17,fontWeight:'600'},
  scene:{height:118,backgroundColor:C.ink,overflow:'hidden'},detailScene:{height:200},
  level:{position:'absolute',top:9,right:9,paddingHorizontal:8,paddingVertical:3,borderWidth:1,borderColor:C.brass,borderRadius:5,backgroundColor:'#F2E8D0'},
  levelText:{fontSize:11,lineHeight:16,fontWeight:'700',color:C.ink},pointDot:{position:'absolute',right:-4,top:-4,width:9,height:9,borderRadius:5,backgroundColor:C.accent,borderWidth:1.5,borderColor:'#F2E8D0'},
  caption:{position:'absolute',bottom:0,left:0,right:0,paddingHorizontal:11,paddingVertical:7,backgroundColor:'rgba(17,34,35,.82)'},
  name:{fontSize:14,lineHeight:18,fontWeight:'700',color:C.onInk},detailName:{fontSize:18,lineHeight:23},region:{fontSize:11,lineHeight:15,color:C.brassLight,marginTop:1},title:{fontSize:16,fontWeight:'700'},small:{fontSize:12,lineHeight:17},skill:{paddingVertical:9,borderBottomWidth:1,borderColor:C.line},plus:{minWidth:44,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:10}});
+

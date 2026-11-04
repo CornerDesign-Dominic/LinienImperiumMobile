@@ -63,3 +63,7 @@ Sieben neue Backend-/Cloud-Belegtests, eine neue XP-Modalprüfung und die besteh
 ## Gesammelt: Einzelaufträge direkt zuweisen
 
 Angebote und gespeicherte Einzelaufträge öffnen direkt das unveränderte Fahrzeugwahlmodal; die bisherige Detailseite samt Route entfällt. Schließen ohne Start erhält Reiter/Gruppe/Scrollposition und verbraucht nichts. Verschwundene oder inzwischen gestartete Angebote schließen die Auswahl sicher. Laufende Karten öffnen direkt die vorhandene Ersatzfahrzeugauswahl für Folgetouren. Pinnadel ohne Kreis/Rand/Hintergrund bei erhaltener 44-Pixel-Tippfläche und getrennter Halteaktion. Keine weiteren Inhalte in Liste oder Modal. Typprüfung und 18 gezielte Tests erfolgreich, kein neuer Export/Gerätetest. Noch nicht veröffentlicht.
+
+## Gesammelt: Kundenwaren und Herkunft
+
+Kundendetails zeigen drei normale Produkte plus Edelware nebeneinander mit bestehenden Bildern und vollständigen Namen. Verkehr und kanonische Herkunft stehen darunter in zwei kompakten Feldern mit Transport-/Expeditionsicon. Drei Komponentenprüfungen und TSX-Syntax erfolgreich, native Layoutprüfung offen. Noch nicht veröffentlicht. [Details](docs/ui/customer-cargo.md).
