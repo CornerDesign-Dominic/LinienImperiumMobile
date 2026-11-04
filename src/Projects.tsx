@@ -2,7 +2,7 @@ import {ProjectOvertimeModal} from './ProjectOvertimeModal';
 import {ProjectStory} from './ProjectStory';
 import {MaterialLayer} from './Material';
 import {MaterialView as View,MaterialPressable as Pressable} from './Material';
-import {ItemArt,ItemAmount} from './ItemArt';
+import {ItemArt} from './ItemArt';
 import {Text} from './Language';
 import {t as translate} from './i18n';
 import {Icon} from './Icon';
@@ -86,56 +86,55 @@ export function ProjectType({data,typeKey,onOpen,onExpedition,onCustomers}:any){
 }
 // Concrete transports use the same precious-cargo identity as the category cards.
 export function RunningProjectCard({order:o,clock,onOpen,onCommand,busy=false}:any){
- const [claiming,setClaiming]=useState(false),[claimError,setClaimError]=useState('');
- const inFlight=useRef(false);
  const info=o.projectInfo||{},reward=o.completionReward,done=o.status==='completed'&&reward&&!reward.claimedAt;
  const now=Number.isFinite(clock)?clock:0,color=projectColor(o.kind,info.rarity);
  const name=(o.projectName||info.name||'').replace(/^(?:Großauftrag|Großprojekt|Sonderauftrag|Empfehlungsauftrag)\s+/,'');
  const deadline=o.project?.deadlineAt,eta=o.eta;
  const etaLabel=o.projection?.feasible===false?'Nicht erreichbar':!Number.isFinite(eta)?'—':eta<=now?'Wird aktualisiert':remaining(eta,now);
- const claim=async(event?:any)=>{
-  event?.stopPropagation();
-  if(inFlight.current||busy||!done||!onCommand)return;
-  inFlight.current=true;setClaiming(true);setClaimError('');let accepted=false;
-  try{
-   const next=await onCommand('claim',{id:o.id});
-   const updated=next?.state?.orders?.find((entry:any)=>entry.id===o.id);
-   accepted=Boolean(updated?.completionReward?.claimedAt);
-   if(!accepted)setClaimError(next?.message||'Belohnung konnte nicht abgeholt werden. Bitte erneut versuchen.');
-  }catch{setClaimError('Belohnung konnte nicht abgeholt werden. Bitte erneut versuchen.');}
-  finally{if(!accepted){inFlight.current=false;setClaiming(false);}}
- };
- return <Card testID={`running-project-${o.id}`} style={[s.runningCard,rarityStyle(o.kind,info.rarity)]}>
-  <Pressable testID={`project-open-${o.id}`} accessibilityRole="button" accessibilityLabel={translate(`${projectTitle(o.projectName,o.kind)}, ${o.customerName}, ${n(o.volume)} t, ${n(o.distance)} km`)} onPress={()=>onOpen?.(o.id)} style={s.runningHeading}>
+ return <Pressable testID={`project-open-${o.id}`} accessibilityRole="button" accessibilityLabel={translate(`${projectTitle(o.projectName,o.kind)}, ${o.customerName}, ${n(o.volume)} t, ${n(o.distance)} km`)} onPress={()=>onOpen?.(o.id)}><Card testID={`running-project-${o.id}`} style={[s.runningCard,rarityStyle(o.kind,info.rarity)]}>
+  <View style={s.runningHeading}>
    <View material={false} style={s.runningArt}><ProjectCategoryArt preciousCargo={info.customer?.preciousCargo} referral={o.kind==='referral'}/></View>
    <View material={false} style={s.runningCopy}><Txt style={[s.runningKind,{color}]}>{info.rarity==='legendary'?'LEGENDÄR':o.kind==='referral'?'Empfehlung':'Sonderauftrag'}</Txt><Txt style={s.runningTitle}>{name}</Txt><View style={s.customerLine}><Icon name="home" size={12} color={C.muted}/><Txt muted style={s.runningCustomer}>{o.customerName}</Txt></View><View style={s.cargoLine}><Icon name="orders" size={12} color={C.muted}/><Txt muted style={s.runningFact}>{o.status==='active'?`${n(o.delivered,1)} / ${n(o.volume)} t`:`${n(o.volume)} t`} · {n(o.distance)} km</Txt></View></View>
-  </Pressable>
+  </View>
   {o.status==='active'&&<><Bar value={o.volume>0?o.delivered/o.volume*100:0}/><View style={s.runningTimes}><Txt style={s.timeValue}><Txt muted style={s.timeLabel}>Frist</Txt>{' '}<Txt style={[s.timeValue,{color:Number.isFinite(deadline)&&now>=deadline?C.red:C.gold}]}>{Number.isFinite(deadline)?deadline<=now?'Wird geprüft':remaining(deadline,now):'—'}</Txt></Txt><Txt style={s.timeValue}><Txt muted style={s.timeLabel}>Fertig in</Txt>{' '}<Txt style={[s.timeValue,eta>deadline&&{color:C.red}]}>{etaLabel}</Txt></Txt></View>{eta>deadline&&<Txt style={[s.runningFact,{color:C.red,marginTop:3}]}>Voraussichtlich nach Fristende</Txt>}</>}
-  {done&&<><View style={s.doneActions}><View material={false} style={s.doneStamp}><Txt style={s.doneStampText}>ERLEDIGT</Txt></View><Btn testID={`project-claim-${o.id}`} style={s.claimButton} disabled={busy||claiming||!onCommand} onPress={claim}>Abholen</Btn></View>{!!claimError&&<Txt accessibilityRole="alert" style={[s.small,{color:C.red,marginTop:6}]}>{claimError}</Txt>}</>}
- </Card>;
+  {done&&<View style={s.doneActions}><View material={false} style={s.doneStamp}><Txt style={s.doneStampText}>ERLEDIGT</Txt></View></View>}
+ </Card></Pressable>;
 }
 export function RunningProjects({data,clock,onOpen,onCommand,busy=false}:any){
  const orders=orderedRunningProjects(data.state.orders);
  return <>{orders.length?orders.map((o:any)=><RunningProjectCard key={o.id} order={o} clock={clock??data.serverTime} onOpen={onOpen} onCommand={onCommand} busy={busy}/>):<Empty>Keine Großaufträge unterwegs.</Empty>}</>;
 }
 export function ProjectDetail({data,id,busy,clock,onCommand,onExpedition,onCustomers,onInventory,onFleet,modalBlocked=false}:any){
- const [overtime,setOvertime]=useState(false),[more,setMore]=useState(false);
- useEffect(()=>{setOvertime(false);},[id]);
+ const [overtime,setOvertime]=useState(false),[more,setMore]=useState(false),[claiming,setClaiming]=useState(false),[claimError,setClaimError]=useState('');
+ const claimingRef=useRef(false);
+ useEffect(()=>{setOvertime(false);setClaiming(false);setClaimError('');claimingRef.current=false;},[id]);
  const o=data.state.orders.find((o:any)=>o.id===id&&o.isProject),active=o?.status==='active';
  useEffect(()=>{if(!active)setOvertime(false);},[active]);
  if(!o)return <Empty>Großauftrag nicht verfügbar.</Empty>;
  const info=o.projectInfo,reward=o.completionReward,points=data.state.overtimePoints;
+ const claim=async()=>{
+  if(claimingRef.current||busy||o.status!=='completed'||!reward||reward.claimedAt||!onCommand)return;
+  claimingRef.current=true;setClaiming(true);setClaimError('');let accepted=false;
+  try{
+   const next=await onCommand('claim',{id:o.id});
+   accepted=Boolean(next?.state?.orders?.find((entry:any)=>entry.id===o.id)?.completionReward?.claimedAt);
+   if(!accepted)setClaimError(next?.message||'Belohnung konnte nicht abgeholt werden. Bitte erneut versuchen.');
+  }catch{setClaimError('Belohnung konnte nicht abgeholt werden. Bitte erneut versuchen.');}
+  finally{if(!accepted){claimingRef.current=false;setClaiming(false);}}
+ };
  return <>
   {active?<>
    <Card><ProjectStory order={o}/><View style={s.times}><View style={{flex:1}}><Txt muted style={s.small}>Frist</Txt><Txt gold>{remaining(o.project.deadlineAt,clock)}</Txt></View><View style={{flex:1,alignItems:'flex-end'}}><Txt muted style={s.small}>Flotte braucht</Txt><Txt style={o.eta>o.project.deadlineAt?{color:C.red}:null}>{o.eta?remaining(o.eta,clock):'—'}</Txt></View></View><Txt muted style={[s.small,{marginTop:10}]}>{n(o.delivered,1)} / {n(o.volume)} t · {projectTitle(o.projectName,o.kind)}</Txt></Card>
    <Btn disabled={busy||clock>=o.project.deadlineAt} onPress={()=>setOvertime(true)}>Überstunden einsetzen</Btn>
    <Card style={{marginTop:12}}><Row><Txt style={s.title}>Eingesetzte Flotte</Txt><Pill>Flotte {o.project.template+1}</Pill></Row>{o.project.vehicles.map((vehicle:any)=><View key={vehicle.slot??vehicle.cardId} style={s.vehicle}><Txt style={{fontWeight:'700'}}>{vehicle.model}</Txt>{vehicle.cargo>0&&vehicle.nextAt?<Row style={{marginTop:6,marginBottom:0,flexWrap:'nowrap'}}><Txt gold style={s.small}>{remaining(vehicle.nextAt,clock)}</Txt><Txt muted style={s.small}>{n(vehicle.cargo,2)} t bei Ankunft</Txt></Row>:<Txt muted style={[s.small,{marginTop:6}]}>Keine weitere Tour</Txt>}{vehicle.pendingCardId!==undefined&&vehicle.pendingCardId!==vehicle.cardId&&<Txt gold style={s.small}>{vehicle.pendingModel?`Danach: ${vehicle.pendingModel}`:'Wird nach der Tour entfernt'}</Txt>}</View>)}</Card>
    <Btn secondary onPress={()=>setMore(!more)}>{more?'Weniger Infos':'Belohnungen & Infos'}</Btn>{more&&<View style={{marginTop:12}}><ProjectInfo info={info} onExpedition={onExpedition} onCustomers={onCustomers}/></View>}
+  </>:o.status==='completed'?<>
+   <ProjectStory order={o}/>
+   {reward&&!reward.claimedAt?<Btn disabled={busy||claiming||!onCommand} onPress={claim}>Belohnung entgegennehmen</Btn>:reward?.claimedAt?<Txt muted>Abgeholt</Txt>:null}
+   {!!claimError&&<Txt accessibilityRole="alert" style={[s.small,{color:C.red,marginTop:6}]}>{claimError}</Txt>}
   </>:<>
    <Row><ItemArt id={o.kind==='referral'?'referral':'special'} size={48}/><Txt style={[s.title,{flex:1}]}>{projectTitle(o.projectName,o.kind)}</Txt></Row><Txt muted style={{marginBottom:12}}>{o.customerName}</Txt>
    {o.status==='queued'&&<><Card>{fact('Umfang',`${n(o.volume)} t · ${n(o.distance)} km`)}{fact('Frist ab Start',minutes(o.deadlineMs/1000))}</Card>{o.templates.map((template:any)=><Card key={template.index}><Txt style={s.title}>Flotte {template.index+1}</Txt><Txt muted style={[s.small,{marginTop:8}]}>{template.vehicles?.map((v:any)=>v.model).join(' · ')||'Keine Karten eingesetzt'}</Txt>{template.eta&&<Txt muted style={{marginTop:8}}>{minutes((template.eta-data.serverTime)/1000)}{template.eta-data.serverTime>o.deadlineMs?' · Überstunden nötig':''}</Txt>}<Btn disabled={busy||!template.vehicles} onPress={()=>onCommand('projectStart',{id:o.id,template:template.index})}>Flotte {template.index+1} einsetzen</Btn></Card>)}</>}
-   {o.status==='completed'&&<ProjectStory order={o}/>}
-   {o.status==='completed'&&reward&&<Card><Txt style={[s.title,{marginBottom:12}]}>Abschlussprämie</Txt>{fact('Imperium-Taler',`${n(reward.coins,2)}`)}{Object.entries(reward.gears||{}).filter(([,value])=>Number(value)>0).map(([rarity,amount])=><View key={rarity}><ItemAmount id={`gear:${rarity}`} label={`${data.catalog.rarities.find((r:any)=>r.id===rarity)?.label||rarity}-Zahnräder`} amount={Number(amount)}/></View>)}{reward.capacityModule&&<ItemAmount id="capacityModules" amount={1}/>}{!reward.claimedAt?<Btn disabled={busy} onPress={()=>onCommand('claim',{id:o.id})}>Prämie abholen</Btn>:<Txt muted>Abgeholt</Txt>}</Card>}
    {o.status==='failed'&&<Empty>Frist abgelaufen · keine Abschlussprämie</Empty>}
    <ProjectInfo info={info} onExpedition={onExpedition} onCustomers={onCustomers}/>
   </>}
@@ -144,7 +143,7 @@ export function ProjectDetail({data,id,busy,clock,onCommand,onExpedition,onCusto
  </>;
 }
 const s=StyleSheet.create({
- runningCard:{paddingHorizontal:9,paddingVertical:8,marginBottom:4},runningHeading:{flexDirection:'row',alignItems:'center',gap:8},runningArt:{width:58,height:66,position:'relative',flexShrink:0},runningCopy:{flex:1,minWidth:0},runningKind:{fontSize:9,lineHeight:12,fontWeight:'700',letterSpacing:.4,marginBottom:1},runningTitle:{fontSize:14,lineHeight:18,fontWeight:'700',marginBottom:2},customerLine:{flexDirection:'row',alignItems:'center',gap:4},runningCustomer:{fontSize:11,lineHeight:15,flexShrink:1},cargoLine:{flexDirection:'row',alignItems:'center',gap:4,marginTop:2},runningFact:{fontSize:11,lineHeight:15,flexShrink:1},runningTimes:{flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between',columnGap:10,rowGap:2},timeLabel:{fontSize:10,lineHeight:16},timeValue:{fontSize:11,lineHeight:16,fontWeight:'600',flexShrink:1,maxWidth:'100%'},doneActions:{flexDirection:'row',flexWrap:'wrap',alignItems:'center',justifyContent:'flex-end',columnGap:12,rowGap:5,marginTop:5},claimButton:{minHeight:44,minWidth:94,paddingHorizontal:13,paddingVertical:7,marginTop:0},doneStamp:{borderWidth:1.5,borderColor:C.uncommon,borderRadius:3,paddingHorizontal:7,paddingVertical:2,transform:[{rotate:'-6deg'}]},doneStampText:{color:C.uncommon,fontSize:11,lineHeight:15,fontWeight:'800',letterSpacing:.8},
+ runningCard:{paddingHorizontal:9,paddingVertical:8,marginBottom:4},runningHeading:{flexDirection:'row',alignItems:'center',gap:8},runningArt:{width:58,height:66,position:'relative',flexShrink:0},runningCopy:{flex:1,minWidth:0},runningKind:{fontSize:9,lineHeight:12,fontWeight:'700',letterSpacing:.4,marginBottom:1},runningTitle:{fontSize:14,lineHeight:18,fontWeight:'700',marginBottom:2},customerLine:{flexDirection:'row',alignItems:'center',gap:4},runningCustomer:{fontSize:11,lineHeight:15,flexShrink:1},cargoLine:{flexDirection:'row',alignItems:'center',gap:4,marginTop:2},runningFact:{fontSize:11,lineHeight:15,flexShrink:1},runningTimes:{flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between',columnGap:10,rowGap:2},timeLabel:{fontSize:10,lineHeight:16},timeValue:{fontSize:11,lineHeight:16,fontWeight:'600',flexShrink:1,maxWidth:'100%'},doneActions:{flexDirection:'row',flexWrap:'wrap',alignItems:'center',justifyContent:'flex-end',columnGap:12,rowGap:5,marginTop:5},doneStamp:{borderWidth:1.5,borderColor:C.uncommon,borderRadius:3,paddingHorizontal:7,paddingVertical:2,transform:[{rotate:'-6deg'}]},doneStampText:{color:C.uncommon,fontSize:11,lineHeight:15,fontWeight:'800',letterSpacing:.8},
  tabs:{flexDirection:'row',gap:5,marginBottom:6},tab:{flex:1,minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:5,borderWidth:1,borderColor:C.line,backgroundColor:C.panel,borderRadius:5},activeTab:{backgroundColor:C.accent,borderColor:C.ink},tabLabel:{fontSize:12,fontWeight:'700'},tabCount:{fontSize:11,color:C.muted},selectedTabText:{color:C.onInk},rewardDot:{width:7,height:7,borderRadius:4,backgroundColor:C.gold},
  category:{flexDirection:'row',paddingHorizontal:0,paddingVertical:0,overflow:'hidden',minHeight:112,marginBottom:5,backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderLeftWidth:4},
  categoryArt:{width:'31%',minWidth:88,position:'relative',overflow:'hidden'},

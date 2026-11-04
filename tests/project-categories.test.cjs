@@ -142,25 +142,33 @@ test('Real project claim pays once, retains history and supplies only confirmed 
  assert.equal(projectClaimSummary(previous.view.state.orders,previous.view.state.orders,'claim-me'),null,'unconfirmed claim cannot show paid reward');
 });
 
-test('Completed project card claims once, keeps errors visible and does not open detail from claim button',async()=>{
+test('Completed project card only announces completion and opens detail without claiming',()=>{
  const {componentHarness,nodes,text}=require('./helpers/component-harness.cjs');
- const h=componentHarness('Projects.tsx',{'./Language':{Text:'Text'},'./LocationArt':{LocationArt:'LocationArt'},'./ProjectCategoryArt':{ProjectCategoryArt:'ProjectCategoryArt'}});
+ const h=componentHarness('Projects.tsx',{'./Language':{Text:'Text'},'./ProjectCategoryArt':{ProjectCategoryArt:'ProjectCategoryArt'}});
  const order={id:'done',isProject:true,status:'completed',kind:'special',projectName:'Schmuck der Krone',customerName:'Kontor',volume:400,distance:120,completionReward:{claimedAt:null},projectInfo:{customer:{preciousCargo:'Goldschmuck'}}};
- let resolve,reject,calls=0,opened=0,stopped=0;
- const props={order,clock:1800000000000,onOpen:()=>opened++,onCommand:(action,args)=>{assert.equal(action,'claim');assert.deepEqual(JSON.parse(JSON.stringify(args)),{id:'done'});calls++;return new Promise((yes,no)=>{resolve=yes;reject=no;});}};
- const render=()=>h.render('RunningProjectCard',props),claim=tree=>nodes(tree,'Btn').find(n=>n.props.testID==='project-claim-done');
- let tree=render();assert.equal(text(claim(tree)),'Abholen');assert.ok(nodes(tree,'Icon').some(n=>n.props.name==='home'));assert.ok(nodes(tree,'Icon').some(n=>n.props.name==='orders'));assert.ok(text(tree).includes('ERLEDIGT'));assert.ok(!text(tree).includes('Frist'));assert.ok(!text(tree).includes('Fertig in'));
- nodes(tree,'Pressable').find(n=>n.props.testID==='project-open-done').props.onPress();assert.equal(opened,1);
- const tap=()=>claim(tree).props.onPress({stopPropagation(){stopped++;}});
- const first=tap();tap();assert.equal(calls,1);assert.equal(opened,1);assert.equal(stopped,2);
- tree=render();assert.equal(claim(tree).props.disabled,true);
- reject(Error('Offline'));await first;tree=render();assert.ok(text(tree).includes('Belohnung konnte nicht abgeholt'));assert.ok(text(tree).includes('ERLEDIGT'));assert.equal(claim(tree).props.disabled,false);
- const retry=claim(tree).props.onPress();resolve(undefined);await retry;tree=render();assert.ok(text(tree).includes('Bitte erneut versuchen'));
- const success=claim(tree).props.onPress();resolve({state:{orders:[{id:'done',completionReward:{claimedAt:123}}]}});await success;
- claim(tree).props.onPress();assert.equal(calls,3,'confirmed success remains guarded until authoritative rerender removes the card');
- props.busy=true;tree=render();assert.equal(claim(tree).props.disabled,true);
+ let opened=0,claimed=0;
+ const tree=h.render('RunningProjectCard',{order,clock:1800000000000,onOpen:id=>{assert.equal(id,'done');opened++;},onCommand:()=>claimed++});
+ assert.equal(nodes(tree,'Btn').length,0);assert.ok(text(tree).includes('ERLEDIGT'));assert.ok(!text(tree).includes('Frist'));assert.ok(!text(tree).includes('Fertig in'));
+ assert.ok(nodes(tree,'Icon').some(n=>n.props.name==='home'));assert.ok(nodes(tree,'Icon').some(n=>n.props.name==='orders'));
+ nodes(tree,'Pressable').find(n=>n.props.testID==='project-open-done').props.onPress();assert.equal(opened,1);assert.equal(claimed,0);
+ h.unmount();
 });
 
+test('Completed detail contains only receipt and guarded claim; errors retry and confirmed claims cannot repeat',async()=>{
+ const {componentHarness,nodes,text}=require('./helpers/component-harness.cjs');
+ const h=componentHarness('Projects.tsx',{'./Language':{Text:'Text'},'./ProjectCategoryArt':{ProjectCategoryArt:'ProjectCategoryArt'}});
+ const order={id:'done',isProject:true,status:'completed',kind:'referral',projectName:'Hafenverbund',customerName:'Kontor',volume:1100,delivered:1100,distance:240,completionReward:{coins:999,gears:{common:123},claimedAt:null}};
+ let calls=0,resolve,reject;
+ const props={data:{state:{orders:[order],overtimePoints:1}},id:'done',clock:1800000000000,busy:false,onCommand:(action,payload)=>{assert.equal(action,'claim');assert.deepEqual(JSON.parse(JSON.stringify(payload)),{id:'done'});calls++;return new Promise((yes,no)=>{resolve=yes;reject=no;});}};
+ const render=()=>h.render('ProjectDetail',props),claim=tree=>nodes(tree,'Btn').find(n=>text(n)==='Belohnung entgegennehmen');
+ let tree=render();assert.equal(nodes(tree,'ProjectStory').length,1);assert.equal(nodes(tree,'Card').length,0);assert.equal(nodes(tree,'ItemArt').length,0);assert.equal(nodes(tree,'ItemAmount').length,0);assert.equal(nodes(tree,'Btn').length,1);
+ assert.ok(!text(tree).includes('Hafenverbund'));assert.ok(!text(tree).includes('Kontor'));assert.ok(!text(tree).includes('999'));assert.ok(!text(tree).includes('Abschlussprämie'));assert.ok(!text(tree).includes('Herkunft'));
+ const first=claim(tree).props.onPress();claim(tree).props.onPress();assert.equal(calls,1);tree=render();assert.equal(claim(tree).props.disabled,true);
+ reject(Error('Offline'));await first;tree=render();assert.ok(text(tree).includes('Belohnung konnte nicht abgeholt'));assert.equal(claim(tree).props.disabled,false);
+ const retry=claim(tree).props.onPress();resolve(undefined);await retry;tree=render();assert.ok(text(tree).includes('Bitte erneut versuchen'));
+ const success=claim(tree).props.onPress();resolve({state:{orders:[{id:'done',completionReward:{claimedAt:123}}]}});await success;claim(render()).props.onPress();assert.equal(calls,3,'confirmed success remains guarded until authoritative snapshot');
+ order.completionReward.claimedAt=123;tree=render();assert.equal(claim(tree),undefined);assert.ok(text(tree).includes('Abgeholt'));assert.equal(nodes(tree,'ItemAmount').length,0);h.unmount();
+});
 
 test('Active project card uses snapshot ETA and deadline without promising completion for stale or infeasible estimates',()=>{
  const {componentHarness,nodes,text}=require('./helpers/component-harness.cjs');

@@ -49,3 +49,7 @@ In der Botenstation entfällt der sichtbare Text „Verteilung läuft“ einschl
 ## Gesammelt: Safranstraßen-Karawane korrigiert
 
 Das dritte Geschichtsbild (40–59 %) ist ersetzt: Der führende Kamelkörper samt Kopf und die folgende Karawane bewegen sich eindeutig in derselben Richtung wie der Führer. Landschaft, Licht und charakteristische Ladung bleiben erhalten. Einzelmotiv mit eingebauter Bildbearbeitung korrigiert, visuell geprüft, JPEG 1200 × 800 vollständig dekodiert und Upload-Blobintegrität geprüft. Noch nicht veröffentlicht.
+
+## Gesammelt: Großauftragsabschluss nur im Detail abholen
+
+Erledigte Listenkarten zeigen nur den Stempel; Antippen öffnet den Auftrag. Im abgeschlossenen Detail bleiben Übergabeschein und direkt darunter „Belohnung entgegennehmen“. Zusätzlicher Vertragskopf, Abschlussprämienvorschau und untere Umfang-/Belohnungs-/Herkunftskarten entfallen. Erst eine bestätigte Abholung öffnet die echte Belohnungsausgabe; synchroner Doppeltippschutz und sichtbare Fehler bleiben im Detail. Neun gezielte Listen-/Detail-/Status-/Abholtests und TSX-Syntaxprüfung erfolgreich; voller Typ-/Export-/Gerätetest nicht belegt. Noch nicht veröffentlicht. [Details](docs/ui/project-category-overview.md).
