@@ -8,7 +8,7 @@ import {AppModal as Modal} from './AppModal';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
 import {C,Txt,Card,Row,Btn,n} from './ui';
-import {PointInfo,PointsBalance,PointAllocationRow} from './PointAllocation';
+import {PointsBalance,PointAllocationRow} from './PointAllocation';
 type Allocation={expedition:number;overtime:number};
 export function DevelopmentCard({data,busy,onCommand,modalBlocked=false}:any){
  const [open,setOpen]=useState(false),development=data.development;
@@ -17,7 +17,6 @@ export function DevelopmentCard({data,busy,onCommand,modalBlocked=false}:any){
   <Card style={[s.headquartersCard,{borderColor:development.points?C.accent:C.line}]}>
    <Image testID="empire-headquarters-art" source={require('../assets/art/company/headquarters.jpg')} resizeMode="cover" accessible={false} fadeDuration={0} style={s.headquartersArt}/>
    <View style={s.developmentBody}>
-   <Row style={{marginBottom:7,justifyContent:'flex-end'}}><PointInfo>Verfügbare Punkte: {n(development.points)}</PointInfo></Row>
    {(['overtime','expedition'] as const).map(kind=><Row key={kind} style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={{fontSize:12,flex:1}}>{kind==='overtime'?'Überstunden':'Expeditionspunkte'}</Txt><Txt style={{fontSize:17,fontWeight:'700'}}>{n(development[kind].base)}</Txt></Row>)}
    {development.points>0&&<Btn secondary icon="expansion" disabled={busy} onPress={()=>setOpen(true)}>Ausbaupunkte verteilen · {n(development.points)}</Btn>}
    </View>

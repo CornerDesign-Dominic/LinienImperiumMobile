@@ -40,3 +40,7 @@ Die Tabelle hält belegte Restpunkte fest; sie beauftragt keine neue Spielfunkti
 - Code in `main`, geprüfter Build und tatsächlich ausgerolltes Backend/OTA sind unterschiedliche Zustände. Bei einer Veröffentlichung Commit und erfolgreichen Workflow verlinken.
 - Nach Abschluss den Eintrag entfernen oder mit Nachweis in die Historie übernehmen; keine vollständigen Modulbeschreibungen hier duplizieren.
 - Spielveröffentlichungen erfolgen weiterhin auf ausdrücklichen Wunsch über den dokumentierten Workflow. Dokumentationspflege startet keinen manuellen Release und setzt keinen Veröffentlichungsmarker.
+
+## Gesammelt: Punktestand nur im Verteilbutton
+
+Separate Anzeige „Verfügbare Punkte“ in der oberen Handelsimperiumkarte inklusive Zeile entfernt, unabhängig vom Guthaben. Bei positiven Punkten bleibt der vorhandene Verteilbutton mit Anzahl; Basismaxima und Verteilmodal unverändert. Fünf gezielte Komponentenprüfungen erfolgreich. Noch nicht veröffentlicht.
