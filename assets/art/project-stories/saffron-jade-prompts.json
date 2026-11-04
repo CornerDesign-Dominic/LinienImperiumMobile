@@ -18,10 +18,14 @@
   {
     "region": "saffron",
     "stage": 2,
-    "prompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Camel caravan carrying carved cedar brasscorner chests travels across white saltterraces into winding ochre rockpass, creamrobed indigosashed merchant leads firstcamel, expansive desert mountains, individual journey landscape. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
-    "method": "builtin image_gen",
-    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-664816a7-0b99-41fc-afdb-32e03e019662.png",
-    "file": "saffron/stage-2.jpg"
+    "prompt": "Use case: precise-object-edit. Edit the supplied historical caravan illustration. Fix the travel direction of the FIRST large camel nearest the foreground guide: currently its head faces back toward the other camels, opposite its guide. Redraw/reorient that camel naturally so its head and neck are at the LEFT/front end, toward the lower-left foreground, directly behind and following the turbaned guide. Its hindquarters must be to the upper-right, not next to the guide. ALL camels and guides in the line must face and walk in this SAME direction, descending from the upper-right rock arch toward the lower-left foreground. Preserve the exact scenic composition, warm ochre canyon and stone arch at right, white salt terraces and blue water at left, distant green valley town, late golden light, historical painterly realistic detail. Preserve the richly patterned redbrown wooden cargo crates with gold fittings and woven blankets on the camel's back. Anatomically coherent four-legged camels with natural heads/necks, clearly following the caravanleader, no backwards facing or twisted camel. No text, no UI, no route overlays, no modern objects. Landscape aspect3:2 production game story artwork. Do NOT mirror the whole image; correct the animals' anatomy and direction within existing landscape.",
+    "method": "builtin image_gen edit",
+    "original": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-2825c345-0edd-4862-95e5-b43ba6c401d0.png",
+    "file": "saffron/stage-2.jpg",
+    "previousPrompt": "Historical-scene mobile game production artwork, painterly realism, landscape3:2, finely detailed believable 1800s-inspired regional world. Camel caravan carrying carved cedar brasscorner chests travels across white saltterraces into winding ochre rockpass, creamrobed indigosashed merchant leads firstcamel, expansive desert mountains, individual journey landscape. No text, labels, UI, watermarks, progressbar, coloredpath or collage. Warm cinematic natural light, high oblique viewpoint except scroll topdown. Fullbleed single scene.",
+    "previousOriginal": "/workspace/scratch/6cce5f7a0e2b/generated_images/exec-664816a7-0b99-41fc-afdb-32e03e019662.png",
+    "editReference": "saffron/stage-2.jpg (previous production artwork)",
+    "revision": "2026-11-04: corrected all camels to follow the guide toward the lower-left foreground"
   },
   {
     "region": "saffron",

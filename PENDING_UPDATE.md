@@ -45,3 +45,7 @@ Die Tabelle hält belegte Restpunkte fest; sie beauftragt keine neue Spielfunkti
 ## Gesammelt: Ertragskarte ohne Lauftext
 
 In der Botenstation entfällt der sichtbare Text „Verteilung läuft“ einschließlich seiner reservierten Zeile. Die Zeitleiste bleibt erhalten; die frei werdende Fläche kommt dem Hintergrundbild zugute. Abweichende Statushinweise (volle Kasse, fehlende Ware, wartender Einkauf), Zugänglichkeit, Berechnung und Abholen bleiben erhalten. Gezielter Quelldiff geprüft; noch nicht veröffentlicht.
+
+## Gesammelt: Safranstraßen-Karawane korrigiert
+
+Das dritte Geschichtsbild (40–59 %) ist ersetzt: Der führende Kamelkörper samt Kopf und die folgende Karawane bewegen sich eindeutig in derselben Richtung wie der Führer. Landschaft, Licht und charakteristische Ladung bleiben erhalten. Einzelmotiv mit eingebauter Bildbearbeitung korrigiert, visuell geprüft, JPEG 1200 × 800 vollständig dekodiert und Upload-Blobintegrität geprüft. Noch nicht veröffentlicht.
