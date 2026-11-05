@@ -10,8 +10,8 @@ import {seasonRewards,seasonPreview,seasonRewardStatus} from './seasonRewards';
 import type {SeasonReward,SeasonProgress} from './seasonRewards';
 
 const seasonTaskIdeas={
- daily:['Logge dich ein','Schließe 15 Einzelaufträge ab','Sammle die Belohnung von 1 Großauftrag ein','Führe 2 Beschaffungstouren durch','Nutze 100 Überstunden','Nutze 100 Expeditionspunkte'],
- weekly:['Schließe 150 Einzelaufträge ab','Sammle die Belohnungen von 5 Großaufträgen ein']
+ daily:['Logge dich ein','Schließe 15 Einzelaufträge ab','Sammle die Belohnung von 1 Großauftrag ein','Führe 2 Beschaffungstouren durch','Nutze 100 Überstunden','Nutze 100 Expeditionspunkte','Sammle eine verlorene Zustellung ein','Schließe 5 Nahverkehrsaufträge ab','Schließe 5 Fernverkehrsaufträge ab','Bediene 2 unterschiedliche Stammkunden','Verdiene insgesamt X Taler'],
+ weekly:['Schließe 150 Einzelaufträge ab','Sammle die Belohnungen von 5 Großaufträgen ein','Sammle 10 verlorene Zustellungen ein','Schließe 40 Nahverkehrsaufträge ab','Schließe 40 Fernverkehrsaufträge ab','Bediene 5 unterschiedliche Stammkunden','Führe 20 Beschaffungstouren durch']
 };
 
 const statusLabels={premiumLocked:'Premium gesperrt',locked:'Gesperrt',claimed:'Abgeholt',reached:'Erreicht'};
