@@ -278,7 +278,7 @@
   "Angebot halten": "Hold offer",
   "Prognose gesamt": "Total estimate",
   "· aktuelle Werte": "· current stats",
-  "Fracht": "Freight",
+  "Fracht": "Cargo",
   "Gewinn": "Profit",
   "Basis-XP": "Base XP",
   "Münzen": "Imperium thalers",
@@ -1345,5 +1345,9 @@
   "Wird eingesetzt …": "Applying …",
   "{0} Punkte einsetzen": "Use {0} points",
   "Belohnung entgegennehmen": "Collect reward",
-  "Botenstrecke gesamt": "Total courier distance"
+  "Botenstrecke gesamt": "Total courier distance",
+  "Auftragsdauer": "Contract duration",
+  "Geschätzte Gesamtvergütung": "Estimated total payout",
+  "Überstunden für die Frist nötig": "Overtime needed to meet deadline",
+  "Gesamtvergütung inkl. Abschlussprämie bei fristgerechtem Abschluss.": "Total payout includes the completion bonus if the deadline is met."
 }

@@ -434,7 +434,8 @@ const bridge = `
           eta: projection?.eta ?? null,
           templates: project && o.status==='queued' ? [0,1,2].map(index=>{
             const vehicles=projectFleetVehicles(index);
-            return {index, vehicles, eta:vehicles ? projectEstimatedEnd({...o,delivered:0,project:{vehicles:vehicles.map(v=>({...v,cargo:0,nextAt:null}))}},now) : null};
+            const forecast=vehicles?projectProjection({...o,delivered:0,project:{template:index,vehicles:vehicles.map(v=>({...v,cargo:0,nextAt:null}))}},now):null;
+            return {index,vehicles,eta:forecast?.eta??null,estimatedCoins:forecast?.feasible?round2(forecast.revenue+completionPremium(o)):null};
           }) : []
         };
       });

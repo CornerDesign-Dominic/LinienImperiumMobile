@@ -180,3 +180,17 @@ test('Active project card uses snapshot ETA and deadline without promising compl
  order.eta=500;assert.ok(text(render()).includes('Wird aktualisiert'));
  order.eta=null;order.projection.feasible=false;assert.ok(text(render()).includes('Nicht erreichbar'));
 });
+
+test('Fleet selection shows five ordered pictures and server duration/payout below them',()=>{
+ const {componentHarness,nodes,text}=require('./helpers/component-harness.cjs'),at=1800000000000;
+ const game=execute(null,'foundCompany',{companyName:'Firma',cityName:'Heimat'},at,()=>.5).view,info=game.projectCatalog[0],cards=game.catalog.cards.slice(0,5);
+ const vehicles=cards.map((card,slot)=>({cardId:card.id,model:card.name,slot}));
+ game.state.orders.push({id:'pictures',isProject:true,status:'queued',kind:info.kind,projectName:info.name,projectInfo:info,volume:520,distance:145,deadlineMs:3600000,templates:[{index:0,vehicles,eta:at+1800000,estimatedCoins:194480.4}]});
+ const h=componentHarness('Projects.tsx',{'./Language':{Text:'Text'},'./ProjectCategoryArt':{ProjectCategoryArt:'ProjectCategoryArt'},'./ui':{C:require('../src/palette.json'),Txt:'Txt',Card:'Card',Row:'Row',Btn:'Btn',Pill:'Pill',Empty:'Empty',n:value=>String(Math.round(value)),minutes:seconds=>seconds/60+' Min.'}});
+ const props={data:game,onCommand(){}};let tree=h.render('Projects',props);nodes(tree,'Pressable').find(n=>n.props.testID==='project-category-'+info.key).props.onPress();tree=h.render('Projects',props);
+ const fleet=nodes(tree,'Pressable').find(n=>n.props.testID==='project-fleet-0'),images=nodes(fleet,'VehicleArt');
+ assert.equal(images.length,5);assert.deepEqual(images.map(n=>n.props.card.id),cards.map(c=>c.id));
+ assert.ok(!text(fleet).includes(cards[0].name));assert.ok(text(fleet).includes('30 Min.'));assert.ok(text(fleet).includes('194480'));
+ assert.ok(text(tree).includes('Frist ab Start'));assert.ok(text(tree).includes('520 t'));assert.ok(text(tree).includes('145 km'));
+ h.unmount();
+});
