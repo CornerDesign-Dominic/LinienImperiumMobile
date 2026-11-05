@@ -1,6 +1,7 @@
 import React from 'react';
 import {Image,View,StyleSheet,ImageSourcePropType} from 'react-native';
 import {C,Txt} from './ui';
+import {displayFont} from './theme';
 import {t} from './i18n';
 import {projectStory,StoryRegion} from './projectStory';
 const art:Record<StoryRegion,ImageSourcePropType[]>={
@@ -26,4 +27,4 @@ export function ProjectStory({order}:any){
   {story.receipt&&<View pointerEvents="none" style={s.receipt}><Txt style={s.receiptTitle}>Lieferung bestätigt</Txt><Txt style={s.customer}>{order.customerName||story.customer}</Txt></View>}
  </View>;
 }
-const s=StyleSheet.create({panel:{width:'100%',aspectRatio:3/2,position:'relative',overflow:'hidden',borderRadius:8,backgroundColor:C.panel},image:{width:'100%',height:'100%'},receipt:{position:'absolute',left:'16%',right:'16%',top:'25%',bottom:'25%',alignItems:'center',justifyContent:'center',gap:10},receiptTitle:{fontSize:20,lineHeight:26,fontWeight:'700',textAlign:'center',color:C.text},customer:{fontSize:13,lineHeight:18,textAlign:'center',color:C.text}});
+const s=StyleSheet.create({panel:{width:'100%',aspectRatio:3/2,position:'relative',overflow:'hidden',borderRadius:8,backgroundColor:C.panel},image:{width:'100%',height:'100%'},receipt:{position:'absolute',left:'24%',right:'24%',top:'30%',bottom:'38%',alignItems:'center',justifyContent:'center',gap:6},receiptTitle:{fontFamily:displayFont,fontSize:18,lineHeight:24,fontWeight:'400',fontStyle:'italic',textAlign:'center',color:'#796348'},customer:{fontFamily:displayFont,fontSize:12,lineHeight:17,fontWeight:'400',textAlign:'center',color:'#796348'}});

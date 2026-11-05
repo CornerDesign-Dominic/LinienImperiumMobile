@@ -204,3 +204,15 @@ test('Courier presentation keeps persistent IDs, state and non-hub names intact'
  assert.equal(courierText(`${original.id} und LKW-999`,[original]),`${shown.displayName} und LKW-999`);
  assert.equal(courierText(`Firma ${original.id} meldet ${original.id}`,[original],{companyName:`Firma ${original.id}`}),`Firma ${original.id} meldet ${shown.displayName}`);
 });
+
+test('Combined courier mileage migrates once, counts real tours once and survives removal',()=>{
+ let r=hubbed();r=run(r.state,'hubVehicleBuy');
+ const couriers=r.state.trucks.filter(t=>!t.cardId);couriers[0].kmDriven=120;couriers[1].kmDriven=80;delete r.state.stats.hubKm;
+ r=run(r.state);assert.equal(r.state.stats.hubKm,200);
+ r=run(r.state,'sync',{},now+20*60000);
+ const total=r.state.trucks.filter(t=>!t.cardId).reduce((s,t)=>s+t.kmDriven,0);
+ assert.ok(total>200);assert.equal(r.state.stats.hubKm,total);
+ r=run(JSON.parse(JSON.stringify(r.state)),'sync',{},now+20*60000);assert.equal(r.state.stats.hubKm,total);
+ const id=couriers[0].id;r.state.trucks=r.state.trucks.filter(t=>t.id!==id);
+ r=run(r.state,'sync',{},now+20*60000);assert.equal(r.state.stats.hubKm,total);
+});

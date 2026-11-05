@@ -23,16 +23,16 @@ test('Expansion failures stay open and concurrent confirmations send a single co
 });
 
 
-test('Development shows one seven-point balance and one allocator entry for all sources',()=>{
+test('Development shows point count only in the allocator button',()=>{
  const h=componentHarness('LevelUp.tsx'),props={data:data(),onExpansion(){},onCommand(){}};props.data.development.points=7;props.data.expansion.available=7;
- const tree=h.render('DevelopmentCard',props),buttons=nodes(tree,'Btn');assert.equal(buttons.length,1);assert.equal(text(buttons[0]),'Ausbaupunkte verteilen · 7');assert.ok(text(tree).includes('Verfügbare Punkte: 7'));assert.ok(!text(tree).includes('Levelpunkte'));
+ const tree=h.render('DevelopmentCard',props),buttons=nodes(tree,'Btn');assert.equal(buttons.length,1);assert.equal(text(buttons[0]),'Ausbaupunkte verteilen · 7');assert.ok(!text(tree).includes('Verfügbare Punkte'));assert.ok(!text(tree).includes('Levelpunkte'));
 });
 
-test('Headquarters card retains authoritative base maxima and a truthful empty point balance',()=>{
+test('Headquarters card retains base maxima without a separate empty point balance',()=>{
  const h=componentHarness('LevelUp.tsx'),props={data:data(),busy:false,onCommand(){}};
  props.data.development.points=0;props.data.expansion.available=0;
  const tree=h.render('DevelopmentCard',props);
- assert.ok(text(tree).includes('Verfügbare Punkte: 0'));
+ assert.ok(!text(tree).includes('Verfügbare Punkte'));
  assert.ok(!text(tree).includes('Entwicklung'));
  assert.equal(nodes(tree,'Btn').length,0,'no allocation action without points');
  assert.equal(nodes(tree,'Image').length,1);

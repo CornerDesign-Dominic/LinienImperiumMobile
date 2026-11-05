@@ -1,27 +1,24 @@
 # Offene Arbeiten und Veröffentlichungsstand
 
-Stand: 04.11.2026. Veröffentlichtes Sammelpaket: `cf8038e133c46d5e5ab82fa832cf6898010b7843`.
+Stand: 05.11.2026. Veröffentlichtes Sammelpaket: `c029782e864e94958250a0e8728ef7a737961b68`.
 
 ## Letzte Veröffentlichung
 
-[Mobile-preview-Lauf 41907917201](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/41907917201) bestätigt Typprüfung, 320 bestandene Tests, Android-Export, Firebase-Deployment, Live-API-Prüfung und Android-OTA im Kanal preview. Keine neue APK und kein physischer Gerätetest.
+[Mobile-preview-Lauf 42094829858](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42094829858) bestätigt Typprüfung, 323 bestandene Tests, Android-Export, Firebase-Deployment, Live-API-Prüfung und Android-OTA im Kanal preview. Keine neue APK und kein physischer Gerätetest.
 
 Alle seit der vorherigen Freigabe gesammelten Änderungen sind veröffentlicht:
 
-- Großauftragseinnahmen und XP werden bis zur bestätigten Abholung gesammelt; Überstunden folgen derselben Abrechnung. Altgutschriften werden nicht erneut ausgezahlt.
-- Erledigte Großaufträge öffnen das Detail mit Übergabeschein und „Belohnung entgegennehmen“. Zusätzliche Prämien-/Informationskarten und direkter Abholbutton in der Liste entfallen.
-- Einzelaufträge öffnen direkt die unveränderte Fahrzeugwahl; Auftragsdetailseite entfernt, Pinnadel ohne Kreis.
-- Kundendetails zeigen vier Waren nebeneinander sowie kompakte Angaben zu Verkehr und Herkunft.
-- Handelsimperium mit neuem Säulenbau und Kisten-Lorbeer-Bannern; kompakte Ausbaupunktedarstellung ohne Titel „Entwicklung“.
-- Bildkorrekturen: Safran-Karawane und Tragekiste, sichere Kronenlande-Kutsche und zeremonielle Ankunft.
-- Botenstation ohne normalen Lauftext „Verteilung läuft“; kompakte Beschaffungsdauer direkt neben der Stoppuhr.
-- Garage regulär neun Plätze (3 × 3), bestehender Überhang bleibt bis zur manuellen Entfernung erhalten.
+- Flottenwahl für Großaufträge mit fünf Fahrzeugbildern pro Reihe, serverseitiger Dauer-/Vergütungsprognose und übersichtlichen Angaben zu Fracht, Strecke und Frist.
+- Vereinfachtes Botenmodal ohne technische Nummer, individuellen Kilometerstand und doppelten Ausbauhinweis; kumulative Botenstrecke in der Statistik.
+- Fünf neu verzierte regionale Übergabescheine mit Schleife, Wachssiegel, Tischdekoration und passender sepiafarbener Serifenschrift.
+- Ausbaupunkte nur im Verteilbutton der Handelsimperiumkarte; Levelaufstieg zeigt die Punkte mit ihrem Bild.
+- Neues illustriertes XP-Gildenbuch und feste größere Belohnungszahlen; Taler-Belohnungen und Einnahmenvorschauen ohne Nachkommastellen.
 
-Das vorherige Paket `5e8010fc7cd47e337c5af62d5498b2841b85257d` bleibt einschließlich Ausbaupunkten, regionalen Geschichten und Überstundenmodal enthalten; das aktuelle Paket ersetzt die zuvor direkte Großauftragsabholung in der Liste durch den Detailablauf. Nachweise: [Prüfstand](TEST_REPORT.md), [Modulnotizen](docs/README.md). Neue Wünsche werden wieder bis zur nächsten ausdrücklichen Veröffentlichungsfreigabe gesammelt.
+Die vorherigen Veröffentlichungen bleiben enthalten. Nachweise: [Prüfstand](TEST_REPORT.md), [Modulnotizen](docs/README.md). Neue Wünsche werden bis zur nächsten ausdrücklichen Veröffentlichungsfreigabe gesammelt.
 
 ## Gesammelt, noch nicht veröffentlicht
 
-- Premium-Seasonpass als Platzhalter: Anzeige 500 Hermes-Siegel, bestätigter Testkauf für 1.000 Imperium-Taler. Zugriff wird je Season serverseitig gespeichert; Fortschritt/Abholen bleiben Vorschau. Backend und App zusammen ausrollen. [Details](docs/ui/season.md).
+- Premium-Seasonpass als Platzhalter: Anzeige 500 Hermes-Siegel, Kauf für 500 Hermes-Siegel. Zugriff wird je Season serverseitig gespeichert; Fortschritt/Abholen bleiben Vorschau. Backend und App zusammen ausrollen. [Details](docs/ui/season.md).
 
 ## Noch offene Punkte
 
@@ -44,3 +41,5 @@ Die Tabelle hält belegte Restpunkte fest; sie beauftragt keine neue Spielfunkti
 - Code in `main`, geprüfter Build und tatsächlich ausgerolltes Backend/OTA sind unterschiedliche Zustände. Bei einer Veröffentlichung Commit und erfolgreichen Workflow verlinken.
 - Nach Abschluss den Eintrag entfernen oder mit Nachweis in die Historie übernehmen; keine vollständigen Modulbeschreibungen hier duplizieren.
 - Spielveröffentlichungen erfolgen weiterhin auf ausdrücklichen Wunsch über den dokumentierten Workflow. Dokumentationspflege startet keinen manuellen Release und setzt keinen Veröffentlichungsmarker.
+
+In den Einstellungen vergibt das Testwerkzeug `testHermes` jeweils 1.000 Hermes-Siegel. Der Betrag ist serverseitig festgelegt; Echtgeldkäufe bleiben deaktiviert.

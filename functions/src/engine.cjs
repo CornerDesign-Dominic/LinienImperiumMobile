@@ -435,7 +435,8 @@ const bridge = `
           eta: projection?.eta ?? null,
           templates: project && o.status==='queued' ? [0,1,2].map(index=>{
             const vehicles=projectFleetVehicles(index);
-            return {index, vehicles, eta:vehicles ? projectEstimatedEnd({...o,delivered:0,project:{vehicles:vehicles.map(v=>({...v,cargo:0,nextAt:null}))}},now) : null};
+            const forecast=vehicles?projectProjection({...o,delivered:0,project:{template:index,vehicles:vehicles.map(v=>({...v,cargo:0,nextAt:null}))}},now):null;
+            return {index,vehicles,eta:forecast?.eta??null,estimatedCoins:forecast?.feasible?round2(forecast.revenue+completionPremium(o)):null};
           }) : []
         };
       });
@@ -622,7 +623,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     customerSkill:()=>a.allocateCustomerSkill(id(p.id),choice(p.kind,['pay','special','referral'])),
     pin:()=>a.toggleOrderPin(id(p.id)),refresh:()=>a.manualRefreshOrders(),level:()=>a.allocateLevel(num(p.expedition,3),p.overtime===undefined?3-num(p.expedition,3):num(p.overtime,3)),
     levelBatch:()=>a.allocateLevelBatch(num(p.expedition,300000),num(p.overtime,300000),num(p.points,300000)),
-    testProjects:()=>a.grantTestProjects(),testCoins:()=>a.grantTestCoins(),testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>{const wallet=a.state.premiumShop; a.reset();a.state.premiumShop=wallet;}
+    testProjects:()=>a.grantTestProjects(),testCoins:()=>a.grantTestCoins(),testHermes:()=>{const wallet=premiumState(a.state);if(!Number.isSafeInteger(wallet.balance+1000))throw Error('Hermes-Siegel-Limit erreicht.');wallet.balance+=1000;},testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>{const wallet=a.state.premiumShop; a.reset();a.state.premiumShop=wallet;}
   };
   if(!Object.hasOwn(calls,action))throw Error('Unbekannte Aktion');
   if(!a.state.startCity&&!['sync','start','foundCompany','reset'].includes(action))throw Error('Bitte zuerst deine Firma gründen.');

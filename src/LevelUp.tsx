@@ -1,6 +1,7 @@
 import {MaterialLayer} from './Material';
 import {MaterialView as View} from './Material';
 import {ItemAmount} from './ItemArt';
+import {Icon} from './Icon';
 import {itemName} from './items';
 import React,{useEffect,useRef,useState} from 'react';
 import {Image,StyleSheet} from 'react-native';
@@ -8,7 +9,7 @@ import {AppModal as Modal} from './AppModal';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ExpeditionPlaceModal} from './ExpeditionPlaceModal';
 import {C,Txt,Card,Row,Btn,n} from './ui';
-import {PointInfo,PointsBalance,PointAllocationRow} from './PointAllocation';
+import {PointsBalance,PointAllocationRow} from './PointAllocation';
 type Allocation={expedition:number;overtime:number};
 export function DevelopmentCard({data,busy,onCommand,modalBlocked=false}:any){
  const [open,setOpen]=useState(false),development=data.development;
@@ -17,7 +18,6 @@ export function DevelopmentCard({data,busy,onCommand,modalBlocked=false}:any){
   <Card style={[s.headquartersCard,{borderColor:development.points?C.accent:C.line}]}>
    <Image testID="empire-headquarters-art" source={require('../assets/art/company/headquarters.jpg')} resizeMode="cover" accessible={false} fadeDuration={0} style={s.headquartersArt}/>
    <View style={s.developmentBody}>
-   <Row style={{marginBottom:7,justifyContent:'flex-end'}}><PointInfo>Verfügbare Punkte: {n(development.points)}</PointInfo></Row>
    {(['overtime','expedition'] as const).map(kind=><Row key={kind} style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={{fontSize:12,flex:1}}>{kind==='overtime'?'Überstunden':'Expeditionspunkte'}</Txt><Txt style={{fontSize:17,fontWeight:'700'}}>{n(development[kind].base)}</Txt></Row>)}
    {development.points>0&&<Btn secondary icon="expansion" disabled={busy} onPress={()=>setOpen(true)}>Ausbaupunkte verteilen · {n(development.points)}</Btn>}
    </View>
@@ -49,7 +49,7 @@ export function LevelUpNotice({levels,onClose}:{levels:number[];onClose:()=>void
   <Row style={{flexWrap:'nowrap',alignItems:'flex-start'}}><Txt style={[s.congrats,{flex:1,minWidth:0,textAlign:'left'}]}>Herzlichen Glückwunsch!</Txt><Btn icon="close" iconOnly secondary onPress={onClose}>Schließen</Btn></Row><Txt style={s.level}>Level {level}</Txt>
   <ItemAmount id="expeditionRefills" label={itemName('expeditionRefills',count)} amount={count}/>
   <ItemAmount id="overtimeRefills" label={itemName('overtimeRefills',count)} amount={count}/>
-  <Txt style={s.reward}>+{count*3} Ausbaupunkte</Txt>
+  <Row style={{flexWrap:'nowrap',justifyContent:'flex-start',gap:8,marginBottom:8}}><Icon name="expansion" size={44}/><Txt style={{flex:1,minWidth:0,fontSize:12}}>Ausbaupunkte</Txt><Txt style={{fontSize:13,fontWeight:'700'}}>{n(count*3)}</Txt></Row>
   {!!levels.filter(value=>value<=100&&value%5===0).length&&<Txt style={s.reward}>+{levels.filter(value=>value<=100&&value%5===0).length} {levels.filter(value=>value<=100&&value%5===0).length===1?'Botenplatz':'Botenplätze'}</Txt>}
  </SafeAreaView></View></Modal>;
 }

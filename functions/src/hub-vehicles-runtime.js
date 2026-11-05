@@ -7,6 +7,8 @@ hubCapacity=()=>Math.max(cityVehicles().length,Math.min(HUB_VEHICLE_MAX,Math.flo
 nextHubVehicleLevel=()=>cityVehicles().length>=HUB_VEHICLE_MAX||levelForXp(game.xp).level>=100?null:(Math.max(cityVehicles().length,Math.floor(levelForXp(game.xp).level/5))+1)*5;
 function initHubParts() {
  game.inventory.hubVehicleParts ??= 0;
+ // Seed once from surviving legacy couriers; thereafter retain mileage even after removal.
+ if(cityVehicles().length)game.stats.hubKm ??= cityVehicles().reduce((sum,t)=>sum+(t.kmDriven||0),0);
  game.hubCrates ??= {day:hubPartDay(Date.now()),opened:0,lastOpenedAt:null};
 }
 function migrateHubVehicles() {
@@ -129,7 +131,8 @@ accrueHubCycle=(h,at)=>{
  // An already purchased legacy cycle retains its frozen quantity and duration.
  if(h.cycleVersion!==2){
   const sales=hubSalesPercent;hubSalesPercent=level=>75+(level||0);
-  try{return legacyAccrueHubCycle(h,at);}finally{hubSalesPercent=sales;}
+  const before=cityVehicles().reduce((sum,t)=>sum+(t.kmDriven||0),0);
+  try{return legacyAccrueHubCycle(h,at);}finally{hubSalesPercent=sales;const after=cityVehicles().reduce((sum,t)=>sum+(t.kmDriven||0),0);game.stats.hubKm=round2((game.stats.hubKm||0)+Math.max(0,after-before));}
  }
  const elapsed=clamp(at-(h.nextCycleAt-HUB_CYCLE_MS),0,h.cycleWorkMs);
  const progress=elapsed/h.cycleWorkMs,quantity=h.cycleQuantity;
@@ -139,6 +142,7 @@ accrueHubCycle=(h,at)=>{
   const tours=Math.floor(elapsed/1000/snapshot.tripSeconds);
   const additional=Math.max(0,tours-(t.hubToursInCycle||0));
   t.hubToursInCycle=tours;t.kmDriven=(t.kmDriven||0)+additional*HUB_ROUTE_KM*2;
+  game.stats.hubKm=round2((game.stats.hubKm||0)+additional*HUB_ROUTE_KM*2);
   t.toursCompleted=(t.toursCompleted||0)+additional;
  }
  const coins=round2(quantity*(HUB_SALE_PER_TON-HUB_PURCHASE_PER_TON)*progress);

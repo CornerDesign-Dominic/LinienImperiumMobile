@@ -76,3 +76,15 @@ test('A retried Cloud claim restores its payout and level-up receipt without cre
  const replay=await exports.game(request),after=JSON.parse(gunzipSync(records.get('players/test').snapshot));
  assert.deepEqual(replay.claimSummary,first.claimSummary);assert.deepEqual(replay.levelUps,first.levelUps);assert.equal(after.coins,saved.coins);assert.equal(after.xp,saved.xp);
 });
+
+test('Queued fleet duration and total payout forecast match unchanged fleet delivery and claim',()=>{
+ const started=setup(),queued=structuredClone(started.state),o=queued.orders.find(o=>o.id==='DEFERRED');
+ o.status='queued';o.delivered=0;delete o.project;
+ const preview=cmd(queued),template=preview.view.state.orders.find(o=>o.id==='DEFERRED').templates[0];
+ const before=JSON.stringify(preview.state);
+ assert.ok(template.eta>T);assert.ok(template.estimatedCoins>0);
+ const running=cmd(preview.state,'projectStart',{id:'DEFERRED',template:0}),done=finish(running);
+ assert.equal(order(done).completedAt,template.eta);
+ assert.equal(order(done).completionReward.totalCoins,template.estimatedCoins);
+ assert.equal(JSON.stringify(preview.state),before,'forecast and start do not mutate the supplied state');
+});

@@ -15,7 +15,7 @@ Die Seite ist ausdrücklich eine Vorschau. Startfortschritt ist 0. Premium ist z
 - Produktiver Kaufweg und Übernahme des Testzugangs bei Aktivierung einer echten Season.
 - Endgültiger Loot sowie serverseitige Abholung und Wiederholungsbehandlung.
 
-Die UI zeigt diese technischen Entscheidungspunkte nicht als Spielerworkflow, sondern nur den Vorschau-/Nicht-verfügbar-Status. Echtgeldkäufe bleiben deaktiviert. Der Platzhalter zeigt 500 Hermes-Siegel, bestätigt ausdrücklich den vorübergehenden Kauf für 1.000 Imperium-Taler und belastet ausschließlich Taler.
+Die UI zeigt diese technischen Entscheidungspunkte nicht als Spielerworkflow, sondern nur den Vorschau-/Nicht-verfügbar-Status. Echtgeldkäufe bleiben deaktiviert. Der Platzhalter zeigt 500 Hermes-Siegel, bestätigt den Kauf für 500 Hermes-Siegel und belastet ausschließlich die Siegel-Wallet.
 
 ## Prüfung
 
@@ -23,8 +23,10 @@ Drei gezielte Node-Tests prüfen die 30 geordneten Stufen, gültige vorhandene R
 
 ## Premium-Platzhalter (gesammelt, nicht veröffentlicht)
 
-`seasonPassBuy` prüft die aktuelle serverseitige Season-ID `season-preview-1` und zieht einmalig exakt 1.000 Imperium-Taler ab. Manipulierte Preis-/Währungsfelder werden ignoriert; unzureichendes Guthaben und fremde/veraltete IDs werden abgewiesen. Wiederholungen ziehen nichts erneut ab. Die Freischaltung wird in `premiumShop.ownedSeasonPasses` gespeichert und bleibt wie die bestehende Premium-Wallet bei Neuladen und Test-Reset erhalten. Künftige Seasons benötigen eine eigene ID; der Platzhalter erteilt keinen Dauerzugang zu allen Seasons.
+`seasonPassBuy` prüft die aktuelle serverseitige Season-ID `season-preview-1` und zieht einmalig exakt 500 Hermes-Siegel ab. Manipulierte Preis-/Währungsfelder werden ignoriert; unzureichendes Guthaben und fremde/veraltete IDs werden abgewiesen. Wiederholungen ziehen nichts erneut ab. Die Freischaltung wird in `premiumShop.ownedSeasonPasses` gespeichert und bleibt wie die bestehende Premium-Wallet bei Neuladen und Test-Reset erhalten. Künftige Seasons benötigen eine eigene ID; der Platzhalter erteilt keinen Dauerzugang zu allen Seasons.
 
-Die Oberfläche zeigt den Referenzpreis mit Hermes-Siegel-Illustration, den tatsächlichen Testpreis sowie eine Kaufbestätigung. Nach dem Kauf erscheint „Premium freigeschaltet“; die Hinweise auf fehlenden Fortschritt und fehlende Abholung bleiben sichtbar. Belohnungen und Laufzeit werden nicht aktiviert. Der Pyramiden-Eventpass bleibt getrennt.
+Die Oberfläche zeigt den Preis mit Hermes-Siegel-Illustration sowie eine Kaufbestätigung. Nach dem Kauf erscheint „Premium freigeschaltet“; die Hinweise auf fehlenden Fortschritt und fehlende Abholung bleiben sichtbar. Belohnungen und Laufzeit werden nicht aktiviert. Der Pyramiden-Eventpass bleibt getrennt.
 
 Zur späteren Veröffentlichung sind das Backend (Functions) und die App/OTA gemeinsam auszurollen; keine neuen Firestore-Regeln oder Store-Produkte erforderlich. Die Umsetzung selbst führt keinen Release aus.
+
+In den Einstellungen vergibt das Testwerkzeug `testHermes` jeweils 1.000 Hermes-Siegel. Der Betrag ist serverseitig festgelegt; Echtgeldkäufe bleiben deaktiviert.
