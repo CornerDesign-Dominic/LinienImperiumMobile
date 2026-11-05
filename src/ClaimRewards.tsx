@@ -7,12 +7,15 @@ import {itemName,rarityColor} from './items';
 import {C,Txt,n} from './ui';
 
 type Summary={
- count?:number;xp?:number;shards?:Record<string,number>;source?:string;pickupHints?:number;hubVehicleParts?:number;coins:number;gears:Record<string,number>;
+ count?:number;hermes?:number;seasonPoints?:number;specialOrders?:number;expeditionRefills?:number;overtimeRefills?:number;xp?:number;shards?:Record<string,number>;source?:string;pickupHints?:number;hubVehicleParts?:number;coins:number;gears:Record<string,number>;
  capacityModules:number;companyItems:number;supplierContacts:number;
 };
 type Reward={id:string;label:string;amount:number;icon:IconName;color:string};
 export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:string;label:string}[]}){
  const rewards:Reward[]=[];
+ if((summary.hermes||0)>0)rewards.push({id:'hermes',label:'Hermes-Siegel',amount:summary.hermes!,icon:'hermes',color:C.gold});
+ if((summary.seasonPoints||0)>0)rewards.push({id:'seasonPoints',label:'Saisonpunkte',amount:summary.seasonPoints!,icon:'xp',color:C.accent});
+ if((summary.specialOrders||0)>0)rewards.push({id:'project:special',label:'Sonderaufträge',amount:summary.specialOrders!,icon:'projects',color:C.gold});
  if(summary.coins>0)rewards.push({id:'coins',label:'Imperium-Taler',amount:summary.coins,icon:'coin',color:C.gold});
  if((summary.xp||0)>0)rewards.push({id:'xp',label:'XP',amount:summary.xp!,icon:'xp',color:C.accent});
  for(const rarity of rarities){
@@ -20,7 +23,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
   if(amount>0)rewards.push({id:`gear:${rarity.id}`,label:`${rarity.label}-${amount===1?'Zahnrad':'Zahnräder'}`,amount,icon:'gear',color:rarityColor(rarity.id)});
  }
  for(const rarity of rarities){const amount=summary.shards?.[rarity.id]||0;if(amount>0)rewards.push({id:`shard:${rarity.id}`,label:`${rarity.label}-Splitter`,amount,icon:'cards',color:rarityColor(rarity.id)});}
- for(const [id,icon] of [['capacityModules','module'],['companyItems','company'],['supplierContacts','customers'],['pickupHints','document'],['hubVehicleParts','crafting']] as const){
+ for(const [id,icon] of [['capacityModules','module'],['companyItems','company'],['supplierContacts','customers'],['pickupHints','document'],['hubVehicleParts','crafting'],['expeditionRefills','expedition'],['overtimeRefills','overtime']] as const){
   const amount=summary[id]||0;
   if(amount>0)rewards.push({id,label:itemName(id,amount),amount,icon,color:C.accent});
  }
@@ -32,7 +35,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
   </View>
   <ScrollView testID="claim-reward-list" style={styles.scroll} contentContainerStyle={styles.loot} showsVerticalScrollIndicator>
    {rewards.map((reward,index)=><View key={reward.id} testID={`claim-reward-${reward.id}`} style={[styles.row,index>0&&styles.separator]}>
-    <View style={styles.art}>{(reward.id==='coins'||reward.id==='xp')?<Icon name={reward.icon} size={52}/>:<ItemArt id={reward.id} size={52}/>}</View>
+    <View style={styles.art}>{(['coins','xp','hermes','seasonPoints'].includes(reward.id))?<Icon name={reward.icon} size={52}/>:<ItemArt id={reward.id} size={52}/>}</View>
     <View style={styles.rewardCopy}>
      <Txt style={styles.label}>{reward.label}</Txt>
      <Text literal style={[styles.amount,{color:reward.color}]}>{amountText(reward)}</Text>

@@ -36,3 +36,7 @@ Vorheriger veröffentlichter Stand: `cf8038e133c46d5e5ab82fa832cf6898010b7843`, 
 Vorheriger veröffentlichter Stand: `12729dbf25ab76f3b9ed75432105e0c4a59c845f`, [Lauf 41728496322](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/41728496322), 290 Tests.
 
 Frühere Berichte: [Mobile-Testhistorie](docs/archive/mobile-test-history.md). Sie beschreiben frühere Stände und keine offenen Freigaben.
+
+## Lokaler Prüfstand – aktives Seasonpaket
+
+05.11.2026, vor Veröffentlichung: TypeScript erfolgreich, 337 Tests bestanden (0 Fehler), Android-Export erfolgreich, git diff --check fehlerfrei. Die neuen Tests prüfen Monatsgrenzen inklusive Sommerzeit/Schaltjahr, Dailyrotation und veraltete Versionen, tatsächlichen Punkteverbrauch, echte Einzel-/Großauftrags-/Beschaffungs-/Zustellungsaktionen, Premiumpreis und nachträgliche Abholung, Sammel-/Endlosbelohnungen sowie einmalige Siegel-Funde. Vier UI-Interaktionstests decken Kaufbestätigung, Reiter, Statussperren und Lootzeilen ab. Kein physischer Gerätetest. Der Releaseworkflow prüft zusätzlich die echte API einschließlich Seasonstart, Siegelgutschrift, Premiumkauf und Wiederholungsbehandlung.

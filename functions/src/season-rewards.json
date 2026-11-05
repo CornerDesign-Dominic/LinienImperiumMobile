@@ -1,0 +1,332 @@
+[
+  {
+    "level": 1,
+    "free": {
+      "id": "gear:common",
+      "amount": 10
+    },
+    "premium": {
+      "id": "gear:common",
+      "amount": 25
+    }
+  },
+  {
+    "level": 2,
+    "free": {
+      "id": "coins",
+      "amount": 500
+    },
+    "premium": {
+      "id": "coins",
+      "amount": 1500
+    }
+  },
+  {
+    "level": 3,
+    "free": {
+      "id": "gear:common",
+      "amount": 15
+    },
+    "premium": {
+      "id": "gear:uncommon",
+      "amount": 3
+    }
+  },
+  {
+    "level": 4,
+    "free": {
+      "id": "pickupHints",
+      "amount": 10
+    },
+    "premium": {
+      "id": "pickupHints",
+      "amount": 25
+    }
+  },
+  {
+    "level": 5,
+    "free": {
+      "id": "expeditionRefills",
+      "amount": 1
+    },
+    "premium": {
+      "id": "expeditionRefills",
+      "amount": 2
+    }
+  },
+  {
+    "level": 6,
+    "free": {
+      "id": "coins",
+      "amount": 750
+    },
+    "premium": {
+      "id": "coins",
+      "amount": 2000
+    }
+  },
+  {
+    "level": 7,
+    "free": {
+      "id": "gear:common",
+      "amount": 20
+    },
+    "premium": {
+      "id": "gear:uncommon",
+      "amount": 4
+    }
+  },
+  {
+    "level": 8,
+    "free": {
+      "id": "hubVehicleParts",
+      "amount": 5
+    },
+    "premium": {
+      "id": "hubVehicleParts",
+      "amount": 12
+    }
+  },
+  {
+    "level": 9,
+    "free": {
+      "id": "gear:uncommon",
+      "amount": 2
+    },
+    "premium": {
+      "id": "gear:uncommon",
+      "amount": 5
+    }
+  },
+  {
+    "level": 10,
+    "free": {
+      "id": "overtimeRefills",
+      "amount": 1
+    },
+    "premium": {
+      "id": "overtimeRefills",
+      "amount": 2
+    }
+  },
+  {
+    "level": 11,
+    "free": {
+      "id": "coins",
+      "amount": 1000
+    },
+    "premium": {
+      "id": "coins",
+      "amount": 2500
+    }
+  },
+  {
+    "level": 12,
+    "free": {
+      "id": "gear:common",
+      "amount": 25
+    },
+    "premium": {
+      "id": "gear:uncommon",
+      "amount": 6
+    }
+  },
+  {
+    "level": 13,
+    "free": {
+      "id": "pickupHints",
+      "amount": 15
+    },
+    "premium": {
+      "id": "pickupHints",
+      "amount": 35
+    }
+  },
+  {
+    "level": 14,
+    "free": {
+      "id": "hubVehicleParts",
+      "amount": 8
+    },
+    "premium": {
+      "id": "hubVehicleParts",
+      "amount": 18
+    }
+  },
+  {
+    "level": 15,
+    "free": {
+      "id": "companyItems",
+      "amount": 1
+    },
+    "premium": {
+      "id": "companyItems",
+      "amount": 2
+    }
+  },
+  {
+    "level": 16,
+    "free": {
+      "id": "coins",
+      "amount": 1250
+    },
+    "premium": {
+      "id": "coins",
+      "amount": 3000
+    }
+  },
+  {
+    "level": 17,
+    "free": {
+      "id": "gear:uncommon",
+      "amount": 3
+    },
+    "premium": {
+      "id": "gear:uncommon",
+      "amount": 8
+    }
+  },
+  {
+    "level": 18,
+    "free": {
+      "id": "gear:common",
+      "amount": 30
+    },
+    "premium": {
+      "id": "gear:rare",
+      "amount": 1
+    }
+  },
+  {
+    "level": 19,
+    "free": {
+      "id": "pickupHints",
+      "amount": 20
+    },
+    "premium": {
+      "id": "pickupHints",
+      "amount": 40
+    }
+  },
+  {
+    "level": 20,
+    "free": {
+      "id": "expeditionRefills",
+      "amount": 1
+    },
+    "premium": {
+      "id": "expeditionRefills",
+      "amount": 2
+    }
+  },
+  {
+    "level": 21,
+    "free": {
+      "id": "coins",
+      "amount": 1500
+    },
+    "premium": {
+      "id": "coins",
+      "amount": 4000
+    }
+  },
+  {
+    "level": 22,
+    "free": {
+      "id": "hubVehicleParts",
+      "amount": 10
+    },
+    "premium": {
+      "id": "hubVehicleParts",
+      "amount": 25
+    }
+  },
+  {
+    "level": 23,
+    "free": {
+      "id": "gear:uncommon",
+      "amount": 4
+    },
+    "premium": {
+      "id": "gear:rare",
+      "amount": 2
+    }
+  },
+  {
+    "level": 24,
+    "free": {
+      "id": "coins",
+      "amount": 1750
+    },
+    "premium": {
+      "id": "coins",
+      "amount": 4500
+    }
+  },
+  {
+    "level": 25,
+    "free": {
+      "id": "overtimeRefills",
+      "amount": 1
+    },
+    "premium": {
+      "id": "overtimeRefills",
+      "amount": 2
+    }
+  },
+  {
+    "level": 26,
+    "free": {
+      "id": "gear:common",
+      "amount": 40
+    },
+    "premium": {
+      "id": "gear:uncommon",
+      "amount": 10
+    }
+  },
+  {
+    "level": 27,
+    "free": {
+      "id": "pickupHints",
+      "amount": 25
+    },
+    "premium": {
+      "id": "pickupHints",
+      "amount": 50
+    }
+  },
+  {
+    "level": 28,
+    "free": {
+      "id": "gear:uncommon",
+      "amount": 5
+    },
+    "premium": {
+      "id": "gear:rare",
+      "amount": 3
+    }
+  },
+  {
+    "level": 29,
+    "free": {
+      "id": "companyItems",
+      "amount": 1
+    },
+    "premium": {
+      "id": "companyItems",
+      "amount": 3
+    }
+  },
+  {
+    "level": 30,
+    "free": {
+      "id": "capacityModules",
+      "amount": 1
+    },
+    "premium": {
+      "id": "capacityModules",
+      "amount": 2
+    }
+  }
+]

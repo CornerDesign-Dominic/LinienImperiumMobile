@@ -242,6 +242,7 @@ settleTrips = now => {
       const truck = truckById(order.truckId);
       game.coins = round2(game.coins + totals.revenue - totals.cost);
       game.stats.grossRevenue = round2(game.stats.grossRevenue + totals.revenue);
+      __seasonRecord(game,'coins',totals.revenue,at);
       game.stats.operatingCosts = round2(game.stats.operatingCosts + totals.cost);
       game.stats.trips++; game.stats.tons += totals.tons; game.stats.km += totals.km;
       game.stats.tonKm += totals.tons * order.distance;

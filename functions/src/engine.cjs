@@ -5,6 +5,7 @@ const vm = require('node:vm');
 const itemNames = require('./item-names.json');
 const {currencyText}=require('./currency-names.cjs');
 const {premiumState,purchaseSkin,equipSkin,premiumShopView}=require('./premium-shop.cjs');
+const {seasonPassView,purchaseSeasonPass,touchSeason,controlSeason,recordSeasonActivity,claimSeason,rollProjectHermes}=require('./season-pass.cjs');
 const {courierName,courierModel,courierText}=require('./hub-courier.js');
 const customerIdentities = require('./customer-identities.json');
 const customerCargo = require('./customer-cargo.json');
@@ -47,6 +48,7 @@ const giftsRuntime = fs.readFileSync(path.join(__dirname, 'gifts-runtime.js'), '
 const tourRuntime = fs.readFileSync(path.join(__dirname, 'tour-runtime.js'), 'utf8');
 const progressionRuntime = fs.readFileSync(path.join(__dirname, 'progression-runtime.js'), 'utf8');
 const hubVehiclesRuntime = fs.readFileSync(path.join(__dirname, 'hub-vehicles-runtime.js'), 'utf8');
+const seasonRuntime = fs.readFileSync(path.join(__dirname, 'season-runtime.js'), 'utf8');
 const projectStatisticsRuntime = fs.readFileSync(path.join(__dirname, 'project-statistics-runtime.js'), 'utf8');
 const source = fs.readFileSync(path.join(__dirname, '../vendor/web-game.js'), 'utf8');
 const boundary = source.indexOf("  document.addEventListener('click'");
@@ -160,6 +162,7 @@ const bridge = `
       customerSource:kind==='special'?'Kundenauftrag':'Sonderauftrag',customerOpen:customerUnlocked(customer.id),
       expeditionOpen:expeditionRegionOpen(region)&&game.expedition.regions[region].endlessUnlocked,
       moduleChance:round2((kind==='special'?(rules?.module||0):(rules?.referralModule||0))*100),
+      hermes:{chance:kind==='referral'?50:25,min:kind==='referral'?5:1,max:kind==='referral'?10:3},
       epicChance:round2(loot.epic[0]*100),epicMin:loot.epic[1],epicMax:loot.epic[2],
       legendary:kind==='referral'?{min:loot.legendary[0],extraChance:round2(loot.legendary[2]*100)}:null};
   }
@@ -217,8 +220,9 @@ const bridge = `
   ${transportRuntime}
   ${expeditionCompletionRuntime}
   ${projectStatisticsRuntime}
+  ${seasonRuntime}
   globalThis.mobile = {
-    projectCompletionStats, grantTestProjects,
+    projectCompletionStats, grantTestProjects, grantSeasonSpecial,
     settleEventTours, refreshTourStarts, queueSingleVehicle, settleProcurementTimeline, startProcurement, startProcurementGroup, stopProcurement, stopProcurementGroup, claimProcurement,
     eventFleetOptions(distance = 240) {
       const order={distance,routeType:'single'};
@@ -514,13 +518,14 @@ function session(state, now=Date.now(), random=Math.random) {
   };
   class Clock extends Date { constructor(...args){super(...(args.length?args:[now]));} static now(){return now;} }
   const math=Object.create(Math);math.random=random;
-  const context=vm.createContext({localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},Date:Clock,Math:math,Intl,Number,JSON,setTimeout:()=>0,clearTimeout:()=>{},document:{querySelector:element}});
+  const context=vm.createContext({localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},Date:Clock,Math:math,Intl,Number,JSON,setTimeout:()=>0,clearTimeout:()=>{},document:{querySelector:element},__seasonRecord:recordSeasonActivity,__seasonPremium:premiumState,__rollSeasonHermes:order=>rollProjectHermes(order,random)});
   compiled.runInContext(context,{timeout:2000});
   const api=context.mobile;
   if(state) api.state=JSON.parse(JSON.stringify(state));
   api.expansionState();api.migrateCompanyTransport();api.migrateLinearProgression();api.migrateHubVehicles();api.migrateTransportCards();api.projectCompletionStats();
   if(!Number.isSafeInteger(api.state.inventory.expeditionRefills)||api.state.inventory.expeditionRefills<0)api.state.inventory.expeditionRefills=0;
   prepareEvent(api.state);
+  touchSeason(api.state,now);
   api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleProcurementTimeline(now);
   api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);
   return api;
@@ -567,6 +572,14 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     eventFleet:()=>assignEventFleet(a.state,id(p.id),num(p.run),num(p.template,2),a.eventFleetOptions(distance()),now),
     singleVehicle:()=>a.queueSingleVehicle(id(p.order),id(p.truck)),
     sync:()=>{},start:()=>a.chooseStartCity(id(p.id)),foundCompany:()=>a.foundCompany(companyProfile(p)),
+    seasonPassBuy:()=>purchaseSeasonPass(a.state,id(p.id),now),
+    seasonStart:()=>controlSeason(a.state,'start',now),
+    seasonReset:()=>controlSeason(a.state,'reset',now),
+    seasonDailyReset:()=>controlSeason(a.state,'daily',now),
+    seasonTaskClaim:()=>claimSeason(a.state,'task',p,now,()=>a.grantSeasonSpecial()),
+    seasonClaim:()=>claimSeason(a.state,'level',p,now,()=>a.grantSeasonSpecial()),
+    seasonClaimAll:()=>claimSeason(a.state,'all',p,now,()=>a.grantSeasonSpecial()),
+    seasonInfinityClaim:()=>claimSeason(a.state,'infinity',p,now,()=>a.grantSeasonSpecial()),
     skinBuy:()=>purchaseSkin(a.state,id(p.id)),skinEquip:()=>equipSkin(a.state,id(p.id)),
     garageAdd:()=>a.addCardToGarage(id(p.id)),garageRemove:()=>a.removeCardFromGarage(id(p.id)),
     garageReplace:()=>a.replaceGarageCard(id(p.id),id(p.replacement)),
@@ -585,7 +598,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
       const reward=order?.completionReward;
       if(order?.project&&['special','referral'].includes(order.kind)&&!claimedAt&&reward?.claimedAt)return {
         count:1,source:'Großaufträge',coins:reward.totalCoins??reward.coins,...(reward.xp>0?{xp:reward.xp}:{}),
-        gears:reward.gears||{},capacityModules:Number(Boolean(reward.capacityModule)),companyItems:reward.companyItems||0,supplierContacts:reward.supplierContacts||0
+        gears:reward.gears||{},capacityModules:Number(Boolean(reward.capacityModule)),companyItems:reward.companyItems||0,supplierContacts:reward.supplierContacts||0,hermes:reward.hermes||0
       };
     },claimAll:()=>{for(const order of a.state.orders)a.applyOrderReward(order);},
     discover:()=>a.discoverExpeditionPlace(num(p.region,4)),draw:()=>a.drawExpeditionJob(num(p.region,4)),
@@ -621,7 +634,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     customerSkill:()=>a.allocateCustomerSkill(id(p.id),choice(p.kind,['pay','special','referral'])),
     pin:()=>a.toggleOrderPin(id(p.id)),refresh:()=>a.manualRefreshOrders(),level:()=>a.allocateLevel(num(p.expedition,3),p.overtime===undefined?3-num(p.expedition,3):num(p.overtime,3)),
     levelBatch:()=>a.allocateLevelBatch(num(p.expedition,300000),num(p.overtime,300000),num(p.points,300000)),
-    testProjects:()=>a.grantTestProjects(),testCoins:()=>a.grantTestCoins(),testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>{const wallet=a.state.premiumShop; a.reset();a.state.premiumShop=wallet;}
+    testProjects:()=>a.grantTestProjects(),testCoins:()=>a.grantTestCoins(),testHermes:()=>{const wallet=premiumState(a.state);if(!Number.isSafeInteger(wallet.balance+1000))throw Error('Hermes-Siegel-Limit erreicht.');wallet.balance+=1000;},testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>{const wallet=a.state.premiumShop,season=a.state.season; a.reset();a.state.premiumShop=wallet;a.state.season=season;}
   };
   if(!Object.hasOwn(calls,action))throw Error('Unbekannte Aktion');
   if(!a.state.startCity&&!['sync','start','foundCompany','reset'].includes(action))throw Error('Bitte zuerst deine Firma gründen.');
@@ -631,6 +644,8 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   const ok=calls[action]();
   touchEvent(a.state,now);
   recordActivity(a.state,action,activityBefore,now);
+  if(['overtime','eventOvertime'].includes(action))recordSeasonActivity(a.state,'overtime',Math.max(0,activityBefore.overtime-a.state.overtimePoints),now);
+  if(['discover','draw','mission'].includes(action))recordSeasonActivity(a.state,'expedition',Math.max(0,activityBefore.expedition-a.state.expedition.points),now);
   a.reconcilePointClocks(clocks,now);
   if(action==='mission')a.shortenTestMissions();
   a.refreshTourStarts(now);
@@ -639,6 +654,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   // Reward-label normalization is presentation only, including legacy point names.
   view.state.expedition={...view.state.expedition,missions:view.state.expedition.missions.map(mission=>({...mission}))};
   view.premiumShop=premiumShopView(a.state);
+  view.seasonPass=seasonPassView(a.state,now);
   for(const truck of view.state.trucks)if(!truck.cardId&&truck.tier<=1){truck.displayName=courierName(truck);truck.displayModel=courierModel(truck);}
   view.testEvents=eventViews(a.state,a.eventFleetOptions(a.state.eventTests?.['large-project-own-overtime']?.distance||240),eventContext.world,eventContext.ranking);
   if(action.startsWith('event'))view.message=ok;
@@ -683,7 +699,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   if(action==='hubCrate'&&ok!==false)view.hubCrateParts=ok;
   if(action==='giftOpen'&&ok!==false)view.giftFind=ok;
   if(['claimSingles','hubCollect'].includes(action)&&ok!==false)view.claimSummary=ok;
-  if(action==='claim'&&ok&&typeof ok==='object')view.claimSummary=ok;
+  if((action==='claim'||['seasonTaskClaim','seasonClaim','seasonClaimAll','seasonInfinityClaim'].includes(action))&&ok&&typeof ok==='object')view.claimSummary=ok;
   if(action==='overtime')view.overtimeApplied=ok===true;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;
   if(action==='customerBatch')view.customerBatchApplied=ok===true;

@@ -44,8 +44,13 @@ async function main(){
   const otUseId=crypto.randomUUID();await call('refill',{},otUseId);const otUsed=await call('refill',{},otUseId);assert.equal(otUsed.state.overtimePoints,250);assert.equal(otUsed.state.inventory.overtimeRefills,0);
   const unauth=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{action:'sync'}})});
   assert.equal(unauth.status,401);
+  const season=await call('seasonStart');assert.equal(season.seasonPass.status,'active');assert.equal(season.seasonPass.dailies.length,4);assert.equal(season.seasonPass.price,1000);assert.equal(season.seasonPass.level,0);assert.ok(season.seasonPass.endsAt>season.serverTime);
+  const sealsId=crypto.randomUUID();await call('testHermes',{},sealsId);const seals=await call('testHermes',{},sealsId);assert.equal(seals.premiumShop.balance,1000);
+  const passId=crypto.randomUUID();await call('seasonPassBuy',{id:season.seasonPass.id},passId);const pass=await call('seasonPassBuy',{id:season.seasonPass.id},passId);assert.equal(pass.premiumShop.balance,0);assert.equal(pass.seasonPass.premium,true);
+  const rotated=await call('seasonDailyReset',{seasonId:pass.seasonPass.id,dailyVersion:pass.seasonPass.dailyVersion});assert.equal(rotated.seasonPass.dailyVersion,pass.seasonPass.dailyVersion+1);
+  const resetSeason=await call('seasonReset');assert.equal(resetSeason.seasonPass.status,'inactive');assert.equal(resetSeason.seasonPass.points,0);
   await call('reset');
-  console.log('Live backend smoke test passed: legacy and negotiated display responses, cache hydration and UID isolation, guest auth, persistence, command deduplication, expedition map, test grants, level rewards, procurement prices/unlock guards/empty claims and authentication checks.');
+  console.log('Live backend smoke test passed: legacy and negotiated display responses, cache hydration and UID isolation, guest auth, persistence, command deduplication, expedition map, test grants, level rewards, procurement prices/unlock guards/empty claims authentication checks, Season start/calendar, four dailies, test-seal grant deduplication, Premium purchase deduplication, daily rotation and season reset.');
  }finally{await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:auth.idToken})});}
 }
 main().catch(e=>{console.error(e.message);process.exitCode=1;});

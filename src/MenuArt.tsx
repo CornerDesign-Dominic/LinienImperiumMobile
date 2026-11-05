@@ -21,6 +21,7 @@ export const menuAssets:Record<string,number>={
  wholesaler:require('../assets/art/menu/wholesaler.png'),
  statistics:require('../assets/art/menu/statistics.png'),
  account:require('../assets/art/menu/account.png'),
+ testTools:require('../assets/art/menu/account.png'),
 };
 
 /** Decorative art: the enclosing navigation button provides the spoken label. */
