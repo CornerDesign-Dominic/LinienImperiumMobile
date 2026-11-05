@@ -1,23 +1,20 @@
 # Offene Arbeiten und Veröffentlichungsstand
 
-Stand: 04.11.2026. Veröffentlichtes Sammelpaket: `cf8038e133c46d5e5ab82fa832cf6898010b7843`.
+Stand: 05.11.2026. Veröffentlichtes Sammelpaket: `c029782e864e94958250a0e8728ef7a737961b68`.
 
 ## Letzte Veröffentlichung
 
-[Mobile-preview-Lauf 41907917201](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/41907917201) bestätigt Typprüfung, 320 bestandene Tests, Android-Export, Firebase-Deployment, Live-API-Prüfung und Android-OTA im Kanal preview. Keine neue APK und kein physischer Gerätetest.
+[Mobile-preview-Lauf 42094829858](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42094829858) bestätigt Typprüfung, 323 bestandene Tests, Android-Export, Firebase-Deployment, Live-API-Prüfung und Android-OTA im Kanal preview. Keine neue APK und kein physischer Gerätetest.
 
 Alle seit der vorherigen Freigabe gesammelten Änderungen sind veröffentlicht:
 
-- Großauftragseinnahmen und XP werden bis zur bestätigten Abholung gesammelt; Überstunden folgen derselben Abrechnung. Altgutschriften werden nicht erneut ausgezahlt.
-- Erledigte Großaufträge öffnen das Detail mit Übergabeschein und „Belohnung entgegennehmen“. Zusätzliche Prämien-/Informationskarten und direkter Abholbutton in der Liste entfallen.
-- Einzelaufträge öffnen direkt die unveränderte Fahrzeugwahl; Auftragsdetailseite entfernt, Pinnadel ohne Kreis.
-- Kundendetails zeigen vier Waren nebeneinander sowie kompakte Angaben zu Verkehr und Herkunft.
-- Handelsimperium mit neuem Säulenbau und Kisten-Lorbeer-Bannern; kompakte Ausbaupunktedarstellung ohne Titel „Entwicklung“.
-- Bildkorrekturen: Safran-Karawane und Tragekiste, sichere Kronenlande-Kutsche und zeremonielle Ankunft.
-- Botenstation ohne normalen Lauftext „Verteilung läuft“; kompakte Beschaffungsdauer direkt neben der Stoppuhr.
-- Garage regulär neun Plätze (3 × 3), bestehender Überhang bleibt bis zur manuellen Entfernung erhalten.
+- Flottenwahl für Großaufträge mit fünf Fahrzeugbildern pro Reihe, serverseitiger Dauer-/Vergütungsprognose und übersichtlichen Angaben zu Fracht, Strecke und Frist.
+- Vereinfachtes Botenmodal ohne technische Nummer, individuellen Kilometerstand und doppelten Ausbauhinweis; kumulative Botenstrecke in der Statistik.
+- Fünf neu verzierte regionale Übergabescheine mit Schleife, Wachssiegel, Tischdekoration und passender sepiafarbener Serifenschrift.
+- Ausbaupunkte nur im Verteilbutton der Handelsimperiumkarte; Levelaufstieg zeigt die Punkte mit ihrem Bild.
+- Neues illustriertes XP-Gildenbuch und feste größere Belohnungszahlen; Taler-Belohnungen und Einnahmenvorschauen ohne Nachkommastellen.
 
-Das vorherige Paket `5e8010fc7cd47e337c5af62d5498b2841b85257d` bleibt einschließlich Ausbaupunkten, regionalen Geschichten und Überstundenmodal enthalten; das aktuelle Paket ersetzt die zuvor direkte Großauftragsabholung in der Liste durch den Detailablauf. Nachweise: [Prüfstand](TEST_REPORT.md), [Modulnotizen](docs/README.md). Neue Wünsche werden wieder bis zur nächsten ausdrücklichen Veröffentlichungsfreigabe gesammelt.
+Die vorherigen Veröffentlichungen bleiben enthalten. Nachweise: [Prüfstand](TEST_REPORT.md), [Modulnotizen](docs/README.md). Neue Wünsche werden bis zur nächsten ausdrücklichen Veröffentlichungsfreigabe gesammelt.
 
 ## Noch offene Punkte
 
@@ -40,31 +37,3 @@ Die Tabelle hält belegte Restpunkte fest; sie beauftragt keine neue Spielfunkti
 - Code in `main`, geprüfter Build und tatsächlich ausgerolltes Backend/OTA sind unterschiedliche Zustände. Bei einer Veröffentlichung Commit und erfolgreichen Workflow verlinken.
 - Nach Abschluss den Eintrag entfernen oder mit Nachweis in die Historie übernehmen; keine vollständigen Modulbeschreibungen hier duplizieren.
 - Spielveröffentlichungen erfolgen weiterhin auf ausdrücklichen Wunsch über den dokumentierten Workflow. Dokumentationspflege startet keinen manuellen Release und setzt keinen Veröffentlichungsmarker.
-
-## Gesammelt: Punktestand nur im Verteilbutton
-
-Separate Anzeige „Verfügbare Punkte“ in der oberen Handelsimperiumkarte inklusive Zeile entfernt, unabhängig vom Guthaben. Bei positiven Punkten bleibt der vorhandene Verteilbutton mit Anzahl; Basismaxima und Verteilmodal unverändert. Fünf gezielte Komponentenprüfungen erfolgreich. Noch nicht veröffentlicht.
-
-## Gesammelt: Regionale Übergabescheine verziert
-
-Alle fünf Abschlussbilder ersetzt: kleinere regional verzierte Pergamente auf sichtbaren Tischen, passende Schleifen und plastisch geprägte Wachssiegel; je zwei dezente regionale Dekostücke. Die echte, übersetzbare Beschriftung bleibt erhalten und wird in zurückhaltender sepiafarbener historischer Serifenschrift in der freien Papiermitte gesetzt. Kundenname bleibt dynamisch, Abschluss-/Abhollogik unverändert. Fünf Produktions-JPEGs 1200 × 800, Motive visuell geprüft, vollständig dekodiert und Upload-Blob-SHAs abgeglichen; Typprüfung erfolgreich. Kein physischer Gerätetest. Neue Prompt-Provenienz: assets/art/project-stories/receipt-redesign-prompts.json. Noch nicht veröffentlicht.
-
-## Gesammelt: Ausbaupunkte im Levelaufstieg mit Bild
-
-Ausbaupunkte werden im Levelaufstiegsmodal wie die Auffüller als Belohnungszeile mit dem vorhandenen Ausbaupunktebild, Bezeichnung und rechts ausgerichteter Anzahl dargestellt. Die bisherige reine Plus-Textzeile entfällt. Mehrere Aufstiege zeigen weiterhin korrekt drei Punkte je Level; Gutschrift und Verteilung unverändert. Fünf vorhandene Punkte-Komponentenprüfungen erfolgreich. Noch nicht veröffentlicht.
-
-## Gesammelt: XP-Bild und feste Belohnungszahlen
-
-Neues illustriertes XP-Gildenbuch mit Stern und Lorbeer ersetzt das Statistikpiktogramm im Belohnungsmodal. XP-Icon behält Originalfarben. Mengen stehen unter ihrer Bezeichnung und nutzen die volle freie Breite neben dem Bild mit fester 17-Pixel-Schrift, ohne automatische Verkleinerung; auch größere Talerbeträge. Auszahlung/Formatierung unverändert. Typprüfung und gezielter Belohnungstest inklusive großem Betrag erfolgreich. PNG 512 × 512 mit Transparenz visuell geprüft, dekodiert und Upload-Blob-SHA abgeglichen. Kein physischer Gerätetest. Noch nicht veröffentlicht.
-
-## Gesammelt: Taler-Belohnungen ohne Nachkommastellen
-
-Globale Anzeigenprüfung: Belohnungsmodal, Einzelauftrags-Gewinnvorschau inklusive Vorlesen und Auswahlzusammenfassung, Großauftrags-Basisfracht/Abschlussprämie, Flotten-Frachtvergütung, Einnahmen-/Prämien-/Testtalerstatistik und Botenverkaufserlös zeigen gerundete ganze Taler. Botenstation, Kopfzeile und Season waren bereits ganzzahlig formatiert. Interne Abrechnung sowie XP, Ladungsmengen und Kostenraten unverändert. Typprüfung und gezielte Belohnungs-/Auftragsprüfungen erfolgreich; Rundung kleiner und großer Beträge geprüft. Noch nicht veröffentlicht.
-
-## Gesammelt: Botenmodal vereinfacht und Gesamtstrecke
-
-Boten-Detailübersicht zeigt nur das Modell als Titel, keine technische Botennummer, keinen individuellen Kilometerstand und keinen doppelten Hinweis zur Wirksamkeit von Ausbauten. Der Hinweis bleibt im tatsächlichen Ausbaudialog. Statistik zeigt „Botenstrecke gesamt“: einmalige Übernahme vorhandener Boten-Kilometer, danach serverseitig summierte echte Touren mit Wiederholungsschutz, auch nach Entfernung eines Boten erhalten. Bereits vor dieser Einführung entfernte Boten ohne erhaltene Kilometerdaten können nicht nachträglich rekonstruiert werden. 22 gezielte Boten-/UI-Prüfungen und Typprüfung erfolgreich. Noch nicht veröffentlicht.
-
-## Gesammelt: Flottenauswahl mit Bildern und Auftragsprognose
-
-Startmodal für Großaufträge zeigt fünf Fahrzeugbilder pro Flotte nebeneinander in fester Platzreihenfolge, leere Plätze dezent markiert. Namen bleiben nur für Vorlesen erhalten. Darunter echte serverseitige Gesamt-Auftragsdauer und geschätzte Vergütung aus Fracht inklusive Boni plus Abschlussprämie bei fristgerechtem Abschluss, Taler ganzzahlig. Prognose nutzt die vorhandene Tourensimulation einmal je Flotte und expliziten Vorlagenindex; zu lange Laufzeit markiert erforderliche Überstunden. Frist, Frachtmenge und Strecke oben als kompakte Symbolfelder. Auswählen/Bestätigen, Doppeltippschutz und Befehle unverändert. 18 gezielte Tests inklusive Bildreihenfolge und Prognosevergleich mit tatsächlicher Lieferung/Auszahlung sowie Typprüfung erfolgreich. Kein physischer Gerätetest. Noch nicht veröffentlicht.
