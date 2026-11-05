@@ -1,6 +1,6 @@
 import {MaterialPressable as Pressable,MaterialView as View} from './Material';
 import {HubCourierArt} from './HubCourierArt';
-import {courierName,courierModel} from '../functions/src/hub-courier';
+import {courierModel} from '../functions/src/hub-courier';
 import React,{useRef,useState} from 'react';
 import {ScrollView,StyleSheet} from 'react-native';
 import {AppModal} from './AppModal';
@@ -23,7 +23,7 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
  const close=()=>{if(locked||inFlight.current)return;if(kind){setKind(null);setFailed(false);}else onClose();};
  const enough=q&&inventory.hubVehicleParts>=q.parts&&coins>=q.coins;
  return <AppModal visible transparent animationType="none" onRequestClose={close}><View style={s.overlay}><View style={s.modal} testID="hub-vehicle-detail">
-  <View style={s.header}><View style={{flex:1,minWidth:0}}>{!kind&&<Txt muted style={s.caption}>Botenstation</Txt>}<Txt style={s.heading}>{kind?`${t(label)} ${t('verbessern')}`:`${t(courierModel(truck))} · ${t(courierName(truck))}`}</Txt></View><Btn icon="close" iconOnly secondary disabled={locked} onPress={close}>Schließen</Btn></View>
+  <View style={s.header}><View style={{flex:1,minWidth:0}}>{!kind&&<Txt muted style={s.caption}>Botenstation</Txt>}<Txt style={s.heading}>{kind?`${t(label)} ${t('verbessern')}`:t(courierModel(truck))}</Txt></View><Btn icon="close" iconOnly secondary disabled={locked} onPress={close}>Schließen</Btn></View>
   <ScrollView style={{flexShrink:1}} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
    {kind?<>
     <Txt muted style={s.stage}>Stufe {q.level} / {q.max}</Txt>
@@ -35,7 +35,7 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
     {(failed||error)&&<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}
     <Btn disabled={locked||!enough||q.level>=q.max} onPress={()=>command('hubVehicleUpgrade',{id:truck.id,kind})}>{pending?'Wird verbessert …':`${t(label)} ${t('ausbauen')}`}</Btn>
    </>:<>
-    <View style={s.identity}><HubCourierArt size={100}/><View style={{flex:1}}><Txt style={[s.status,{color:truck.hubAssigned?C.accent:C.muted}]}>{truck.hubAssigned?'In der Botenstation eingesetzt':'Nicht eingesetzt'}</Txt><Txt muted style={s.caption}>{n(truck.kmDriven)} km gefahren</Txt></View></View>
+    <View style={s.identity}><HubCourierArt size={100}/><View style={{flex:1}}><Txt style={[s.status,{color:truck.hubAssigned?C.accent:C.muted}]}>{truck.hubAssigned?'In der Botenstation eingesetzt':'Nicht eingesetzt'}</Txt></View></View>
     <Txt style={s.sectionTitle}>Verbesserungen</Txt>
     <View style={s.upgrades}>{(['capacity','speed'] as const).map(option=>{
      const upgrade=truck.hubUpgrades[option],name=option==='capacity'?'Laderaum':'Antrieb',suffix=option==='capacity'?'t':'km/s',max=upgrade.level>=upgrade.max,available=!max&&coins>=upgrade.coins&&inventory.hubVehicleParts>=upgrade.parts;
@@ -43,7 +43,6 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
       <Icon name={option==='capacity'?'module':'gear'} size={24} color={C.gold}/><View style={{flex:1,minWidth:0}}><Txt style={s.upgradeTitle}>{name}</Txt><Txt muted style={s.caption}>{max?'Maximum erreicht':`${t('Stufe')} ${upgrade.level} / ${upgrade.max}`}</Txt></View><Txt style={s.current}>{n(upgrade.current,2)} {suffix}</Txt>{available&&<View style={s.dot}/>}<Icon name="chevron" size={16} color={max?C.muted:C.text}/>
      </Pressable>;
     })}</View>
-    <Txt muted style={s.note}>Ausbauten wirken ab dem nächsten Stundenzyklus.</Txt>
     {(failed||error)&&<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}
     {!truck.hubAssigned&&<Btn secondary disabled={locked} onPress={()=>command('hubTruck',{id:truck.id})}>In der Botenstation einsetzen</Btn>}
    </>}

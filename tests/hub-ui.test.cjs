@@ -28,9 +28,9 @@ test('Botenstation vehicle detail gates upgrades, rejects duplicate taps and ret
  const data=fixture(),truck=data.state.trucks.find(t=>!t.cardId&&t.tier<=1),calls=[];
  const h=componentHarness('HubVehicleDetail.tsx'),props={truck,inventory:{hubVehicleParts:0},coins:1e6,busy:false,onClose:()=>{},onSell:()=>{},onCommand:async(...args)=>{calls.push(args);return {};}};
  const render=()=>h.render('HubVehicleDetail',props);
- let tree=render();assert.ok(!nodes(tree,'Btn').some(b=>text(b).startsWith('Verkaufen')));
+ let tree=render();assert.ok(!text(tree).includes('Bote '));assert.ok(!text(tree).includes('km gefahren'));assert.ok(!text(tree).includes('Ausbauten wirken'));assert.ok(text(tree).includes('Lastwombat'));assert.ok(!nodes(tree,'Btn').some(b=>text(b).startsWith('Verkaufen')));
  nodes(tree,'Pressable').find(p=>p.props.accessibilityLabel?.startsWith('Laderaum,')).props.onPress();
- assert.equal(button(render(),'Laderaum ausbauen').props.disabled,true);
+ assert.equal(button(render(),'Laderaum ausbauen').props.disabled,true);assert.ok(text(render()).includes('Ausbauten wirken ab dem nächsten Stundenzyklus.'));
  props.inventory.hubVehicleParts=100;assert.equal(button(render(),'Laderaum ausbauen').props.disabled,false);
  let finish;props.onCommand=(...args)=>{calls.push(args);return new Promise(resolve=>finish=resolve)};
  const upgrade=button(render(),'Laderaum ausbauen').props.onPress,first=upgrade();await upgrade();assert.equal(calls.length,1);assert.deepEqual(JSON.parse(JSON.stringify(calls[0])),['hubVehicleUpgrade',{id:truck.id,kind:'capacity'}]);

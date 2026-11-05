@@ -1344,5 +1344,6 @@
   "Einsatz nicht bestätigt. Bitte erneut versuchen.": "Contribution not confirmed. Please try again.",
   "Wird eingesetzt …": "Applying …",
   "{0} Punkte einsetzen": "Use {0} points",
-  "Belohnung entgegennehmen": "Collect reward"
+  "Belohnung entgegennehmen": "Collect reward",
+  "Botenstrecke gesamt": "Total courier distance"
 }

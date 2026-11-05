@@ -60,3 +60,7 @@ Neues illustriertes XP-Gildenbuch mit Stern und Lorbeer ersetzt das Statistikpik
 ## Gesammelt: Taler-Belohnungen ohne Nachkommastellen
 
 Globale Anzeigenprüfung: Belohnungsmodal, Einzelauftrags-Gewinnvorschau inklusive Vorlesen und Auswahlzusammenfassung, Großauftrags-Basisfracht/Abschlussprämie, Flotten-Frachtvergütung, Einnahmen-/Prämien-/Testtalerstatistik und Botenverkaufserlös zeigen gerundete ganze Taler. Botenstation, Kopfzeile und Season waren bereits ganzzahlig formatiert. Interne Abrechnung sowie XP, Ladungsmengen und Kostenraten unverändert. Typprüfung und gezielte Belohnungs-/Auftragsprüfungen erfolgreich; Rundung kleiner und großer Beträge geprüft. Noch nicht veröffentlicht.
+
+## Gesammelt: Botenmodal vereinfacht und Gesamtstrecke
+
+Boten-Detailübersicht zeigt nur das Modell als Titel, keine technische Botennummer, keinen individuellen Kilometerstand und keinen doppelten Hinweis zur Wirksamkeit von Ausbauten. Der Hinweis bleibt im tatsächlichen Ausbaudialog. Statistik zeigt „Botenstrecke gesamt“: einmalige Übernahme vorhandener Boten-Kilometer, danach serverseitig summierte echte Touren mit Wiederholungsschutz, auch nach Entfernung eines Boten erhalten. Bereits vor dieser Einführung entfernte Boten ohne erhaltene Kilometerdaten können nicht nachträglich rekonstruiert werden. 22 gezielte Boten-/UI-Prüfungen und Typprüfung erfolgreich. Noch nicht veröffentlicht.

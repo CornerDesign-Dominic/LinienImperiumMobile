@@ -16,6 +16,7 @@ export function Statistics({state:g}:any){
   ...customerIdentities.map(customer=>[`Sonderaufträge · ${customer.customer}`,n(g.stats.projectCompletions?.specialByCustomer?.[customer.id]||0)]),
   ['Empfehlungsaufträge gesamt',n(g.stats.projectCompletions?.referral||0)],
   ['Fracht',`${n(g.stats.tons,2)} t`],
+  ['Botenstrecke gesamt',`${n(g.stats.hubKm??(g.trucks||[]).filter((t:any)=>!t.cardId&&t.tier<=1).reduce((sum:number,t:any)=>sum+(t.kmDriven||0),0))} km`],
   ['Strecke',`${n(g.stats.km,2)} km`],
   ['Transportleistung',`${n(g.stats.tonKm,2)} tkm`],
   ['Spieler-XP',n(g.xp)],
