@@ -1,5 +1,5 @@
-import React from 'react';
-import {StyleSheet} from 'react-native';
+import React,{useState} from 'react';
+import {Pressable,StyleSheet} from 'react-native';
 import {MaterialView as View} from './Material';
 import {Icon} from './Icon';
 import {ItemArt} from './ItemArt';
@@ -8,6 +8,11 @@ import {t} from './i18n';
 import {C,Txt,Card,n} from './ui';
 import {seasonRewards,seasonPreview,seasonRewardStatus} from './seasonRewards';
 import type {SeasonReward,SeasonProgress} from './seasonRewards';
+
+const seasonTaskIdeas={
+ daily:['Logge dich ein','Schließe 15 Einzelaufträge ab','Sammle die Belohnung von 1 Großauftrag ein','Führe 2 Beschaffungstouren durch','Nutze 100 Überstunden','Nutze 100 Expeditionspunkte'],
+ weekly:['Schließe 150 Einzelaufträge ab','Sammle die Belohnungen von 5 Großaufträgen ein']
+};
 
 const statusLabels={premiumLocked:'Premium gesperrt',locked:'Gesperrt',claimed:'Abgeholt',reached:'Erreicht'};
 function rewardName(reward:SeasonReward){
@@ -27,7 +32,13 @@ function SeasonRewardTile({reward,level,track,progress}:{reward:SeasonReward;lev
 
 /** The first season is an honest preview: no client progression or claim command. */
 export function Season({progress=seasonPreview}:{progress?:SeasonProgress}){
+ const [tab,setTab]=useState<'rewards'|'daily'|'weekly'>('rewards');
  return <View style={s.page}>
+  <View material={false} accessibilityRole="tablist" style={s.tabs}>{([{id:'rewards',label:'Belohnung'},{id:'daily',label:'Täglich'},{id:'weekly',label:'Wöchentl.'}] as const).map(item=><Pressable key={item.id} accessibilityRole="tab" accessibilityLabel={t(item.label)} accessibilityState={{selected:tab===item.id}} aria-selected={tab===item.id} onPress={()=>setTab(item.id)} style={[s.tab,tab===item.id&&s.activeTab]}><Txt style={[s.tabText,tab===item.id&&{color:C.onInk}]}>{item.label}</Txt></Pressable>)}</View>
+  {tab!=='rewards'?<>
+   <Card><Txt style={s.title}>Aufgabenideen</Txt><Txt muted style={s.helpText}>Vorläufige Sammlung. Diese Aufgaben sind noch nicht aktiv und können sich ändern. Fortschritt und Belohnungen sind noch nicht festgelegt.</Txt></Card>
+   {seasonTaskIdeas[tab].map((idea,index)=><Card key={idea} testID={`season-${tab}-idea-${index}`}><Txt style={s.taskTitle}>{idea}</Txt></Card>)}
+  </>:<>
   <Card style={s.intro}><View material={false} style={s.introRow}><Txt style={s.title}>30 Stufen</Txt><Txt gold style={s.preview}>Vorschau</Txt></View><Txt muted style={s.introText}>Entdecke die Belohnungen auf dem Free- und Premium-Weg.</Txt><Txt muted style={s.note}>Belohnungen sind vorläufig. Die Season ist noch nicht gestartet.</Txt></Card>
   <View material={false} style={s.trackHead}><Txt style={[s.trackTitle,s.freeTitle]}>Free</Txt><View material={false} style={s.axisWidth}/><Txt gold style={s.trackTitle}>Premium</Txt></View>
   <Txt muted style={s.premiumNote}>Premium noch nicht verfügbar</Txt>
@@ -39,12 +50,14 @@ export function Season({progress=seasonPreview}:{progress?:SeasonProgress}){
    </View>
    <SeasonRewardTile reward={entry.premium} level={entry.level} track="premium" progress={progress}/>
   </View>)}
+  </>}
  </View>;
 }
 export function SeasonHelp(){
  return <><Card><Txt style={s.title}>Free und Premium</Txt><Txt muted style={s.helpText}>Die Season führt von Stufe 1 oben bis Stufe 30 unten. Links stehen die kostenlosen Belohnungen, rechts die Premium-Belohnungen.</Txt></Card><Card><Txt style={s.title}>Vorschau</Txt><Txt muted style={s.helpText}>Die Belohnungen sind eine erste Vorschau. Die Season ist noch nicht gestartet; Premium ist noch nicht verfügbar.</Txt></Card></>;
 }
 const s=StyleSheet.create({
+ tabs:{flexDirection:'row',gap:6,marginBottom:14},tab:{flex:1,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:5},activeTab:{backgroundColor:C.accent,borderColor:C.ink},tabText:{fontSize:13,fontWeight:'700'},taskTitle:{fontSize:15,fontWeight:'700',lineHeight:22},
  page:{paddingBottom:12},intro:{paddingHorizontal:12,paddingVertical:12},introRow:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8},title:{fontSize:16,fontWeight:'700'},preview:{fontSize:11,fontWeight:'700'},introText:{fontSize:12,lineHeight:18,marginTop:6},note:{fontSize:11,lineHeight:16,marginTop:5},
  trackHead:{flexDirection:'row',alignItems:'center',marginTop:4},trackTitle:{flex:1,minWidth:0,textAlign:'center',fontWeight:'700',fontSize:15},freeTitle:{color:C.accent},axisWidth:{width:42},premiumNote:{textAlign:'right',fontSize:10,lineHeight:15,marginTop:2,marginBottom:6},
  levelRow:{flexDirection:'row',alignItems:'stretch'},reward:{flex:1,minWidth:0,minHeight:110,marginVertical:6,borderRadius:6,borderWidth:1,borderColor:C.line,backgroundColor:C.panel,paddingHorizontal:7,paddingVertical:8,justifyContent:'center'},premiumReward:{backgroundColor:C.goldWash,borderColor:C.brass},reachedReward:{borderColor:C.accent},claimedReward:{backgroundColor:C.greenWash},artRow:{flexDirection:'row',alignItems:'center',justifyContent:'center',gap:5},amount:{fontSize:16,fontWeight:'700',flexShrink:1},rewardName:{fontSize:11,lineHeight:15,textAlign:'center',marginTop:4},status:{flexDirection:'row',justifyContent:'center',alignItems:'center',gap:3,marginTop:6,flexWrap:'wrap'},statusText:{fontSize:10,lineHeight:14,textAlign:'center',flexShrink:1},
