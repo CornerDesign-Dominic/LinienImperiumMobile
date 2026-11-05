@@ -8,7 +8,7 @@ nextHubVehicleLevel=()=>cityVehicles().length>=HUB_VEHICLE_MAX||levelForXp(game.
 function initHubParts() {
  game.inventory.hubVehicleParts ??= 0;
  // Seed once from surviving legacy couriers; thereafter retain mileage even after removal.
- game.stats.hubKm ??= cityVehicles().reduce((sum,t)=>sum+(t.kmDriven||0),0);
+ if(cityVehicles().length)game.stats.hubKm ??= cityVehicles().reduce((sum,t)=>sum+(t.kmDriven||0),0);
  game.hubCrates ??= {day:hubPartDay(Date.now()),opened:0,lastOpenedAt:null};
 }
 function migrateHubVehicles() {
