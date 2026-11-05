@@ -18,9 +18,7 @@ Die vorherigen Veröffentlichungen bleiben enthalten. Nachweise: [Prüfstand](TE
 
 ## Gesammelt, noch nicht veröffentlicht
 
-- Aktive Monatsseason mit 4 Dailys, 7 Monatsaufgaben, Punktefortschritt, Einzel-/Sammelabholung, nachträglichen Premiumbelohnungen, Kalender-Countdown und Unendlichkeits-Sonderaufträgen.
-- Testwerkzeug als letzter Startmenüpunkt mit verschobenen Testaktionen, Seasonstart/-reset und Dailyrotation. Premium kostet 1.000 Hermes-Siegel. Groß-/Empfehlungsaufträge können Siegel geben.
-- Vorherige Kartenänderung: Refresh-Countdown der Einzelaufträge rechts mittig mit Refresh-Kreis und gleicher Kartenhöhe.
+Keine weiteren Änderungen aus diesem Arbeitsauftrag offen. Das aktive Seasonpaket einschließlich der vorherigen UI-Anpassungen wurde veröffentlicht: [Mobile preview – Lauf 42125289468](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42125289468), Spielcode `b10dca11fe5edb4ffbde3ad17e9ac4024d9e81ed`.
 
 ## Noch offene Punkte
 
@@ -31,7 +29,7 @@ Die vorherigen Veröffentlichungen bleiben enthalten. Nachweise: [Prüfstand](TE
 | Echtgeldkäufe | Großhändler zeigt Vorschaupakete; echte Kaufbuttons sind deaktiviert. Store-Produkte, Billing und serverseitige Kaufprüfung fehlen. Einzelheiten: [Premium-Shop](docs/ui/premium-shop.md). |
 | Pyramiden-Event | Legendäre Passkarte bleibt Platzhalter; wiederkehrende Gemeinschaftsrunden und produktive Skalierung sind noch nicht abgeschlossen. [Eventregeln und Grenzen](docs/events/pyramid.md). |
 | iOS | Gemeinsame App vorbereitet; signierter iPhone-Build und Gerätetest sind gesonderte Arbeit. |
-| Season | Aktive Testseason ist gesammelt. Produktionsbalance, endgültigen Loot und Entfernung der Testwerkzeuge vor einem regulären Echtgeldbetrieb gesondert festlegen. [Season](docs/ui/season.md). |
+| Season | Aktive Testseason ist veröffentlicht. Produktionsbalance, endgültigen Loot und Entfernung der Testwerkzeuge vor einem regulären Echtgeldbetrieb gesondert festlegen. [Season](docs/ui/season.md). |
 | Expeditionsbilder | Audit: fünf Panoramen mit je 2172 × 724 Pixeln werden auf mehrere Bildschirmbreiten vergrößert; kein globaler Unschärfefilter, keine höher aufgelöste Originaldatei nachgewiesen. Kein Bildtausch beauftragt. |
 | Startangebote | Früherer Vorschlag für kleinere Einstiegsangebote bleibt unbeschlossen. Nicht als aktuelle Regel übernehmen; bei Wiederaufnahme gegen die heutigen, für beide Verkehrsarten nutzbaren Transportkarten prüfen. |
 

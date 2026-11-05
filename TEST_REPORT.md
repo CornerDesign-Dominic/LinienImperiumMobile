@@ -1,6 +1,18 @@
 # Prüfstand und Nachweise
 
-## Letzter belegter App-Prüfstand
+## Letzter belegter App-Prüfstand – Monatsseason
+
+Veröffentlichter Spielcode: `b10dca11fe5edb4ffbde3ad17e9ac4024d9e81ed`, 05.11.2026.
+Nachweis: [Mobile preview – Lauf 42125289468](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42125289468).
+
+- TypeScript, 337 automatisierte Tests und Android-Export erfolgreich.
+- Firebase-Functions und Firestore-Regeln erfolgreich veröffentlicht.
+- Echte Spiel-API einschließlich Seasonstart, vier Dailys, Siegelvergabe und Premiumkauf mit wiederholter Anfragekennung, Dailyrotation und Seasonreset erfolgreich getestet.
+- Android-OTA auf Kanal preview erfolgreich veröffentlicht; keine neue APK erforderlich. Kein physischer Gerätetest.
+- Enthalten: Monatsseason, Testwerkzeugseite, Aufgaben-/Weg-/Endlosbelohnungen und gemeinsame Lootmodale, 1.000-Siegel-Pass mit nachträglichen Premiumbelohnungen, Siegel-Funde sowie vorherige Reiter-/Refresh-Kartenanpassungen. PRs #13–#15 sind integriert.
+- Bekannte Testgrenze: Noch nicht abgeholte Seasonbelohnungen verfallen am Monatswechsel. Mengen und Stufenschwellen sind Testbalance.
+
+## Vorheriger belegter App-Prüfstand
 
 Geprüfter und veröffentlichter Spielcode: `c029782e864e94958250a0e8728ef7a737961b68`, 05.11.2026.
 Nachweis: [Mobile preview – Lauf 42094829858](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42094829858).
