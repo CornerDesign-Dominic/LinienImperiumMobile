@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-06",
+  "tool": "built-in imagegen",
+  "reference": "assets/art/points/xp.png",
+  "prompt": "Use case: style-transfer. Create a NEW relationship-points book game-item asset derived from the supplied XP-book reference. Reference image role: match the exact handcrafted, realistically painted, dimensional game-item rendering, three-quarter pose, thick ivory parchment page block, crisp readable silhouette and warm highlights. Keep the same compact isolated-book composition, but distinguish this sibling clearly: rich REDDISH-BROWN / oxblood leather (not petrol), aged BRONZE corner guards and restrained bronze tooling (not bright gold). Replace the entire star/laurel/XP cover motif with one LARGE, BOLD, clear embossed bronze HANDSHAKE: two human hands clasping each other with simple broad shapes readable at 52px, centered on the front cover. No star, no laurel, no letters, no text anywhere, no numbers. The handshake is the only central emblem. Single complete closed book, occupies about 85% of square frame with clean padding, no cut-off edges. Genuine transparent background, no floor, no UI tile/frame, no extra props, no watermark. Do not alter or overwrite the original XP asset; output this distinct new relationship-points asset.",
+  "format": "512x512 RGBA PNG",
+  "bytes": 305860,
+  "packaging": "Generated transparent reference-based sibling, resized to448px within512px transparent canvas; original XP unchanged.",
+  "source": "exec-29940a32-6c12-41ea-896a-ea60e1fcbbd4.png"
+}
