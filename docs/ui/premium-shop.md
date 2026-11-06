@@ -1,8 +1,14 @@
 # Premium shop foundation
 
-The Großhändler has Geschenke, Skins and Aufladen tabs. The approved Hermes-Siegel is **Hermes-Siegel**, illustrated with an ornate gold winged-sandal coin, a narrow emerald ring and four small green gems. Ordinary coins are **Imperium-Taler**, illustrated by a gold coin with only a laurel wreath and an empty centre. Existing region gifts retain their existing ordinary-coin price and flow. The old nonfunctional price-ideas list is removed.
+The Großhändler has Handelstruhen, Season, Skins and Aufladen tabs. The approved Hermes-Siegel is **Hermes-Siegel**, illustrated with an ornate gold winged-sandal coin, a narrow emerald ring and four small green gems. Ordinary coins are **Imperium-Taler**, illustrated by a gold coin with only a laurel wreath and an empty centre. Handelstruhen retain the PR19 purchase and region-opening flow. The old nonfunctional price-ideas list is removed.
 
 The price anchor is 250 Hermes-Siegel = EUR 2.50 and one paid cosmetic = 250. Preview Hermes-Siegel packs are 250/500/1,000/2,000/3,000/5,000 for EUR 2.50/5/10/20/30/50 without assumed discounts. Every price is explicitly a preview and every real-money button is disabled. There is no simulated payment or premium-grant command.
+
+## Season pass
+
+The Season tab is the sole Premium Season purchase entry. It shows the authoritative Season price (currently 1,000 Hermes-Siegel), the actual wallet balance, retroactive reward eligibility and a confirmation before calling `seasonPassBuy` with the current Season ID. Owned, inactive/expired, insufficient-balance, loading and busy states prevent purchase. A pending-request guard prevents rapid duplicate submissions; the existing server entitlement/receipt logic remains authoritative. Failed purchases keep the confirmation open; a changed Season ID invalidates the old confirmation.
+
+Locked Premium reward tiles on the Season page open an informational modal and navigate directly to this tab, including rewards at unreached levels. Owned reward collection stays on the Season page. Real-money top-ups remain disabled.
 
 ## Server and cosmetics
 

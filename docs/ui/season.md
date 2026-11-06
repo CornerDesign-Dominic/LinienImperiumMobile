@@ -28,7 +28,7 @@ Die Tagesaufgabe mit Talerverdienst verwendet vorläufig 10.000 Taler. Die Menge
 
 Der Serverkatalog `functions/src/season-rewards.json` ist für die aktive Auszahlung maßgeblich. Die Seite zeigt seine 30 Free-/Premium-Paare. Einzelne erreichte Felder können abgeholt werden. **Alles abholen** sammelt verfügbare Aufgaben, danach neu erreichte Wegbelohnungen und zuletzt Unendlichkeitsbelohnungen in einer Aktion. Jede erfolgreiche Einzel-/Sammelabholung öffnet das gemeinsame Lootmodal.
 
-Premium kostet **1.000 Hermes-Siegel** je Season. Preis und Abzug werden serverseitig bestimmt. Ein späterer Kauf schaltet sämtliche bereits erreichten Premiumfelder zur Abholung frei; wiederholter Kauf zieht nichts erneut ab. Nach Stufe 30 bringen je weitere 1.000 Saisonpunkte einen Sonderauftrag. Die Sonderaufträge sind echte Aufträge im Spiel.
+Premium wird ausschließlich im **Großhändler → Season** für **1.000 Hermes-Siegel** je Season gekauft. Die Season-Seite enthält keine Kaufkarte und keinen Kaufdialog. Ein Tippen auf ein gesperrtes Premiumfeld (auch oberhalb der erreichten Stufe) öffnet „Gesperrt / Beim Händler freischalten“ mit direkter Navigation zum Season-Reiter im Großhändler. Preis und Abzug werden serverseitig bestimmt. Ein späterer Kauf schaltet sämtliche bereits erreichten Premiumfelder zur Abholung frei; wiederholter Kauf zieht nichts erneut ab. Nach Stufe 30 bringen je weitere 1.000 Saisonpunkte einen Sonderauftrag. Die Sonderaufträge sind echte Aufträge im Spiel.
 
 Sonderaufträge geben mit 25 % Chance 1–3 Hermes-Siegel, Empfehlungsaufträge mit 50 % Chance 5–10. Die Menge wird einmalig festgelegt und beim Abholen gutgeschrieben; mehrfaches Abholen würfelt und zahlt nicht erneut. Das Lootmodal zeigt Siegel getrennt an.
 
