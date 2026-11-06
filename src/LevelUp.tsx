@@ -44,13 +44,13 @@ export function DevelopmentModal({data,busy,onCommand,onClose,modalBlocked}:any)
  </ExpeditionPlaceModal>;
 }
 export function LevelUpNotice({levels,onClose}:{levels:number[];onClose:()=>void}){
- const level=levels.at(-1),count=levels.length;
+ const level=levels.at(-1),count=levels.length,courierSlots=levels.filter(value=>value<=100&&value%5===0).length;
  return <Modal visible={count>0} transparent animationType="none" onRequestClose={onClose}><View style={s.overlay}><SafeAreaView edges={[]} style={s.modal}><MaterialLayer surfaceStyle={s.modal}/>
   <Row style={{flexWrap:'nowrap',alignItems:'flex-start'}}><Txt style={[s.congrats,{flex:1,minWidth:0,textAlign:'left'}]}>Herzlichen Glückwunsch!</Txt><Btn icon="close" iconOnly secondary onPress={onClose}>Schließen</Btn></Row><Txt style={s.level}>Level {level}</Txt>
   <ItemAmount id="expeditionRefills" label={itemName('expeditionRefills',count)} amount={count}/>
   <ItemAmount id="overtimeRefills" label={itemName('overtimeRefills',count)} amount={count}/>
   <Row style={{flexWrap:'nowrap',justifyContent:'flex-start',gap:8,marginBottom:8}}><Icon name="expansion" size={44}/><Txt style={{flex:1,minWidth:0,fontSize:12}}>Ausbaupunkte</Txt><Txt style={{fontSize:13,fontWeight:'700'}}>{n(count*3)}</Txt></Row>
-  {!!levels.filter(value=>value<=100&&value%5===0).length&&<Txt style={s.reward}>+{levels.filter(value=>value<=100&&value%5===0).length} {levels.filter(value=>value<=100&&value%5===0).length===1?'Botenplatz':'Botenplätze'}</Txt>}
+  {courierSlots>0&&<Row style={{flexWrap:'nowrap',justifyContent:'flex-start',gap:8,marginBottom:8}}><Image testID="level-up-courier-slot-art" source={require('../assets/art/hub/unlocked-slot.png')} accessible={false} resizeMode="contain" fadeDuration={0} style={{width:44,height:44,flexShrink:0}}/><Txt style={{flex:1,minWidth:0,fontSize:12}}>{courierSlots===1?'Botenplatz':'Botenplätze'}</Txt><Txt literal style={{fontSize:13,fontWeight:'700'}}>+{n(courierSlots)}</Txt></Row>}
  </SafeAreaView></View></Modal>;
 }
 const s=StyleSheet.create({headquartersCard:{padding:0,overflow:'hidden'},headquartersArt:{width:'100%',aspectRatio:16/9,maxHeight:210},developmentBody:{padding:11},title:{fontSize:16,fontWeight:'700'},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},modal:{width:'100%',maxWidth:440,borderRadius:20,padding:20,backgroundColor:C.panel,borderWidth:1,borderColor:C.accent},congrats:{fontSize:19,fontWeight:'700',textAlign:'center'},level:{fontSize:26,fontWeight:'700',textAlign:'center',color:C.accent,marginTop:8,marginBottom:18,lineHeight:32},reward:{fontSize:13,lineHeight:21,marginBottom:8}});

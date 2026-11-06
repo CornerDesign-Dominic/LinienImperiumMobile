@@ -1,0 +1,7 @@
+{
+  "tool": "image_gen.imagegen",
+  "reference": "locked-slot.png",
+  "prompt": "Same antique brass padlock as locked-slot.png, open iron shackle lifted out of right socket; preserve rounded brass body, rivets, keyhole, perspective and painterly metal style; transparent background. No text or additional objects.",
+  "usage": "Level-up courier slot reward",
+  "packaging": "256px PNG preserving alpha"
+}
