@@ -26,5 +26,5 @@ test('Customer goods omit traffic and origin metadata',()=>{
 test('Legacy customer goods fall back to known cargo without inventing missing goods',()=>{
  const {h,tree}=setup({id:'legacy',name:'Altbestand',category:'international',cargo:'Historische Fracht',regionName:'Alte Herkunft'});
  assert.deepEqual(nodes(tree,'OrderArtwork').map(n=>n.props.cargo),['Historische Fracht']);
- assert.ok(text(tree).includes('Alte Herkunft'));assert.ok(!text(tree).includes('international'));h.unmount();
+ assert.ok(!text(tree).includes('Herkunft'));assert.ok(!text(tree).includes('international'));h.unmount();
 });
