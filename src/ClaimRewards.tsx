@@ -29,10 +29,10 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
  }
  const amountText=(reward:Reward)=>`+${n(reward.id==='coins'?Math.round(reward.amount):reward.amount,reward.id==='xp'?2:0)}`;
  return <View style={styles.content}>
-  <View style={styles.source}>
+  {summary.source!=='Großaufträge'&&<View style={styles.source}>
    <Txt muted style={styles.sourceText}>{summary.source||'Einzelaufträge'}</Txt>
    {summary.count!==undefined&&<View style={styles.count}><Txt style={styles.sourceText}>{n(summary.count)} {summary.count===1?'Abschluss':'Abschlüsse'}</Txt></View>}
-  </View>
+  </View>}
   <ScrollView testID="claim-reward-list" style={styles.scroll} contentContainerStyle={styles.loot} showsVerticalScrollIndicator>
    {rewards.map((reward,index)=><View key={reward.id} testID={`claim-reward-${reward.id}`} style={[styles.row,index>0&&styles.separator]}>
     <View style={styles.art}>{(['coins','xp','hermes','seasonPoints'].includes(reward.id))?<Icon name={reward.icon} size={52}/>:<ItemArt id={reward.id} size={52}/>}</View>
