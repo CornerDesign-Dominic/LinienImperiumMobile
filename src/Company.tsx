@@ -28,15 +28,14 @@ function effect(o:any,level:number){
 }
 export function TransportSummary({data,onImprove}:any){
  return <Card style={styles.summary}>
-  <Row style={{marginBottom:0}}><Txt style={styles.title}>Imperiumsausbau</Txt>{data.transportUpgradeOptions.some((o:any)=>canImproveTransport(data,o))&&<AvailableDot/>}</Row>
-  {['national','international'].map(category=><View key={category} style={styles.group}>
+  {['national','international'].map(category=><View key={category} style={[styles.group,category==='international'&&{borderBottomWidth:0}]}>
    <Row style={{marginBottom:0}}><Txt style={styles.title}>{categoryName(category)}</Txt></Row>
    {data.transportUpgradeOptions.filter((o:any)=>o.category===category).map((o:any)=><Row key={o.kind} style={{marginTop:7,marginBottom:0}}><Txt muted>{LABELS[o.kind]}</Txt><View style={{flexDirection:'row',alignItems:'center',gap:8}}><Txt>{effect(o,o.level)}</Txt></View></Row>)}
   </View>)}
-  <Btn onPress={onImprove}>Verbessern</Btn>
+  <Row style={{marginBottom:0}}><Btn style={{flex:1}} onPress={onImprove}>Verbessern</Btn>{data.transportUpgradeOptions.some((o:any)=>canImproveTransport(data,o))&&<AvailableDot/>}</Row>
  </Card>;
 }
-export function TransportEditor({data,busy,onSave,onInventory}:any){
+export function TransportEditor({data,busy,onSave}:any){
  const [category,setCategory]=useState('national');
  const [selection,setSelection]=useState<{key:string;level:number;count:number}|null>(null);
  const [saveError,setSaveError]=useState(false);
@@ -62,10 +61,6 @@ export function TransportEditor({data,busy,onSave,onInventory}:any){
   }catch{setSaveError(true);}finally{saving.current=false;}
  };
  return <>
-  <View style={styles.stock}>
-   <View style={styles.stockValue}><ItemArt id="companyItems" size={32}/><Txt gold style={{fontWeight:'700'}}>{n(items)}</Txt><Txt muted style={{fontSize:12}}>verfügbar</Txt></View>
-   <Pressable accessibilityRole="button" onPress={onInventory} style={styles.stockLink}><Txt style={{fontSize:12}}>Vorräte</Txt><Icon name="chevron" size={14}/></Pressable>
-  </View>
   <View accessibilityRole="tablist" style={styles.tabs}>{['national','international'].map(value=><Pressable key={value} accessibilityRole="tab" accessibilityState={{selected:category===value}} onPress={()=>setCategory(value)} style={[styles.tab,category===value&&styles.tabActive]}><Txt style={[styles.tabText,category===value&&{color:C.onInk}]}>{categoryName(value)}</Txt>{options.some((o:any)=>o.category===value&&canImproveTransport(data,o))&&<AvailableDot/>}</Pressable>)}</View>
   <Card style={{padding:0,overflow:'hidden'}}>{options.filter((o:any)=>o.category===category).map((o:any,index:number)=>{
    const cost=o.costs[0],max=o.level>=o.limit||!cost,canImprove=canImproveTransport(data,o);
@@ -99,7 +94,6 @@ export function TransportEditor({data,busy,onSave,onInventory}:any){
 }
 const styles=StyleSheet.create({
  summary:{backgroundColor:C.panel,borderColor:C.line},title:{fontSize:16,fontWeight:'700'},group:{paddingVertical:9,borderBottomWidth:1,borderColor:C.line,marginBottom:4},
- stock:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginBottom:5},stockValue:{flexDirection:'row',alignItems:'center',gap:7,flexShrink:1,flexWrap:'wrap'},stockLink:{flexDirection:'row',alignItems:'center',gap:4,minHeight:44,paddingHorizontal:4},
  tabs:{flexDirection:'row',gap:6,marginBottom:6},tab:{flex:1,flexDirection:'row',gap:6,minHeight:44,padding:8,borderWidth:1,borderColor:C.line,borderRadius:6,justifyContent:'center',alignItems:'center',backgroundColor:C.raised},tabActive:{backgroundColor:C.accent,borderColor:C.ink},tabText:{fontSize:13,fontWeight:'700',textAlign:'center'},
  upgradeRow:{flexDirection:'row',alignItems:'center',gap:10,padding:11,minHeight:100},divider:{borderTopWidth:1,borderColor:C.line},upgradeIcon:{width:38,height:42,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderRadius:6},availableDot:{width:7,height:7,borderRadius:4,backgroundColor:C.gold,flexShrink:0},
  overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:16},modal:{width:'100%',maxWidth:460,maxHeight:'90%',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:12,overflow:'hidden'},modalHeader:{flexDirection:'row',alignItems:'center',gap:8,padding:18},modalFooter:{padding:18,paddingTop:4,borderTopWidth:1,borderColor:C.line},
