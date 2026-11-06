@@ -19,7 +19,7 @@ Nachweise: [Prüfstand](TEST_REPORT.md), [Expeditions-/Truhenbalance](docs/gamep
 
 ## Gesammelt, noch nicht veröffentlicht
 
-Keine weiteren Änderungen aus diesem Arbeitsauftrag offen.
+Wombat-Boten: fünf freigegebene Skins als gemeinsames Paket beim Großhändler für insgesamt 250 Hermes-Siegel. Kauf, dauerhafte Freischaltung, Vorschauen und globale Boten-Auswahl sind umgesetzt. 377 Tests, TypeScript, Android-Export und Browserprüfung bei 320–430px bestanden. Veröffentlichung durch den Nutzer in diesem Auftrag ausdrücklich beauftragt; Backend und Android-OTA noch zu bestätigen.
 
 ## Noch offene Punkte
 

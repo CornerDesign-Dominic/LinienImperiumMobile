@@ -1,0 +1,2 @@
+# The engine adapter matches multiline fragments of the vendored source.
+functions/vendor/web-game.js text eol=lf

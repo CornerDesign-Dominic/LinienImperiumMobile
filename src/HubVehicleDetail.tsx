@@ -10,7 +10,7 @@ import {C,Txt,Btn,n} from './ui';
 import {t} from './i18n';
 
 type Kind='capacity'|'speed';
-export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onClose,onSell}:any){
+export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onClose,onSell,skin}:any){
  const [kind,setKind]=useState<Kind|null>(null),[pending,setPending]=useState(false),[failed,setFailed]=useState(false);
  const inFlight=useRef(false),locked=busy||pending;
  const q=kind?truck.hubUpgrades[kind]:null,label=kind==='capacity'?'Laderaum':'Antrieb',unit=kind==='capacity'?'t':'km/s';
@@ -35,7 +35,7 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
     {(failed||error)&&<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}
     <Btn disabled={locked||!enough||q.level>=q.max} onPress={()=>command('hubVehicleUpgrade',{id:truck.id,kind})}>{pending?'Wird verbessert …':`${t(label)} ${t('ausbauen')}`}</Btn>
    </>:<>
-    <View style={s.identity}><HubCourierArt size={100}/><View style={{flex:1}}><Txt style={[s.status,{color:truck.hubAssigned?C.accent:C.muted}]}>{truck.hubAssigned?'In der Botenstation eingesetzt':'Nicht eingesetzt'}</Txt></View></View>
+    <View style={s.identity}><HubCourierArt size={100} skin={skin}/><View style={{flex:1}}><Txt style={[s.status,{color:truck.hubAssigned?C.accent:C.muted}]}>{truck.hubAssigned?'In der Botenstation eingesetzt':'Nicht eingesetzt'}</Txt></View></View>
     <Txt style={s.sectionTitle}>Verbesserungen</Txt>
     <View style={s.upgrades}>{(['capacity','speed'] as const).map(option=>{
      const upgrade=truck.hubUpgrades[option],name=option==='capacity'?'Laderaum':'Antrieb',suffix=option==='capacity'?'t':'km/s',max=upgrade.level>=upgrade.max,available=!max&&coins>=upgrade.coins&&inventory.hubVehicleParts>=upgrade.parts;

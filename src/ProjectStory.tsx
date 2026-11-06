@@ -3,7 +3,7 @@ import {Image,View,StyleSheet,ImageSourcePropType} from 'react-native';
 import {C,Txt} from './ui';
 import {displayFont} from './theme';
 import {t} from './i18n';
-import {projectStory,StoryRegion} from './projectStory';
+import {projectStory,StoryRegion} from './projectNarrative';
 const art:Record<StoryRegion,ImageSourcePropType[]>={
  crownlands:[require('../assets/art/project-stories/crownlands/stage-0.jpg'),require('../assets/art/project-stories/crownlands/stage-1.jpg'),require('../assets/art/project-stories/crownlands/stage-2.jpg'),require('../assets/art/project-stories/crownlands/stage-3.jpg'),require('../assets/art/project-stories/crownlands/stage-4.jpg'),require('../assets/art/project-stories/crownlands/stage-5.jpg')],
  plains:[require('../assets/art/project-stories/plains/stage-0.jpg'),require('../assets/art/project-stories/plains/stage-1.jpg'),require('../assets/art/project-stories/plains/stage-2.jpg'),require('../assets/art/project-stories/plains/stage-3.jpg'),require('../assets/art/project-stories/plains/stage-4.jpg'),require('../assets/art/project-stories/plains/stage-5.jpg')],

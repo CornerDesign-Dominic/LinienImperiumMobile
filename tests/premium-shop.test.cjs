@@ -16,7 +16,10 @@ test('Premium shop migrates old saves without awarding money and discloses disab
  assert.deepEqual(result.view.premiumShop.packs.map(p=>[p.amount,p.referencePriceCents]),[[250,250],[500,500],[1000,1000],[2000,2000],[3000,3000],[5000,5000]]);
  assert.deepEqual(result.view.premiumShop.packs.map(p=>p.id),['premium-250','premium-500','premium-1000','premium-2000','premium-3000','premium-5000']);
  assert.ok(result.view.premiumShop.packs.every(p=>p.currency==='EUR'&&p.amount===p.referencePriceCents),'100 Siegel per euro; no invented pack bonus');
- assert.equal(result.view.premiumShop.skins.filter(s=>s.price>0).length,0,'Never sell an unapproved image');
+ assert.equal(result.view.premiumShop.skinBundles.length,1);
+ assert.equal(result.view.premiumShop.skinBundles[0].price,250);
+ assert.equal(result.view.premiumShop.skinBundles[0].skinIds.length,5);
+ assert.equal(result.view.premiumShop.skinBundles[0].owned,false);
  assert.throws(()=>execute(game.state,'premiumGrant',{amount:5000},now),/Unbekannte Aktion/);
  assert.throws(()=>execute(game.state,'skinBuy',{id:'unpublished',price:0},now),/Skin nicht verfügbar/);
 });

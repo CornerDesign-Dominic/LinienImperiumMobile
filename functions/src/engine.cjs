@@ -4,7 +4,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const itemNames = require('./item-names.json');
 const {currencyText}=require('./currency-names.cjs');
-const {premiumState,purchaseSkin,equipSkin,premiumShopView}=require('./premium-shop.cjs');
+const {premiumState,purchaseSkin,purchaseSkinBundle,equipSkin,premiumShopView}=require('./premium-shop.cjs');
 const {seasonPassView,purchaseSeasonPass,touchSeason,controlSeason,recordSeasonActivity,claimSeason,rollProjectHermes}=require('./season-pass.cjs');
 const {courierName,courierModel,courierText}=require('./hub-courier.js');
 const customerIdentities = require('./customer-identities.json');
@@ -588,7 +588,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     seasonClaim:()=>claimSeason(a.state,'level',p,now,()=>a.grantSeasonSpecial(),()=>a.grantSeasonCustomer()),
     seasonClaimAll:()=>claimSeason(a.state,'all',p,now,()=>a.grantSeasonSpecial(),()=>a.grantSeasonCustomer()),
     seasonInfinityClaim:()=>claimSeason(a.state,'infinity',p,now,()=>a.grantSeasonSpecial(),()=>a.grantSeasonCustomer()),
-    skinBuy:()=>purchaseSkin(a.state,id(p.id)),skinEquip:()=>equipSkin(a.state,id(p.id)),
+    skinBundleBuy:()=>purchaseSkinBundle(a.state,id(p.id)),skinBuy:()=>purchaseSkin(a.state,id(p.id)),skinEquip:()=>equipSkin(a.state,id(p.id)),
     garageAdd:()=>a.addCardToGarage(id(p.id)),garageRemove:()=>a.removeCardFromGarage(id(p.id)),
     garageReplace:()=>a.replaceGarageCard(id(p.id),id(p.replacement)),
     seat:()=>a.assignCharacterSeat(id(p.id),num(p.seat,4),num(p.template,2)),

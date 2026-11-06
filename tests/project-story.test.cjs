@@ -1,5 +1,5 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
-const {projectStory}=require('../src/projectStory');
+const {projectStory}=require('../src/projectNarrative');
 const order=(extra={})=>({kind:'special',customer:'nordbau',volume:1000,delivered:0,status:'active',...extra});
 test('Story follows delivered cargo at every 20 percent boundary, never elapsed time',()=>{
  for(const [delivered,stage]of [[-1,0],[0,0],[199,0],[200,1],[399,1],[400,2],[599,2],[600,3],[799,3],[800,4],[999,4],[1000,4],[2000,4]])assert.equal(projectStory(order({delivered,eta:0})).stage,stage);

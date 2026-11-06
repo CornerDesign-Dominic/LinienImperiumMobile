@@ -10,11 +10,21 @@ import type {SeasonPass} from './Season';
 import {PremiumPackArt} from './PremiumPackArt';
 import {C,Txt,Card,Row,Pill,Btn,n} from './ui';
 
-type Skin={id:string;name:string;description:string;price:number;art:string};
-type Shop={balance:number;name:string;skinPrice:number;ownedSkins:string[];equippedSkin:string;skins:Skin[];packs:{id:string;amount:number;referencePriceCents:number;currency:string}[];purchasesAvailable:boolean};
+type Skin={id:string;name:string;description:string;price:number|null;art:string;bundleId?:string};
+type SkinBundle={id:string;name:string;description:string;price:number;skinIds:string[];owned:boolean};
+type Shop={balance:number;name:string;skinPrice:number;ownedSkins:string[];equippedSkin:string;skins:Skin[];skinBundles?:SkinBundle[];packs:{id:string;amount:number;referencePriceCents:number;currency:string}[];purchasesAvailable:boolean};
 export function Wholesaler({onGifts,shop,pass,clock=Date.now(),initialTab='gifts',busy=false,onCommand}:{onGifts:()=>void;shop?:Shop;pass?:SeasonPass;clock?:number;initialTab?:'gifts'|'season';busy?:boolean;onCommand:(action:string,payload:Record<string,unknown>)=>Promise<any>}){
  const [tab,setTab]=useState<'gifts'|'season'|'skins'|'topup'>(initialTab);
  const [selected,setSelected]=useState<string|null>(null);
+ const [preview,setPreview]=useState<Skin|null>(null),[skinPending,setSkinPending]=useState(false),[skinError,setSkinError]=useState(false);
+ const skinFlight=useRef(false);
+ const skinCommand=async(action:string,id:string)=>{
+  if(busy||skinFlight.current)return;
+  skinFlight.current=true;setSkinPending(true);setSkinError(false);
+  try{const result=await onCommand(action,{id});if(result)setSelected(null);else setSkinError(true);}
+  catch{setSkinError(true);}finally{skinFlight.current=false;setSkinPending(false);}
+ };
+ const skinLocked=busy||skinPending;
  const [seasonConfirm,setSeasonConfirm]=useState<string|null>(null),[buying,setBuying]=useState(false);
  const purchasePending=useRef(false);
  const active=!!pass&&pass.status==='active'&&clock>=pass.startsAt&&clock<pass.endsAt;
@@ -32,11 +42,30 @@ export function Wholesaler({onGifts,shop,pass,clock=Date.now(),initialTab='gifts
   <ExpeditionPlaceModal visible={!!pass&&seasonConfirm===pass.id&&!pass.premium} title={translate('Premium freischalten')} onClose={()=>{if(!buying)setSeasonConfirm(null);}}>
    <Txt>Premium-Seasonpass für diese Season freischalten?</Txt><Txt literal style={s.small}>{n(pass?.price||0)} {translate('Hermes-Siegel werden einmalig abgezogen.')}</Txt><Txt muted style={s.small}>Bereits erreichte Premiumbelohnungen können nach dem Kauf abgeholt werden.</Txt><Row><Btn secondary disabled={buying} onPress={()=>setSeasonConfirm(null)}>Abbrechen</Btn><Btn disabled={busy||buying||!canBuy} onPress={purchaseSeason}>Kaufen</Btn></Row>
   </ExpeditionPlaceModal>
-  {tab==='skins'&&<><Txt muted style={s.intro}>Ein neuer Look für deine Boten. Ihre Werte bleiben gleich.</Txt>{!shop&&<Card><Txt muted>Skins werden geladen …</Txt></Card>}{shop?.skins.map(skin=>{
-   const owned=shop.ownedSkins.includes(skin.id),equipped=shop.equippedSkin===skin.id;
-   return <Card key={skin.id}><View style={s.row}><HubCourierArt size={96}/><View style={{flex:1}}><Txt style={s.title}>{skin.name}</Txt><Txt muted style={s.small}>{skin.description}</Txt><View style={{alignItems:'flex-start',marginTop:6}}><Pill>{equipped?'Ausgewählt':owned?'Im Besitz':`${n(skin.price)} Hermes-Siegel`}</Pill></View></View></View>{owned?<Btn secondary disabled={busy||equipped} onPress={()=>onCommand('skinEquip',{id:skin.id})}>{equipped?'Ausgewählt':'Für Boten verwenden'}</Btn>:selected===skin.id?<><Txt style={s.small}>Kaufen für {n(skin.price)} Hermes-Siegel?</Txt><Row style={{marginBottom:0}}><Btn secondary disabled={busy} style={{flex:1}} onPress={()=>setSelected(null)}>Abbrechen</Btn><Btn disabled={busy||shop.balance<skin.price} style={{flex:1}} onPress={async()=>{if(await onCommand('skinBuy',{id:skin.id}))setSelected(null);}}>Kaufen</Btn></Row></>:<Btn disabled={busy||shop.balance<skin.price} onPress={()=>setSelected(skin.id)}>{`Kaufen · ${n(skin.price)} Hermes-Siegel`}</Btn>}</Card>;
-  })}<Card><Txt style={s.title}>Weitere Skins folgen</Txt><Txt muted style={s.small}>{`Neue Boten-Skins kosten ${n(shop?.skinPrice||250)} Hermes-Siegel.`}</Txt></Card></>}
+  {tab==='skins'&&<>
+   <Txt muted style={s.intro}>Ein neuer Look für alle deine Boten. Ihre Werte bleiben gleich.</Txt>
+   {!shop&&<Card><Txt muted>Skins werden geladen …</Txt></Card>}
+   {skinError&&<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}
+   {shop?.skinBundles?.map(bundle=><Card key={bundle.id}>
+    <Txt style={s.title}>{bundle.name}</Txt><Txt muted style={s.small}>{bundle.description}</Txt>
+    <View style={s.bundleGallery}>{bundle.skinIds.map(id=>{const skin=shop.skins.find(item=>item.id===id);return skin?<Pressable key={id} accessibilityRole="button" accessibilityLabel={`${translate('Vorschau')}: ${translate(skin.name)}`} onPress={()=>setPreview(skin)} style={s.bundleThumb}><HubCourierArt skin={skin.art}/><Txt style={s.thumbName}>{skin.name}</Txt></Pressable>:null;})}</View>
+    <Pill>{bundle.owned?'Im Besitz':`${n(bundle.price)} Hermes-Siegel · ${translate('Gesamtpreis')}`}</Pill>
+    <Txt muted style={s.small}>Ein Kauf schaltet alle fünf Skins dauerhaft frei.</Txt>
+    {bundle.owned?<Txt gold style={s.small}>Wähle unten deinen Boten-Look.</Txt>:selected===bundle.id?<>
+     <Txt style={s.small}>Alle fünf Skins für {n(bundle.price)} Hermes-Siegel kaufen?</Txt>
+     <Row style={{marginBottom:0}}><Btn secondary disabled={skinLocked} style={{flex:1}} onPress={()=>setSelected(null)}>Abbrechen</Btn><Btn disabled={skinLocked||shop.balance<bundle.price} style={{flex:1}} onPress={()=>skinCommand('skinBundleBuy',bundle.id)}>Paket kaufen</Btn></Row>
+    </>:<Btn disabled={skinLocked||shop.balance<bundle.price} onPress={()=>setSelected(bundle.id)}>{`Paket kaufen · ${n(bundle.price)} Hermes-Siegel`}</Btn>}
+    {!bundle.owned&&shop.balance<bundle.price&&<Txt muted style={s.small}>Nicht genügend Hermes-Siegel.</Txt>}
+   </Card>)}
+   {shop?.skins.map(skin=>{
+    const owned=shop.ownedSkins.includes(skin.id),equipped=shop.equippedSkin===skin.id;
+    return <Card key={skin.id}><View style={s.row}><Pressable accessibilityRole="button" accessibilityLabel={`${translate('Vorschau')}: ${translate(skin.name)}`} onPress={()=>setPreview(skin)}><HubCourierArt size={96} skin={skin.art}/></Pressable><View style={{flex:1,minWidth:0}}><Txt style={s.title}>{skin.name}</Txt><Txt muted style={s.small}>{skin.description}</Txt><View style={{alignItems:'flex-start',marginTop:6}}><Pill>{equipped?'Ausgewählt':owned?'Im Besitz':'Im Paket enthalten'}</Pill></View></View></View>{owned&&<Btn secondary disabled={skinLocked||equipped} onPress={()=>skinCommand('skinEquip',skin.id)}>{equipped?'Ausgewählt':'Für Boten verwenden'}</Btn>}</Card>;
+   })}
+  </>}
+  <ExpeditionPlaceModal visible={!!preview} title={translate(preview?.name||'Vorschau')} onClose={()=>setPreview(null)}>
+   {preview&&<><HubCourierArt skin={preview.art}/><Txt muted style={s.small}>{preview.description}</Txt></>}
+  </ExpeditionPlaceModal>
   {tab==='topup'&&<><Txt muted style={s.intro}>Wähle dein Siegelpaket.</Txt><Card><Txt style={s.title}>Noch nicht verfügbar</Txt><Txt muted style={s.small}>Echtgeldkäufe werden vorbereitet. Die angezeigten Preise dienen als Vorschau.</Txt></Card>{shop?.packs.map(pack=><Card key={pack.id}><View style={s.packRow}><PremiumPackArt amount={pack.amount} size={88}/><View style={s.packInfo}><Txt style={s.packAmount}>{n(pack.amount)}</Txt><Txt style={s.packCurrency}>Hermes-Siegel</Txt><Txt muted style={s.small}>{new Intl.NumberFormat(getLocale(),{style:'currency',currency:pack.currency}).format(pack.referencePriceCents/100)}</Txt></View></View><Btn disabled style={s.packButton}>Bald verfügbar</Btn></Card>)}</>}
  </>;
 }
-const s=StyleSheet.create({packRow:{flexDirection:'row',alignItems:'center',gap:16},packInfo:{flex:1,minWidth:0},packAmount:{fontSize:23,fontWeight:'700'},packCurrency:{fontSize:16,fontWeight:'700'},packButton:{marginTop:10},wallet:{marginBottom:10},balance:{flexDirection:'row',alignItems:'center',gap:6},balanceText:{fontSize:20,fontWeight:'700'},tabs:{flexDirection:'row',gap:6,marginBottom:14},tab:{flex:1,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:5},activeTab:{backgroundColor:C.accent,borderColor:C.ink},tabText:{fontSize:12,fontWeight:'700',textAlign:'center'},row:{flexDirection:'row',alignItems:'center',gap:12},title:{fontSize:16,fontWeight:'700'},small:{fontSize:12,lineHeight:18,marginTop:4},intro:{fontSize:13,lineHeight:19,marginBottom:12}});
+const s=StyleSheet.create({bundleGallery:{flexDirection:'row',flexWrap:'wrap',gap:8,marginVertical:12},bundleThumb:{width:'30%',minWidth:0},thumbName:{fontSize:10,lineHeight:15,marginTop:3},error:{color:C.red,fontSize:12,marginBottom:8},packRow:{flexDirection:'row',alignItems:'center',gap:16},packInfo:{flex:1,minWidth:0},packAmount:{fontSize:23,fontWeight:'700'},packCurrency:{fontSize:16,fontWeight:'700'},packButton:{marginTop:10},wallet:{marginBottom:10},balance:{flexDirection:'row',alignItems:'center',gap:6},balanceText:{fontSize:20,fontWeight:'700'},tabs:{flexDirection:'row',gap:6,marginBottom:14},tab:{flex:1,minHeight:44,alignItems:'center',justifyContent:'center',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:5},activeTab:{backgroundColor:C.accent,borderColor:C.ink},tabText:{fontSize:12,fontWeight:'700',textAlign:'center'},row:{flexDirection:'row',alignItems:'center',gap:12},title:{fontSize:16,fontWeight:'700'},small:{fontSize:12,lineHeight:18,marginTop:4},intro:{fontSize:13,lineHeight:19,marginBottom:12}});

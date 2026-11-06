@@ -49,7 +49,19 @@ async function main(){
   const passId=crypto.randomUUID();await call('seasonPassBuy',{id:season.seasonPass.id},passId);const pass=await call('seasonPassBuy',{id:season.seasonPass.id},passId);assert.equal(pass.premiumShop.balance,0);assert.equal(pass.seasonPass.premium,true);
   const rotated=await call('seasonDailyReset',{seasonId:pass.seasonPass.id,dailyVersion:pass.seasonPass.dailyVersion});assert.equal(rotated.seasonPass.dailyVersion,pass.seasonPass.dailyVersion+1);
   const resetSeason=await call('seasonReset');assert.equal(resetSeason.seasonPass.status,'inactive');assert.equal(resetSeason.seasonPass.points,0);
-  await call('reset');
+  const bundle=resetSeason.premiumShop.skinBundles.find(b=>b.id==='wombat-couriers');
+  assert.equal(bundle.price,250);assert.equal(bundle.skinIds.length,5);assert.equal(bundle.owned,false);
+  await assert.rejects(()=>call('skinBundleBuy',{id:bundle.id,price:0}),/Nicht genügend Hermes-Siegel/);
+  await assert.rejects(()=>call('skinEquip',{id:bundle.skinIds[0]}),/Skin nicht verfügbar/);
+  await call('testHermes');
+  const bundleRequest=crypto.randomUUID();await call('skinBundleBuy',{id:bundle.id,price:0},bundleRequest);
+  const bought=await call('skinBundleBuy',{id:bundle.id},bundleRequest);assert.equal(bought.premiumShop.balance,750);
+  const repeat=await call('skinBundleBuy',{id:bundle.id});assert.equal(repeat.premiumShop.balance,750);
+  assert.equal(repeat.premiumShop.skinBundles[0].owned,true);
+  for(const id of bundle.skinIds){const equipped=await call('skinEquip',{id});assert.equal(equipped.premiumShop.equippedSkin,id);}
+  const savedSkins=await call('sync');assert.equal(savedSkins.premiumShop.equippedSkin,bundle.skinIds.at(-1));assert.equal(savedSkins.premiumShop.ownedSkins.length,6);
+  const reset=await call('reset');assert.deepEqual(reset.premiumShop.ownedSkins,savedSkins.premiumShop.ownedSkins);assert.equal(reset.premiumShop.balance,750);
+  console.log('Live Wombat-Boten bundle passed: authoritative 250-seal total price, five entitlements, ownership guards, insufficient balance, receipt retry and repeat purchase, all five selections, persistence and reset.');
   console.log('Live backend smoke test passed: legacy and negotiated display responses, cache hydration and UID isolation, guest auth, persistence, command deduplication, expedition map, test grants, level rewards, procurement prices/unlock guards/empty claims authentication checks, Season start/calendar, four dailies, test-seal grant deduplication, Premium purchase deduplication, daily rotation and season reset.');
  }finally{await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:auth.idToken})});}
 }

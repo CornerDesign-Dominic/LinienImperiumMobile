@@ -2,7 +2,7 @@
 
 The Großhändler has Handelstruhen, Season, Skins and Aufladen tabs. The approved Hermes-Siegel is **Hermes-Siegel**, illustrated with an ornate gold winged-sandal coin, a narrow emerald ring and four small green gems. Ordinary coins are **Imperium-Taler**, illustrated by a gold coin with only a laurel wreath and an empty centre. Handelstruhen retain the PR19 purchase and region-opening flow. The old nonfunctional price-ideas list is removed.
 
-The price anchor is 250 Hermes-Siegel = EUR 2.50 and one paid cosmetic = 250. Preview Hermes-Siegel packs are 250/500/1,000/2,000/3,000/5,000 for EUR 2.50/5/10/20/30/50 without assumed discounts. Every price is explicitly a preview and every real-money button is disabled. There is no simulated payment or premium-grant command.
+The price anchor is 250 Hermes-Siegel = EUR 2.50. The approved five-skin Wombat-Boten bundle costs **250 Hermes-Siegel total**, not per skin. Preview Hermes-Siegel packs are 250/500/1,000/2,000/3,000/5,000 for EUR 2.50/5/10/20/30/50 without assumed discounts. Every real-money price is explicitly a preview and every real-money button is disabled. There is no simulated payment.
 
 ## Season pass
 
@@ -14,7 +14,13 @@ Locked Premium reward tiles on the Season page open an informational modal and n
 
 `functions/src/premium-shop.cjs` owns the catalogue, integral nonnegative balance, owned skin entitlements and selected cosmetic. `skinBuy` resolves only the server catalogue, ignores caller-supplied prices and charges an unowned cosmetic once. `skinEquip` accepts owned, currently available catalogue skins only. Existing callable transaction/command receipts serialize and deduplicate these actions. Premium balance and skin entitlements survive the test-game reset. No game statistic changes from these commands.
 
-Only the existing free Lastwombat artwork is currently available. It starts owned and selected. Paid skins must first receive approved real artwork and a renderer entry; the shop does not sell a placeholder or recolour sold as a new skin. The standard illustration is currently the only renderer, matching all Boten. The prepared price is shown as 250, with an honest "Weitere Skins folgen" message.
+The free Lastwombat starts owned and selected. The **Wombat-Boten** bundle contains the five separately approved artworks: Waldwombat, Steinwombat, Postwombat, Kronenbote and Küstenwombat. Exact preview provenance is recorded in `assets/art/hub/skins/provenance.json`; each composition is preserved as a 768px optimized JPEG.
+
+`skinBundleBuy` accepts only the server-owned bundle ID `wombat-couriers`. One transaction deducts 250 Hermes-Siegel and grants all five skin entitlements. Repeat purchases charge nothing; insufficient funds grant nothing; individual bundle skins cannot be purchased separately. Client price/contents fields are ignored. Buying does not automatically change the selected appearance. Owned bundle state is derived from all five entitlements, which survive reload and test reset.
+
+The Skins tab shows the total price, all five previews, an explicit purchase confirmation, insufficient-funds/owned/pending/error states and a guarded request. Tapping artwork opens a large preview. After buying, the player selects any unlocked skin or the free standard. As with the existing cosmetic model, the selection applies to **all couriers** in the Botenstation, including overview cards, details and recruitment. It does not affect transport-card art, capacities, speeds or earnings. All six renderer sources are bundled with static imports and unknown skin IDs safely fall back to the standard.
+
+Validation: 377 tests including bundle pricing/tamper rejection, insufficient funds, duplicate purchase, all five equip/reload/reset paths, guarded UI purchase and renderer assets; TypeScript and Android export. Actual React Native Web shop components were checked at 320/360/390/430px, including enlarged previews, purchase and selection, with no horizontal overflow, browser errors or broken images. No physical Android device test. Local Windows validation also required an LF rule for the source-matching vendor engine and distinct `projectNarrative` data-module naming to avoid the existing `ProjectStory` case collision.
 
 ## Required before real purchases
 
