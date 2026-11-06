@@ -1524,5 +1524,8 @@
   "Nächster Kundenauftrag": "Next customer contract",
   "Kundenaufträge abholen": "Claim customer contracts",
   "Schalte einen Stammkunden frei. Deine Belohnungen bleiben gespeichert.": "Unlock a regular customer. Your rewards remain saved.",
-  "Premium wird beim Großhändler für 1.000 Hermes-Siegel für diese Season freigeschaltet. Bereits erreichte Premiumbelohnungen bleiben nachträglich abholbar. Nach Stufe 30 gibt es alle 500 weiteren Saisonpunkte einen normalen Kundenauftrag.": "Unlock Premium for this season at the wholesaler for 1,000 Hermes seals. Previously reached Premium rewards can still be claimed. Beyond level 30, every 500 additional season points grant a normal customer contract."
+  "Premium wird beim Großhändler für 1.000 Hermes-Siegel für diese Season freigeschaltet. Bereits erreichte Premiumbelohnungen bleiben nachträglich abholbar. Nach Stufe 30 gibt es alle 500 weiteren Saisonpunkte einen normalen Kundenauftrag.": "Unlock Premium for this season at the wholesaler for 1,000 Hermes seals. Previously reached Premium rewards can still be claimed. Beyond level 30, every 500 additional season points grant a normal customer contract.",
+  "Haltezeit: {0} sek.": "Hold time: {0} sec.",
+  "Haltezeit wird vorbereitet …": "Preparing hold …",
+  "Die Haltezeit ist abgelaufen. Bitte wähle einen neuen Auftrag.": "The hold time has expired. Please choose a new order."
 }

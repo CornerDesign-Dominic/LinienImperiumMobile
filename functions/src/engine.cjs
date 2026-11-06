@@ -45,6 +45,7 @@ const companyTransportRuntime = fs.readFileSync(path.join(__dirname, 'company-tr
 const expeditionCompletionRuntime = fs.readFileSync(path.join(__dirname, 'expedition-completion-runtime.js'), 'utf8');
 const transportRuntime = fs.readFileSync(path.join(__dirname, 'transport-runtime.js'), 'utf8');
 const giftsRuntime = fs.readFileSync(path.join(__dirname, 'gifts-runtime.js'), 'utf8');
+const singleOrderReservationsRuntime = fs.readFileSync(path.join(__dirname, 'single-order-reservations-runtime.js'), 'utf8');
 const tourRuntime = fs.readFileSync(path.join(__dirname, 'tour-runtime.js'), 'utf8');
 const progressionRuntime = fs.readFileSync(path.join(__dirname, 'progression-runtime.js'), 'utf8');
 const hubVehiclesRuntime = fs.readFileSync(path.join(__dirname, 'hub-vehicles-runtime.js'), 'utf8');
@@ -227,7 +228,9 @@ const bridge = `
     const added=maximum-game.overtimePoints;game.inventory.overtimeRefills--;game.overtimePoints=maximum;game.overtimeLastRegenAt=now;
     addEvent('Überstundenauffüller: +'+added+' Überstundenpunkte.');save();return true;
   };
+  ${singleOrderReservationsRuntime}
   globalThis.mobile = {
+    expirePickerReservations, reserveOrderForPicker, releaseOrderPickerReservation, assignPickerOrder,
     projectCompletionStats, grantTestProjects, grantSeasonSpecial, grantSeasonCustomer, migrateTradeChests, buyTradeChest, upgradeExpeditionChance,
     settleEventTours, refreshTourStarts, queueSingleVehicle, settleProcurementTimeline, startProcurement, startProcurementGroup, stopProcurement, stopProcurementGroup, claimProcurement,
     eventFleetOptions(distance = 240) {
@@ -535,7 +538,7 @@ function session(state, now=Date.now(), random=Math.random) {
   prepareEvent(api.state);
   touchSeason(api.state,now);
   api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleProcurementTimeline(now);
-  api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);api.migrateTradeChests();
+  api.expirePickerReservations(now);api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);api.migrateTradeChests();
   return api;
 }
 const id = value => {if(typeof value!=='string'||value.length>100)throw Error('Ungültige Kennung');return value;};
@@ -596,7 +599,8 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     cardUpgrade:()=>a.giveCharacterShard(id(p.id),true),shardCombine:()=>a.combineExpeditionShards(choice(p.rarity,['common','uncommon'])),
     cardCapacity:()=>a.upgradeCardVehicle(id(p.id),'capacity'),cardRank:()=>a.upgradeCardVehicle(id(p.id),'rank'),
     buyTruck:()=>a.buyTruck(num(p.model,1)),rank:()=>a.upgradeTruckRarity(id(p.id)),capacity:()=>a.upgradeTruckCapacity(id(p.id)),sell:()=>a.sell(id(p.id)),
-    assign:()=>a.assignOrder(id(p.order),id(p.truck)),assignPrivate:()=>a.assignPrivatePickup(id(p.order),id(p.truck)),assignCrafted:()=>a.assignCraftedOrder(id(p.order),id(p.truck)),
+    reserveOrder:()=>a.reserveOrderForPicker(id(p.order)),releaseOrderReservation:()=>a.releaseOrderPickerReservation(id(p.order),id(p.token)),
+    assign:()=>a.assignPickerOrder(id(p.order),id(p.truck),p.reservationToken===undefined?undefined:id(p.reservationToken)),assignPrivate:()=>a.assignPrivatePickup(id(p.order),id(p.truck)),assignCrafted:()=>a.assignCraftedOrder(id(p.order),id(p.truck)),
     projectStart:()=>a.startFleetProject(id(p.id),num(p.template,2)),overtime:()=>p.amount==='max'?a.spendMaxOvertime(id(p.id)):a.spendOvertime(id(p.id),num(p.amount)),refill:()=>a.useOvertimeRefill(),expeditionRefill:()=>a.useExpeditionRefill(),
     giftOpen:()=>a.openRegionGift(num(p.region,4)),chestOpen:()=>a.openRegionGift(num(p.region,4)),tradeChestBuy:()=>a.buyTradeChest(),chestBuy:()=>a.buyTradeChest(),expeditionChanceUpgrade:()=>a.upgradeExpeditionChance(num(p.level,15)),
     claimSingles:()=>a.claimSingleRewards(),
@@ -709,6 +713,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   const levelUps=[...a.awardedUpgradeLevels];
   if(levelUps.length)view.levelUps=levelUps;
   if(['assign','assignPrivate','assignCrafted'].includes(action)&&view.state.orders.find(o=>o.id===p.order)?.status==='active')view.message='Auftrag gestartet.';
+  if(action==='reserveOrder')view.pickerReservation=ok;
   if(action==='hubCrate'&&ok!==false)view.hubCrateParts=ok;
   if(['giftOpen','chestOpen'].includes(action)&&ok!==false)view.giftFind=ok;
   if(action==='draw'&&ok&&typeof ok==='object')view.claimSummary=ok;
@@ -727,12 +732,12 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
       :{type:'reward',itemId:card&&state?.expedition.characters[card.id]?'shard:'+card.rarity:undefined,cardId:card?.id,title:card?.name||view.message||'Fund erhalten',detail:card?(state?.expedition.characters[card.id]?'1 '+card.rarity[0].toUpperCase()+card.rarity.slice(1)+'-Shard':'Transportkarte'):''};
   }
   // Single-order successes are already visible in the updated list; retain rejection feedback.
-  const singleAction=['assign','assignPrivate','assignCrafted','pin','refresh','singleVehicle','claimSingles'].includes(action)
+  const singleAction=['reserveOrder','releaseOrderReservation','assign','assignPrivate','assignCrafted','pin','refresh','singleVehicle','claimSingles'].includes(action)
     ||(action==='claim'&&view.state.orders.some(o=>o.id===p.id&&!o.isProject))
     ||(action==='mission'&&p.kind==='endless')
     ||(action==='claimMission'&&view.state.expedition.missions.some(m=>m.id===p.id&&m.kind==='endless'));
-  view.silentSuccess=singleAction&&ok!==false&&(ok===true||JSON.stringify(a.state)!==before);
-  if(!['sync','eventRanks'].includes(action)&&(ok===false||JSON.stringify(a.state)===before))view.message ||= 'Aktion nicht möglich: Voraussetzungen oder Vorräte prüfen.';
+  view.silentSuccess=['reserveOrder','releaseOrderReservation'].includes(action)||(singleAction&&ok!==false&&(ok===true||JSON.stringify(a.state)!==before));
+  if(!['sync','eventRanks','reserveOrder','releaseOrderReservation'].includes(action)&&(ok===false||JSON.stringify(a.state)===before))view.message ||= 'Aktion nicht möglich: Voraussetzungen oder Vorräte prüfen.';
   return {state:JSON.parse(JSON.stringify(a.state)),view:JSON.parse(JSON.stringify(view))};
 }
 module.exports={execute,session};
