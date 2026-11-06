@@ -17,17 +17,23 @@ test('Expedition chance upgrade debits authoritative graduated prices, caps at 2
  assert.throws(()=>execute(g.state,'expeditionChanceUpgrade',{level:15},now),/Maximaler/);
  const poor=ready();assert.throws(()=>execute(poor.state,'expeditionChanceUpgrade',{level:0},now),/Nicht genügend/);
 });
-test('Direct gear finds respect all five regional quantities, guaranteed shard amounts and point costs without creating jobs',()=>{
+test('Direct gear finds pay only the unchanged regional gears and preserve all other stored loot',()=>{
  const ranges=[{common:[20,30]},{common:[30,45],uncommon:[2,4]},{common:[40,60],uncommon:[5,8]},{common:[50,75],uncommon:[8,12],rare:[1,2]},{common:[60,90],uncommon:[12,18],rare:[2,4]}];
  for(let region=0;region<5;region++){
-  const base=ready(),g=execute(base.state,'draw',{region},now,()=>.6),summary=g.view.claimSummary;
+  const base=ready();base.state.inventory.companyItems=7;base.state.inventory.capacityModules=4;base.state.expedition.shards.common=9;
+  let rolls=0;const g=execute(base.state,'draw',{region},now,()=>rolls++===0?.6:0),summary=g.view.claimSummary;
   assert.ok(summary);assert.equal(base.state.expedition.points-g.state.expedition.points,[5,6,7,8,10][region]);assert.equal(g.state.expedition.jobs.length,base.state.expedition.jobs.length);assert.equal(g.state.orders.length,base.state.orders.length);
   for(const [rarity,[min,max]]of Object.entries(ranges[region])){assert.ok(summary.gears[rarity]>=min&&summary.gears[rarity]<=max);assert.equal(g.state.inventory.gears[rarity]-base.state.inventory.gears[rarity],summary.gears[rarity]);}
-  assert.equal(Object.values(summary.shards).reduce((a,b)=>a+b,0),[1,1,2,2,3][region]);assert.ok(!summary.shards.epic&&!summary.shards.legendary);assert.equal(summary.coins,0);
+  assert.deepEqual(g.state.expedition.shards,base.state.expedition.shards);assert.deepEqual(summary.shards,{});assert.equal(summary.coins,0);
+  for(const key of ['companyItems','capacityModules']){assert.equal(g.state.inventory[key],base.state.inventory[key]);assert.equal(summary[key],0);}
+  assert.deepEqual(Object.keys(g.view.expeditionMap[region].finds.gears).sort(),['chance','ranges']);
  }
- // One draw, then low rolls for gear amounts, shards and both optional extras.
- const base=ready();let n=0;const g=execute(base.state,'draw',{region:4},now,()=>n++===0?.6:0);
- assert.equal(g.view.claimSummary.companyItems,3);assert.equal(g.view.claimSummary.capacityModules,1);
+
+});
+test('A duplicate direct transport-card find still awards one shard of its own rarity',()=>{
+ const base=ready(),found=execute(base.state,'draw',{region:0},now,()=>.01);
+ assert.equal(found.state.expedition.shards.common,base.state.expedition.shards.common+1);
+ assert.deepEqual(found.state.inventory.gears,base.state.inventory.gears);
 });
 test('Normal expedition customer orders roll actual transport category independently, persist queued and keep saved terms',()=>{
  for(const [roll,category]of [[.1,'national'],[.9,'international']]){

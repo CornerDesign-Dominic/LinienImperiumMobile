@@ -94,7 +94,7 @@
     ],
     [
       "Sources",
-      "Normal local and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Direct expedition gear finds have an additional 6% chance for company upgrade items and a 0.3% chance for a capacity module. Courier Station cycles yield 8–12 pickup clues. Existing material contracts remain usable."
+      "Normal local and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Procurement and existing material contracts retain their own company-item rewards. Direct endless-expedition gear finds give gears only, without shards, company upgrade items or capacity modules. Courier Station cycles yield 8–12 pickup clues."
     ],
     [
       "Gear loot",
@@ -154,7 +154,7 @@
     ],
     [
       "Discovery chances",
-      "Endless draws cost 5/6/7/8/10 points in regions 1–5. Direct cards: 15% Common, 10% Uncommon, 5% Rare, shared equally within each rarity in the region. No direct Epic or Legendary cards. Normal regional customer contract: 20%, stored until started, independently 50% regional or long-distance. Specials/referrals together: 1% initially, up to 2.5% with the company upgrade, split 90%/10%. The remainder gives gears and 1/1/2/2/3 card shards by region. Additional bonus finds apply only to gear finds. The endless-location question mark shows exact amounts and chances."
+      "Endless draws cost 5/6/7/8/10 points in regions 1–5. Direct cards: 15% Common, 10% Uncommon, 5% Rare, shared equally within each rarity in the region. No direct Epic or Legendary cards. Normal regional customer contract: 20%, stored until started, independently 50% regional or long-distance. Specials/referrals together: 1% initially, up to 2.5% with the company upgrade, split 90%/10%. The remainder gives gears only, without shards, company upgrade items or capacity modules. Duplicate transport cards still give one shard of the same rarity. The endless-location question mark shows exact amounts and chances."
     ],
     [
       "Locations and bonuses",
