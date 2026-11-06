@@ -13,7 +13,7 @@ export function ExpeditionPlaceDetails({data,region,selected,busy,clock,onComman
  const noTruck=!g.trucks.some((truck:any)=>truck.free&&truck.tier>=2),active=!done&&mission?.status==='active';
  const duration=mission?Math.max(0,mission.endsAt-mission.startedAt):isFinal?map.finalDurationMs:place.durationMs;
  const button=(label:string,action:string,payload:any,disabled=false,secondary=false)=><Btn secondary={secondary} disabled={busy||disabled} onPress={()=>onCommand(action,payload)}>{label}</Btn>;
- const rewardItems=isFinal?[{icon:'customers' as const,label:'Stammkunde',amount:'+1'},...(!state.moduleAwarded||done&&state.moduleAwarded?[{itemId:'capacityModules',icon:'module' as const,label:'Kapazitätsmodul',amount:'+1'}]:[])]:[{icon:'expansion' as const,label:'Ausbaupunkt',amount:'+1'}];
+ const rewardItems=isFinal?[{itemId:'tradeChests',icon:'reward' as const,label:'Handelstruhe',amount:'+1'},{icon:'customers' as const,label:'Stammkunde',amount:'+1'},...(!state.moduleAwarded||done&&state.moduleAwarded?[{itemId:'capacityModules',icon:'module' as const,label:'Kapazitätsmodul',amount:'+1'}]:[])]:[{icon:'expansion' as const,label:'Ausbaupunkt',amount:'+1'}];
  // Ordinary places become a quiet discovered landmark after their one delivery.
  // Final trading places retain their repeat expedition and customer actions below.
  if(!isFinal)return <>
@@ -49,7 +49,7 @@ export function ExpeditionPlaceDetails({data,region,selected,busy,clock,onComman
   <PlaceExtraDetails>
    <Row style={{marginBottom:0}}><Txt muted style={s.small}>Dauer der Bonuslieferung</Txt><Txt style={s.small}>{remaining(duration,0)}</Txt></Row>
    <Txt muted style={s.small}>Mit der ersten Bonuslieferung schaltest du den Stammkunden frei.</Txt>
-   <Txt muted style={s.small}>Erste Endloslieferung: Kunde und 1 Kapazitätsmodul. Bereits erhaltene Module werden nicht erneut vergeben.</Txt>
+   <Txt muted style={s.small}>Regionsabschluss: 1 Handelstruhe, Stammkunde und 1 Kapazitätsmodul. Bereits erhaltene Abschlussbelohnungen werden nicht erneut vergeben.</Txt>
    <Txt muted style={s.small}>Expeditionen bringen neue Funde aus dieser Region.</Txt>
   </PlaceExtraDetails>
  </>;

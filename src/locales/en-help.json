@@ -16,7 +16,7 @@
   "orders": [
     [
       "Offers",
-      "Start with 5 offers; Dispatch can increase this to 15. New offers: 80% regional, 20% long-distance. Each has a base 5% chance to come from an unlocked customer in that segment. Routes: 90% Single Way, 10% Dual Way."
+      "Start with 5 offers; Dispatch can increase this to 15. Ordinary offers are 80% regional and 20% long-distance. Each has a 5% chance to come from any unlocked customer; a new customer contract independently rolls 50% regional or 50% long-distance. Routes: 90% Single Way, 10% Dual Way."
     ],
     [
       "Payments",
@@ -25,12 +25,16 @@
     [
       "Time and refresh",
       "Trip time = outbound distance / loaded speed + return distance / empty speed. On Dual Way the return trip is loaded too. Offers refresh every 15 minutes. Manual refresh costs 250 × max(1, owned vehicles) × (1 + manual refreshes since the last automatic refresh). Held offers survive either refresh."
+    ],
+    [
+      "Collect rewards",
+      "Single contracts retain all freight payments, XP, completion bonuses, items, customer relationship and found follow-up contracts until explicit collection. Operating costs still arise at delivery. Contract completion counts immediately for Season tasks; earned coins and level-ups count only on collection. Tours already paid in older saves are never paid twice."
     ]
   ],
   "special": [
     [
       "Discovery",
-      "Normal customer contracts can yield special contracts: base 20% regional or 40% long-distance, plus customer skill. Endless expeditions have absolute chances of 4.05% for a special contract and 0.45% for a referral contract. Special volume: 400 + region index × 120 t; distance: 120 + region index × 25 km. The shared referral contract has 1,100 t and 240 km."
+      "Normal customer contracts can yield special contracts: base 20% regional or 40% long-distance according to the actual contract, plus customer skill. Endless expeditions start at 0.9% special and 0.1% referral, reaching 2.25% and 0.25% with the maximum company upgrade. Special volume: 400 + region index × 120 t; distance: 120 + region index × 25 km. The shared referral contract has 1,100 t and 240 km."
     ],
     [
       "Fleet and deadline",
@@ -82,7 +86,7 @@
   "inventory": [
     [
       "Refills",
-      "Each level grants one expedition refill, one overtime refill and 3 upgrade points. Each refill adds 50 points when used, even above your maximum. Natural regeneration pauses at or above the maximum."
+      "Each level grants one expedition refill, one overtime refill and 3 upgrade points. Refills restore the respective reserve to your current personal maximum. At or above maximum, no item is consumed and your reserve stays unchanged."
     ],
     [
       "Items",
@@ -90,7 +94,7 @@
     ],
     [
       "Sources",
-      "Normal local and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Material expedition contracts have a 6% chance for 1/2/3 items according to rank, and a 0.3% chance for a capacity module. Courier Station cycles yield 8–12 pickup clues."
+      "Normal local and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Direct expedition gear finds have an additional 6% chance for company upgrade items and a 0.3% chance for a capacity module. Courier Station cycles yield 8–12 pickup clues. Existing material contracts remain usable."
     ],
     [
       "Gear loot",
@@ -123,6 +127,10 @@
     [
       "Transport upgrades",
       "Completion bonus: 1,000 levels, +1 percentage point each. New level N costs 1,000 × N Imperium thalers and 1 + floor((N−1)/25) company upgrade items. Local and long-distance transport are separate. Quantity and range each have 100 levels, preserving their previous final effects and full upgrade budgets. The bonus affects only the completion reward of that category, not freight revenue or loot."
+    ],
+    [
+      "Expedition finds",
+      "15 upgrade levels increase the combined special/referral discovery chance from 1% to 2.5%, by 0.1 percentage points per level. New level N costs 10,000 × N Imperium thalers and 1 + floor((N−1)/5) company upgrade items. The extra chance replaces gear finds; normal customer and regular card chances stay unchanged."
     ]
   ],
   "personnel": [
@@ -146,15 +154,19 @@
     ],
     [
       "Discovery chances",
-      "Each region contains five transport cards. An endless expedition has a 10% total card chance. Region 1: 6% Common, 3% Uncommon, 1% Rare. Regions 2–5: 6% Common, 3% Uncommon, 0.9% Rare, 0.1% Epic. Cards of the same rarity are equally likely. The question mark at each endless location shows individual chances. Gifts at the wholesaler use the same regional pool and guarantee one card: 60% Common, 30% Uncommon and 10% Rare in region 1; 60% Common, 30% Uncommon, 9% Rare and 1% Epic in regions 2–5. Duplicates yield one shard of the same rarity. Contract chances remain unchanged."
+      "Endless draws cost 5/6/7/8/10 points in regions 1–5. Direct cards: 15% Common, 10% Uncommon, 5% Rare, shared equally within each rarity in the region. No direct Epic or Legendary cards. Normal regional customer contract: 20%, stored until started, independently 50% regional or long-distance. Specials/referrals together: 1% initially, up to 2.5% with the company upgrade, split 90%/10%. The remainder gives gears and 1/1/2/2/3 card shards by region. Additional bonus finds apply only to gear finds. The endless-location question mark shows exact amounts and chances."
     ],
     [
       "Locations and bonuses",
-      "Seven locations per region; discovery cost = 3 + 9 × region index + floor(location index/2), with zero-based indices. The seventh discovery unlocks the next region and endless location. A completed location delivery automatically grants one upgrade point. The first endless-location delivery automatically unlocks its customer and grants one capacity module unless already received. Existing claimed capacity bonuses remain unchanged."
+      "Seven locations per region; discovery cost = 3 + 9 × region index + floor(location index/2), with zero-based indices. The seventh discovery unlocks the next region and endless location. A completed location delivery automatically grants one upgrade point. The first endless-location delivery unlocks its customer and grants one capacity module and one universal trade chest once. Previously completed regions receive the chest once as well."
     ],
     [
       "Automatic completions",
-      "Location deliveries and the first trading-place delivery settle automatically in the background, without a completion popup. Upgrade points are immediately available for manual allocation under Development in the Trading empire. Each point permanently raises either the expedition or overtime maximum by 1, without refilling energy. Confirmed allocations cannot be reversed. Rewards from repeatable material and transport-card contracts still wait for collective collection under Single orders."
+      "Location deliveries and the first trading-place delivery settle automatically in the background. Upgrade points are available for manual allocation under Development. Each point permanently raises the expedition or overtime maximum by 1 without refilling energy. Existing material and transport-card contracts remain playable; new endless draws no longer create them."
+    ],
+    [
+      "Trade chests",
+      "Buy one universal stored chest for 200 Hermes seals, or earn one once per completed region. Choose any unlocked region when opening. Every chest grants one card using the same pool, whether purchased or earned. Current test pool: each of the five regional cards has 20% chance (40% Common, 20% Uncommon, 20% Rare, 20% Epic). No Legendary cards are currently available. Duplicates yield one shard of the same rarity."
     ]
   ],
   "statistics": [
@@ -170,7 +182,7 @@
   "customers": [
     [
       "Unlock and relationship",
-      "Unlock a customer with the one-off endless-location delivery in its region. Normal contracts give 10 relationship points, specials 25 and referrals 100. Customer level L requires 110 × L + 5 × L × (L−1) total relationship, up to level 150. Each level grants one ability point."
+      "Unlock a customer with the one-off endless-location delivery in its region. Normal contracts give 10 relationship points, specials 25 and referrals 100. Customer level L requires 110 × L + 5 × L × (L−1) total relationship, up to level 150. Each level grants one ability point. Customers have no fixed transport category. Each newly generated normal order independently rolls 50% regional and 50% long-distance. Saved and active contracts keep their existing category. Follow-up contracts inherit the actual source contract category."
     ],
     [
       "Abilities",

@@ -7,7 +7,7 @@ import {itemName,rarityColor} from './items';
 import {C,Txt,n} from './ui';
 
 type Summary={
- count?:number;hermes?:number;seasonPoints?:number;specialOrders?:number;expeditionRefills?:number;overtimeRefills?:number;xp?:number;shards?:Record<string,number>;source?:string;pickupHints?:number;hubVehicleParts?:number;coins:number;gears:Record<string,number>;
+ count?:number;customerTrust?:number;hermes?:number;seasonPoints?:number;specialOrders?:number;customerOrders?:number;expeditionRefills?:number;overtimeRefills?:number;xp?:number;shards?:Record<string,number>;source?:string;pickupHints?:number;hubVehicleParts?:number;coins:number;gears:Record<string,number>;
  capacityModules:number;companyItems:number;supplierContacts:number;
 };
 type Reward={id:string;label:string;amount:number;icon:IconName;color:string};
@@ -16,8 +16,10 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
  if((summary.hermes||0)>0)rewards.push({id:'hermes',label:'Hermes-Siegel',amount:summary.hermes!,icon:'hermes',color:C.gold});
  if((summary.seasonPoints||0)>0)rewards.push({id:'seasonPoints',label:'Saisonpunkte',amount:summary.seasonPoints!,icon:'xp',color:C.accent});
  if((summary.specialOrders||0)>0)rewards.push({id:'project:special',label:'Sonderaufträge',amount:summary.specialOrders!,icon:'projects',color:C.gold});
+ if((summary.customerOrders||0)>0)rewards.push({id:'order:customer',label:'Kundenaufträge',amount:summary.customerOrders!,icon:'customers',color:C.accent});
  if(summary.coins>0)rewards.push({id:'coins',label:'Imperium-Taler',amount:summary.coins,icon:'coin',color:C.gold});
  if((summary.xp||0)>0)rewards.push({id:'xp',label:'XP',amount:summary.xp!,icon:'xp',color:C.accent});
+ if((summary.customerTrust||0)>0)rewards.push({id:'customerTrust',label:'Beziehungspunkte',amount:summary.customerTrust!,icon:'customers',color:C.accent});
  for(const rarity of rarities){
   const amount=summary.gears?.[rarity.id]||0;
   if(amount>0)rewards.push({id:`gear:${rarity.id}`,label:`${rarity.label}-${amount===1?'Zahnrad':'Zahnräder'}`,amount,icon:'gear',color:rarityColor(rarity.id)});
@@ -29,13 +31,10 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
  }
  const amountText=(reward:Reward)=>`+${n(reward.id==='coins'?Math.round(reward.amount):reward.amount,reward.id==='xp'?2:0)}`;
  return <View style={styles.content}>
-  <View style={styles.source}>
-   <Txt muted style={styles.sourceText}>{summary.source||'Einzelaufträge'}</Txt>
-   {summary.count!==undefined&&<View style={styles.count}><Txt style={styles.sourceText}>{n(summary.count)} {summary.count===1?'Abschluss':'Abschlüsse'}</Txt></View>}
-  </View>
+  <Txt testID="reward-source" muted style={styles.sourceText}>{summary.source||'Einzelaufträge'}</Txt>
   <ScrollView testID="claim-reward-list" style={styles.scroll} contentContainerStyle={styles.loot} showsVerticalScrollIndicator>
    {rewards.map((reward,index)=><View key={reward.id} testID={`claim-reward-${reward.id}`} style={[styles.row,index>0&&styles.separator]}>
-    <View style={styles.art}>{(['coins','xp','hermes','seasonPoints'].includes(reward.id))?<Icon name={reward.icon} size={52}/>:<ItemArt id={reward.id} size={52}/>}</View>
+    <View style={styles.art}>{(['coins','xp','hermes','seasonPoints','customerTrust'].includes(reward.id))?<Icon name={reward.icon} size={52}/>:<ItemArt id={reward.id} size={52}/>}</View>
     <View style={styles.rewardCopy}>
      <Txt style={styles.label}>{reward.label}</Txt>
      <Text literal style={[styles.amount,{color:reward.color}]}>{amountText(reward)}</Text>
@@ -46,9 +45,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
 }
 const styles=StyleSheet.create({
  content:{flexShrink:1},
- source:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginBottom:16},
- sourceText:{fontSize:12},
- count:{backgroundColor:C.greenWash,paddingHorizontal:8,paddingVertical:5,borderRadius:8},
+ sourceText:{fontSize:12,lineHeight:18,marginBottom:16},
  scroll:{flexShrink:1,flexGrow:0},
  loot:{paddingBottom:4},
  row:{flexDirection:'row',alignItems:'flex-start',gap:8,paddingVertical:10,minHeight:72},

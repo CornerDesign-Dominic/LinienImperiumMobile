@@ -6,22 +6,28 @@ const setup=async()=>componentHarness('Season.tsx',{
  './i18n':{t:String,getLocale:()=> 'de-DE'},
  './ui':{C:require('../src/palette.json'),Txt:'Txt',Card:'Card',Row:'Row',Btn:'Btn',Bar:'Bar',n:x=>String(x),remaining:()=> '12:00:00'}
 });
-const base=()=>({id:'2026-11:1',price:1000,status:'active',startsAt:Date.UTC(2026,10,1),endsAt:Date.UTC(2026,11,1),points:10000,level:10,pointsPerLevel:1000,premium:false,freeClaimed:[],premiumClaimed:[],dailyVersion:1,dailies:[{id:'daily-1',title:'Logge dich ein',target:1,progress:1,points:100,rewards:[],claimed:false,complete:true}],monthlies:[{id:'monthly-1',title:'Schließe 600 Einzelaufträge ab',target:600,progress:200,points:100,rewards:[{id:'coins',amount:10000}],claimed:false,complete:false}],infinity:{earned:0,claimed:0,available:0,reward:{id:'specialOrders',amount:1}}});
+const base=()=>({id:'2026-11:1',price:1000,status:'active',startsAt:Date.UTC(2026,10,1),endsAt:Date.UTC(2026,11,1),points:10000,level:10,pointsPerLevel:1000,premium:false,freeClaimed:[],premiumClaimed:[],dailyVersion:1,dailies:[{id:'daily-1',title:'Logge dich ein',target:1,progress:1,points:100,rewards:[],claimed:false,complete:true}],monthlies:[{id:'monthly-1',title:'Schließe 600 Einzelaufträge ab',target:600,progress:200,points:100,rewards:[{id:'coins',amount:10000}],claimed:false,complete:false}],infinity:{earned:0,claimed:0,available:0,reward:{id:'customerOrders',amount:1}}});
 const button=(tree,label)=>nodes(tree,'Btn').find(node=>text(node)===label);
-test('Season purchase confirms server price and exposes retroactive Premium rewards at level 10',async()=>{
- const h=await setup(),calls=[],props={pass:base(),seals:1000,clock:now,onCommand:async(...args)=>{calls.push(args);return {};}};
- let tree=h.render('Season',props);
- assert.ok(text(tree).includes('1000'));assert.ok(text(tree).includes('Berliner Zeit'));
- button(tree,'Für 1000 Hermes-Siegel freischalten').props.onPress();assert.equal(calls.length,0);
- tree=h.render('Season',props);assert.equal(nodes(tree,'RewardModal')[0].props.visible,true);
- await button(nodes(tree,'RewardModal')[0],'Kaufen').props.onPress();
- assert.deepEqual(JSON.parse(JSON.stringify(calls)),[['seasonPassBuy',{id:props.pass.id}]]);
- tree=h.render('Season',{...props,pass:{...props.pass,premium:true}});
+test('Locked Premium rewards at reached and future levels route to the wholesaler without buying',async()=>{
+ const h=await setup(),calls=[],visits=[],props={pass:base(),clock:now,onOpenShop:()=>visits.push('shop'),onCommand:async(...args)=>{calls.push(args);return {};}};
+ for(const level of [10,30]){
+  let tree=h.render('Season',props);
+  assert.ok(text(tree).includes('Berliner Zeit'));assert.equal(text(tree).includes('Premium-Seasonpass'),false);
+  const row=nodes(tree,'View').find(node=>node.props.testID===`season-level-${level}`);
+  const premium=require('react').Children.toArray(row.props.children).find(node=>node.props?.track==='premium');
+  const tile=h.render(premium.type,premium.props);
+  assert.equal(tile.props.accessibilityRole,'button');tile.props.onPress();
+  tree=h.render('Season',props);const modal=nodes(tree,'RewardModal')[0];
+  assert.equal(modal.props.visible,true);assert.equal(modal.props.title,'Gesperrt');assert.ok(text(modal).includes('Beim Händler freischalten'));
+  assert.equal(button(modal,'Kaufen'),undefined);button(modal,'Zum Großhändler').props.onPress();
+  assert.equal(nodes(h.render('Season',props),'RewardModal')[0].props.visible,false);
+ }
+ assert.equal(visits.length,2);assert.equal(calls.length,0);
+ const tree=h.render('Season',{...props,pass:{...props.pass,premium:true}});
  const row=nodes(tree,'View').find(node=>node.props.testID==='season-level-10');
  const premium=require('react').Children.toArray(row.props.children).find(node=>node.props?.track==='premium');
  await button(h.render(premium.type,premium.props),'Abholen').props.onPress();
- assert.deepEqual(JSON.parse(JSON.stringify(calls.at(-1))),['seasonClaim',{level:10,track:'premium',seasonId:props.pass.id}]);
- await button(tree,'Alles abholen').props.onPress();assert.equal(calls.at(-1)[0],'seasonClaimAll');
+ assert.deepEqual(JSON.parse(JSON.stringify(calls)),[['seasonClaim',{level:10,track:'premium',seasonId:props.pass.id}]]);
 });
 test('Season tabs show daily and monthly progress, route versioned claims and gate incomplete tasks',async()=>{
  const h=await setup(),calls=[],props={pass:base(),clock:now,onCommand:async(...args)=>calls.push(args)};
@@ -33,15 +39,37 @@ test('Season tabs show daily and monthly progress, route versioned claims and ga
  nodes(tree,'Pressable').find(node=>node.props.testID==='season-tab-monthly').props.onPress();
  tree=h.render('Season',props);assert.ok(text(tree).includes('600 Einzelaufträge'));assert.equal(button(tree,'Belohnung abholen').props.disabled,true);
 });
-test('Ended season and busy states block purchases and claims; infinity appears after the path',async()=>{
- const h=await setup(),props={pass:{...base(),level:30,points:31000,infinity:{earned:1,claimed:0,available:1,reward:{id:'specialOrders',amount:1}}},seals:1000,clock:now,onCommand:async()=>({})};
- let tree=h.render('Season',props);assert.equal(button(tree,'Sonderaufträge abholen').props.disabled,false);
- tree=h.render('Season',{...props,busy:true});assert.equal(button(tree,'Sonderaufträge abholen').props.disabled,true);
- tree=h.render('Season',{...props,clock:props.pass.endsAt});assert.equal(button(tree,'Sonderaufträge abholen').props.disabled,true);assert.equal(button(tree,'Alles abholen').props.disabled,true);assert.equal(button(tree,'Für 1000 Hermes-Siegel freischalten').props.disabled,true);
+test('Ended season and busy states block claims; infinity appears after the path',async()=>{
+ const h=await setup(),props={pass:{...base(),level:30,points:31000,infinity:{earned:1,claimed:0,available:1,reward:{id:'customerOrders',amount:1}}},clock:now,onCommand:async()=>({})};
+ let tree=h.render('Season',props);assert.equal(button(tree,'Kundenaufträge abholen').props.disabled,false);
+ tree=h.render('Season',{...props,busy:true});assert.equal(button(tree,'Kundenaufträge abholen').props.disabled,true);
+ tree=h.render('Season',{...props,clock:props.pass.endsAt});assert.equal(button(tree,'Kundenaufträge abholen').props.disabled,true);assert.equal(button(tree,'Alles abholen').props.disabled,true);
 });
 test('Reward modal lists seals, season points, refill items and infinite special orders together',()=>{
  const h=componentHarness('ClaimRewards.tsx',{'./Language':{Text:'Text'}});
- const tree=h.render('ClaimRewards',{summary:{coins:0,gears:{},hermes:3,seasonPoints:100,specialOrders:2,expeditionRefills:1,overtimeRefills:1},rarities:[]});
+ const tree=h.render('ClaimRewards',{summary:{coins:0,gears:{},hermes:3,seasonPoints:100,specialOrders:2,customerOrders:1,expeditionRefills:1,overtimeRefills:1},rarities:[]});
  const ids=nodes(tree,'View').map(node=>node.props.testID);
- for(const id of ['hermes','seasonPoints','project:special','expeditionRefills','overtimeRefills'])assert.ok(ids.includes('claim-reward-'+id),id);
+ for(const id of ['hermes','seasonPoints','project:special','order:customer','expeditionRefills','overtimeRefills'])assert.ok(ids.includes('claim-reward-'+id),id);
+});
+
+test('Season tabs lead the page and compact path tiles preserve accessible loot and distinct states',async()=>{
+ const h=await setup(),props={pass:{...base(),freeClaimed:[1]},clock:now,onCommand:async()=>{},onOpenShop:()=>{}};
+ let tree=h.render('Season',props),children=require('react').Children.toArray(tree.props.children);
+ assert.equal(children[0].props.accessibilityRole,'tablist');assert.ok(text(children[1]).includes('Monatsseason'));
+ assert.ok(text(children[1]).includes('1000 Punkte pro Stufe'));assert.equal(text(children[1]).includes(' / 30'),false);
+ assert.equal(text(tree).includes('Sammelt alle verfügbaren'),false);
+ const tileAt=(level,track)=>{const row=nodes(tree,'View').find(node=>node.props.testID===`season-level-${level}`);const component=require('react').Children.toArray(row.props.children).find(node=>node.props?.track===track);return h.render(component.type,component.props);};
+ const claimed=tileAt(1,'free'),ready=tileAt(2,'free'),upcoming=tileAt(30,'free');
+ assert.ok(text(claimed).includes('Abgeholt'));assert.ok(text(ready).includes('Abholbereit'));assert.ok(text(upcoming).includes('Gesperrt'));
+ assert.equal(text(ready).includes('Imperium-Taler'),false);assert.ok(ready.props.accessibilityLabel.includes('Imperium-Taler'));
+ assert.notDeepEqual(claimed.props.style,ready.props.style);assert.notDeepEqual(ready.props.style,upcoming.props.style);
+ for(const id of ['daily','monthly']){nodes(tree,'Pressable').find(n=>n.props.testID===`season-tab-${id}`).props.onPress();tree=h.render('Season',props);assert.equal(require('react').Children.toArray(tree.props.children)[0].props.accessibilityRole,'tablist');}
+});
+test('Infinity shows the next500point fraction, customer art, available claims and pending-customer gate',async()=>{
+ const h=await setup(),calls=[],props={pass:{...base(),level:30,points:31150,infinity:{earned:2,claimed:0,available:2,pointsPerReward:500,progress:150,eligible:true,reward:{id:'customerOrders',amount:1}}},clock:now,onCommand:async(...args)=>calls.push(args),onOpenShop:()=>{}};
+ let tree=h.render('Season',props),card=nodes(tree,'Card').find(node=>node.props.testID==='season-infinity');
+ assert.ok(text(card).includes('150 / 500'));assert.ok(text(card).includes('2 abholbar'));assert.equal(nodes(card,'Bar')[0].props.value,30);assert.equal(nodes(card,'ItemArt')[0].props.id,'order:customer');
+ await button(card,'Kundenaufträge abholen').props.onPress();assert.deepEqual(JSON.parse(JSON.stringify(calls)),[['seasonInfinityClaim',{seasonId:props.pass.id}]]);
+ tree=h.render('Season',{...props,pass:{...props.pass,infinity:{...props.pass.infinity,eligible:false}}});card=nodes(tree,'Card').find(node=>node.props.testID==='season-infinity');assert.equal(button(card,'Kundenaufträge abholen').props.disabled,true);assert.ok(text(card).includes('bleiben gespeichert'));
+ tree=h.render('Season',{...props,pass:{...props.pass,points:31500,infinity:{...props.pass.infinity,earned:3,available:3,progress:0}}});card=nodes(tree,'Card').find(node=>node.props.testID==='season-infinity');assert.equal(nodes(card,'Bar')[0].props.value,0);
 });

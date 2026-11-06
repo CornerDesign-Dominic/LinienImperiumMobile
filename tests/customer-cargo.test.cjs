@@ -23,7 +23,7 @@ test('Every region creates customer projects from its three products and referra
   const goods=cargo.customers[identity.id];assert.equal(goods.products.length,3);
   const catalog=start.view.catalog.customers.find(c=>c.id===identity.id);
   assert.deepEqual(catalog.products,goods.products);assert.equal(catalog.preciousCargo,goods.precious);
-  const special=execute(start.state,'draw',{region},now,()=>.97).state.orders.find(o=>o.kind==='special');
+  const special=execute(start.state,'draw',{region},now,()=>.995).state.orders.find(o=>o.kind==='special');
   assert.ok(special,'special job created');assert.equal(special.customer,identity.id);
   assert.ok(goods.products.includes(special.cargo));
   const referral=execute(start.state,'draw',{region},now,()=>.999).state.orders.find(o=>o.kind==='referral');

@@ -17,14 +17,14 @@ test('All five customer details show their three products and precious good with
   assert.equal(JSON.stringify(customer),before);h.unmount();
  }
 });
-test('Customer metadata uses the real traffic label and canonical customer region with distinct icons',()=>{
+test('Customer goods omit traffic and origin metadata',()=>{
  const {h,tree}=setup({id:'stahlwerk',name:'Bund der Karawanenhändler',category:'national',regionName:'Historische Region',products:[],preciousCargo:'Kostbare Essenzen'});
  const traffic=nodes(tree,'View').find(n=>n.props.testID==='customer-traffic'),origin=nodes(tree,'View').find(n=>n.props.testID==='customer-origin');
- assert.equal(text(traffic),'VerkehrNahverkehr');assert.equal(nodes(traffic,'Icon')[0].props.name,'truck');
- assert.equal(text(origin),'HerkunftSafranstraße');assert.equal(nodes(origin,'Icon')[0].props.name,'expedition');h.unmount();
+ assert.equal(traffic,undefined);assert.ok(!text(tree).includes('Nahverkehr'));
+ assert.equal(origin,undefined);assert.ok(!text(tree).includes('Herkunft'));h.unmount();
 });
-test('Legacy customer display falls back to known cargo and supplied origin without inventing missing goods',()=>{
+test('Legacy customer goods fall back to known cargo without inventing missing goods',()=>{
  const {h,tree}=setup({id:'legacy',name:'Altbestand',category:'international',cargo:'Historische Fracht',regionName:'Alte Herkunft'});
  assert.deepEqual(nodes(tree,'OrderArtwork').map(n=>n.props.cargo),['Historische Fracht']);
- assert.ok(text(tree).includes('Alte Herkunft'));assert.ok(text(tree).includes('international'));h.unmount();
+ assert.ok(!text(tree).includes('Herkunft'));assert.ok(!text(tree).includes('international'));h.unmount();
 });

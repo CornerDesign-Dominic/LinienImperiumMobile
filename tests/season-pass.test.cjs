@@ -56,15 +56,15 @@ test('Task definitions scale month workload, each awards100XP, daily rolls are s
  assert.throws(()=>command(rolled,'seasonTaskClaim',p),/Tagesaufgaben geändert|Seasonaufgabe nicht verfügbar/);
  const next=command(claimed,'sync',{},claimed.view.seasonPass.nextDailyAt);assert.equal(next.view.seasonPass.dailyVersion,oldVersion+1);assert.equal(next.state.season.dailyMetrics.singles,0);
 });
-test('All-claim applies task loot first, then both reached tracks, infinity special contracts once',()=>{
- let g=initial();g.state.season.points=30900;g.state.premiumShop.ownedSeasonPasses.push(g.view.seasonPass.id);
+test('All-claim applies task loot first, then both reached tracks, 500-point customer orders once',()=>{
+ let g=initial();g.state.expedition.regions[0].customerUnlocked=true;g.state.season.points=30900;g.state.premiumShop.ownedSeasonPasses.push(g.view.seasonPass.id);
  g.state.season.metrics.projects=20;g.state.season.dailyClaims=['login'];g.state.season.dailyMetrics=Object.fromEntries(Object.entries(g.state.season.dailyMetrics).map(([k,v])=>[k,Array.isArray(v)?[]:0]));
  const coins=g.state.coins,orders=g.state.orders.length,modules=g.state.inventory.capacityModules;
  const result=command(g,'seasonClaimAll',{seasonId:g.view.seasonPass.id});
  assert.equal(result.view.seasonPass.level,30);assert.equal(result.view.seasonPass.points,31000);
  assert.equal(result.view.seasonPass.freeClaimed.length,30);assert.equal(result.view.seasonPass.premiumClaimed.length,30);
- assert.equal(result.view.claimSummary.specialOrders,1);assert.equal(result.state.orders.length,orders+1);
- assert.equal(result.state.orders.at(-1).kind,'special');assert.equal(result.state.orders.at(-1).status,'queued');
+ assert.equal(result.view.claimSummary.customerOrders,2);assert.equal(result.view.claimSummary.specialOrders,0);assert.equal(result.state.orders.length,orders+2);
+ assert.equal(result.state.orders.at(-1).kind,'normal');assert.equal(result.state.orders.at(-1).customer,'nordbau');assert.equal(result.state.orders.at(-1).isProject,undefined);assert.equal(result.state.orders.at(-1).status,'queued');
  assert.equal(result.view.claimSummary.seasonPoints,100);assert.equal(result.state.inventory.capacityModules,modules+5);
  assert.ok(result.state.coins>coins);assert.equal(result.view.seasonPass.infinity.available,0);
  const repeated=command(result,'seasonClaimAll',{seasonId:result.view.seasonPass.id});assert.equal(repeated.state.coins,result.state.coins);assert.equal(repeated.state.orders.length,result.state.orders.length);
@@ -111,7 +111,8 @@ test('Single completions record category, unique daily customers and earned tran
  g=command(g,'assign',{order:'SEASONSINGLE',truck:truck.id});assert.equal(g.state.orders[0].status,'active');
  const at=g.view.state.orders.find(o=>o.id==='SEASONSINGLE').runningEndsAt;
  g=command(g,'sync',{},at);assert.equal(g.state.orders.find(o=>o.id==='SEASONSINGLE').status,'completed');
- assert.equal(g.state.season.metrics.singles,1);assert.equal(g.state.season.metrics.local,1);assert.equal(g.state.season.metrics.customerOrders,1);assert.equal(g.state.season.metrics.customers,1);assert.ok(g.state.season.metrics.coins>0);
+ assert.equal(g.state.season.metrics.singles,1);assert.equal(g.state.season.metrics.local,1);assert.equal(g.state.season.metrics.customerOrders,1);assert.equal(g.state.season.metrics.customers,1);assert.equal(g.state.season.metrics.coins,0);
+ g=command(g,'claimSingles',{},at);assert.ok(g.state.season.metrics.coins>0);
  const before=g.state.season.metrics.coins;
  const again=command(g,'sync',{},at);assert.equal(again.state.season.metrics.singles,1);assert.equal(again.state.season.metrics.coins,before);
 });
@@ -126,4 +127,34 @@ test('Lost delivery and procurement hooks count actual collections and finished 
  const nextAt=g.state.procurement.runs[0].nextAt;
  g=command(g,'sync',{},nextAt);assert.equal(g.state.season.metrics.procurement,1);
  const same=command(g,'sync',{},nextAt);assert.equal(same.state.season.metrics.procurement,1);
+});
+
+
+test('Infinity starts at 500 extra points and queues normal unlocked customer orders with 50/50 traffic',()=>{
+ for(const [roll,category]of [[.2,'national'],[.8,'international']]){
+  let g=initial();g.state.expedition.regions[1].customerUnlocked=true;g.state.season.points=30499;
+  g=command(g,'sync');assert.equal(g.view.seasonPass.infinity.available,0);assert.equal(g.view.seasonPass.infinity.progress,499);assert.equal(g.view.seasonPass.infinity.pointsPerReward,500);
+  g.state.season.points=30500;const before=g.state.orders.length,id=g.view.seasonPass.id;
+  const reward=command(g,'seasonInfinityClaim',{seasonId:id},NOW,()=>roll);
+  assert.equal(reward.view.claimSummary.customerOrders,1);assert.equal(reward.state.orders.length,before+1);
+  const order=reward.state.orders.at(-1);assert.equal(order.kind,'normal');assert.equal(order.customer,'frischgut');assert.equal(order.category,category);assert.equal(order.status,'queued');assert.equal(order.isProject,undefined);
+  assert.equal(reward.state.season.infinityPointsConsumed,500);assert.equal(reward.view.seasonPass.infinity.progress,0);assert.equal(reward.view.seasonPass.infinity.available,0);
+  assert.equal(command(reward,'seasonInfinityClaim',{seasonId:id}).state.orders.length,before+1);
+  reward.state.season.points=31000;const second=command(reward,'seasonInfinityClaim',{seasonId:id});assert.equal(second.view.claimSummary.customerOrders,1);assert.equal(second.state.orders.length,before+2);
+ }
+});
+test('Infinity without eligible customers retains points while all-claim collects other earned loot',()=>{
+ let g=initial();g.state.season.points=31000;const orders=g.state.orders.length;
+ assert.equal(command(g,'sync').view.seasonPass.infinity.eligible,false);
+ g=command(g,'seasonInfinityClaim',{seasonId:g.view.seasonPass.id});assert.equal(g.state.orders.length,orders);assert.equal(g.state.season.infinityPointsConsumed,0);assert.equal(g.view.seasonPass.infinity.available,2);
+ g=command(g,'seasonClaimAll',{seasonId:g.view.seasonPass.id});assert.equal(g.view.seasonPass.freeClaimed.length,30);assert.equal(g.view.seasonPass.infinity.available,2);assert.equal(g.state.season.infinityPointsConsumed,0);
+ g.state.expedition.regions[2].customerUnlocked=true;g=command(g,'seasonInfinityClaim',{seasonId:g.view.seasonPass.id});assert.equal(g.view.claimSummary.customerOrders,2);assert.equal(g.view.seasonPass.infinity.available,0);assert.ok(g.state.orders.slice(-2).every(order=>order.customer==='stahlwerk'));
+});
+test('Legacy infinity payouts consume their original 1000-point budget and preserve Premium claims on reload',()=>{
+ let g=initial();g.state.season.points=32500;g.state.season.infinityClaimed=2;delete g.state.season.infinityPointsConsumed;
+ g.state.season.premiumClaimed=[2,10];g.state.premiumShop.ownedSeasonPasses=[g.view.seasonPass.id];g.state.expedition.regions[0].customerUnlocked=true;
+ const orders=g.state.orders.length;g=command(g,'sync');assert.equal(g.state.season.infinityPointsConsumed,2000);assert.equal(g.view.seasonPass.infinity.available,1);assert.equal(g.view.seasonPass.infinity.claimed,4);assert.equal(g.view.seasonPass.infinity.paidOut,2);assert.deepEqual(g.view.seasonPass.premiumClaimed,[2,10]);assert.equal(g.view.seasonPass.premium,true);
+ g=command(g,'seasonInfinityClaim',{seasonId:g.view.seasonPass.id});assert.equal(g.view.claimSummary.customerOrders,1);assert.equal(g.state.orders.length,orders+1);assert.equal(g.state.season.infinityPointsConsumed,2500);
+ g=command(JSON.parse(JSON.stringify(g.state)),'sync');assert.equal(g.view.seasonPass.infinity.available,0);assert.equal(g.state.season.infinityPointsConsumed,2500);assert.equal(g.state.season.infinityClaimed,3);assert.deepEqual(g.view.seasonPass.premiumClaimed,[2,10]);
+ assert.equal(command(g,'seasonClaimAll',{seasonId:g.view.seasonPass.id}).state.orders.length,orders+1);
 });

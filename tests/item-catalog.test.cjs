@@ -45,11 +45,12 @@ test('Available recipes exclude company-item crafting and return outputs to inve
 
 test('Found jobs stack by kind and rank, queued projects appear, and running work leaves inventory',()=>{
  let game=initial();game.state.expedition.regions[0].endlessUnlocked=true;game.state.expedition.points=100;
- game=execute(game.state,'draw',{region:0},now,()=>.5);
+ game.state.expedition.jobs.push({id:game.state.expedition.nextMission++,region:0,kind:'material',tier:1,createdAt:now});
+ game=execute(game.state,'sync',{},now,()=>.5);
  const job=game.state.expedition.jobs[0];assert.ok(job);
  game.state.expedition.jobs.push({...job,id:job.id+100,region:1});
  game.state.expedition.nextMission+=101;
- game=execute(game.state,'draw',{region:0},now,()=>.97);
+ game=execute(game.state,'draw',{region:0},now,()=>.995);
  const project=game.view.state.orders.find(o=>o.isProject&&o.status==='queued');assert.ok(project);
  let stock=stockItems(game.view);
  assert.equal(stock.find(i=>i.id===`job:${job.kind}:${job.tier}`).amount,2);

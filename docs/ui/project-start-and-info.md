@@ -9,3 +9,13 @@ Der abgeschlossene Kategorienverlauf entfällt. Laufende Aufträge und noch abzu
 Kategorie-, Hilfe-, Start- und Detailansichten verwenden dieselben kundenbezogenen [Sonderauftragstitel](project-category-overview.md), auch bei Altaufträgen. Die aktuellen Edelwarenbilder und die schlichte Regionsbeschriftung bleiben erhalten. Das Fragezeichen startet keinen Auftrag und konsumiert keinen Vorrat.
 
 Prüfung: zwei Kategorie-/Startablauftests sowie TypeScript. Die vorhandene Android-Exportprüfung des parallel erstellten Edelwarenpakets lief mit diesem lokalen Projects-Code erfolgreich. Keine native Geräte- oder visuelle Touchprüfung verfügbar.
+
+## Laufende Detailansicht (gesammelt, nicht veröffentlicht)
+
+Alle regionalen Sonderaufträge und der Empfehlungsauftrag verwenden die gemeinsame Detaildarstellung. Der reine Auftragsname steht als petrolfarbener Titelbalken mit Messingkontur oberhalb des bestehenden Szenenbilds. Direkt unter dem Bild folgen die gelieferte/gesamte Tonnenmenge und ein daraus berechneter Fortschrittsbalken; Auftragstyp und Name werden dort nicht wiederholt. Frist und verbleibende Flottenzeit bleiben darunter sichtbar.
+
+Die eingesetzte Flotte erscheint als petrolfarbenes, messingumrandetes Flottenabzeichen. Jede Fahrzeug-/Tourzeile beginnt mit dem passenden Fahrzeugbild aus dem Kartenkatalog, danach folgen Name, Tourzeit, Ankunftsmenge und gegebenenfalls der bereits vorhandene Wechselhinweis. Fehlende historische Kartenreferenzen erhalten die vorhandene neutrale Fahrzeugdarstellung.
+
+In der ausführlichen Information entfällt der Start-/Mindestkartenhinweis. Die zweite Karte heißt **Möglicher Fund** und zeigt ausschließlich die möglichen Gegenstände als Bilder: Zahnräder der angebotenen Seltenheiten, Kapazitätsmodul und Hermes-Siegel, sofern im Katalog vorgesehen. Es stehen maximal fünf Bilder pro Zeile. Mengen und Fundchancen sind dort nicht sichtbar; die Symbole besitzen für Screenreader Namen. Die Herkunftsangaben bleiben erhalten, die Weiterleitungsbuttons zu Expedition und Stammkunden entfallen.
+
+Die Kategorie-Kurzinfo, Startbestätigung, Spielregeln, Fahrzeugzuordnung und Belohnungsauszahlung werden dadurch nicht verändert. Die separate Bereinigung der abgeschlossenen Lieferscheine aus PR #17 bleibt enthalten. Zwei zusätzliche Darstellungstests prüfen alle sechs Katalogvarianten auf Fundraster, Titel, Fortschrittsverhältnis und passende Fahrzeugbilder. Keine physische Gerätedarstellung geprüft.

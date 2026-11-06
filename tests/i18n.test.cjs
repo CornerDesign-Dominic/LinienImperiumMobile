@@ -17,12 +17,13 @@ test('Static and dynamic display messages localize without translating unknown n
  assert.equal(t('Sonderauftrag Materialbergung'),'Special contract Material recovery');
  assert.equal(t('Sonderauftrag Schmuck der Krone'),'Special contract Jewels of the Crown');
  assert.equal(t('Sonderauftrag Schmuck der Krone, Kronenlande, Aufträge 2'),'Special contract Jewels of the Crown, Crownlands, contracts 2');
- assert.equal(t('Gibt 50 Expeditionspunkte – auch über das Maximum hinaus.'),'Adds 50 expedition points, even beyond the maximum.');
+ assert.equal(t('Füllt Expeditionspunkte bis zu deinem Maximum auf. Aktuell +170 Punkte.'),'Fills expedition points to your maximum. Currently +170 points.');
+ assert.equal(t('Handelstruhe kaufen · 200 Hermes-Siegel'),'Buy trade chest · 200 Hermes seals');
  assert.equal(t('Common-Zahnräder'),'Common gears');
  assert.equal(t('Regionalverkehr · Kurz · Single Way'),'Regional transport · Short · Single Way');
  assert.equal(t('  Schließen  '),'  Close  ');
  for(const raw of ['Nordstern Logistik','cardCapacity','navigator','01:23:45','4.5 t','a@company.de'])assert.equal(t(raw),raw);
- assert.ok(localizedHelp('expeditions',[]).length);assert.ok(localizedHelp('inventory',[]).some(row=>row[1].includes('50 points')));
+ assert.ok(localizedHelp('expeditions',[]).length);assert.ok(localizedHelp('inventory',[]).some(row=>row[1].includes('personal maximum')));
  setLanguage('de');assert.deepEqual(localizedHelp('inventory',[['Original','Deutsch']]),[['Original','Deutsch']]);
 });
 test('Catalog interpolation placeholders match and all game help sections have English entries',()=>{

@@ -40,8 +40,8 @@ async function main(){
   const overtime=await call('testGrant',{kind:'overtime',amount:100});assert.equal(overtime.state.overtimePoints,200);
   const xpId=crypto.randomUUID();await call('testGrant',{kind:'xp',amount:100},xpId);
   const xp=await call('testGrant',{kind:'xp',amount:100},xpId);assert.equal(xp.state.xp,100);assert.equal(xp.state.inventory.overtimeRefills,1);assert.equal(xp.state.inventory.expeditionRefills,1);assert.equal(xp.state.expedition.points,150);
-  const expUseId=crypto.randomUUID();await call('expeditionRefill',{},expUseId);const expUsed=await call('expeditionRefill',{},expUseId);assert.equal(expUsed.state.expedition.points,200);assert.equal(expUsed.state.inventory.expeditionRefills,0);
-  const otUseId=crypto.randomUUID();await call('refill',{},otUseId);const otUsed=await call('refill',{},otUseId);assert.equal(otUsed.state.overtimePoints,250);assert.equal(otUsed.state.inventory.overtimeRefills,0);
+  const expUseId=crypto.randomUUID();await call('expeditionRefill',{},expUseId);const expUsed=await call('expeditionRefill',{},expUseId);assert.equal(expUsed.state.expedition.points,150);assert.equal(expUsed.state.inventory.expeditionRefills,1);
+  const otUseId=crypto.randomUUID();await call('refill',{},otUseId);const otUsed=await call('refill',{},otUseId);assert.equal(otUsed.state.overtimePoints,200);assert.equal(otUsed.state.inventory.overtimeRefills,1);
   const unauth=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{action:'sync'}})});
   assert.equal(unauth.status,401);
   const season=await call('seasonStart');assert.equal(season.seasonPass.status,'active');assert.equal(season.seasonPass.dailies.length,4);assert.equal(season.seasonPass.price,1000);assert.equal(season.seasonPass.level,0);assert.ok(season.seasonPass.endsAt>season.serverTime);

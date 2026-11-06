@@ -133,8 +133,7 @@ const finishProjectBeforeDeferredPayout=finishFleetProject;
 finishFleetProject=(order,at)=>{finishProjectBeforeDeferredPayout(order,at);if(order.status==='completed')describeProjectPayout(order);};
 const applyRewardBeforeDeferredPayout=applyOrderReward;
 applyOrderReward=order=>{
-  if(!order?.project||!PROJECT_DEADLINES[order.kind])return applyRewardBeforeDeferredPayout(order);
-  if(order.status!=='completed'||!order.completionReward||order.completionReward.claimedAt)return false;
+  if(order?.status!=='completed'||!order.completionReward||order.completionReward.claimedAt)return false;
   describeProjectPayout(order);
   if(!applyRewardBeforeDeferredPayout(order))return false;
   const pending=order.deferredTransport;
@@ -144,6 +143,11 @@ applyOrderReward=order=>{
     game.stats.grossRevenue=round2(game.stats.grossRevenue+pending.revenue);
     awardTransportXp(pending.xp);
   }
+  const reward=order.completionReward;
+  if(reward.customerTrust>0&&!order.trustAwarded){
+    game.customerTrust[order.customer]=(game.customerTrust[order.customer]||0)+reward.customerTrust;order.trustAwarded=true;
+  }
+  if(reward.followupKind)queueCustomerTrip(order,reward.followupKind);
   return true;
 };
 settleFleetProjects=(now=Date.now())=>{
@@ -220,16 +224,15 @@ function queueSingleVehicle(orderId, truckId) {
 function finishSingleTourOrder(order, truck, at) {
   order.status = 'completed'; order.completedAt = at; order.tripStartAt = null; order.tripCargo = null;
   delete order.tripSnapshot; delete order.pendingTruckId;
-  if (order.customer && !order.trustAwarded) {
-    game.customerTrust[order.customer] = (game.customerTrust[order.customer] || 0) + (TRUST_REWARDS[order.kind] || 0);
-    order.trustAwarded = true;
-  }
   const itemProgress = companyItemProgress(order);
   game.inventory.companyItemTkmRemainder = itemProgress.remainder;
   order.completionReward = makeCompletionReward(order, itemProgress.items);
+  // The outcome is frozen at completion, but nothing is granted before collection.
+  if(order.customer&&!order.trustAwarded)order.completionReward.customerTrust=TRUST_REWARDS[order.kind]||0;
+  describeProjectPayout(order);
   const rules = SPECIAL_CHANCES[order.category];
-  if (rules && order.customer && order.kind === 'normal' && Math.random() < customerTripChance(order, 'award')) queueCustomerTrip(order, 'special');
-  if (rules && order.customer && order.kind === 'special' && Math.random() < customerTripChance(order, 'referral')) queueCustomerTrip(order, 'referral');
+  if (rules && order.customer && order.kind === 'normal' && Math.random() < customerTripChance(order, 'award')) order.completionReward.followupKind='special';
+  if (rules && order.customer && order.kind === 'special' && Math.random() < customerTripChance(order, 'referral')) order.completionReward.followupKind='referral';
   game.completed++; if (truck) truck.ordersCompleted = (truck.ordersCompleted || 0) + 1;
 }
 settleTrips = now => {
@@ -240,13 +243,12 @@ settleTrips = now => {
     while (order.status === 'active' && order.tripSnapshot?.endsAt <= now) {
       const snapshot = order.tripSnapshot, at = snapshot.endsAt, totals = snapshot.accounting;
       const truck = truckById(order.truckId);
-      game.coins = round2(game.coins + totals.revenue - totals.cost);
-      game.stats.grossRevenue = round2(game.stats.grossRevenue + totals.revenue);
-      __seasonRecord(game,'coins',totals.revenue,at);
+      const pending=deferredProjectTransport(order);
+      pending.revenue=round2(pending.revenue+totals.revenue);pending.xp=round2(pending.xp+totals.xp);
+      game.coins = round2(game.coins - totals.cost);
       game.stats.operatingCosts = round2(game.stats.operatingCosts + totals.cost);
       game.stats.trips++; game.stats.tons += totals.tons; game.stats.km += totals.km;
       game.stats.tonKm += totals.tons * order.distance;
-      awardTransportXp(totals.xp);
       if (truck) { truck.kmDriven = (truck.kmDriven || 0) + totals.km; truck.toursCompleted = (truck.toursCompleted || 0) + 1; }
       order.bookedTransport ||= {revenue:0,cost:0,xp:0};
       for (const key of ['revenue','cost','xp']) order.bookedTransport[key] = round2(order.bookedTransport[key] + totals[key]);

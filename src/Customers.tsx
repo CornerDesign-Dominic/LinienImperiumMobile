@@ -37,11 +37,8 @@ export function CustomerDetail({data,id,busy,onSave}:any){
  const assigned=Object.values(draft).reduce((a,b)=>a+b,0),left=customer.points-assigned;
  const editing=customer.points>0||assigned>0;
  const valid=assigned>0&&left>=0&&SKILLS.every(skill=>(customer.skills[skill.kind]||0)+draft[skill.kind]<=skill.limit);
- const region=data.expeditionMap.find((r:any)=>r.customer.id===id);
- const category=data.catalog.categories.find((c:any)=>c.id===customer.category);
  const products=Array.isArray(customer.products)&&customer.products.length?customer.products:[customer.cargo];
  const goods=[...products,customer.preciousCargo].filter((product,index,all):product is string=>typeof product==='string'&&product.length>0&&all.indexOf(product)===index);
- const origin=regionIdentities.find(identity=>identity.id===id)?.title||customer.regionName||region?.name||'Expedition';
  return <>
   <View style={styles.summary}><CustomerScene customer={customer} detail/></View>
   <Card><Row><Txt style={styles.title}>Verbesserungen</Txt>{editing&&<Pill gold>{Math.max(0,left)} {left===1?'Punkt':'Punkte'}</Pill>}</Row>
@@ -62,16 +59,11 @@ export function CustomerDetail({data,id,busy,onSave}:any){
    <View testID="customer-goods" style={styles.goods}>{goods.map(product=><View key={product} style={styles.good}>
     <OrderArtwork cargo={product} size={44}/><Txt style={styles.goodName}>{product}</Txt>
    </View>)}</View>
-   <View style={styles.metadata}>
-    <View testID="customer-traffic" style={styles.metadataField}><View style={styles.metadataLabel}><Icon name="truck" size={16}/><Txt muted style={styles.small}>Verkehr</Txt></View><Txt style={styles.metadataValue}>{category?.label||customer.category}</Txt></View>
-    <View testID="customer-origin" style={styles.metadataField}><View style={styles.metadataLabel}><Icon name="expedition" size={16}/><Txt muted style={styles.small}>Herkunft</Txt></View><Txt style={styles.metadataValue}>{origin}</Txt></View>
-   </View>
   </Card>
  </>;
 }
 const styles=StyleSheet.create({summary:{backgroundColor:C.ink,borderColor:C.line,borderWidth:1,borderRadius:6,overflow:'hidden',marginBottom:5},
  goods:{flexDirection:'row',alignItems:'flex-start',gap:6},good:{flex:1,minWidth:0,alignItems:'center',gap:5},goodName:{fontSize:10,lineHeight:14,textAlign:'center',alignSelf:'stretch'},
- metadata:{flexDirection:'row',gap:8,marginTop:12},metadataField:{flex:1,minWidth:0,padding:8,borderWidth:1,borderColor:C.line,borderRadius:5,backgroundColor:C.raised},metadataLabel:{flexDirection:'row',alignItems:'center',gap:5,marginBottom:4},metadataValue:{fontSize:12,lineHeight:17,fontWeight:'600'},
  scene:{height:118,backgroundColor:C.ink,overflow:'hidden'},detailScene:{height:200},
  level:{position:'absolute',top:9,right:9,paddingHorizontal:8,paddingVertical:3,borderWidth:1,borderColor:C.brass,borderRadius:5,backgroundColor:'#F2E8D0'},
  levelText:{fontSize:11,lineHeight:16,fontWeight:'700',color:C.ink},pointDot:{position:'absolute',right:-4,top:-4,width:9,height:9,borderRadius:5,backgroundColor:C.accent,borderWidth:1.5,borderColor:'#F2E8D0'},

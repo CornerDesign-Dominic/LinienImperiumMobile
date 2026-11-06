@@ -15,7 +15,7 @@ test('Inventory sections retain every visible catalog item once, sort rarities a
  assert.deepEqual(new Set(flattened.map(item=>item.id)),new Set(items.map(item=>item.id)));
  assert.equal(flattened.length,items.length);
  assert.ok(flattened.every(item=>items.includes(item)),'Use the original stock object, including its action metadata');
- assert.deepEqual(sections.map(section=>section.id),['refills','upgrades','crafting','materials','shards','orders','other']);
+ assert.deepEqual(sections.map(section=>section.id),['refills','chests','upgrades','crafting','materials','shards','orders','other']);
  assert.deepEqual(sections.find(s=>s.id==='materials').items.map(i=>i.id),view.catalog.rarities.map(r=>'gear:'+r.id));
  assert.deepEqual(sections.find(s=>s.id==='orders').items.slice(0,6).map(i=>i.id),['job:material:1','job:material:2','job:material:3','job:character:1','job:character:2','job:character:3']);
  assert.equal(sections.at(-1).items[0].id,'new-future-supply');

@@ -2,6 +2,7 @@ import type {StockItem} from './items';
 
 const sections=[
  {id:'refills',title:'Auffüller'},
+ {id:'chests',title:'Handelstruhen'},
  {id:'upgrades',title:'Ausbau'},
  {id:'crafting',title:'Herstellung'},
  {id:'materials',title:'Materialien'},
@@ -11,6 +12,7 @@ const sections=[
 ] as const;
 type SectionId=typeof sections[number]['id'];
 const fixed:Record<string,{section:SectionId;rank:number}>={
+ tradeChests:{section:'chests',rank:0},
  expeditionRefills:{section:'refills',rank:0},overtimeRefills:{section:'refills',rank:1},
  capacityModules:{section:'upgrades',rank:0},companyItems:{section:'upgrades',rank:1},hubVehicleParts:{section:'upgrades',rank:2},supplierContacts:{section:'upgrades',rank:3},
  pickupHints:{section:'crafting',rank:0}
