@@ -1,8 +1,12 @@
 # Offene Arbeiten und Veröffentlichungsstand
 
-Stand: 06.11.2026. Veröffentlichtes Sammelpaket: `0c92e343874107085fbff6a64bd5732c5b21f497`.
+Stand: 06.11.2026. Letzte Spielveröffentlichung: `7d12699d15bc52eda6128d2732ebb4ab97a1b227`.
 
 ## Letzte Veröffentlichung
+
+Das Paket **Wombat-Boten** ist über [Mobile-preview-Lauf 42288523886](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42288523886) erfolgreich veröffentlicht: TypeScript, 377 Tests, Android-Export, Firebase-Deployment, Live-API-Prüfung und Android-OTA im Kanal preview. Es enthält Waldwombat, Steinwombat, Postwombat, Kronenbote und Küstenwombat beim Großhändler unter Skins für **insgesamt 250 Hermes-Siegel**. Der Standard bleibt kostenlos; Auswahl gilt für alle Boten. Live geprüft: unzureichendes Guthaben, autoritativer Gesamtpreis, alle fünf Freischaltungen, doppelte Anfrage/erneuter Kauf ohne Doppelabbuchung, Auswahl aller Skins und Erhalt nach erneutem Laden/Reset. Browserdarstellung bei 320/360/390/430px geprüft. Keine neue APK und kein physischer Gerätetest.
+
+## Vorheriges Sammelpaket
 
 [Mobile-preview-Lauf 42235427062](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42235427062) bestätigt TypeScript, 370 bestandene Tests, Android-Export, Firebase-Deployment, Live-API-Prüfung und Android-OTA im Kanal preview. Keine neue APK und kein physischer Gerätetest.
 
@@ -19,7 +23,7 @@ Nachweise: [Prüfstand](TEST_REPORT.md), [Expeditions-/Truhenbalance](docs/gamep
 
 ## Gesammelt, noch nicht veröffentlicht
 
-Wombat-Boten: fünf freigegebene Skins als gemeinsames Paket beim Großhändler für insgesamt 250 Hermes-Siegel. Kauf, dauerhafte Freischaltung, Vorschauen und globale Boten-Auswahl sind umgesetzt. 377 Tests, TypeScript, Android-Export und Browserprüfung bei 320–430px bestanden. Veröffentlichung durch den Nutzer in diesem Auftrag ausdrücklich beauftragt; Backend und Android-OTA noch zu bestätigen.
+Keine weiteren Änderungen aus diesem Arbeitsauftrag offen.
 
 ## Noch offene Punkte
 
