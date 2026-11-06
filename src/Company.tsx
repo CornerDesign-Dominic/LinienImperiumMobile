@@ -36,6 +36,19 @@ export function TransportSummary({data,onImprove}:any){
   <Btn onPress={onImprove}>Verbessern</Btn>
  </Card>;
 }
+export function ExpeditionChanceCard({data,busy=false,onCommand}:any){
+ const [saving,setSaving]=useState(false),pending=useRef(false),upgrade=data.expeditionUpgrade;
+ if(!upgrade)return null;
+ const maximum=upgrade.level>=upgrade.limit,cost=upgrade.cost;
+ const canBuy=!maximum&&!!cost&&data.state.coins>=cost.coins&&(data.state.inventory.companyItems||0)>=cost.items;
+ const improve=async()=>{if(busy||saving||pending.current||!canBuy)return;pending.current=true;setSaving(true);try{await onCommand('expeditionChanceUpgrade',{level:upgrade.level});}finally{pending.current=false;setSaving(false);}};
+ return <Card>
+  <Row><Icon name="expedition" size={28}/><Txt style={[styles.title,{flex:1}]}>Expeditionsfunde</Txt><Txt muted>{`Stufe ${upgrade.level} / ${upgrade.limit}`}</Txt></Row>
+  <Txt>Chance auf seltene Großaufträge</Txt><Txt gold style={{fontSize:22,lineHeight:30,fontWeight:'700',marginTop:6}}>{n(upgrade.combinedChance,2)} %</Txt>
+  <Txt muted style={{fontSize:12,lineHeight:18,marginTop:6}}>Verbessert Sonderaufträge und Empfehlungsschreiben aus Endlosexpeditionen. Die Chance auf normale Kundenaufträge bleibt gleich.</Txt>
+  {!maximum&&cost?<><Row style={{marginTop:10}}><Txt muted>Imperium-Taler</Txt><Txt>{n(cost.coins)}</Txt></Row><Row><Txt muted>Firmenausbau-Items</Txt><Txt>{n(cost.items)}</Txt></Row><Btn disabled={busy||saving||!canBuy} onPress={improve}>{saving?'Speichert …':'Fundchance verbessern'}</Btn></>:<Txt gold style={{marginTop:10}}>Maximum erreicht</Txt>}
+ </Card>;
+}
 export function TransportEditor({data,busy,onSave,onInventory}:any){
  const [category,setCategory]=useState('national');
  const [selection,setSelection]=useState<{key:string;level:number;count:number}|null>(null);

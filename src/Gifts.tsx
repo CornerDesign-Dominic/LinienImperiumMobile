@@ -14,12 +14,15 @@ import {C,Txt,Card,Row,Btn,Pill,n} from './ui';
 
 export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
  const [selected,setSelected]=useState<number|null>(null),[found,setFound]=useState<any>(null);
+ const [buyConfirm,setBuyConfirm]=useState(false),[buying,setBuying]=useState(false),[buyFailed,setBuyFailed]=useState(false),buyPending=useRef(false);
  const [rewardOpen,setRewardOpen]=useState(false),[rewardPending,setRewardPending]=useState(false);
  const presenting=useRef(false);
  const [opening,setOpening]=useState(false),[highlight,setHighlight]=useState<number|null>(null),[canSkip,setCanSkip]=useState(false),[failed,setFailed]=useState(false);
  const timer=useRef<ReturnType<typeof setTimeout>|null>(null),generation=useRef(0),spinning=useRef(false),cursor=useRef(0),outcome=useRef<any>(null),reducedMotion=useRef(false);
  const list=useRef<any>(null),positions=useRef<Record<number,number>>({});
- const gifts=data.catalog.gifts||[],gift=gifts.find((item:any)=>item.region===selected);
+ const gifts=data.tradeChest?.regions||data.catalog.gifts||[],gift=gifts.find((item:any)=>item.region===selected);
+ const chestCount=data.tradeChest?.count??data.state.inventory?.tradeChests??0,chestPrice=data.tradeChest?.price??200,seals=data.premiumShop?.balance??0;
+ const buy=async()=>{if(busy||buyPending.current||seals<chestPrice)return;buyPending.current=true;setBuying(true);setBuyFailed(false);try{const next=await onCommand('tradeChestBuy',{});if(next)setBuyConfirm(false);else setBuyFailed(true);}catch{setBuyFailed(true);}finally{buyPending.current=false;setBuying(false);}};
  const regionName=(index:number,fallback='')=>regionIdentities[index]?.title||data.catalog.regionNames?.[index]||fallback;
  const card=found&&data.catalog.cards.find((item:any)=>item.id===found.cardId);
  const clearTimer=()=>{if(timer.current!==null){clearTimeout(timer.current);timer.current=null;}};
@@ -39,7 +42,7 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
   clearTimer();generation.current++;setSelected(null);setFound(null);setHighlight(null);setFailed(false);setRewardOpen(false);setRewardPending(false);outcome.current=null;
  };
  const open=async()=>{
-  if(!gift||busy||spinning.current||presenting.current)return;
+  if(!gift||gift.unlocked===false||chestCount<1||busy||spinning.current||presenting.current)return;
   const token=++generation.current;
   spinning.current=true;outcome.current=null;setOpening(true);setFound(null);setFailed(false);setCanSkip(false);mark(0);
   const pulse=()=>{
@@ -49,7 +52,7 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
   };
   timer.current=setTimeout(pulse,85);
   try{
-   const next=await onCommand('giftOpen',{region:gift.region});
+   const next=await onCommand('chestOpen',{region:gift.region});
    if(generation.current!==token)return;
    clearTimer();
    const result=next?.giftFind,winner=gift.cards.findIndex((vehicle:any)=>vehicle.id===result?.cardId);
@@ -69,14 +72,16 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
   }
  };
  return <>
-  {gifts.map((item:any)=><Pressable key={item.region} accessibilityRole="button" accessibilityLabel={translate('Geschenk')+', '+translate(regionName(item.region,item.name))} onPress={()=>{setFound(null);setHighlight(null);setFailed(false);positions.current={};setSelected(item.region);}}>
-   <Card style={styles.gift}><Icon name="reward" size={36} color={C.gold}/><View style={{flex:1}}><Txt style={styles.title}>{regionName(item.region,item.name)}</Txt><Txt muted style={styles.small}>{item.cards.length} Fahrzeuge</Txt></View><Txt gold>{n(item.cost)}</Txt><Icon name="chevron" size={16} color={C.gold}/></Card>
+  <Card><Row><Txt style={styles.title}>Handelstruhen</Txt><Txt gold>{n(chestCount)} vorhanden</Txt></Row><Txt muted style={styles.small}>Eine Handelstruhe enthält eine Transportkarte. Wähle beim Öffnen eine freigeschaltete Region.</Txt><Row style={{marginTop:8}}><Txt muted>Dein Guthaben</Txt><View style={{flexDirection:'row',alignItems:'center',gap:5}}><Icon name="hermes" size={22}/><Txt literal gold>{n(seals)}</Txt></View></Row><Btn disabled={busy||buying||seals<chestPrice} onPress={()=>{setBuyFailed(false);setBuyConfirm(true);}}>{`Handelstruhe kaufen · ${n(chestPrice)} Hermes-Siegel`}</Btn></Card>
+  <ExpeditionPlaceModal visible={buyConfirm&&!modalBlocked} title="Handelstruhe kaufen" onClose={()=>{if(!buying)setBuyConfirm(false);}}><Txt>Eine Handelstruhe kaufen?</Txt><Txt muted style={styles.small}>{`Es werden ${n(chestPrice)} Hermes-Siegel abgezogen. Die Truhe bleibt bis zum Öffnen in deinen Vorräten.`}</Txt>{buyFailed&&<Txt style={{color:C.red}}>Kauf fehlgeschlagen. Bitte erneut versuchen.</Txt>}<Row><Btn secondary disabled={buying} onPress={()=>setBuyConfirm(false)}>Abbrechen</Btn><Btn disabled={busy||buying||seals<chestPrice} onPress={buy}>Kaufen</Btn></Row></ExpeditionPlaceModal>
+  {gifts.map((item:any)=><Pressable key={item.region} accessibilityRole="button" accessibilityLabel={translate('Handelstruhe')+', '+translate(regionName(item.region,item.name))} disabled={item.unlocked===false||busy||buying} onPress={()=>{setFound(null);setHighlight(null);setFailed(false);positions.current={};setSelected(item.region);}}>
+   <Card style={styles.gift}><Icon name="reward" size={36} color={C.gold}/><View style={{flex:1}}><Txt style={styles.title}>{regionName(item.region,item.name)}</Txt><Txt muted style={styles.small}>{item.unlocked===false?'Region noch nicht freigeschaltet':`${item.cards.length} Fahrzeuge`}</Txt></View>{item.unlocked===false&&<Icon name="lock" size={18} color={C.muted}/>}<Icon name="chevron" size={16} color={C.gold}/></Card>
   </Pressable>)}
   <Modal visible={!!gift&&!modalBlocked&&!rewardOpen} transparent animationType="none" onRequestClose={close} onShow={()=>{if(highlight!==null)mark(highlight);}}>
    <View style={styles.overlay}><View style={styles.modal}>
-    <Row style={{flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{card?'Geschenk geöffnet':'Geschenk'}</Txt><Btn icon="close" iconOnly secondary disabled={opening||rewardPending} onPress={close}>Schließen</Btn></Row>
+    <Row style={{flexWrap:'nowrap'}}><Txt style={[styles.title,{flex:1}]}>{card?'Handelstruhe geöffnet':'Handelstruhe'}</Txt><Btn icon="close" iconOnly secondary disabled={opening||rewardPending} onPress={close}>Schließen</Btn></Row>
     {gift&&<>
-     <Row><Txt muted>{regionName(gift.region,gift.name)}</Txt></Row>
+     <Row><Txt muted>{regionName(gift.region,gift.name)}</Txt><Txt gold>{n(chestCount)} vorhanden</Txt></Row>
      <ScrollView ref={list} style={{flexShrink:1,flexGrow:0}} contentContainerStyle={{paddingBottom:4}}>
       {gift.cards.map((vehicle:any,index:number)=><View key={vehicle.id} onLayout={event=>{positions.current[index]=event.nativeEvent.layout.y;}} accessibilityState={{selected:highlight===index}} style={[styles.vehicle,{borderColor:rarityColor(vehicle.rarity)},highlight===index&&styles.highlight,!!card&&highlight===index&&styles.winner]}>
        <VehicleArt card={vehicle} style={{width:48}}/><View style={{flex:1,minWidth:0}}><Txt style={{fontSize:13,fontWeight:'700'}}>{vehicle.name}</Txt><Txt style={[styles.small,{color:rarityColor(vehicle.rarity)}]}>{data.catalog.rarities.find((r:any)=>r.id===vehicle.rarity)?.label}</Txt></View><Txt style={styles.small}>{n(vehicle.chance,2)} %</Txt>
@@ -84,8 +89,8 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
       {!opening&&!card&&<Txt muted style={styles.small}>Doppelte Karte → 1 Shard derselben Seltenheit</Txt>}
      </ScrollView>
      {opening&&<><Txt gold style={{textAlign:'center',marginTop:8}}>Wird geöffnet …</Txt><Btn secondary disabled={!canSkip} onPress={()=>{if(spinning.current&&canSkip&&outcome.current&&gift)finish(outcome.current,gift.cards.findIndex((vehicle:any)=>vehicle.id===outcome.current.cardId));}}>Überspringen</Btn></>}
-     {failed&&<Txt style={{color:C.red,fontSize:12,marginTop:8}}>Geschenk konnte nicht geöffnet werden. Bitte erneut versuchen.</Txt>}
-     <Btn icon="reward" disabled={busy||opening||rewardPending||data.state.coins<gift.cost} onPress={open}>{card?'Nochmal öffnen':'Öffnen'} · {n(gift.cost)}</Btn>
+     {failed&&<Txt style={{color:C.red,fontSize:12,marginTop:8}}>Handelstruhe konnte nicht geöffnet werden. Bitte erneut versuchen.</Txt>}
+     <Btn icon="reward" disabled={busy||opening||rewardPending||gift.unlocked===false||chestCount<1} onPress={open}>{card?'Weitere Handelstruhe öffnen':'Handelstruhe öffnen'}</Btn>
     </>}
    </View></View>
   </Modal>

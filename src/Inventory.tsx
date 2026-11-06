@@ -10,7 +10,7 @@ import {C,Txt,Btn,Empty,n} from './ui';
 import {stockItems} from './items';
 import {inventorySections} from './inventorySections';
 
-export function Inventory({data,busy,onUseRefill,modalBlocked=false}:any){
+export function Inventory({data,busy,onUseRefill,onNavigate,modalBlocked=false}:any){
  const [selected,setSelected]=useState<string|null>(null),[pending,setPending]=useState(false),[failed,setFailed]=useState(false);
  const inFlight=useRef(false),{width}=useWindowDimensions(),[gridWidth,setGridWidth]=useState(width-18);
  const {catalog:c}=data,items=stockItems(data);
@@ -19,7 +19,7 @@ export function Inventory({data,busy,onUseRefill,modalBlocked=false}:any){
  const artSize=Math.max(1,(gridWidth-24)/4),locked=busy||pending;
  const close=()=>{if(!inFlight.current)setSelected(null);};
  const useRefill=async()=>{
-  if(!item?.refill||item.amount<1||locked||inFlight.current)return;
+  if(!item?.refill||item.amount<1||locked||inFlight.current||!(c.refillPoints?.[item.refill]>0))return;
   inFlight.current=true;setPending(true);setFailed(false);
   try{const result=await onUseRefill(item.refill);if(result===null||result===false)setFailed(true);}
   catch{setFailed(true);}finally{inFlight.current=false;setPending(false);}
@@ -42,8 +42,9 @@ export function Inventory({data,busy,onUseRefill,modalBlocked=false}:any){
      <View style={styles.identity}><ItemArt id={item.id} kind={item.kind} rarity={item.rarity} size={88}/><Txt style={styles.stock}>{n(item.amount)} vorhanden</Txt></View>
      <Txt muted style={styles.label}>Verwendung</Txt><Txt style={styles.copy}>{item.description}</Txt>
      <Txt muted style={styles.label}>Herkunft</Txt><Txt muted style={styles.copy}>{item.source}</Txt>
+     {item.id==='tradeChests'&&<Btn disabled={locked||item.amount<1} onPress={()=>{setSelected(null);onNavigate?.('gifts');}}>Region wählen und öffnen</Btn>}
      {failed&&<Txt style={styles.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}
-     {item.refill&&<Btn disabled={locked||item.amount<1} onPress={useRefill}>{pending?'Wird verwendet …':`Benutzen · +${c.refillPoints?.[item.refill]??50} ${item.refill==='expedition'?'Expeditionspunkte':'Überstundenpunkte'}`}</Btn>}
+     {item.refill&&<Btn disabled={locked||item.amount<1||!(c.refillPoints?.[item.refill]>0)} onPress={useRefill}>{pending?'Wird verwendet …':c.refillPoints?.[item.refill]>0?`Bis zum Maximum auffüllen · +${n(c.refillPoints[item.refill])}`:'Vorrat bereits voll'}</Btn>}
     </ScrollView>}
    </View></SafeAreaView>
   </Modal>

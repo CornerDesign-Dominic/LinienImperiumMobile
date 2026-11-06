@@ -1,7 +1,7 @@
 // Presentation only: never infer or mutate game rules from an illustration.
 const rarities=['common','uncommon','rare','epic','legendary'];
 const orderKinds=['private','customer','material','character','referral','special'];
-const materials=['capacityModules','companyItems','pickupHints','hubVehicleParts','supplierContacts','expeditionRefills','overtimeRefills'];
+const materials=['tradeChests','capacityModules','companyItems','pickupHints','hubVehicleParts','supplierContacts','expeditionRefills','overtimeRefills'];
 export const itemColors={common:'#8B8B8B',uncommon:'#4E995D',rare:'#408BC7',epic:'#A064C3',legendary:'#E89132'};
 export function romanTier(value){
  if(!Number.isSafeInteger(value)||value<1||value>3999)return '';

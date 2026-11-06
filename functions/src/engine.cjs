@@ -157,7 +157,7 @@ const bridge = `
     return {key:kind==='referral'?'referral':kind+':'+region,rarity:kind==='referral'?'epic':'rare',kind,region,regionName:EXPEDITION_REGIONS[region],name:kind==='special'?mobileSpecialProjectName(existing||{customer:customer.id},region):existing?.projectName||mobileProjectNames[kind][region],customer,
       volume,distance,deadlineMs:existing?.deadlineMs||PROJECT_DEADLINES[kind],
       premium:completionPremium(order),freight:freightRevenue(order),baseXp:volume,relationship:TRUST_REWARDS[kind],
-      expeditionChance:round2((1-EXPEDITION_CARD_CHANCES.reduce((sum,c)=>sum+c.chance,0))*EXPEDITION_JOB_WEIGHTS.find(w=>w.kind===kind).chance*100),
+      expeditionChance:round2(expeditionProjectChances()[kind]*100),
       customerChance:round2(customerTripChance(order,kind==='special'?'award':'referral')*100),
       customerSource:kind==='special'?'Kundenauftrag':'Sonderauftrag',customerOpen:customerUnlocked(customer.id),
       expeditionOpen:expeditionRegionOpen(region)&&game.expedition.regions[region].endlessUnlocked,
@@ -221,8 +221,14 @@ const bridge = `
   ${expeditionCompletionRuntime}
   ${projectStatisticsRuntime}
   ${seasonRuntime}
+  useOvertimeRefill=(now=Date.now())=>{
+    if(!(game.inventory.overtimeRefills>0))return false;regenerateOvertime(now);
+    const maximum=overtimeCapacity();if(game.overtimePoints>=maximum)return false;
+    const added=maximum-game.overtimePoints;game.inventory.overtimeRefills--;game.overtimePoints=maximum;game.overtimeLastRegenAt=now;
+    addEvent('Überstundenauffüller: +'+added+' Überstundenpunkte.');save();return true;
+  };
   globalThis.mobile = {
-    projectCompletionStats, grantTestProjects, grantSeasonSpecial,
+    projectCompletionStats, grantTestProjects, grantSeasonSpecial, migrateTradeChests, buyTradeChest, upgradeExpeditionChance,
     settleEventTours, refreshTourStarts, queueSingleVehicle, settleProcurementTimeline, startProcurement, startProcurementGroup, stopProcurement, stopProcurementGroup, claimProcurement,
     eventFleetOptions(distance = 240) {
       const order={distance,routeType:'single'};
@@ -265,10 +271,9 @@ const bridge = `
     useExpeditionRefill(now=Date.now()) {
       if(!(game.inventory.expeditionRefills>0))return false;
       regenerateExpedition(now);
-      game.inventory.expeditionRefills--;
-      game.expedition.points+=50;
-      if(game.expedition.points>=expeditionCapacity())game.expedition.lastRegenAt=now;
-      mobileToast='Expeditionsauffüller: +50 Expeditionspunkte.';
+      const maximum=expeditionCapacity();if(game.expedition.points>=maximum)return false;
+      const added=maximum-game.expedition.points;game.inventory.expeditionRefills--;game.expedition.points=maximum;game.expedition.lastRegenAt=now;
+      mobileToast='Expeditionsauffüller: +'+added+' Expeditionspunkte.';
       return true;
     },
     spendMaxOvertime(orderId){const amount=overtimeToDeadline(game.orders.find(o=>o.id===orderId));return amount>0?spendOvertime(orderId,amount):false;},
@@ -365,13 +370,14 @@ const bridge = `
     },
     view() {
       const now = Date.now();
+      migrateTradeChests();
       const free = new Set(freeTrucks().map(t => t.id));
       const catalog = {
         cities: START_CITIES.map(({id, city, country, continent}) => ({id, city, country, continent})),
-        gifts:EXPEDITION_REGIONS.map((name,region)=>({region,name,cost:GIFT_OPEN_COINS,cards:regionGiftPool(region).map(card=>({...card,chance:round2(card.chance*100)}))})),
+        gifts:EXPEDITION_REGIONS.map((name,region)=>({region,name,cost:TRADE_CHEST_PRICE,unlocked:expeditionRegionOpen(region),cards:regionGiftPool(region).map(card=>({...card,chance:round2(card.chance*100)}))})),
         cards: EXPEDITION_CHARACTERS, rarities: RARITIES, models: TRUCKS,
         customers: CUSTOMERS, categories: CATEGORIES, departments: DEPARTMENTS,
-        refillPoints:{expedition:50,overtime:OVERTIME_REFILL_POINTS},
+        refillPoints:{expedition:Math.max(0,expeditionCapacity()-game.expedition.points),overtime:Math.max(0,overtimeCapacity()-game.overtimePoints)},refillMaximum:{expedition:expeditionCapacity(),overtime:overtimeCapacity()},
         recipes:[
           {id:'pickup',inputId:'pickupHints',outputId:'private',input:itemNames.pickupHints[1],output:itemNames.private[0],needed:PRIVATE_PICKUP_HINT_COST,action:'pickupCraft'},
           {id:'uncommon',inputId:'shard:common',outputId:'shard:uncommon',input:'Common-Shards',output:'Uncommon-Shard',needed:SHARD_COMBINE_RATIO,action:'shardCombine',payload:{rarity:'common'},color:'#5BAA78'},
@@ -456,7 +462,7 @@ const bridge = `
           loadedSpeed:truckSpeed(truck,truck.capacity), costPerKm:operatingCostPerKm(truck),
           upgradePreview, rankCost:rankGearCost(truck), capacityLevel:truck.moduleCapacityLevel || 0, maxCapacityLevel:Math.max(card.maxCapacityLevel,truck.moduleCapacityLevel||0), capacityStep:round2(card.baseCapacity*card.capacityStepPercent/100)}];
       }));
-      return {state: {...game,trucks,orders,overtimeCapacity:overtimeCapacity()}, serverTime:now, catalog, cardVehicles, jobChoices, procurement:procurementView(now),
+      return {state: {...game,trucks,orders,overtimeCapacity:overtimeCapacity()}, serverTime:now, tradeChest:tradeChestView(),expeditionUpgrade:expeditionUpgradeView(), catalog, cardVehicles, jobChoices, procurement:procurementView(now),
         level:levelForXp(game.xp,game), expeditionCapacity:expeditionCapacity(),
         expansion:{...expansionState(),expeditionMaximum:expeditionCapacity(),overtimeMaximum:overtimeCapacity()},
         development:{points:expansionState().available,
@@ -478,9 +484,10 @@ const bridge = `
           deliveries:region.deliveries.filter(Boolean).length, finalClaimed:region.finalClaimed,
           progress:Array.from({length:7},(_,place)=>place<region.discovered?expeditionDiscoveryCost(index,place):(region.discoveryPoints?.[place]||0)).reduce((sum,v)=>sum+v,0)/Array.from({length:7},(_,place)=>expeditionDiscoveryCost(index,place)).reduce((sum,v)=>sum+v,0)*100,
           places:Array.from({length:7},(_,place)=>({index:place,discoveryCost:expeditionDiscoveryCost(index,place),invested:place<region.discovered?expeditionDiscoveryCost(index,place):(region.discoveryPoints?.[place]||0),durationMs:expeditionDuration(index,'delivery',place)})),
-          finds:{cost:EXPEDITION_COST,
-            cards:regionVehiclePool(index).map(card=>({id:card.id,name:card.name,rarity:card.rarity,chance:round2(card.chance*EXPEDITION_CARD_CHANCES.reduce((sum,item)=>sum+item.chance,0)*100)})),
-            orders:EXPEDITION_JOB_WEIGHTS.map(weight=>({kind:weight.kind,name:weight.kind==='character'?itemNames.character[0]:weight.kind==='material'?itemNames.material[0]:weight.kind==='special'?'Sonderauftrag '+mobileProjectNames.special[index].slice('Großauftrag '.length):'Empfehlungsauftrag '+mobileProjectNames.referral[0].slice('Großprojekt '.length),chance:round2((1-EXPEDITION_CARD_CHANCES.reduce((sum,c)=>sum+c.chance,0))*weight.chance*100),...(weight.kind==='character'||weight.kind==='material'?{ranks:EXPEDITION_STAGE_WEIGHTS[index].flatMap((chance,i)=>chance>0?[{rank:i+1,chance:round2(chance*100)}]:[])}:{rarity:weight.kind==='special'?'rare':'epic'})}))
+          finds:{cost:endlessCost(index),
+            cards:regionVehiclePool(index).map(card=>({id:card.id,name:card.name,rarity:card.rarity,chance:round2(card.chance*100)})),
+            orders:[{kind:'customer',name:'Kundenauftrag',chance:20},{kind:'special',name:'Sonderauftrag '+mobileProjectNames.special[index].slice('Großauftrag '.length),chance:round2(expeditionProjectChances().special*100),rarity:'rare'},{kind:'referral',name:'Empfehlungsauftrag '+mobileProjectNames.referral[0].slice('Großprojekt '.length),chance:round2(expeditionProjectChances().referral*100),rarity:'epic'}],
+            gears:endlessGearView(index)
           },
           finalDurationMs:expeditionDuration(index,'final')
         })),
@@ -527,7 +534,7 @@ function session(state, now=Date.now(), random=Math.random) {
   prepareEvent(api.state);
   touchSeason(api.state,now);
   api.normalizeQueuedReferrals();api.shortenTestMissions();api.settleProcurementTimeline(now);
-  api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);
+  api.autoRefreshOrders(now);api.regenerateExpedition(now);api.regenerateOvertime(now);api.migrateTradeChests();
   return api;
 }
 const id = value => {if(typeof value!=='string'||value.length>100)throw Error('Ungültige Kennung');return value;};
@@ -590,7 +597,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     buyTruck:()=>a.buyTruck(num(p.model,1)),rank:()=>a.upgradeTruckRarity(id(p.id)),capacity:()=>a.upgradeTruckCapacity(id(p.id)),sell:()=>a.sell(id(p.id)),
     assign:()=>a.assignOrder(id(p.order),id(p.truck)),assignPrivate:()=>a.assignPrivatePickup(id(p.order),id(p.truck)),assignCrafted:()=>a.assignCraftedOrder(id(p.order),id(p.truck)),
     projectStart:()=>a.startFleetProject(id(p.id),num(p.template,2)),overtime:()=>p.amount==='max'?a.spendMaxOvertime(id(p.id)):a.spendOvertime(id(p.id),num(p.amount)),refill:()=>a.useOvertimeRefill(),expeditionRefill:()=>a.useExpeditionRefill(),
-    giftOpen:()=>a.openRegionGift(num(p.region,4)),
+    giftOpen:()=>a.openRegionGift(num(p.region,4)),chestOpen:()=>a.openRegionGift(num(p.region,4)),tradeChestBuy:()=>a.buyTradeChest(),chestBuy:()=>a.buyTradeChest(),expeditionChanceUpgrade:()=>a.upgradeExpeditionChance(num(p.level,15)),
     claimSingles:()=>a.claimSingleRewards(),
     claim:()=>{
       const order=a.state.orders.find(order=>order.id===id(p.id)),claimedAt=order?.completionReward?.claimedAt;
@@ -634,7 +641,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     customerSkill:()=>a.allocateCustomerSkill(id(p.id),choice(p.kind,['pay','special','referral'])),
     pin:()=>a.toggleOrderPin(id(p.id)),refresh:()=>a.manualRefreshOrders(),level:()=>a.allocateLevel(num(p.expedition,3),p.overtime===undefined?3-num(p.expedition,3):num(p.overtime,3)),
     levelBatch:()=>a.allocateLevelBatch(num(p.expedition,300000),num(p.overtime,300000),num(p.points,300000)),
-    testProjects:()=>a.grantTestProjects(),testCoins:()=>a.grantTestCoins(),testHermes:()=>{const wallet=premiumState(a.state);if(!Number.isSafeInteger(wallet.balance+1000))throw Error('Hermes-Siegel-Limit erreicht.');wallet.balance+=1000;},testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>{const wallet=a.state.premiumShop,season=a.state.season; a.reset();a.state.premiumShop=wallet;a.state.season=season;}
+    testProjects:()=>a.grantTestProjects(),testCoins:()=>a.grantTestCoins(),testHermes:()=>{const wallet=premiumState(a.state);if(!Number.isSafeInteger(wallet.balance+1000))throw Error('Hermes-Siegel-Limit erreicht.');wallet.balance+=1000;},testGrant:()=>a.grantTestResource(choice(p.kind,['expedition','overtime','xp']),choice(p.amount,p.kind==='xp'?[100,1000]:[100])),reset:()=>{const wallet=a.state.premiumShop,season=a.state.season,chests=a.state.inventory.tradeChests,chestRegions=a.state.tradeChestRegions; a.reset();a.state.premiumShop=wallet;a.state.season=season;a.state.inventory.tradeChests=chests;a.state.tradeChestRegions=chestRegions;}
   };
   if(!Object.hasOwn(calls,action))throw Error('Unbekannte Aktion');
   if(!a.state.startCity&&!['sync','start','foundCompany','reset'].includes(action))throw Error('Bitte zuerst deine Firma gründen.');
@@ -663,12 +670,16 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   view.state.events=view.state.events.map(event=>({...event,text:courierText(normalizeTransportNames(normalizeCustomerNames(event.text),view.state.profile),view.state.trucks,view.state.profile)}));
   for(const order of view.state.orders)order.possibleRewards=order.possibleRewards.map(normalizeNames);
   for(const key of Object.keys(view.help)){const help=view.help[key];help[1]=help[1].map(([title,body])=>[normalizeNames(title),normalizeNames(body)]);}
-  view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>title==='Fundchancen je Auslosung'?[title,'<p>Je Gebiet gibt es fünf Transportkarten. Insgesamt 10 % Kartenchance pro Expedition. Die Fahrzeugchancen und Auftragschancen stehen am Endlosort unter ?. Geschenke im Großhändler geben garantiert eine der fünf Gebietskarten; testweise hat jede Karte 20 % Chance. Die Expeditionschancen bleiben unverändert. Doppelte Karten geben 1 Shard derselben Seltenheit.</p>']:[title,body]);
+  view.help.orders[1]=view.help.orders[1].map(([title,body])=>[title,body.replace('freigeschalteten Stammkunden des Segments','beliebigen freigeschalteten Stammkunden').replace('Fahrart: 90 % Single Way','Kundenaufträge würfeln ihre Verkehrsart unabhängig mit 50 % Nahverkehr und 50 % Fernverkehr. Fahrart: 90 % Single Way')]);
+  view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>[title,body.replace('Eine Endlosexpedition kostet 5 Punkte.','Endlosexpeditionen kosten je Region 5, 6, 7, 8 oder 10 Punkte.').replace('1 Punkt regeneriert je 10 Minuten, .','1 Punkt regeneriert je 10 Minuten bis zum persönlichen Maximum.')]);
+  view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>title==='Fundchancen je Auslosung'?[title,'<p>Direkte Kartenfunde: 15 % Common, 10 % Uncommon, 5 % Rare. 20 % bringen einen regionalen Kundenauftrag. Sonder- und Empfehlungsaufträge erreichen zusammen höchstens 2,5 % mit maximalem Expeditionsbonus. Die übrigen Funde geben sofort Zahnräder und Shards. Handelstruhen geben garantiert eine regionale Karte; testweise hat jede der fünf Karten 20 % Chance. Duplikate geben 1 Shard ihrer Seltenheit.</p>']:[title,body]);
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>[title,title==='Missionen'?'Jeder der sieben Orte hat eine einmalige Bonuslieferung. Ihr Abschluss gibt automatisch 1 Ausbaupunkt. Die erste Endlosort-Lieferung schaltet den regionalen Stammkunden frei und gibt 1 Kapazitätsmodul, sofern noch nicht erhalten. Fahrzeuge kommen aus der Garage.':body]);
-  view.help.expeditions[1].push(['Automatische Abschlüsse','Ortslieferungen werden automatisch gutgeschrieben. Ausführbare Material- und Transportkartenaufträge aus Dauerexpeditionen werden dagegen gemeinsam über den Sammelbutton der Einzelaufträge eingesammelt. Ortslieferungen geben 1 Ausbaupunkt statt einer festen Erhöhung des Expeditionsmaximums. Jeder Punkt erhöht wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1. Bestätigte Verteilungen sind nicht rückgängig zu machen. Unvergebene Punkte bleiben im Handelsimperium unter Entwicklung verfügbar. Der Abschluss passiert still im Hintergrund. Die Punkte stehen anschließend unter Entwicklung zur manuellen Verteilung bereit.']);
+  for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[title,/Auffüller|Refill/.test(title)?'Auffüller füllen den jeweiligen Punktevorrat bis zu deinem persönlichen Maximum. Bei vollem oder übervollem Vorrat werden sie nicht verbraucht.':body]);
+  view.help.expeditions[1].push(['Automatische Abschlüsse','Ortslieferungen werden automatisch gutgeschrieben. Früher gefundene Material- und Transportkartenaufträge bleiben ausführbar und werden über den Sammelbutton der Einzelaufträge eingesammelt. Neue Endlosexpeditionen geben direkte Funde und gespeicherte Kundenaufträge; ein vollständiger Regionsabschluss gibt einmalig eine Handelstruhe. Ortslieferungen geben 1 Ausbaupunkt statt einer festen Erhöhung des Expeditionsmaximums. Jeder Punkt erhöht wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1. Bestätigte Verteilungen sind nicht rückgängig zu machen. Unvergebene Punkte bleiben im Handelsimperium unter Entwicklung verfügbar. Der Abschluss passiert still im Hintergrund. Die Punkte stehen anschließend unter Entwicklung zur manuellen Verteilung bereit.']);
   view.help.customers[1]=view.help.customers[1].map(([title,body])=>[title.replace(/Fähigkeit/g,'Verbesserung').replace(/fähigkeit/g,'verbesserung'),body.replace(/Fähigkeit/g,'Verbesserung').replace(/fähigkeit/g,'verbesserung')]);
   view.help.dashboard[1]=view.help.dashboard[1].map(([title,body])=>[title,title==='Spielerlevel'?'<p>Transportierte Tonnen geben XP: gelieferte Tonnen × bezahlte Richtungen × (1 + aktive Karten-XP-Boni / 100). Bei Dual Way zählen beide Richtungen. Jeder nächste Aufstieg benötigt 100 × aktuelles Level XP. Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 dauerhaft verteilbare Ausbaupunkte. Ab Level 5 wird alle fünf Level ein weiterer Botenplatz freigeschaltet, maximal 20 bei Level 100.</p>':body]);
   view.help.company[0]='Handelsimperium';
+  view.help.company[1].push(['Expeditionsbonus','15 Stufen erhöhen die gemeinsame Fundchance für Sonder- und Empfehlungsaufträge von 1 % auf 2,5 %. Davon sind 90 % Sonderaufträge und 10 % Empfehlungen. Neue Stufe N kostet 10.000 × N Imperium-Taler und 1 + abrunden((N−1)/5) Firmenausbau-Items. Karten- und Kundenauftragschancen bleiben gleich; der Bonus reduziert die Zahnradchance.']);
   view.help.company[1]=view.help.company[1].map(([title,body])=>title==='Transportsegmente'?[title,'Prämie: 1.000 Stufen, je +1 Prozentpunkt. Neue Stufe N kostet 1.000 × N M und 1 + abrunden((N−1)/25) Firmenausbau-Items. Regional- und Fernverkehr getrennt. Menge und Reichweite: je 100 Stufen; bisherige Endwerte und Gesamtkosten bleiben erhalten. Prämien wirken auf die Abschlussprämie der jeweiligen Kategorie, nicht auf Frachtvergütung oder Beute.']: [title,body]);
   view.help.company[1].unshift(['Ausbaupunkte','Levelaufstiege geben 3 Ausbaupunkte, einmalige Ortslieferungen je 1. Alle Punkte liegen in einem gemeinsamen Vorrat unter Entwicklung und erhöhen wahlweise das Expeditions- oder Überstundenmaximum dauerhaft um 1. Auch Teilmengen können verteilt werden. Die aktuelle Energie wird nicht aufgefüllt.']);
   view.help.development[1]=view.help.development[1].map(([title,body])=>title==='Herstellung'?[title,'100 Abholhinweise ergeben eine Privatabholung. Rahmensplitter lassen sich zur nächsthöheren Seltenheit kombinieren. Firmenausbau-Items werden vorerst nicht zur Herstellung verwendet.']:[title,body]);
@@ -681,7 +692,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   view.help.dealer[0]='Botenstation-Händler';
   view.help.hub[1]=[['Zyklus und Leistung','Ein Einkauf alle 60 Minuten. Die mögliche Stundenmenge folgt aus Kapazität und beladener sowie leerer Fahrgeschwindigkeit aller eingesetzten Fahrzeuge. Vertrieb Stufe 0 kauft Ware für 40 Minuten ein; jede der 20 Stufen erhöht die Auslastung um 30 Sekunden bis auf 50 Minuten. Danach warten Boten bis zum nächsten Einkauf. Laufende Einkäufe behalten ihre Werte.'],['Kasse und Abholung','Die Kasse fasst sechs abgeschlossene Einkaufszyklen. Bei voller Kasse pausiert die Botenstation. Volle Kasse abholen startet sofort einen neuen Einkauf bei Minute 0. Teilabholungen verändern den laufenden Zyklus nicht. Imperium-Taler und sämtliche weiteren Erträge werden gemeinsam eingesammelt.'],['Vertrieb','Lieferantenkontakte und Firmenausbau-Items erweitern die Einkaufsmenge. 20 Stufen von 40 bis 50 Minuten Auslastung. Der Ausbau kostet nur Lieferantenkontakte und Firmenausbau-Items und dauert je Zielstufe zwölf Stunden.']];
   view.help.hub[1].unshift(['Freischaltung','Botenstation ab Level 5. Alle fünf Level ein Platz, maximal 20 bei Level 100. Ein Lastwombat-Bote kostet 25.000 Imperium-Taler und startet mit 2 t. Werkzeugkästen verbessern Kapazität und Antrieb in je zehn Stufen. Drei Fundkisten täglich, mindestens 30 Minuten Abstand; Tageswechsel um 00:00 UTC. Beim stündlichen Einkauf: einmal 50 % Chance auf einen Werkzeugkasten, keine Funde bei voller Kasse. Werkzeugkästen aus Einkäufen mit den Erträgen abholen.']);
-  view.help.inventory[1].unshift(['Auffüller','Pro Levelaufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 Ausbaupunkte. Beide Auffüller geben beim Benutzen 50 Punkte.']);
+  view.help.inventory[1].unshift(['Auffüller','Pro Levelaufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller und 3 Ausbaupunkte. Beide Auffüller füllen beim Benutzen bis zum jeweiligen persönlichen Maximum; bei vollem Vorrat werden sie nicht verbraucht.']);
   for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[title,body.replace(/Je Aufstieg: sofort 50 Expeditionspunkte, ein speicherbares Refill-Paket für 50 Überstundenpunkte sowie 5 dauerhaft verteilbare Punkte/g,'Je Aufstieg: 1 Expeditionsauffüller, 1 Überstundenauffüller sowie 3 dauerhaft verteilbare Ausbaupunkte').replace(/Pro Level-up erhältst du ein speicherbares Überstundenauffüller für (?:50|100) Punkte\./g,'Auffüller werden in den Vorräten aufbewahrt.')]);
   for(const mission of view.state.expedition.missions)mission.reward=normalizeNames(mission.reward);
   view.message=normalizeTransportNames(view.message,view.state.profile);
@@ -697,14 +708,15 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   if(levelUps.length)view.levelUps=levelUps;
   if(['assign','assignPrivate','assignCrafted'].includes(action)&&view.state.orders.find(o=>o.id===p.order)?.status==='active')view.message='Auftrag gestartet.';
   if(action==='hubCrate'&&ok!==false)view.hubCrateParts=ok;
-  if(action==='giftOpen'&&ok!==false)view.giftFind=ok;
+  if(['giftOpen','chestOpen'].includes(action)&&ok!==false)view.giftFind=ok;
+  if(action==='draw'&&ok&&typeof ok==='object')view.claimSummary=ok;
   if(['claimSingles','hubCollect'].includes(action)&&ok!==false)view.claimSummary=ok;
   if((action==='claim'||['seasonTaskClaim','seasonClaim','seasonClaimAll','seasonInfinityClaim'].includes(action))&&ok&&typeof ok==='object')view.claimSummary=ok;
   if(action==='overtime')view.overtimeApplied=ok===true;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;
   if(action==='customerBatch')view.customerBatchApplied=ok===true;
   if(['expansionAllocate','levelBatch','level'].includes(action))view.expansionAllocationApplied=ok===true;
-  if(action==='draw'&&ok!==false){
+  if(action==='draw'&&ok!==false&&typeof ok!=='object'){
     const order=view.state.orders.find(o=>!oldOrders.has(o.id));
     const job=view.state.expedition.jobs.find(j=>!oldJobs.has(j.id));
     const card=typeof ok==='string'&&ok.startsWith('card:')?view.catalog.cards.find(c=>c.id===ok.slice(5)):null;

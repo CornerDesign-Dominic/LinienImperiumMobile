@@ -55,6 +55,7 @@ export function Icon({name,size=24,color=C.text,style}:{name:IconName;size?:numb
 }
 export const screenIcons:Record<string,IconName>={procurement:'crafting',home:'home',fleet:'fleet',garage:'garage',orders:'orders',projects:'projects',expeditions:'expedition',cards:'cards',company:'company',hub:'hub',inventory:'inventory',crafting:'crafting',customers:'customers',wholesaler:'wholesaler',statistics:'statistics',account:'settings',testTools:'settings',events:'events',dealer:'truck'};
 export function stockIcon(id:string):IconName{
+ if(id==='tradeChests')return 'reward';
  if(id.startsWith('gear:'))return 'gear';
  if(id.startsWith('shard:'))return 'shard';
  if(id.startsWith('card:'))return 'cards';

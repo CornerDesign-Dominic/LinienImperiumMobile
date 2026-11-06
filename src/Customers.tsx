@@ -38,7 +38,6 @@ export function CustomerDetail({data,id,busy,onSave}:any){
  const editing=customer.points>0||assigned>0;
  const valid=assigned>0&&left>=0&&SKILLS.every(skill=>(customer.skills[skill.kind]||0)+draft[skill.kind]<=skill.limit);
  const region=data.expeditionMap.find((r:any)=>r.customer.id===id);
- const category=data.catalog.categories.find((c:any)=>c.id===customer.category);
  const products=Array.isArray(customer.products)&&customer.products.length?customer.products:[customer.cargo];
  const goods=[...products,customer.preciousCargo].filter((product,index,all):product is string=>typeof product==='string'&&product.length>0&&all.indexOf(product)===index);
  const origin=regionIdentities.find(identity=>identity.id===id)?.title||customer.regionName||region?.name||'Expedition';
@@ -63,7 +62,6 @@ export function CustomerDetail({data,id,busy,onSave}:any){
     <OrderArtwork cargo={product} size={44}/><Txt style={styles.goodName}>{product}</Txt>
    </View>)}</View>
    <View style={styles.metadata}>
-    <View testID="customer-traffic" style={styles.metadataField}><View style={styles.metadataLabel}><Icon name="truck" size={16}/><Txt muted style={styles.small}>Verkehr</Txt></View><Txt style={styles.metadataValue}>{category?.label||customer.category}</Txt></View>
     <View testID="customer-origin" style={styles.metadataField}><View style={styles.metadataLabel}><Icon name="expedition" size={16}/><Txt muted style={styles.small}>Herkunft</Txt></View><Txt style={styles.metadataValue}>{origin}</Txt></View>
    </View>
   </Card>

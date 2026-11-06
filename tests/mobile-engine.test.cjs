@@ -31,11 +31,11 @@ test('Persisted state is not mutated in place and level packages survive a round
  const saved=JSON.stringify(initial.state);
  const next=execute(initial.state,'testCoins',{},now,fixed);
  assert.equal(JSON.stringify(initial.state),saved);assert.equal(next.state.coins,51000);
- next.state.inventory.overtimeRefills=2;
+ next.state.inventory.overtimeRefills=2;next.state.overtimePoints=20;
  const used=execute(next.state,'refill',{},now,fixed);
- assert.equal(used.state.inventory.overtimeRefills,1);assert.equal(used.state.overtimePoints,150);
+ assert.equal(used.state.inventory.overtimeRefills,1);assert.equal(used.state.overtimePoints,100);
  const restored=execute(JSON.parse(JSON.stringify(used.state)),'sync',{},now+600000,fixed);
- assert.equal(restored.state.inventory.overtimeRefills,1);assert.equal(restored.state.overtimePoints,150);
+ assert.equal(restored.state.inventory.overtimeRefills,1);assert.equal(restored.state.overtimePoints,100);
 });
 
 test('Company and fantasy city names are validated cosmetics and preserve existing progress',()=>{
@@ -155,39 +155,22 @@ test('Test grants persist points above capacity and XP produces normal level rew
  assert.throws(()=>execute(start.state,'testGrant',{kind:'__proto__',amount:100},now,fixed));
 });
 
-test('Endless draws return exact popup targets and test missions complete in fifteen seconds',()=>{
+test('New endless draws return direct loot or saved orders while old expedition jobs still run',()=>{
  const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
  start.state.expedition.regions[0].discovered=7;start.state.expedition.regions[0].endlessUnlocked=true;
- for(const roll of [.02,.08,.095,.2,.5,.97,.999]){
+ for(const roll of [.02,.12,.2,.27,.4,.6,.995,.9995]){
   const found=execute(start.state,'draw',{region:0},now,()=>roll);
-  const find=found.view.expeditionFind;
-  assert.ok(find?.title);assert.equal(found.state.expedition.points,start.state.expedition.points-5);
-  if(find.type==='order'){
-   const order=found.view.state.orders.find(o=>o.id===find.id);
-   assert.equal(order.isProject,true);assert.equal(order.status,'queued');
-  }else if(find.type==='job'){
-   assert.ok(found.state.expedition.jobs.some(j=>j.id===find.id));
-   const active=execute(found.state,'mission',{region:0,kind:'endless',place:find.id,truck:start.state.trucks[0].id},now,fixed);
-   const mission=active.state.expedition.missions.at(-1);
-   assert.equal(mission.endsAt-now,15000);
-   assert.equal(mission.transport.tours.at(-1).endsAt,mission.endsAt);
-   const halfway=execute(active.state,'sync',{},now+7500,fixed);
-   assert.equal(halfway.state.expedition.missions.at(-1).endsAt,mission.endsAt);
-   assert.equal(halfway.state.expedition.missions.at(-1).status,'active');
-   const done=execute(halfway.state,'sync',{},now+15000,fixed);
-   assert.equal(done.state.expedition.missions.at(-1).status,'completed');
-   assert.equal(done.state.expedition.missions.at(-1).transport.delivered,mission.transport.volume);
-   assert.ok(done.view.state.trucks[0].free);
-  }else assert.equal(find.type,'reward');
+  assert.equal(found.state.expedition.points,start.state.expedition.points-5);assert.equal(found.state.expedition.jobs.length,0);
+  if(roll===.6){assert.ok(found.view.claimSummary.gears.common>0);assert.equal(found.view.expeditionFind,undefined);}
+  else {const find=found.view.expeditionFind;assert.ok(find?.title);if(find.type==='order')assert.equal(found.view.state.orders.find(o=>o.id===find.id).status,'queued');}
  }
- for(const kind of ['delivery','final']){
-  const mission=execute(start.state,'mission',{region:0,kind,place:0,truck:start.state.trucks[0].id},now,fixed);
-  assert.equal(mission.state.expedition.missions[0].endsAt-now,15000);
- }
- const duplicate=execute(start.state,'draw',{region:0},now,()=>.02);
- assert.match(duplicate.view.expeditionFind.detail,/Shard/);
- const blocked=execute(start.state,'draw',{region:4},now,fixed);
- assert.equal(blocked.view.expeditionFind,undefined);
+ start.state.expedition.jobs.push({id:start.state.expedition.nextMission++,region:0,kind:'material',tier:1,createdAt:now});
+ const active=execute(start.state,'mission',{region:0,kind:'endless',place:start.state.expedition.jobs[0].id,truck:start.state.trucks[0].id},now,fixed);
+ const mission=active.state.expedition.missions.at(-1);assert.equal(mission.endsAt-now,15000);
+ const done=execute(active.state,'sync',{},now+15000,fixed);assert.equal(done.state.expedition.missions.at(-1).status,'completed');assert.equal(done.state.expedition.missions.at(-1).transport.delivered,mission.transport.volume);
+ for(const kind of ['delivery','final']){const result=execute(start.state,'mission',{region:0,kind,place:0,truck:start.state.trucks[0].id},now,fixed);assert.equal(result.state.expedition.missions[0].endsAt-now,15000);}
+ const duplicate=execute(start.state,'draw',{region:0},now,()=>.02);assert.match(duplicate.view.expeditionFind.detail,/Shard/);
+ const blocked=execute(start.state,'draw',{region:4},now,fixed);assert.equal(blocked.view.expeditionFind,undefined);
 });
 
 test('Existing expedition timers shorten once without resetting or deleting progress',()=>{
@@ -297,7 +280,7 @@ test('Project catalog lists five customer specials and one shared referral with 
  assert.equal(start.view.projectCatalog.length,6);
  assert.equal(start.state.orders.filter(o=>['special','referral'].includes(o.kind)).length,0);
  const special=start.view.projectCatalog.find(p=>p.key==='special:0'),referral=start.view.projectCatalog.find(p=>p.key==='referral');
- assert.equal(special.expeditionChance,4.05);assert.equal(special.customerChance,20);
+ assert.equal(special.expeditionChance,.9);assert.equal(special.customerChance,20);
  assert.equal(special.volume,400);assert.equal(special.deadlineMs,3600000);
  assert.equal(special.moduleChance,8);assert.equal(special.epicChance,20);
  assert.equal(referral.sources[4].customerChance,6);assert.equal(referral.moduleChance,20);assert.equal(referral.legendary.extraChance,25);
@@ -305,7 +288,7 @@ test('Project catalog lists five customer specials and one shared referral with 
  start.state.expedition.regions.forEach(r=>{r.discovered=7;r.endlessUnlocked=true;});
  start.state.expedition.points=100;
  start.state.expedition.seats[0]='navigator';
- for(const region of [0,4])for(const roll of [.97,.999]){
+ for(const region of [0,4])for(const roll of [.995,.9995]){
   const drawn=execute(start.state,'draw',{region},now,()=>roll);
   const order=drawn.view.state.orders.find(o=>o.isProject),catalog=drawn.view.projectCatalog.find(p=>p.key===order.projectInfo.key);
   assert.equal(order.projectName,catalog.name);assert.equal(order.volume,catalog.volume);assert.equal(order.distance,catalog.distance);
@@ -385,7 +368,7 @@ test('A card occupies one garage slot and one garage transport, while parallel f
  let state=blocked.state;
  for(const template of [0,1])state=execute(state,'seat',{id:card,template,seat:0},now,fixed).state;
  for(const template of [0,1,0]){
-  const found=execute(state,'draw',{region:0},now,()=>.97);const project=found.state.orders.filter(o=>o.kind==='special'&&o.status==='queued').at(-1);
+  const found=execute(state,'draw',{region:0},now,()=>.995);const project=found.state.orders.filter(o=>o.kind==='special'&&o.status==='queued').at(-1);
   state=execute(found.state,'projectStart',{id:project.id,template},now,fixed).state;
   assert.equal(state.orders.find(o=>o.id===project.id).status,'active');
  }
@@ -403,7 +386,7 @@ test('A card occupies one garage slot and one garage transport, while parallel f
 test('Custom overtime amounts preserve tkm accounting, cap completion cost and reject invalid spends and use the remaining balance',()=>{
  let state=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed).state;
  state.expedition.regions[0].discovered=7;state.expedition.regions[0].endlessUnlocked=true;state.expedition.seats[0]='navigator';
- const found=execute(state,'draw',{region:0},now,()=>.97);const project=found.state.orders.find(o=>o.kind==='special');
+ const found=execute(state,'draw',{region:0},now,()=>.995);const project=found.state.orders.find(o=>o.kind==='special');
  const active=execute(found.state,'projectStart',{id:project.id,template:0},now,fixed);
  const paid=execute(active.state,'overtime',{id:project.id,amount:7},now,fixed);const order=paid.state.orders.find(o=>o.id===project.id);
  assert.equal(paid.state.overtimePoints,active.state.overtimePoints-7);assert.ok(Math.abs(order.delivered*order.distance-7000)<1e-6);
@@ -435,7 +418,7 @@ test('Max overtime uses the minimum whole points that make the saved fleet meet 
   const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
   let state=start.state;state.expedition.regions[0].discovered=7;state.expedition.regions[0].endlessUnlocked=true;state.expedition.seats[0]='navigator';state.overtimePoints=1000;
   if(mixed){const card=start.view.catalog.cards.find(c=>c.region===0&&c.id!=='navigator');state.expedition.characters[card.id]={level:1,progress:0};state.expedition.seats[1]=card.id;}
-  state=execute(state,'draw',{region:0},now,()=>.97).state;const project=state.orders.find(o=>o.kind==='special');
+  state=execute(state,'draw',{region:0},now,()=>.995).state;const project=state.orders.find(o=>o.kind==='special');
   const active=execute(state,'projectStart',{id:project.id,template:0},now,fixed);
   const current=execute(active.state,'sync',{},now+123456,fixed),order=current.view.state.orders.find(o=>o.id===project.id),needed=order.overtimeForDeadline;
   assert.ok(needed>0);assert.ok(needed<Math.ceil((order.volume-order.delivered)*order.distance/1000));
@@ -574,11 +557,11 @@ test('Overtime consumption, refills below capacity and offline regeneration reta
  assert.equal(full.state.overtimePoints,99);assert.equal(full.view.regeneration.overtimeNextAt,now+60000+10*60000);
  full=execute(full.state,'overtime',{id:project.id,amount:1},now+120000,fixed);assert.equal(full.view.regeneration.overtimeNextAt,now+60000+10*60000);
  const refill=structuredClone(active);refill.overtimeCapacity=300;refill.overtimePoints=10;refill.overtimeLastRegenAt=now-60000;refill.inventory.overtimeRefills=1;
- let added=execute(refill,'refill',{},now+60000,fixed);assert.equal(added.state.overtimePoints,60);assert.equal(added.view.regeneration.overtimeNextAt,now+9*60000);
- added=execute(added.state,'testGrant',{kind:'overtime',amount:100},now+120000,fixed);assert.equal(added.state.overtimePoints,160);assert.equal(added.view.regeneration.overtimeNextAt,now+9*60000);
+ let added=execute(refill,'refill',{},now+60000,fixed);assert.equal(added.state.overtimePoints,300);assert.equal(added.view.regeneration.overtimeNextAt,null);
+ added=execute(added.state,'testGrant',{kind:'overtime',amount:100},now+120000,fixed);assert.equal(added.state.overtimePoints,400);assert.equal(added.view.regeneration.overtimeNextAt,null);
 });
 
-test('Every new level grants one of each stored 50-point filler and three allocation points, with no instant expedition award',()=>{
+test('Every new level grants one of each stored maximum-fill package and three allocation points, with no instant expedition award',()=>{
  const start=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed);
  const gained=execute(start.state,'testGrant',{kind:'xp',amount:1000},now,fixed);
  const levels=gained.view.level.level-1;
@@ -590,11 +573,12 @@ test('Every new level grants one of each stored 50-point filler and three alloca
  const allocated=execute(again.state,'level',{expedition:1,overtime:2},now,fixed);
  assert.equal(allocated.view.expeditionCapacity,gained.view.expeditionCapacity+1);assert.equal(allocated.view.development.overtime.base,gained.view.development.overtime.base+2);
  for(const [action,field,points] of [['expeditionRefill','expeditionRefills','expedition'],['refill','overtimeRefills','overtime']]){
-  const used=execute(gained.state,action,{},now,fixed);
+  const depleted=structuredClone(gained.state);if(points==='expedition')depleted.expedition.points=0;else depleted.overtimePoints=0;
+  const used=execute(depleted,action,{},now,fixed);
   assert.equal(used.state.inventory[field],levels-1);
-  assert.equal(points==='expedition'?used.state.expedition.points:used.state.overtimePoints,(points==='expedition'?gained.state.expedition.points:gained.state.overtimePoints)+50);
+  assert.equal(points==='expedition'?used.state.expedition.points:used.state.overtimePoints,points==='expedition'?used.view.expeditionCapacity:used.view.state.overtimeCapacity);
  }
- assert.deepEqual(gained.view.catalog.refillPoints,{expedition:50,overtime:50});
+ assert.deepEqual(gained.view.catalog.refillPoints,{expedition:0,overtime:0});
  assert.doesNotMatch(JSON.stringify(gained.view.help),/sofort 50 Expeditionspunkte|für 100 Punkte|5 dauerhaft verteilbare/);
 });
 
@@ -604,8 +588,8 @@ test('Legacy saves receive an empty expedition filler slot without retroactive r
  const migrated=execute(original,'sync',{},now,fixed);assert.equal(migrated.state.inventory.expeditionRefills,0);assert.equal(migrated.state.inventory.overtimeRefills,2);assert.deepEqual(migrated.state.pendingLevelUps,[]);assert.equal(migrated.view.expansion.available,3);
  const empty=execute(migrated.state,'expeditionRefill',{},now,fixed);assert.equal(empty.state.expedition.points,migrated.state.expedition.points);
  migrated.state.inventory.expeditionRefills=1;migrated.state.expedition.levelCapacityBonus=100;migrated.state.expedition.points=10;migrated.state.expedition.lastRegenAt=now-60000;
- const used=execute(migrated.state,'expeditionRefill',{},now,fixed);assert.equal(used.state.expedition.points,60);assert.equal(used.view.regeneration.expeditionNextAt,now+9*60000);assert.equal(used.state.inventory.expeditionRefills,0);
- const twice=execute(used.state,'expeditionRefill',{},now,fixed);assert.equal(twice.state.expedition.points,60);
+ const used=execute(migrated.state,'expeditionRefill',{},now,fixed);assert.equal(used.state.expedition.points,used.view.expeditionCapacity);assert.equal(used.view.regeneration.expeditionNextAt,null);assert.equal(used.state.inventory.expeditionRefills,0);
+ const twice=execute(used.state,'expeditionRefill',{},now,fixed);assert.equal(twice.state.expedition.points,used.state.expedition.points);
  const reset=execute(used.state,'reset',{},now,fixed);assert.equal(reset.state.inventory.expeditionRefills,0);assert.equal(reset.state.inventory.overtimeRefills,0);
 });
 
@@ -642,18 +626,13 @@ test('All expedition cards can start regional and long-distance orders while gar
  assert.ok(views.every(o=>!o.choices.some(t=>t.id===bought.id)));
 });
 
-test('Every expedition exposes its actual absolute find chances and conditional regional job ranks',()=>{
+test('Every expedition exposes authoritative direct-loot odds and regional point costs',()=>{
  const view=execute(null,'foundCompany',{companyName:'Testfirma',cityName:'Testhafen'},now,fixed).view;
- const weights=[[100],[75,25],[50,50],[25,50,25],[10,45,45]];
- for(const map of view.expeditionMap){
-  const finds=map.finds;assert.equal(finds.cost,5);assert.equal(finds.cards.length,5);assert.equal(finds.orders.length,4);
-  assert.ok(Math.abs([...finds.cards,...finds.orders].reduce((sum,f)=>sum+f.chance,0)-100)<1e-6);
+ for(const map of view.expeditionMap){const finds=map.finds;assert.equal(finds.cost,[5,6,7,8,10][map.index]);assert.equal(finds.cards.length,4);assert.equal(finds.orders.length,3);
+  assert.ok(Math.abs([...finds.cards,...finds.orders,finds.gears].reduce((sum,f)=>sum+f.chance,0)-100)<1e-6);
   for(const card of finds.cards)assert.equal(view.catalog.cards.find(c=>c.id===card.id).region,map.index);
-  assert.deepEqual(finds.cards.map(c=>c.chance),[3,3,3,.9,.1]);
-  assert.deepEqual(finds.orders.map(o=>o.chance),[18,67.5,4.05,.45]);
-  for(const order of finds.orders.filter(o=>o.ranks))assert.deepEqual(order.ranks.map(r=>r.chance),weights[map.index]);
-  assert.match(finds.orders.find(o=>o.kind==='special').name,/^Sonderauftrag /);
-  assert.equal(finds.orders.find(o=>o.kind==='referral').name,'Empfehlungsauftrag Hafenverbund');
+  assert.deepEqual(finds.cards.map(c=>c.chance),[7.5,7.5,10,5]);assert.deepEqual(finds.orders.map(o=>o.chance),[20,.9,.1]);
+  assert.equal(finds.gears.chance,49);assert.ok(finds.gears.ranges.common[0]>0);assert.match(finds.orders.find(o=>o.kind==='special').name,/^Sonderauftrag /);assert.equal(finds.orders.find(o=>o.kind==='referral').name,'Empfehlungsauftrag Hafenverbund');
  }
 });
 

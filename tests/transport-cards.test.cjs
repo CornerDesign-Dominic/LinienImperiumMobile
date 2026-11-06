@@ -103,14 +103,14 @@ test('Removing capacity cards keeps both overflows, pauses regeneration offline 
  assert.equal(r.state.expedition.points,46);assert.equal(r.view.regeneration.expeditionNextAt,T+3900000);
  r=cmd(r.state,'sync',{},T+3900000);assert.equal(r.state.expedition.points,47);
 });
-test('Re-equipping capacity resumes the stored countdown, and refills below boosted maximum preserve the active timer',()=>{
+test('Refills reach boosted maxima and preserve full reserves through capacity re-equipping',()=>{
  let r=equip(setup(),'r1_uncommon',10);
  r.state.overtimePoints=110;r.state.overtimeLastRegenAt=T-300000;r.state.inventory.overtimeRefills=2;
- r=cmd(r.state,'refill');assert.equal(r.state.overtimePoints,160);assert.equal(r.view.regeneration.overtimeNextAt,T+300000);
- r=cmd(r.state,'garageRemove',{id:'r1_uncommon'});assert.equal(r.state.overtimePoints,160);assert.equal(r.view.regeneration.overtimeNextAt,null);
+ r=cmd(r.state,'refill');assert.equal(r.state.overtimePoints,170);assert.equal(r.view.regeneration.overtimeNextAt,null);assert.equal(r.state.inventory.overtimeRefills,1);
+ r=cmd(r.state,'garageRemove',{id:'r1_uncommon'});assert.equal(r.state.overtimePoints,170);assert.equal(r.view.regeneration.overtimeNextAt,null);
  r=cmd(r.state,'garageAdd',{id:'r1_uncommon'},T+100000);
- assert.equal(r.view.regeneration.overtimeNextAt,T+400000);
- r=cmd(r.state,'refill',{},T+100000);assert.equal(r.state.overtimePoints,210);
+ assert.equal(r.view.regeneration.overtimeNextAt,null);
+ r=cmd(r.state,'refill',{},T+100000);assert.equal(r.state.overtimePoints,170);assert.equal(r.state.inventory.overtimeRefills,1);
  assert.equal(r.view.regeneration.overtimeNextAt,null);
 });
 test('Card migration keeps stable IDs, levels, shards, module/rank investment and active tour snapshots exactly once',()=>{
