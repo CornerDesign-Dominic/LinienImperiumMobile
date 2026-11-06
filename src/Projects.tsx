@@ -139,7 +139,7 @@ export function ProjectDetail({data,id,busy,clock,onCommand,onExpedition,onCusto
    <Btn secondary onPress={()=>setMore(!more)}>{more?'Weniger Infos':'Belohnungen & Infos'}</Btn>{more&&<View style={{marginTop:12}}><ProjectInfo info={info} onExpedition={onExpedition} onCustomers={onCustomers}/></View>}
   </>:o.status==='completed'?<>
    <ProjectStory order={o}/>
-   {reward&&!reward.claimedAt?<Btn disabled={busy||claiming||!onCommand} onPress={claim}>Belohnung entgegennehmen</Btn>:reward?.claimedAt?<Txt muted>Abgeholt</Txt>:null}
+   {reward&&!reward.claimedAt?<Btn disabled={busy||claiming||!onCommand} onPress={claim}>Belohnung entgegennehmen</Btn>:null}
    {!!claimError&&<Txt accessibilityRole="alert" style={[s.small,{color:C.red,marginTop:6}]}>{claimError}</Txt>}
   </>:<>
    <Row><ItemArt id={o.kind==='referral'?'referral':'special'} size={48}/><Txt style={[s.title,{flex:1}]}>{projectTitle(o.projectName,o.kind)}</Txt></Row><Txt muted style={{marginBottom:12}}>{o.customerName}</Txt>

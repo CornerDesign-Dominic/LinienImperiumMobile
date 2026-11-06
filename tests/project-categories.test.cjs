@@ -167,7 +167,7 @@ test('Completed detail contains only receipt and guarded claim; errors retry and
  reject(Error('Offline'));await first;tree=render();assert.ok(text(tree).includes('Belohnung konnte nicht abgeholt'));assert.equal(claim(tree).props.disabled,false);
  const retry=claim(tree).props.onPress();resolve(undefined);await retry;tree=render();assert.ok(text(tree).includes('Bitte erneut versuchen'));
  const success=claim(tree).props.onPress();resolve({state:{orders:[{id:'done',completionReward:{claimedAt:123}}]}});await success;claim(render()).props.onPress();assert.equal(calls,3,'confirmed success remains guarded until authoritative snapshot');
- order.completionReward.claimedAt=123;tree=render();assert.equal(claim(tree),undefined);assert.ok(text(tree).includes('Abgeholt'));assert.equal(nodes(tree,'ItemAmount').length,0);h.unmount();
+ order.completionReward.claimedAt=123;tree=render();assert.equal(claim(tree),undefined);assert.ok(!text(tree).includes('Abgeholt'));assert.equal(nodes(tree,'ProjectStory').length,1);assert.equal(nodes(tree,'ItemAmount').length,0);h.unmount();
 });
 
 test('Active project card uses snapshot ETA and deadline without promising completion for stale or infeasible estimates',()=>{
