@@ -1,31 +1,32 @@
 # Offene Arbeiten und Veröffentlichungsstand
 
-Stand: 05.11.2026. Veröffentlichtes Sammelpaket: `c029782e864e94958250a0e8728ef7a737961b68`.
+Stand: 06.11.2026. Veröffentlichtes Sammelpaket: `0c92e343874107085fbff6a64bd5732c5b21f497`.
 
 ## Letzte Veröffentlichung
 
-[Mobile-preview-Lauf 42094829858](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42094829858) bestätigt Typprüfung, 323 bestandene Tests, Android-Export, Firebase-Deployment, Live-API-Prüfung und Android-OTA im Kanal preview. Keine neue APK und kein physischer Gerätetest.
+[Mobile-preview-Lauf 42235427062](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42235427062) bestätigt TypeScript, 370 bestandene Tests, Android-Export, Firebase-Deployment, Live-API-Prüfung und Android-OTA im Kanal preview. Keine neue APK und kein physischer Gerätetest.
 
-Alle seit der vorherigen Freigabe gesammelten Änderungen sind veröffentlicht:
+Veröffentlicht sind alle bis zu dieser Freigabe gesammelten Änderungen aus PRs #16–#21:
 
-- Flottenwahl für Großaufträge mit fünf Fahrzeugbildern pro Reihe, serverseitiger Dauer-/Vergütungsprognose und übersichtlichen Angaben zu Fracht, Strecke und Frist.
-- Vereinfachtes Botenmodal ohne technische Nummer, individuellen Kilometerstand und doppelten Ausbauhinweis; kumulative Botenstrecke in der Statistik.
-- Fünf neu verzierte regionale Übergabescheine mit Schleife, Wachssiegel, Tischdekoration und passender sepiafarbener Serifenschrift.
-- Ausbaupunkte nur im Verteilbutton der Handelsimperiumkarte; Levelaufstieg zeigt die Punkte mit ihrem Bild.
-- Neues illustriertes XP-Gildenbuch und feste größere Belohnungszahlen; Taler-Belohnungen und Einnahmenvorschauen ohne Nachkommastellen.
+- Season-Reiter oben, vereinfachter Belohnungsweg, Premiumkauf beim Großhändler für 1.000 Hermes-Siegel und normale Kundenaufträge für je 500 zusätzliche Punkte nach dem regulären Weg.
+- Endlosexpeditionen mit regionalen Punktkosten, direkten Karten-/Zahnradfunden und Kundenaufträgen; selteneren Sonder-/Empfehlungsaufträgen, ausbaubarer Fundchance und 50/50-Verkehrsart bei neuen Kundenaufträgen.
+- Universelle Handelstruhe für 200 Hermes-Siegel, freie Truhe je Regionsabschluss sowie Auffüller bis zum persönlichen Maximum.
+- Einzelaufträge zahlen vollständige Vergütung, XP, Beute und Kundenfortschritt erst beim Einsammeln aus; alte bereits ausgezahlte Fahrten werden nicht doppelt bezahlt.
+- Durchgehender Seitenhintergrund, halbierte äußere Seitenabstände, Stammkunden-Aufwärtspfeil und grüner Materialbeschaffungspunkt, bereinigte Imperiumsausbau-Anzeigen.
+- Überarbeitete Großauftragsdarstellung, vereinfachtes Überstundenmodal und einheitliche Belohnungsüberschriften ohne Abschlusszähler; offenes Schloss für neue Botenplätze.
 
-Die vorherigen Veröffentlichungen bleiben enthalten. Nachweise: [Prüfstand](TEST_REPORT.md), [Modulnotizen](docs/README.md). Neue Wünsche werden bis zur nächsten ausdrücklichen Veröffentlichungsfreigabe gesammelt.
+Nachweise: [Prüfstand](TEST_REPORT.md), [Expeditions-/Truhenbalance](docs/gameplay/expedition-trade-chest-balance.md), [Einzelauftragsauszahlung](docs/gameplay/single-order-rewards.md). Neue Wünsche werden bis zur nächsten ausdrücklichen Veröffentlichungsfreigabe gesammelt.
 
 ## Gesammelt, noch nicht veröffentlicht
 
-Keine weiteren Änderungen aus diesem Arbeitsauftrag offen. Das aktive Seasonpaket einschließlich der vorherigen UI-Anpassungen wurde veröffentlicht: [Mobile preview – Lauf 42125289468](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42125289468), Spielcode `b10dca11fe5edb4ffbde3ad17e9ac4024d9e81ed`.
+Keine weiteren Änderungen aus diesem Arbeitsauftrag offen.
 
 ## Noch offene Punkte
 
 | Bereich | Tatsächlicher Stand / nächster Schritt |
 | --- | --- |
 | Expeditionszeiten | `EXPEDITION_TEST_DURATION_MS = 15000` in `functions/src/engine.cjs` ist weiterhin aktiv. Vor einem regulären Spielbetrieb Testverkürzung bewusst aufheben und normale Laufzeiten prüfen. Dies ist hier nur dokumentiert. |
-| Regionale Geschenke | Weiterhin Testpreis 10 Taler und je 20 % auf die fünf Gebietskarten (`functions/src/gifts-runtime.js`). Vor regulärer Balance bewusst festlegen; nicht mit Expeditions-Fundchancen verwechseln. |
+| Handelstruhen | Universeller Vorrat und Kaufpreis 200 Hermes-Siegel. Der bisherige Testpool mit je 20 % auf die fünf Gebietskarten bleibt bestehen; endgültige Seltenheitsverteilung gesondert festlegen. Nicht mit direkten Expeditions-Fundchancen verwechseln. |
 | Echtgeldkäufe | Großhändler zeigt Vorschaupakete; echte Kaufbuttons sind deaktiviert. Store-Produkte, Billing und serverseitige Kaufprüfung fehlen. Einzelheiten: [Premium-Shop](docs/ui/premium-shop.md). |
 | Pyramiden-Event | Legendäre Passkarte bleibt Platzhalter; wiederkehrende Gemeinschaftsrunden und produktive Skalierung sind noch nicht abgeschlossen. [Eventregeln und Grenzen](docs/events/pyramid.md). |
 | iOS | Gemeinsame App vorbereitet; signierter iPhone-Build und Gerätetest sind gesonderte Arbeit. |
@@ -42,4 +43,4 @@ Die Tabelle hält belegte Restpunkte fest; sie beauftragt keine neue Spielfunkti
 - Nach Abschluss den Eintrag entfernen oder mit Nachweis in die Historie übernehmen; keine vollständigen Modulbeschreibungen hier duplizieren.
 - Spielveröffentlichungen erfolgen weiterhin auf ausdrücklichen Wunsch über den dokumentierten Workflow. Dokumentationspflege startet keinen manuellen Release und setzt keinen Veröffentlichungsmarker.
 
-In den Einstellungen vergibt das Testwerkzeug `testHermes` jeweils 1.000 Hermes-Siegel. Der Betrag ist serverseitig festgelegt; Echtgeldkäufe bleiben deaktiviert.
+Auf der separaten Testwerkzeug-Seite vergibt `testHermes` jeweils 1.000 Hermes-Siegel. Der Betrag ist serverseitig festgelegt; Echtgeldkäufe bleiben deaktiviert.
