@@ -1,6 +1,7 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {execute}=require('../functions/src/engine.cjs');
+const {componentHarness,nodes,text}=require('./helpers/component-harness.cjs');
 const now=1800000000000,random=()=>.5;
 const cmd=(state,action='sync',payload={},at=now,rng=random)=>execute(state,action,payload,at,rng);
 function setup(){
@@ -161,4 +162,12 @@ test('A vehicle reserved as next single-order replacement cannot start procureme
  out=cmd(out.state,'singleVehicle',{order:order.id,truck:'replacement'});
  assert.equal(out.state.orders.find(o=>o.id===order.id).pendingTruckId,'replacement');
  assert.throws(()=>start(out.state,'replacement'),/verfügbar/);
+});
+test('Claim summary contains only the exact payout, never existing inventory or new loot, and empty repeated claims have no summary',()=>{
+ let {state}=setup();let out=cmd(state);out.state.inventory.gears.common=100;out.state.inventory.gears.uncommon=50;out.state.inventory.companyItems=20;
+ out.state.procurement.pending={common:15,uncommon:3,rare:0,companyItems:2};
+ out=cmd(out.state,'procurementClaim');assert.deepEqual(out.view.claimSummary,{source:'Materialbeschaffung',coins:0,gears:{common:15,uncommon:3,rare:0},companyItems:2,capacityModules:0,supplierContacts:0});assert.equal(out.state.inventory.gears.common,115);assert.equal(out.state.inventory.gears.uncommon,53);assert.equal(out.state.inventory.companyItems,22);assert.deepEqual(out.state.procurement.pending,{common:0,uncommon:0,rare:0,companyItems:0});
+ const h=componentHarness('ClaimRewards.tsx',{'./Language':{Text:'Text'}}),tree=h.render('ClaimRewards',{summary:out.view.claimSummary,rarities:out.view.catalog.rarities});assert.equal(text(nodes(tree,'Txt').find(t=>t.props.testID==='reward-source')),'Materialbeschaffung');const rows=nodes(tree,'View').filter(v=>v.props.testID?.startsWith('claim-reward-'));assert.equal(rows.length,3);assert.ok(rows.some(v=>v.props.testID==='claim-reward-gear:common'&&text(v).includes('+15')));assert.ok(!rows.some(v=>v.props.testID==='claim-reward-gear:rare'));
+ const repeat=cmd(out.state,'procurementClaim');assert.equal(repeat.view.claimSummary,undefined);assert.equal(repeat.state.inventory.gears.common,115);assert.equal(repeat.state.inventory.companyItems,22);
+ const sync=cmd(repeat.state);assert.equal(sync.view.claimSummary,undefined);sync.state.procurement.pending.rare=1;const fresh=cmd(sync.state,'procurementClaim');assert.equal(fresh.view.claimSummary.gears.rare,1);assert.equal(fresh.view.claimSummary.gears.common,0);assert.equal(fresh.view.claimSummary.companyItems,0);
 });

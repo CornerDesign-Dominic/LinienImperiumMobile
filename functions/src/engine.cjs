@@ -712,7 +712,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   if(action==='hubCrate'&&ok!==false)view.hubCrateParts=ok;
   if(['giftOpen','chestOpen'].includes(action)&&ok!==false)view.giftFind=ok;
   if(action==='draw'&&ok&&typeof ok==='object')view.claimSummary=ok;
-  if(['claimSingles','hubCollect'].includes(action)&&ok!==false)view.claimSummary=ok;
+  if(['claimSingles','hubCollect','procurementClaim'].includes(action)&&ok!==false)view.claimSummary=ok;
   if((action==='claim'||['seasonTaskClaim','seasonClaim','seasonClaimAll','seasonInfinityClaim'].includes(action))&&ok&&typeof ok==='object')view.claimSummary=ok;
   if(action==='overtime')view.overtimeApplied=ok===true;
   if(action==='transportBatch')view.transportBatchApplied=ok===true;

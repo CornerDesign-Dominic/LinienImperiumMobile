@@ -47,3 +47,7 @@ test('Botenstation crates respect cooldown, show received parts separately and r
  const h=componentHarness('HubCrateCard.tsx',{'../assets/art/hub/crate-scene.jpg':{uri:'crate-scene'}});let card=h.render('HubCrateCard',{crates:{opened:1,max:3,nextAt:now+1458000,available:false},clock:now});assert.ok(text(card).includes('2 Stück'));assert.ok(text(card).includes('Öffnen in 24:18'));assert.equal(nodes(card,'Pressable')[0].props.disabled,true);
  card=h.render('HubCrateCard',{crates:{opened:3,max:3,nextAt:now+1800000,available:false},clock:now});assert.ok(text(card).includes('0 Stück'));assert.ok(text(card).includes('Morgen wieder verfügbar'));
 });
+test('Courier cards omit assignment lamps but retain assignment labels, details and improvement hints',()=>{
+ const x=setup('HubVehicles'),truck=x.props.data.state.trucks.find(t=>!t.cardId&&t.tier<=1);
+ for(const assigned of [true,false]){truck.hubAssigned=assigned;const tree=x.render(),tile=nodes(tree,'Pressable').find(p=>p.props.accessibilityLabel?.includes(truck.displayName));assert.ok(tile);assert.ok(tile.props.accessibilityLabel.includes(assigned?'In der Botenstation eingesetzt':'Nicht eingesetzt'));assert.equal(nodes(tile,'View').filter(v=>Array.isArray(v.props.style)&&v.props.style[0]?.position==='absolute'&&v.props.style[0]?.width===8).length,0);assert.ok(nodes(tile,'View').some(v=>v.props.accessibilityLabel?.startsWith('Laderaum:')));tile.props.onPress();assert.equal(nodes(x.render(),'HubVehicleDetail')[0].props.truck.id,truck.id);}
+});

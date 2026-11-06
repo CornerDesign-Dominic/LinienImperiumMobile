@@ -1,7 +1,6 @@
 import {MaterialView as View,MaterialPressable as Pressable} from './Material';
-import {ItemArt} from './ItemArt';
 import {ProcurementRunCard,ProcurementRunDetail} from './ProcurementRun';
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {Image,TextInput,ScrollView,StyleSheet} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {Text} from './Language';
@@ -9,9 +8,9 @@ import {t as translate} from './i18n';
 import {VehicleArt} from './VehicleArt';
 import {Icon} from './Icon';
 import {regionIdentities} from './regionIdentities';
-import {C,Txt,Card,Row,Btn,Bar,Pill,Empty,n,remaining} from './ui';
-import {itemName} from './items';
+import {C,Txt,Card,Row,Btn,Empty,n} from './ui';
 
+const ledgerImage=require('../assets/art/procurement/collection-ledger.png');
 const regionImages=[require('../assets/art/regions/crownlands.jpg'),require('../assets/art/regions/prairies.jpg'),require('../assets/art/regions/saffron-road.jpg'),require('../assets/art/regions/jade-valley.jpg'),require('../assets/art/regions/northmark.jpg')];
 
 export const procurementHelpNotes=[
@@ -22,6 +21,7 @@ export const procurementHelpNotes=[
 
 export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,modalBlocked=false}:any){
  const p=data.procurement,g=data.state;
+ const [claiming,setClaiming]=useState(false),[claimFailed,setClaimFailed]=useState(false),claimInFlight=useRef(false);
  const [region,setRegion]=useState<number|null>(null),[truckIds,setTruckIds]=useState<string[]>([]),[mode,setMode]=useState('count'),[value,setValue]=useState('1');
  const [detailId,setDetailId]=useState<string|null>(null);
  const [dialog,setDialog]=useState<'book'|'sites'|'settings'|null>(null),[saveFailed,setSaveFailed]=useState(false);
@@ -35,11 +35,16 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
  const amount=/^\d+$/.test(value)?Number(value):NaN;
  const max=site?Math.min(100000,Math.floor(g.coins/site.price)):0;
  const valid=site?.unlocked&&selectedVehicles.length>0&&selectedVehicles.length<=10&&Number.isSafeInteger(amount)&&amount>=0&&(mode==='count'?amount>0&&amount<=max:amount<=1000000000&&g.coins-site.price>=amount);
- const rewards=Object.entries(p.pending).filter(([,amount]:any)=>amount>0).map(([id,amount])=>({id,amount}));
+ const ready=Object.values(p.pending).some((amount:any)=>amount>0);
+ const claim=async()=>{
+  if(busy||claimInFlight.current||!ready)return;
+  claimInFlight.current=true;setClaiming(true);setClaimFailed(false);
+  try{const next=await onCommand('procurementClaim');if(!next?.claimSummary)setClaimFailed(true);}
+  catch{setClaimFailed(true);}
+  finally{claimInFlight.current=false;setClaiming(false);}
+ };
  const regionTitle=(index:number)=>regionIdentities[index]?.title||data.catalog.regionNames[index];
  const visited=p.sites.filter((s:any)=>s.completed>0);
- const rewardInfo=(id:string)=>{const rarity=data.catalog.rarities.find((r:any)=>r.id===id);return {name:rarity?`${rarity.label}-Zahnräder`:itemName(id,2),itemId:rarity?`gear:${id}`:id};};
- const rewardTiles=(items:any[],amounts=false)=><View style={amounts?styles.rewards:styles.itemGrid}>{items.map(item=>{const info=rewardInfo(item.id);return <View key={item.id} accessible accessibilityLabel={`${translate(info.name)}${amounts?`: ${n(item.amount)}`:''}`} style={amounts?styles.reward:undefined}><ItemArt id={info.itemId} size={48}/>{amounts&&<Txt style={styles.rewardAmount}>{n(item.amount)}</Txt>}</View>;})}</View>;
  const close=()=>{setDialog(null);setRegion(null);setSaveFailed(false);};
  const runs=[...(p.groups||[]),...p.runs.filter((r:any)=>!r.groupId)];
  const active=runs.filter((r:any)=>r.status==='active'),detailRun=runs.find((r:any)=>r.id===detailId);
@@ -58,9 +63,12 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
   ()=>onCommand(r.vehicleIds?'procurementGroupStop':'procurementStop',{id:r.id,immediate}));
 
  return <>
-  <Pressable accessibilityRole="button" accessibilityLabel={translate('Abhol-Buch öffnen')} onPress={()=>openDialog('book')} style={styles.bookRow}><Icon name="book" size={22} color={C.gold}/><Txt style={styles.bookTitle}>Abhol-Buch</Txt><Icon name="chevron" size={16}/></Pressable>
-  {rewards.length>0&&<Card><Txt style={styles.heading}>Belohnungen</Txt>{rewardTiles(rewards,true)}<Btn disabled={busy} onPress={()=>onCommand('procurementClaim')}>Einsammeln</Btn></Card>}
-  <Pressable accessibilityRole="button" accessibilityLabel={translate('Beschaffungsort wählen')} onPress={()=>openDialog('sites')} style={({pressed})=>[styles.selectionCard,pressed&&{opacity:.85}]}><Image source={require('../assets/art/procurement/selection-yard.jpg')} accessible={false} fadeDuration={0} resizeMode="cover" style={styles.selectionImage}/><View style={styles.selectionHeading}><Txt style={styles.selectionTitle}>Beschaffungsort wählen</Txt><Icon name="chevron" size={17} color={C.onInk}/></View></Pressable>
+  <Pressable accessibilityRole="button" accessibilityLabel={translate('Abhol-Buch öffnen')} onPress={()=>openDialog('book')} style={({pressed})=>[styles.bookRow,pressed&&{opacity:.85}]}><Image source={ledgerImage} accessible={false} resizeMode="contain" fadeDuration={0} style={styles.bookThumbnail}/><View style={styles.bookCopy}><Txt style={styles.bookTitle}>Abhol-Buch</Txt><Txt style={styles.bookSubtitle}>Deine Beschaffungen im Überblick</Txt><Txt style={styles.bookCount}>{n(p.completed)} erfolgreiche Abholungen</Txt></View><Icon name="chevron" size={18} color={C.brassLight}/></Pressable>
+  <Pressable accessibilityRole="button" accessibilityLabel={translate('Materialien suchen')} onPress={()=>openDialog('sites')} style={({pressed})=>[styles.selectionCard,pressed&&{opacity:.85}]}><Image source={require('../assets/art/procurement/selection-yard.jpg')} accessible={false} fadeDuration={0} resizeMode="cover" style={styles.selectionImage}/><View style={styles.selectionHeading}><Txt style={styles.selectionTitle}>Materialien suchen</Txt><Icon name="chevron" size={17} color={C.onInk}/></View></Pressable>
+  <View style={styles.claimArea}>
+   <Row style={{marginBottom:0,flexWrap:'nowrap'}}><Btn style={{flex:1,marginTop:0}} disabled={busy||claiming||!ready} onPress={claim}>{claiming?'Wird eingesammelt …':ready?'Einsammeln':'Noch nichts abzuholen'}</Btn>{ready&&<View testID="procurement-loot-ready" accessible accessibilityLabel={translate('Loot abholbereit')} style={styles.readyDot}/>}</Row>
+   {claimFailed&&<Text accessibilityRole="alert" style={styles.claimError}>Belohnungen konnten nicht abgeholt werden. Bitte erneut versuchen.</Text>}
+  </View>
   {active.length>0&&<Txt style={styles.heading}>Laufende Beschaffungen</Txt>}
   {active.map((run:any)=><ProcurementRunCard key={run.id} run={run} title={regionTitle(run.region)} data={data} clock={clock} onOpen={()=>setDetailId(run.id)}/>)}
   <ProcurementRunDetail run={detailRun} title={detailRun?regionTitle(detailRun.region):''} data={data} clock={clock} busy={busy} onClose={()=>setDetailId(null)} onStop={stop} modalBlocked={modalBlocked||dialog!==null}/>
@@ -69,7 +77,8 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
     <Row style={{flexWrap:'nowrap'}}>{dialog==='settings'&&<Pressable accessibilityRole="button" accessibilityLabel={translate('Zur Ortsauswahl')} onPress={()=>{setSaveFailed(false);setDialog('sites');}} style={styles.back}><Icon name="back" size={21}/></Pressable>}<Txt style={[styles.heading,{flex:1,minWidth:0,marginBottom:0}]}>{dialog==='book'?'Abhol-Buch':dialog==='sites'?'Ort wählen':'Beschaffung planen'}</Txt><Btn icon="close" iconOnly secondary style={{marginTop:0}} onPress={close}>Schließen</Btn></Row>
     <ScrollView key={dialog} style={{flexShrink:1}} keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:4}}>
      {dialog==='book'&&<>
-      <Row><Txt muted>Erfolgreiche Abholungen insgesamt</Txt><Txt gold>{n(p.completed)}</Txt></Row>
+      <View style={styles.bookPortrait}><Image testID="procurement-ledger-art" source={ledgerImage} accessible={false} resizeMode="contain" fadeDuration={0} style={styles.bookImage}/></View>
+      <View style={styles.bookTotal}><Txt muted style={styles.bookTotalLabel}>Erfolgreiche Abholungen insgesamt</Txt><Txt gold style={styles.bookTotalValue}>{n(p.completed)}</Txt></View>
       {visited.length?visited.map((s:any)=><View key={s.region} style={styles.logRow}><Txt style={{flex:1}}>{regionTitle(s.region)}</Txt><Txt gold>{n(s.completed)}</Txt></View>):<Empty>Noch keine erfolgreichen Abholungen.</Empty>}
      </>}
      {dialog==='sites'&&p.sites.map((s:any)=><Card key={s.region} style={[styles.siteCard,!s.unlocked&&styles.lockedSite]}>
@@ -105,5 +114,5 @@ export function Procurement({data,busy,clock,onCommand,onExpedition,confirm,moda
   </Modal>
  </>;
 }
-const styles=StyleSheet.create({bookRow:{minHeight:48,flexDirection:'row',alignItems:'center',gap:10,paddingHorizontal:12,paddingVertical:6,borderWidth:1,borderColor:C.line,borderRadius:7,backgroundColor:C.panel,marginBottom:10},bookTitle:{flex:1,fontSize:14,lineHeight:20,fontWeight:'600'},selectionCard:{height:146,borderWidth:1,borderColor:C.line,borderRadius:7,overflow:'hidden',backgroundColor:C.ink,marginBottom:12},selectionImage:{position:'absolute',top:0,bottom:0,left:0,right:0,width:'100%',height:'100%'},selectionHeading:{flexDirection:'row',alignItems:'center',gap:8,paddingHorizontal:12,paddingVertical:8,backgroundColor:'rgba(21,33,33,.68)'},selectionTitle:{flex:1,fontSize:16,lineHeight:22,fontWeight:'600',color:C.onInk},lockedSite:{backgroundColor:C.raised,opacity:.58},lockedProgress:{fontSize:10,lineHeight:14,marginTop:5},lockedActions:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginTop:4,borderTopWidth:1,borderTopColor:C.line},compactLink:{minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:5,marginTop:0,borderTopWidth:0},compactText:{fontSize:11,color:C.accent},rewards:{flexDirection:'row',flexWrap:'wrap',gap:12,marginVertical:8},reward:{minWidth:50,maxWidth:92,alignItems:'center',justifyContent:'center',gap:5},rewardAmount:{fontWeight:'700',fontSize:15},itemGrid:{flexDirection:'row',flexWrap:'wrap',gap:10,marginVertical:8},logRow:{flexDirection:'row',alignItems:'center',gap:12,paddingVertical:12,borderBottomWidth:1,borderBottomColor:C.line,marginBottom:5},siteCard:{padding:9,marginBottom:8},siteChoice:{minHeight:68,flexDirection:'row',alignItems:'center',gap:10},siteImage:{width:64,height:64,borderRadius:5},siteCopy:{flex:1,minWidth:0},siteTitle:{fontSize:14,lineHeight:20,fontWeight:'700'},sitePrice:{flexDirection:'row',alignItems:'center',gap:5,marginTop:4},sitePriceText:{fontSize:12,lineHeight:18,flexShrink:1},back:{width:32,minHeight:44,alignItems:'center',justifyContent:'center'},heading:{fontSize:17,fontWeight:'700',marginBottom:8},input:{borderWidth:1,borderColor:C.line,borderRadius:5,padding:12,color:C.text,backgroundColor:C.raised,marginVertical:10},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:16},modal:{width:'100%',maxWidth:480,maxHeight:'88%',alignSelf:'center',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:12,padding:16},vehicleStat:{fontSize:11,lineHeight:16,flexShrink:1},transportHeading:{fontSize:14,lineHeight:20,fontWeight:'600'},vehicleName:{color:C.text,fontSize:11,lineHeight:16,minHeight:32,textAlign:'center'},duration:{flexDirection:'row',flexWrap:'nowrap',alignItems:'center',justifyContent:'center',gap:2},durationText:{fontSize:10,lineHeight:16},selectionState:{flexDirection:'row',alignItems:'center',justifyContent:'center',gap:5,marginTop:3},selectionText:{fontSize:10,lineHeight:15,color:C.muted},selectedTile:{borderColor:C.accent,backgroundColor:C.greenWash},unavailableTile:{opacity:.5},amountRow:{flexDirection:'row',alignItems:'center',gap:8},grid:{flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between',gap:8,marginVertical:10},tile:{width:'31%',minWidth:0,borderWidth:1,borderColor:C.line,padding:4,borderRadius:5,gap:4}});
+const styles=StyleSheet.create({bookRow:{minHeight:130,flexDirection:'row',alignItems:'center',gap:10,paddingHorizontal:12,paddingVertical:12,borderWidth:1,borderColor:C.brass,borderRadius:7,backgroundColor:C.ink,marginBottom:10},bookThumbnail:{width:88,height:100},bookCopy:{flex:1,minWidth:0,gap:5},bookTitle:{fontSize:19,lineHeight:25,fontWeight:'700',color:C.onInk},bookSubtitle:{fontSize:11,lineHeight:16,color:C.mutedOnInk},bookCount:{fontSize:11,lineHeight:16,color:C.brassLight,marginTop:3},bookPortrait:{alignItems:'center',paddingVertical:10,borderBottomWidth:1,borderBottomColor:C.line,marginBottom:12},bookImage:{width:'100%',maxWidth:240,height:210},bookTotal:{alignItems:'center',paddingVertical:12,gap:5,backgroundColor:C.raised,borderWidth:1,borderColor:C.line,borderRadius:6,marginBottom:12},bookTotalLabel:{fontSize:12,lineHeight:18,textAlign:'center'},bookTotalValue:{fontSize:27,lineHeight:34,fontWeight:'700'},claimArea:{marginBottom:16},readyDot:{width:10,height:10,borderRadius:5,backgroundColor:C.uncommon,flexShrink:0},claimError:{fontSize:12,lineHeight:18,color:C.red,marginTop:8},selectionCard:{height:146,borderWidth:1,borderColor:C.line,borderRadius:7,overflow:'hidden',backgroundColor:C.ink,marginBottom:12},selectionImage:{position:'absolute',top:0,bottom:0,left:0,right:0,width:'100%',height:'100%'},selectionHeading:{flexDirection:'row',alignItems:'center',gap:8,paddingHorizontal:12,paddingVertical:8,backgroundColor:'rgba(21,33,33,.68)'},selectionTitle:{flex:1,fontSize:16,lineHeight:22,fontWeight:'600',color:C.onInk},lockedSite:{backgroundColor:C.raised,opacity:.58},lockedProgress:{fontSize:10,lineHeight:14,marginTop:5},lockedActions:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginTop:4,borderTopWidth:1,borderTopColor:C.line},compactLink:{minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:5,marginTop:0,borderTopWidth:0},compactText:{fontSize:11,color:C.accent},logRow:{flexDirection:'row',alignItems:'center',gap:12,paddingVertical:12,borderBottomWidth:1,borderBottomColor:C.line,marginBottom:5},siteCard:{padding:9,marginBottom:8},siteChoice:{minHeight:68,flexDirection:'row',alignItems:'center',gap:10},siteImage:{width:64,height:64,borderRadius:5},siteCopy:{flex:1,minWidth:0},siteTitle:{fontSize:14,lineHeight:20,fontWeight:'700'},sitePrice:{flexDirection:'row',alignItems:'center',gap:5,marginTop:4},sitePriceText:{fontSize:12,lineHeight:18,flexShrink:1},back:{width:32,minHeight:44,alignItems:'center',justifyContent:'center'},heading:{fontSize:17,fontWeight:'700',marginBottom:8},input:{borderWidth:1,borderColor:C.line,borderRadius:5,padding:12,color:C.text,backgroundColor:C.raised,marginVertical:10},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',padding:16},modal:{width:'100%',maxWidth:480,maxHeight:'88%',alignSelf:'center',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:12,padding:16},vehicleStat:{fontSize:11,lineHeight:16,flexShrink:1},transportHeading:{fontSize:14,lineHeight:20,fontWeight:'600'},vehicleName:{color:C.text,fontSize:11,lineHeight:16,minHeight:32,textAlign:'center'},duration:{flexDirection:'row',flexWrap:'nowrap',alignItems:'center',justifyContent:'center',gap:2},durationText:{fontSize:10,lineHeight:16},selectionState:{flexDirection:'row',alignItems:'center',justifyContent:'center',gap:5,marginTop:3},selectionText:{fontSize:10,lineHeight:15,color:C.muted},selectedTile:{borderColor:C.accent,backgroundColor:C.greenWash},unavailableTile:{opacity:.5},amountRow:{flexDirection:'row',alignItems:'center',gap:8},grid:{flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between',gap:8,marginVertical:10},tile:{width:'31%',minWidth:0,borderWidth:1,borderColor:C.line,padding:4,borderRadius:5,gap:4}});
 
