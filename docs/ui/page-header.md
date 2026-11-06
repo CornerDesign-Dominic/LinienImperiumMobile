@@ -1,7 +1,7 @@
-# Seitenleiste als Petrolschild
+# Globale Seitentitelleiste
 
-Die gemeinsame Seitenleiste verwendet die bestätigte matte Petroltextur mit einer dünnen gedämpften Kupferkante. Zurück-Pfeil und Hilfezeichen stehen in passenden schlichten Kupferringen. Der Titel ist geometrisch mittig zwischen zwei gleich breiten 44-dp-Plätzen angeordnet. Auf der Startseite ersetzt eine nicht interaktive leere Fläche den Zurück-Knopf. Auch ohne Hilfeaktion bleibt deren Platz frei.
+Die gemeinsame native `PageHeader`-Komponente füllt die gesamte Breite direkt unter dem dunklen Statusheader. Sie gilt auch für die Expedition und ihre Regionsansicht, weil sie oberhalb beider Inhaltslayouts eingebunden ist. Safearea und Ressourcenheader bleiben im bestehenden App-Layout.
 
-Die alte Zeile war bereits 44 dp hoch. Deshalb bleibt die sichere Berührungsfläche 44 × 44 dp; die sichtbare Schildfläche ist auf 38 dp reduziert. Der Titel ist ein echter einzeiliger Text mit begrenzter automatischer Verkleinerung für lange Seitennamen. Keine Bildschrift. Modalüberschriften, Spielerkopf und untere Navigation bleiben unverändert.
+Das Titelband verwendet die vorhandene Pergamenttextur, dunkles Petrol und die vorhandene Serifenschrift. Der Titel steht direkt auf Pergament in seiner normalen Schreibweise. Keine Plakette, Nieten, Titelschatten oder Titelfassung. Eine dezente Messingkante grenzt den Inhalt ab.
 
-Zurück- und Hilfeaktionen verwenden dieselbe Navigation wie bisher. Dekorative Flächen nehmen keine Berührungen entgegen. Zwei gezielte Verhaltenstests prüfen die Weiterleitung der Aktionen, den nicht bedienbaren Start-Platzhalter sowie die symmetrischen Berührungsplätze und lange Titel. TypeScript und Android-Export ergänzen diese Prüfungen; echte Android-/Browserdarstellung wurde hier nicht gemessen.
+Beide Seiten reservieren identische 44-Pixel-Tippflächen. Auf Start ersetzt ein nicht interaktiver Platzhalter die Zurück-Taste. Der Titel bleibt deshalb auch bei fehlenden Aktionen geometrisch mittig. Lange Titel umbrechen bei gleichbleibender Schriftgröße; native Textmessung lässt die nach außen dünneren Messinglinien nur erscheinen, wenn ausreichend freier Platz neben einem einzeiligen Titel bleibt. Dekoration belegt keinen Titelplatz und ist für Screenreader verborgen.
