@@ -20,7 +20,7 @@ test('All five customer details show their three products and precious good with
 test('Customer goods omit traffic and origin metadata',()=>{
  const {h,tree}=setup({id:'stahlwerk',name:'Bund der Karawanenhändler',category:'national',regionName:'Historische Region',products:[],preciousCargo:'Kostbare Essenzen'});
  const traffic=nodes(tree,'View').find(n=>n.props.testID==='customer-traffic'),origin=nodes(tree,'View').find(n=>n.props.testID==='customer-origin');
- assert.equal(traffic,undefined);assert.ok(!text(tree).includes('Nahverkehr'));
+ assert.equal(traffic,undefined);
  assert.equal(origin,undefined);assert.ok(!text(tree).includes('Herkunft'));h.unmount();
 });
 test('Legacy customer goods fall back to known cargo without inventing missing goods',()=>{

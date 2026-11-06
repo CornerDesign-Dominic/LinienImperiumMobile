@@ -3,20 +3,6 @@ const assert=require('node:assert/strict');
 const {execute}=require('../functions/src/engine.cjs');
 const now=1800000000000;
 function ready(){const g=execute(null,'foundCompany',{companyName:'Handelshaus',cityName:'Testhafen'},now,()=>.5);g.state.expedition.points=1000;g.state.expedition.regions.forEach(r=>Object.assign(r,{endlessUnlocked:true,customerUnlocked:true}));return g;}
-test('Expedition chance upgrade debits authoritative graduated prices, caps at 2.5 percent and rejects stale purchases',()=>{
- let g=ready();g.state.coins=2000000;g.state.inventory.companyItems=100;
- const coins=g.state.coins,items=g.state.inventory.companyItems;
- for(let level=0;level<15;level++){
-  assert.equal(g.view.expeditionUpgrade.level,level);
-  const before=g.state;g=execute(g.state,'expeditionChanceUpgrade',{level,coins:0},now,()=>.5);
-  assert.equal(before.coins-g.state.coins,10000*(level+1));assert.equal(before.inventory.companyItems-g.state.inventory.companyItems,1+Math.floor(level/5));
-  assert.throws(()=>execute(g.state,'expeditionChanceUpgrade',{level},now),/geändert/);
- }
- assert.equal(coins-g.state.coins,1200000);assert.equal(items-g.state.inventory.companyItems,30);assert.equal(g.view.expeditionUpgrade.cost,null);
- for(const r of g.view.expeditionMap){assert.deepEqual(r.finds.orders.map(o=>o.chance),[20,2.25,.25]);assert.equal(r.finds.gears.chance,47.5);}
- assert.throws(()=>execute(g.state,'expeditionChanceUpgrade',{level:15},now),/Maximaler/);
- const poor=ready();assert.throws(()=>execute(poor.state,'expeditionChanceUpgrade',{level:0},now),/Nicht genügend/);
-});
 test('Direct gear finds pay only the unchanged regional gears and preserve all other stored loot',()=>{
  const ranges=[{common:[20,30]},{common:[30,45],uncommon:[2,4]},{common:[40,60],uncommon:[5,8]},{common:[50,75],uncommon:[8,12],rare:[1,2]},{common:[60,90],uncommon:[12,18],rare:[2,4]}];
  for(let region=0;region<5;region++){

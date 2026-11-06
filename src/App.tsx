@@ -26,7 +26,7 @@ import {CompanySummary} from './Atlas';
 import {displayFont} from './theme';
 import {TokenHeader} from './TokenHeader';
 import {DevelopmentCard,LevelUpNotice} from './LevelUp';
-import {TransportSummary,TransportEditor,ExpeditionChanceCard} from './Company';
+import {TransportSummary,TransportEditor} from './Company';
 import {Expeditions} from './Expeditions';
 import {Wholesaler} from './Wholesaler';
 import {Gifts} from './Gifts';
@@ -159,7 +159,7 @@ function Game(){
    case 'projectType':return <ProjectType data={data} typeKey={projectTypeKey} onOpen={(id:string)=>{setProjectId(id);go('projectDetail');}} onExpedition={(index:number)=>{go('expeditions');if(data.openRegions[index])setRegion(index);}} onCustomers={()=>go('customers')}/>;
    case 'projectDetail':return <ProjectDetail modalBlocked={levelNotices.length>0} key={projectId} data={data} id={projectId} busy={busy} clock={clock} onCommand={act} onExpedition={(index:number)=>{go('expeditions');if(data.openRegions[index])setRegion(index);}} onCustomers={()=>go('customers')} onInventory={()=>go('inventory')} onFleet={(index:number)=>{setTemplate(index);go('fleet');}}/>;
    case 'expeditions':return <Expeditions key={region??'regions'} modalBlocked={!!sheet||levelNotices.length>0} accountId={auth.currentUser?.uid||'guest'} data={data} region={region} busy={busy} clock={clock} onSelectRegion={(index:number)=>{if(data.expeditionMap[index]?.open){setRegion(index);scroll.current?.scrollTo({y:0,animated:false});}}} onCommand={act} onMission={chooseMission} onProcurement={()=>go('procurement')}/>;
-   case 'company':return <><DevelopmentCard data={data} busy={busy} onCommand={act} modalBlocked={!!sheet||levelNotices.length>0}/><TransportSummary data={data} onImprove={()=>go('transportUpgrade')}/><ExpeditionChanceCard data={data} busy={busy} onCommand={act}/></>;
+   case 'company':return <><DevelopmentCard data={data} busy={busy} onCommand={act} modalBlocked={!!sheet||levelNotices.length>0}/><TransportSummary data={data} onImprove={()=>go('transportUpgrade')}/></>;
    case 'transportUpgrade':return <TransportEditor data={data} busy={busy} onSave={(upgrades:any[])=>act('transportBatch',{upgrades})}/>;
    case 'dealer':return <Card><Txt muted>Boten werden direkt in der Botenstation angeworben und ausgebaut.</Txt><Btn onPress={()=>go('hub')}>Zur Botenstation</Btn></Card>;
    case 'hub':return <HubScreen data={data} busy={busy} clock={clock} onCommand={act} modalBlocked={levelNotices.length>0} onSell={(truck:any)=>confirm('Boten abgeben?',`${n(truck.sale.coins)} Erlös. Werkzeugkästen werden nicht erstattet.`,()=>act('sell',{id:truck.id}))}/>;

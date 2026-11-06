@@ -3,18 +3,29 @@ EXPEDITION_CHARACTERS.splice(0,EXPEDITION_CHARACTERS.length,...transportCards);
 const TRADE_CHEST_PRICE=200;
 const ENDLESS_COSTS=[5,6,7,8,10];
 const ENDLESS_GEAR_RANGES=[{common:[20,30]},{common:[30,45],uncommon:[2,4]},{common:[40,60],uncommon:[5,8]},{common:[50,75],uncommon:[8,12],rare:[1,2]},{common:[60,90],uncommon:[12,18],rare:[2,4]}];
-function expeditionChanceLevel(){return clamp(Math.floor(Number(companyFor().expeditionChanceLevel)||0),0,15);}
-function expeditionProjectChances(){const combined=(10+expeditionChanceLevel())/1000;return {special:combined*.9,referral:combined*.1};}
-function expeditionUpgradeView(){const level=expeditionChanceLevel();return {level,limit:15,combinedChance:round2((10+level)/10),maximumChance:2.5,cost:level<15?{coins:10000*(level+1),items:1+Math.floor(level/5)}:null};}
-function upgradeExpeditionChance(expected){
- const upgrade=expeditionUpgradeView();if(expected!==upgrade.level)throw Error('Expeditionsbonus geändert. Bitte neu laden.');
- if(!upgrade.cost)throw Error('Maximaler Expeditionsbonus erreicht.');
- if(game.coins<upgrade.cost.coins||(game.inventory.companyItems||0)<upgrade.cost.items)throw Error('Nicht genügend Mittel für den Expeditionsbonus.');
- game.coins-=upgrade.cost.coins;game.inventory.companyItems-=upgrade.cost.items;companyFor().expeditionChanceLevel=upgrade.level+1;
- addEvent('Expeditionsbonus auf Stufe '+(upgrade.level+1)+' verbessert.');return true;
+// Expedition probabilities belong to the regular customer of this region.
+// Their existing skill tracks keep their original contract effects as well.
+function expeditionProjectChances(region){
+ const skills=customerSkillLevels(EXPEDITION_CUSTOMER_IDS[region]);
+ const level=kind=>clamp(Math.floor(Number(skills[kind])||0),0,25);
+ return {special:.009+level('special')*.00054,referral:.001+level('referral')*.00006};
+}
+function removeExpeditionUpgrade(){
+ const company=companyFor();if(!Object.hasOwn(company,'expeditionChanceLevel'))return;
+ const previous=company.expeditionChanceLevel;delete company.expeditionChanceLevel;
+ if(game.removedExpeditionUpgradeRefund?.version===1)return;
+ // The retired purchase action stored only its level. Its fixed historical
+ // prices reconstruct exactly what was spent, never the current skill level.
+ const level=Number.isSafeInteger(previous)&&previous>=0&&previous<=15?previous:0;
+ const coins=10000*level*(level+1)/2;
+ let companyItems=0;for(let i=0;i<level;i++)companyItems+=1+Math.floor(i/5);
+ game.coins=round2(game.coins+coins);game.inventory.companyItems=(game.inventory.companyItems||0)+companyItems;
+ game.stats.removedUpgradeRefund=round2((game.stats.removedUpgradeRefund||0)+coins);
+ game.removedExpeditionUpgradeRefund={version:1,level,coins,companyItems};
+ if(level)addEvent('Entfernter Expeditionsausbau: '+coins+' Imperium-Taler und '+companyItems+' Firmenausbau-Items erstattet.');
 }
 function endlessCost(region){return ENDLESS_COSTS[region];}
-function endlessGearView(region){const chances=expeditionProjectChances();return {chance:round2((.5-chances.special-chances.referral)*100),ranges:ENDLESS_GEAR_RANGES[region]};}
+function endlessGearView(region){const chances=expeditionProjectChances(region);return {chance:round2((.5-chances.special-chances.referral)*100),ranges:ENDLESS_GEAR_RANGES[region]};}
 function regionVehiclePool(region){
  const cards=EXPEDITION_CHARACTERS.filter(card=>card.region===region&&['common','uncommon','rare'].includes(card.rarity));
  const weights={common:.15,uncommon:.10,rare:.05};
@@ -59,7 +70,7 @@ function awardEndlessGears(region){
 drawExpeditionJob=index=>{
  const region=game.expedition.regions[index];
  if(!region?.endlessUnlocked||!expeditionRegionOpen(index)||!spendExpeditionPoints(endlessCost(index)))return false;
- const draw=Math.random(),pool=regionVehiclePool(index),chances=expeditionProjectChances();
+ const draw=Math.random(),pool=regionVehiclePool(index),chances=expeditionProjectChances(index);
  if(draw<.30){const card=vehicleFromPool(index,draw,pool);awardVehicleCard(card);addEvent(EXPEDITION_REGIONS[index]+': '+card.name+' gefunden.');save();render();return 'card:'+card.id;}
  if(draw<.50){
   const customer=customerById(EXPEDITION_CUSTOMER_IDS[index]),order=createOrder(game.nextOrder++,{category:customer.category,customer:customer.id});

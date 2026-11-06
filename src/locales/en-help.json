@@ -38,7 +38,7 @@
   "special": [
     [
       "Discovery",
-      "Normal customer contracts can yield special contracts: base 20% regional or 40% long-distance according to the actual contract, plus customer skill. Endless expeditions start at 0.9% special and 0.1% referral, reaching 2.25% and 0.25% with the maximum company upgrade. Special volume: 400 + region index × 120 t; distance: 120 + region index × 25 km. The shared referral contract has 1,100 t and 240 km."
+      "Normal customer contracts can yield special contracts: base 20% regional or 40% long-distance according to the actual contract, plus customer skill. Endless expeditions start at 0.9% special and 0.1% referral, reaching 2.25% and 0.25% with the respective regional customer’s special/referral skill at level 25. Special volume: 400 + region index × 120 t; distance: 120 + region index × 25 km. The shared referral contract has 1,100 t and 240 km."
     ],
     [
       "Fleet and deadline",
@@ -131,10 +131,6 @@
     [
       "Transport upgrades",
       "Completion bonus: 1,000 levels, +1 percentage point each. New level N costs 1,000 × N Imperium thalers and 1 + floor((N−1)/25) company upgrade items. Local and long-distance transport are separate. Quantity and range each have 100 levels, preserving their previous final effects and full upgrade budgets. The bonus affects only the completion reward of that category, not freight revenue or loot."
-    ],
-    [
-      "Expedition finds",
-      "15 upgrade levels increase the combined special/referral discovery chance from 1% to 2.5%, by 0.1 percentage points per level. New level N costs 10,000 × N Imperium thalers and 1 + floor((N−1)/5) company upgrade items. The extra chance replaces gear finds; normal customer and regular card chances stay unchanged."
     ]
   ],
   "personnel": [
@@ -158,7 +154,7 @@
     ],
     [
       "Discovery chances",
-      "Endless draws cost 5/6/7/8/10 points in regions 1–5. Direct cards: 15% Common, 10% Uncommon, 5% Rare, shared equally within each rarity in the region. No direct Epic or Legendary cards. Normal regional customer contract: 20%, stored until started, independently 50% regional or long-distance. Specials/referrals together: 1% initially, up to 2.5% with the company upgrade, split 90%/10%. The remainder gives gears only, without shards, company upgrade items or capacity modules. Duplicate transport cards still give one shard of the same rarity. The endless-location question mark shows exact amounts and chances."
+      "Endless draws cost 5/6/7/8/10 points in regions 1–5. Direct cards: 15% Common, 10% Uncommon, 5% Rare, shared equally within each rarity in the region. No direct Epic or Legendary cards. Normal regional customer contract: 20%, stored until started, independently 50% regional or long-distance. The regional customer’s existing special skill increases special finds from 0.9% to 2.25% over 25 points; the referral skill separately increases referral finds from 0.1% to 0.25% over 25 points. At both maxima the total is 2.5%. The remainder gives gears only, without shards, company upgrade items or capacity modules. Duplicate transport cards still give one shard of the same rarity. The endless-location question mark shows exact amounts and chances."
     ],
     [
       "Locations and bonuses",
@@ -190,7 +186,7 @@
     ],
     [
       "Abilities",
-      "Payment: +0.1% freight payment per point, up to 100. Special chance: +0.1 percentage points per point, up to 25, on a base of 20% regional / 40% long-distance. Referral chance: +0.1 percentage points per point, up to 25, on a base of 4% / 6%. Preview with +/− and save together. Saved allocations are permanent."
+      "Payment: +0.1% freight payment per point, up to 100. Special chance: +0.1 percentage points per point, up to 25, on a base of 20% regional / 40% long-distance. Referral chance: +0.1 percentage points per point, up to 25, on a base of 4% / 6%. Preview with +/− and save together. Saved allocations are permanent. The same existing special/referral improvements also affect that customer’s regional endless-expedition finds, independently reaching 2.25% special and 0.25% referral at 25 points each. No separate company upgrade is required."
     ]
   ],
   "procurement": [
