@@ -111,7 +111,8 @@ test('Single completions record category, unique daily customers and earned tran
  g=command(g,'assign',{order:'SEASONSINGLE',truck:truck.id});assert.equal(g.state.orders[0].status,'active');
  const at=g.view.state.orders.find(o=>o.id==='SEASONSINGLE').runningEndsAt;
  g=command(g,'sync',{},at);assert.equal(g.state.orders.find(o=>o.id==='SEASONSINGLE').status,'completed');
- assert.equal(g.state.season.metrics.singles,1);assert.equal(g.state.season.metrics.local,1);assert.equal(g.state.season.metrics.customerOrders,1);assert.equal(g.state.season.metrics.customers,1);assert.ok(g.state.season.metrics.coins>0);
+ assert.equal(g.state.season.metrics.singles,1);assert.equal(g.state.season.metrics.local,1);assert.equal(g.state.season.metrics.customerOrders,1);assert.equal(g.state.season.metrics.customers,1);assert.equal(g.state.season.metrics.coins,0);
+ g=command(g,'claimSingles',{},at);assert.ok(g.state.season.metrics.coins>0);
  const before=g.state.season.metrics.coins;
  const again=command(g,'sync',{},at);assert.equal(again.state.season.metrics.singles,1);assert.equal(again.state.season.metrics.coins,before);
 });

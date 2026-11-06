@@ -6,6 +6,8 @@ Ein Tipp auf ein verfügbares oder gespeichertes Angebot öffnet unmittelbar das
 
 „Laufende“ zeigt aktive Transporte und aktive Material-/Transportkartenaufträge. Abgeschlossene Einzelaufträge erscheinen nicht mehr als einzelne Karten. Der Sammelbutton, die Anzahl abholbarer Abschlüsse und die gemeinsame Prämienabrechnung bleiben bestehen; diese Änderung verbraucht keine Belohnungen.
 
+Die Belohnungsvergabe erfolgt ausschließlich beim ausdrücklichen Abholen: Vergütung einschließlich Bonus, Spieler-XP, Kundenbeziehungspunkte, Beute und gefundene Sonderaufträge bleiben bis dahin ausstehend. Transportkosten fallen bei der Lieferung an. Die Einzelheiten und die Behandlung alter Spielstände stehen in [Einzelauftragsbelohnungen](gameplay/single-order-rewards.md).
+
 Laufende Einzelauftragskarten öffnen beim Antippen direkt die bereits vorhandene Auswahl für einen Fahrzeugwechsel ab der nächsten Tour. Der Sammelabschluss bleibt ausschließlich über den vorhandenen Sammelbutton erreichbar.
 
 Prüfung der direkten Auswahl: Typprüfung und 18 gezielte Tests erfolgreich (vier neue Controllerfälle sowie Angebots-, Halte-, Laufend- und Sortierregressionen). Kein neuer App-Export oder Gerätetest; noch nicht veröffentlicht.

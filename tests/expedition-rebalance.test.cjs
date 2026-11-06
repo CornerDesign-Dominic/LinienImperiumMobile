@@ -55,7 +55,9 @@ test('Customer follow-up chance keeps national 20 and international 40 percent a
   g=execute(g.state,'assignCrafted',{order:order.id,truck:shown.choices[0].id},now,()=>.5);
   const completed=execute(g.state,'sync',{},now+3600000,()=>.3);
   assert.equal(completed.state.orders.find(o=>o.id===order.id).status,'completed');
-  const special=completed.state.orders.find(o=>o.kind==='special');
+  assert.equal(completed.state.orders.find(o=>o.kind==='special'),undefined);
+  const collected=execute(completed.state,'claimSingles',{},now+3600000,()=>.3);
+  const special=collected.state.orders.find(o=>o.kind==='special');
   if(category==='national')assert.equal(special,undefined);else {assert.ok(special);assert.equal(special.category,category);assert.equal(special.customer,order.customer);}
  }
 });

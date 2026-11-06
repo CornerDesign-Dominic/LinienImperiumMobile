@@ -787,7 +787,7 @@
   "Alle laufenden Touren enden mit ihrer Belohnung. Ungestartete Touren werden erstattet.": "All current trips finish with their rewards. Trips not started will be refunded.",
   "Endet nach laufenden Touren": "Stops after current trips",
   "Nach laufenden Touren beenden": "Stop after current trips",
-  "Alle": "Every",
+  "Alle": "All",
   "Keine Transportkarten dieser Seltenheit.": "No transport cards of this rarity.",
   "Kronenlande": "Crownlands",
   "Königliches Handelskontor": "Royal Trading Office",
@@ -1521,5 +1521,6 @@
   "Nächster Kundenauftrag": "Next customer contract",
   "Kundenaufträge abholen": "Claim customer contracts",
   "Schalte einen Stammkunden frei. Deine Belohnungen bleiben gespeichert.": "Unlock a regular customer. Your rewards remain saved.",
-  "Premium wird beim Großhändler für 1.000 Hermes-Siegel für diese Season freigeschaltet. Bereits erreichte Premiumbelohnungen bleiben nachträglich abholbar. Nach Stufe 30 gibt es alle 500 weiteren Saisonpunkte einen normalen Kundenauftrag.": "Unlock Premium for this season at the wholesaler for 1,000 Hermes seals. Previously reached Premium rewards can still be claimed. Beyond level 30, every 500 additional season points grant a normal customer contract."
+  "Premium wird beim Großhändler für 1.000 Hermes-Siegel für diese Season freigeschaltet. Bereits erreichte Premiumbelohnungen bleiben nachträglich abholbar. Nach Stufe 30 gibt es alle 500 weiteren Saisonpunkte einen normalen Kundenauftrag.": "Unlock Premium for this season at the wholesaler for 1,000 Hermes seals. Previously reached Premium rewards can still be claimed. Beyond level 30, every 500 additional season points grant a normal customer contract.",
+  "Beziehungspunkte": "Relationship points"
 }

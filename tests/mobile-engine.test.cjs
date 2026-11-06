@@ -269,9 +269,10 @@ test('Single-order views expose forecasts, truck availability and live trip timi
  assert.equal(JSON.stringify(active.state),before);
  assert.equal(synced.state.orders.find(o=>o.id===raw.id).completionReward,null);
  const done=execute(active.state,'sync',{},driving.runningEndsAt+1,fixed);
- assert.equal(done.state.xp,16);
+ assert.equal(done.state.xp,0);assert.equal(done.state.orders.find(o=>o.id===raw.id).completionReward.xp,16);
  assert.equal(done.state.orders.find(o=>o.id===raw.id).status,'completed');
- const cash=done.state.coins+done.state.orders.find(o=>o.id===raw.id).completionReward.coins-start.state.coins;
+ const collected=execute(done.state,'claimSingles',{},driving.runningEndsAt+1,fixed);assert.equal(collected.state.xp,16);
+ const cash=collected.state.coins-start.state.coins;
  assert.equal(Math.round(cash*100),Math.round(choice.totalProfit*100));
 });
 
@@ -309,7 +310,7 @@ test('Bulk single-order claim reports actual combined loot, excludes projects an
  start.state.orders.push({...structuredClone(start.state.orders[0]),id:'project-test',kind:'special',completionReward:{coins:999,gears:{legendary:2}}});
  const original=JSON.stringify(start.state);
  const claim=execute(start.state,'claimSingles',{},now,fixed);
- assert.deepEqual(claim.view.claimSummary,{count:2,coins:17.34,gears:{common:5,rare:1},capacityModules:1,companyItems:1,supplierContacts:2});
+ assert.deepEqual(claim.view.claimSummary,{count:2,coins:17.34,xp:0,customerTrust:0,specialOrders:0,gears:{common:5,rare:1},capacityModules:1,companyItems:1,supplierContacts:2});
  assert.equal(claim.state.coins,1017.34);assert.equal(claim.state.inventory.gears.common,5);assert.equal(claim.state.inventory.gears.legendary,0);
  assert.equal(claim.state.inventory.capacityModules,1);assert.equal(claim.state.inventory.companyItems,1);assert.equal(claim.state.inventory.supplierContacts,2);
  assert.ok(claim.state.orders[0].completionReward.claimedAt);
@@ -410,7 +411,8 @@ test('Level notices report newly earned levels including offline transport, with
  const offer=start.view.state.orders.find(o=>o.choices.length);
  const active=execute(offline,'assign',{order:offer.id,truck:offer.choices[0].id},now,fixed);
  const end=active.view.state.orders.find(o=>o.id===offer.id).runningEndsAt;
- const settled=execute(active.state,'sync',{},end+1,fixed);assert.deepEqual(settled.view.levelUps,[2]);assert.equal(execute(settled.state,'sync',{},end+1,fixed).view.levelUps,undefined);
+ const settled=execute(active.state,'sync',{},end+1,fixed);assert.equal(settled.view.levelUps,undefined);
+ const collected=execute(settled.state,'claimSingles',{},end+1,fixed);assert.deepEqual(collected.view.levelUps,[2]);assert.equal(execute(collected.state,'sync',{},end+1,fixed).view.levelUps,undefined);
 });
 
 test('Max overtime uses the minimum whole points that make the saved fleet meet its deadline',()=>{

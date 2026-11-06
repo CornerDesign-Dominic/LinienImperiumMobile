@@ -25,6 +25,10 @@
     [
       "Time and refresh",
       "Trip time = outbound distance / loaded speed + return distance / empty speed. On Dual Way the return trip is loaded too. Offers refresh every 15 minutes. Manual refresh costs 250 × max(1, owned vehicles) × (1 + manual refreshes since the last automatic refresh). Held offers survive either refresh."
+    ],
+    [
+      "Collect rewards",
+      "Single contracts retain all freight payments, XP, completion bonuses, items, customer relationship and found follow-up contracts until explicit collection. Operating costs still arise at delivery. Contract completion counts immediately for Season tasks; earned coins and level-ups count only on collection. Tours already paid in older saves are never paid twice."
     ]
   ],
   "special": [
