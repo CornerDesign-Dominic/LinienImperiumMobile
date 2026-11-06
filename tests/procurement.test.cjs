@@ -111,15 +111,18 @@ test('Loot rolls are independent, no module/shard/XP side rewards, and budget in
  for(const amount of [-1,1.5,Infinity,NaN,'1',0])assert.throws(()=>start(state,truck,'count',amount));
  assert.throws(()=>start(state,'invented'));assert.throws(()=>start(state,truck,'invalid',1));
 });
-test('Income after reserve exhaustion cannot fund earlier tours; early income can fund subsequent tours',()=>{
+test('Collected income after reserve exhaustion cannot restart tours; early collection can fund subsequent tours',()=>{
  for(const early of [true,false]){
   const {state,truck}=setup();state.coins=8000;
   state.expedition.characters.r2_common={level:1};
   state.trucks.push({id:'income',cardId:'r4_common_2',transportVersion:1,tier:2,model:'income',capacity:100,rarityLevel:0,kmDriven:0,toursCompleted:0,ordersCompleted:0});
-  const order=state.orders[0];Object.assign(order,{distance:early?200:600,volume:100,baseVolume:100,routeType:'single'});
+  const order=state.orders[0];Object.assign(order,{distance:early?180:600,volume:100,baseVolume:100,routeType:'single'});
   // Give loaded speed a positive value for this synthetic high-volume income trip.
   state.trucks[1].capacity=50;order.volume=order.baseVolume=50;
-  let out=cmd(state,'assign',{order:order.id,truck:'income'});out=start(out.state,truck,'reserve',0);
+  let out=cmd(state,'assign',{order:order.id,truck:'income'});
+  const incomeAt=out.view.state.orders.find(o=>o.id===order.id).runningEndsAt;
+  out=start(out.state,truck,'reserve',0);
+  out=cmd(out.state,'claimSingles',{},incomeAt);
   out=cmd(out.state,'sync',{},now+7200000);
   assert.ok(early?out.state.procurement.completed>1:out.state.procurement.completed===1);
   assert.ok(out.state.coins>=0);

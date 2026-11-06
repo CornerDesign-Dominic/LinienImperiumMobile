@@ -40,9 +40,9 @@ test('Single: speed upgrades preserve the current end and accounting, then chang
  assert.equal(order(cmd(improved.state,'sync',{},old.endsAt-1)).delivered,0);
  const done=cmd(improved.state,'sync',{},old.endsAt);
  assert.equal(order(done).delivered,old.cargo);
- assert.equal(done.state.stats.grossRevenue,old.accounting.revenue);
+ assert.equal(done.state.stats.grossRevenue,0);assert.equal(order(done).deferredTransport.revenue,old.accounting.revenue);
  assert.equal(done.state.stats.operatingCosts,old.accounting.cost);
- assert.equal(done.state.xp,old.accounting.xp);
+ assert.equal(done.state.xp,0);assert.equal(order(done).deferredTransport.xp,old.accounting.xp);
  assert.ok(order(done).tripSnapshot.endsAt-old.endsAt<old.endsAt-T);
  assert.equal(order(done).tripSnapshot.vehicle.rarityLevel,1);
 });
@@ -63,7 +63,7 @@ test('Single: own cost and garage cost bonuses freeze the old tour and update fu
  changed=cmd(changed.state,'cardUpgrade',{id:'r3_epic'},T+1000);
  assert.deepEqual(order(changed).tripSnapshot,old);
  const next=cmd(changed.state,'sync',{},old.endsAt);
- assert.equal(next.state.stats.grossRevenue,old.accounting.revenue);
+ assert.equal(next.state.stats.grossRevenue,0);assert.equal(order(next).deferredTransport.revenue,old.accounting.revenue);
  assert.equal(next.state.stats.operatingCosts,old.accounting.cost);
  assert.equal(order(next).tripSnapshot.accounting.revenue,old.accounting.revenue);
  assert.ok(order(next).tripSnapshot.accounting.cost<old.accounting.cost);
@@ -276,7 +276,7 @@ test('Single: garage cost upgrades apply after the boundary and leave XP unaffec
  const start=single(['navigator','r5_uncommon']),old=order(start).tripSnapshot;
  const improved=cmd(start.state,'cardUpgrade',{id:'r5_uncommon'},T+1000);
  const next=cmd(improved.state,'sync',{},old.endsAt);
- assert.equal(next.state.xp,old.accounting.xp);
+ assert.equal(next.state.xp,0);assert.equal(order(next).deferredTransport.xp,old.accounting.xp);
  assert.equal(order(next).tripSnapshot.accounting.xp,old.accounting.xp);
  assert.ok(order(next).tripSnapshot.accounting.cost<old.accounting.cost);
 });
@@ -301,9 +301,10 @@ test('Single: total forecast and completion use frozen plus updated economics ex
  const forecast=viewOrder(improved).forecast,eta=viewOrder(improved).runningEndsAt;
  const end=cmd(improved.state,'sync',{},eta);
  assert.equal(order(end).status,'completed');
- assert.equal(end.state.stats.grossRevenue,forecast.revenue);
+ assert.equal(end.state.stats.grossRevenue,0);assert.equal(order(end).completionReward.transportCoins,forecast.revenue);
  assert.equal(end.state.stats.operatingCosts,forecast.cost);
- assert.equal(end.state.xp,forecast.xp);
+ assert.equal(end.state.xp,0);assert.equal(order(end).completionReward.xp,forecast.xp);
+ const paid=cmd(end.state,'claimSingles',{},eta);assert.equal(paid.state.stats.grossRevenue,forecast.revenue);assert.equal(paid.state.xp,forecast.xp);
  const again=cmd(JSON.parse(JSON.stringify(end.state)),'sync',{},eta+1000);
  assert.deepEqual(booked(again),booked(end));
 });

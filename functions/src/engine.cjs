@@ -326,10 +326,11 @@ const bridge = `
     claimSingleRewards() {
       const orders=game.orders.filter(o=>!PROJECT_DEADLINES[o.kind]&&o.status==='completed'&&o.completionReward&&!o.completionReward.claimedAt);
       if(!orders.length&&!game.expedition.missions.some(pendingExpeditionOrder))return false;
-      const summary={count:orders.length,coins:0,gears:{},capacityModules:0,companyItems:0,supplierContacts:0};
+      const summary={count:orders.length,coins:0,xp:0,customerTrust:0,specialOrders:0,gears:{},capacityModules:0,companyItems:0,supplierContacts:0};
       for(const order of orders){
         const reward=order.completionReward;
-        summary.coins=round2(summary.coins+reward.coins);
+        summary.coins=round2(summary.coins+(reward.totalCoins??reward.coins));
+        summary.xp=round2(summary.xp+(reward.xp||0));summary.customerTrust+=reward.customerTrust||0;summary.specialOrders+=Number(reward.followupKind==='special');
         for(const [rarity,amount] of Object.entries(reward.gears||{}))summary.gears[rarity]=(summary.gears[rarity]||0)+amount;
         summary.capacityModules+=Number(Boolean(reward.capacityModule));summary.companyItems+=reward.companyItems||0;summary.supplierContacts+=reward.supplierContacts||0;
         applyOrderReward(order);
@@ -603,8 +604,8 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
       const order=a.state.orders.find(order=>order.id===id(p.id)),claimedAt=order?.completionReward?.claimedAt;
       a.claimOrderReward(id(p.id));
       const reward=order?.completionReward;
-      if(order?.project&&['special','referral'].includes(order.kind)&&!claimedAt&&reward?.claimedAt)return {
-        count:1,source:'Großaufträge',coins:reward.totalCoins??reward.coins,...(reward.xp>0?{xp:reward.xp}:{}),
+      if(!claimedAt&&reward?.claimedAt)return {
+        count:1,source:order.project?'Großaufträge':'Einzelaufträge',coins:reward.totalCoins??reward.coins,...(reward.xp>0?{xp:reward.xp}:{}),...(reward.customerTrust>0?{customerTrust:reward.customerTrust}:{}),...(reward.followupKind==='special'?{specialOrders:1}:{}),
         gears:reward.gears||{},capacityModules:Number(Boolean(reward.capacityModule)),companyItems:reward.companyItems||0,supplierContacts:reward.supplierContacts||0,hermes:reward.hermes||0
       };
     },claimAll:()=>{for(const order of a.state.orders)a.applyOrderReward(order);},
@@ -672,6 +673,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   for(const key of Object.keys(view.help)){const help=view.help[key];help[1]=help[1].map(([title,body])=>[normalizeNames(title),normalizeNames(body)]);}
   view.help.orders[1]=view.help.orders[1].map(([title,body])=>[title,body.replace('freigeschalteten Stammkunden des Segments','beliebigen freigeschalteten Stammkunden').replace('Fahrart: 90 % Single Way','Kundenaufträge würfeln ihre Verkehrsart unabhängig mit 50 % Nahverkehr und 50 % Fernverkehr. Fahrart: 90 % Single Way')]);
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>[title,body.replace('Eine Endlosexpedition kostet 5 Punkte.','Endlosexpeditionen kosten je Region 5, 6, 7, 8 oder 10 Punkte.').replace('1 Punkt regeneriert je 10 Minuten, .','1 Punkt regeneriert je 10 Minuten bis zum persönlichen Maximum.')]);
+  view.help.orders[1].push(['Belohnungen einsammeln','Einzelaufträge speichern sämtliche Frachtvergütung, XP, Abschlussprämien, Gegenstände, Kundenvertrauen und gefundene Folgeaufträge bis zum Einsammeln. Betriebskosten fallen weiterhin bei der Lieferung an. Der Transportabschluss zählt sofort für Season-Aufgaben; verdiente Taler und Levelaufstiege erst beim Einsammeln. Bereits früher ausgezahlte Touren alter Spielstände werden nicht erneut vergütet.']);
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>title==='Fundchancen je Auslosung'?[title,'<p>Direkte Kartenfunde: 15 % Common, 10 % Uncommon, 5 % Rare. 20 % bringen einen regionalen Kundenauftrag. Sonder- und Empfehlungsaufträge erreichen zusammen höchstens 2,5 % mit maximalem Expeditionsbonus. Die übrigen Funde geben sofort Zahnräder und Shards. Handelstruhen geben garantiert eine regionale Karte; testweise hat jede der fünf Karten 20 % Chance. Duplikate geben 1 Shard ihrer Seltenheit.</p>']:[title,body]);
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>[title,title==='Missionen'?'Jeder der sieben Orte hat eine einmalige Bonuslieferung. Ihr Abschluss gibt automatisch 1 Ausbaupunkt. Die erste Endlosort-Lieferung schaltet den regionalen Stammkunden frei und gibt 1 Kapazitätsmodul, sofern noch nicht erhalten. Fahrzeuge kommen aus der Garage.':body]);
   for(const section of Object.values(view.help))section[1]=section[1].map(([title,body])=>[title,/Auffüller|Refill/.test(title)?'Auffüller füllen den jeweiligen Punktevorrat bis zu deinem persönlichen Maximum. Bei vollem oder übervollem Vorrat werden sie nicht verbraucht.':body]);
