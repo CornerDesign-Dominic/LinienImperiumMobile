@@ -37,3 +37,11 @@ function grantSeasonSpecial(){
  const customerId=EXPEDITION_CUSTOMER_IDS.find(id=>customerUnlocked(id))||EXPEDITION_CUSTOMER_IDS[0],region=EXPEDITION_CUSTOMER_IDS.indexOf(customerId),customer=customerById(customerId);
  return queueCustomerTrip({category:customer.category,customer:customerId,homeCity:game.startCity,region},'special');
 }
+
+// Use the shared normal-customer generator: its route category independently
+// rolls 50/50, its cargo comes from the selected unlocked customer's catalog.
+function grantSeasonCustomer(){
+ const customers=CUSTOMERS.filter(customer=>customerUnlocked(customer.id));if(!customers.length)return false;
+ const customer=pick(customers),order=createOrder(game.nextOrder++,{customer:customer.id,kind:'normal'});
+ order.status='queued';order.crafted=true;game.orders.push(order);return order;
+}

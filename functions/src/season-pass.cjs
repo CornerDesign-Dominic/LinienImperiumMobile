@@ -1,7 +1,7 @@
 'use strict';
 const {premiumState}=require('./premium-shop.cjs');
 const rewards=require('./season-rewards.json');
-const POINTS_PER_LEVEL=1000,PRICE=1000;
+const POINTS_PER_LEVEL=1000,INFINITY_POINTS=500,PRICE=1000;
 const timeFormat=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Berlin',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
 function berlinParts(at){const parts=Object.fromEntries(timeFormat.formatToParts(new Date(at)).filter(p=>p.type!=='literal').map(p=>[p.type,Number(p.value)]));return parts;}
 function berlinMidnight(year,month,day){
@@ -33,12 +33,15 @@ const MONTHLY=[
  {id:'procurement',title:'80 Beschaffungstouren abschließen',metric:'procurement',target:80,rewards:[{id:'expeditionRefills',amount:4}]}
 ];
 function metrics(){return {login:0,singles:0,projects:0,procurement:0,overtime:0,expedition:0,crates:0,local:0,long:0,customers:0,customerOrders:0,coins:0,customerIds:[]};}
-function fresh(month,run,enabled){return {version:2,run,enabled,month:month.month,startsAt:month.startsAt,endsAt:month.endsAt,day:month.day,dailyVersion:1,dailyRotation:0,points:0,metrics:metrics(),dailyMetrics:metrics(),taskClaims:[],dailyClaims:[],freeClaimed:[],premiumClaimed:[],infinityClaimed:0};}
+function fresh(month,run,enabled){return {version:2,run,enabled,month:month.month,startsAt:month.startsAt,endsAt:month.endsAt,day:month.day,dailyVersion:1,dailyRotation:0,points:0,metrics:metrics(),dailyMetrics:metrics(),taskClaims:[],dailyClaims:[],freeClaimed:[],premiumClaimed:[],infinityClaimed:0,infinityPointsConsumed:0};}
 function seasonId(season){return `season-${season.month}-r${season.run}`;}
 function touchSeason(state,now=Date.now()){
  const c=calendar(now);let s=state.season;
  if(!s||s.version!==2){s=state.season=fresh(c,1,false);}
  if(s.enabled&&s.month!==c.month&&now>=s.endsAt){s=state.season=fresh(c,s.run+1,true);}
+ // Legacy infinity rewards cost 1,000 points each. Preserve that spent budget
+ // before using the new 500-point normal-customer reward schedule.
+ if(!Number.isSafeInteger(s.infinityPointsConsumed)||s.infinityPointsConsumed<0)s.infinityPointsConsumed=Math.max(0,Math.floor(s.infinityClaimed||0))*POINTS_PER_LEVEL;
  if(s.day!==c.day){s.day=c.day;s.dailyMetrics=metrics();s.dailyClaims=[];s.dailyVersion++;s.dailyRotation=0;}
  if(s.enabled&&now>=s.startsAt&&now<s.endsAt){s.dailyMetrics.login=1;s.metrics.login=1;}
  return s;
@@ -53,8 +56,8 @@ function dailyPool(s){
 }
 function taskView(task,s,daily){const progress=Math.min(task.target,Math.max(0,(daily?s.dailyMetrics:s.metrics)[task.metric]||0));return {id:(daily?'daily:':'monthly:')+task.id,title:task.title,target:task.target,progress,points:100,rewards:task.rewards||[],claimed:(daily?s.dailyClaims:s.taskClaims).includes(task.id),complete:progress>=task.target};}
 function seasonPassView(state,now=Date.now()){
- const s=touchSeason(state,now),wallet=premiumState(state),earned=Math.max(0,Math.floor(s.points/POINTS_PER_LEVEL)-30);
- return {id:seasonId(s),status:s.enabled?'active':'inactive',startsAt:s.startsAt,endsAt:s.endsAt,nextDailyAt:calendar(now).nextDailyAt,points:s.points,level:Math.min(30,Math.floor(s.points/POINTS_PER_LEVEL)),pointsPerLevel:POINTS_PER_LEVEL,price:PRICE,placeholder:false,premium:wallet.ownedSeasonPasses.includes(seasonId(s)),freeClaimed:[...s.freeClaimed],premiumClaimed:[...s.premiumClaimed],dailyVersion:s.dailyVersion,dailies:dailyPool(s).map(t=>taskView(t,s,true)),monthlies:MONTHLY.map(t=>taskView(t,s,false)),rewards,infinity:{earned,claimed:s.infinityClaimed,available:Math.max(0,earned-s.infinityClaimed),reward:{id:'specialOrders',amount:1}}};
+ const s=touchSeason(state,now),wallet=premiumState(state),extra=Math.max(0,s.points-30*POINTS_PER_LEVEL),earned=Math.floor(extra/INFINITY_POINTS),claimed=Math.floor(s.infinityPointsConsumed/INFINITY_POINTS);
+ return {id:seasonId(s),status:s.enabled?'active':'inactive',startsAt:s.startsAt,endsAt:s.endsAt,nextDailyAt:calendar(now).nextDailyAt,points:s.points,level:Math.min(30,Math.floor(s.points/POINTS_PER_LEVEL)),pointsPerLevel:POINTS_PER_LEVEL,price:PRICE,placeholder:false,premium:wallet.ownedSeasonPasses.includes(seasonId(s)),freeClaimed:[...s.freeClaimed],premiumClaimed:[...s.premiumClaimed],dailyVersion:s.dailyVersion,dailies:dailyPool(s).map(t=>taskView(t,s,true)),monthlies:MONTHLY.map(t=>taskView(t,s,false)),rewards,infinity:{earned,claimed,available:Math.max(0,earned-claimed),pointsPerReward:INFINITY_POINTS,progress:extra%INFINITY_POINTS,pointsConsumed:s.infinityPointsConsumed,paidOut:s.infinityClaimed,eligible:!!state.expedition?.regions?.slice(0,5).some(r=>r.customerUnlocked),reward:{id:'customerOrders',amount:1}}};
 }
 function controlSeason(state,action,now){
  const s=touchSeason(state,now),c=calendar(now);
@@ -82,7 +85,7 @@ function purchaseSeasonPass(state,id,now=Date.now()){
  if(wallet.balance<PRICE)throw Error('Nicht genügend Hermes-Siegel.');
  wallet.balance-=PRICE;wallet.ownedSeasonPasses.push(seasonId(s));return true;
 }
-function summary(){return {source:'Season',count:0,coins:0,gears:{},capacityModules:0,companyItems:0,supplierContacts:0,hermes:0,seasonPoints:0,specialOrders:0};}
+function summary(){return {source:'Season',count:0,coins:0,gears:{},capacityModules:0,companyItems:0,supplierContacts:0,hermes:0,seasonPoints:0,specialOrders:0,customerOrders:0};}
 function grant(state,reward,out,grantSpecial){
  const {id,amount}=reward;if(!Number.isSafeInteger(amount)||amount<=0)throw Error('Ungültige Seasonbelohnung.');
  if(id==='coins'){state.coins+=amount;out.coins+=amount;}
@@ -110,23 +113,27 @@ function claimLevel(state,p,now,out,grantSpecial){
  if(s.points<level*POINTS_PER_LEVEL)throw Error('Seasonstufe noch nicht erreicht.');
  grant(state,rewards[level-1][p.track],out,grantSpecial);claimed.push(level);out.count++;return true;
 }
-function claimInfinity(state,p,now,out,grantSpecial){
- const s=requireSeason(state,p.seasonId,now),available=Math.max(0,Math.floor(s.points/POINTS_PER_LEVEL)-30-s.infinityClaimed);
+function claimInfinity(state,p,now,out,grantCustomer){
+ const s=requireSeason(state,p.seasonId,now),extra=Math.max(0,s.points-30*POINTS_PER_LEVEL),available=Math.max(0,Math.floor((extra-s.infinityPointsConsumed)/INFINITY_POINTS));
  if(!available)return false;
- grant(state,{id:'specialOrders',amount:available},out,grantSpecial);s.infinityClaimed+=available;out.count+=available;return true;
+ // The callback returns false when no regular customer is unlocked. Keep the
+ // points available rather than consuming a reward that could not be created.
+ let granted=0;for(let i=0;i<available;i++){if(!grantCustomer?.())break;granted++;}
+ if(!granted)return false;
+ s.infinityPointsConsumed+=granted*INFINITY_POINTS;s.infinityClaimed+=granted;out.customerOrders+=granted;out.count+=granted;return true;
 }
-function claimSeason(state,action,p,now,grantSpecial){
+function claimSeason(state,action,p,now,grantSpecial,grantCustomer){
  const out=summary(),s=requireSeason(state,p.seasonId,now);
  if(action==='task')claimTask(state,p,now,out);
  else if(action==='level')claimLevel(state,p,now,out,grantSpecial);
- else if(action==='infinity')claimInfinity(state,p,now,out,grantSpecial);
+ else if(action==='infinity')claimInfinity(state,p,now,out,grantCustomer);
  else if(action==='all'){
   for(const task of [...dailyPool(s).map(t=>taskView(t,s,true)),...MONTHLY.map(t=>taskView(t,s,false))])if(task.complete&&!task.claimed)claimTask(state,{id:task.id,seasonId:p.seasonId,dailyVersion:s.dailyVersion},now,out);
   for(const track of ['free','premium']){
    if(track==='premium'&&!premiumState(state).ownedSeasonPasses.includes(seasonId(s)))continue;
    for(let level=1;level<=Math.min(30,Math.floor(s.points/POINTS_PER_LEVEL));level++)claimLevel(state,{seasonId:p.seasonId,level,track},now,out,grantSpecial);
   }
-  claimInfinity(state,p,now,out,grantSpecial);
+  claimInfinity(state,p,now,out,grantCustomer);
  }else throw Error('Unbekannte Seasonabholung.');
  return out.count?out:false;
 }
@@ -134,4 +141,4 @@ function rollProjectHermes(order,random=Math.random){
  if(!order?.project||!['special','referral'].includes(order.kind)||!order.completionReward||Object.hasOwn(order.completionReward,'hermes'))return;
  const referral=order.kind==='referral';order.completionReward.hermes=random()<(referral ? .5 : .25)?(referral?5:1)+Math.floor(random()*(referral?6:3)):0;
 }
-module.exports={POINTS_PER_LEVEL,PRICE,calendar,touchSeason,seasonPassView,controlSeason,recordSeasonActivity,purchaseSeasonPass,claimSeason,rollProjectHermes,DAILY,MONTHLY};
+module.exports={POINTS_PER_LEVEL,INFINITY_POINTS,PRICE,calendar,touchSeason,seasonPassView,controlSeason,recordSeasonActivity,purchaseSeasonPass,claimSeason,rollProjectHermes,DAILY,MONTHLY};

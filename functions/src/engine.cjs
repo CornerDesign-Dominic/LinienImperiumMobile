@@ -228,7 +228,7 @@ const bridge = `
     addEvent('Überstundenauffüller: +'+added+' Überstundenpunkte.');save();return true;
   };
   globalThis.mobile = {
-    projectCompletionStats, grantTestProjects, grantSeasonSpecial, migrateTradeChests, buyTradeChest, upgradeExpeditionChance,
+    projectCompletionStats, grantTestProjects, grantSeasonSpecial, grantSeasonCustomer, migrateTradeChests, buyTradeChest, upgradeExpeditionChance,
     settleEventTours, refreshTourStarts, queueSingleVehicle, settleProcurementTimeline, startProcurement, startProcurementGroup, stopProcurement, stopProcurementGroup, claimProcurement,
     eventFleetOptions(distance = 240) {
       const order={distance,routeType:'single'};
@@ -583,10 +583,10 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     seasonStart:()=>controlSeason(a.state,'start',now),
     seasonReset:()=>controlSeason(a.state,'reset',now),
     seasonDailyReset:()=>controlSeason(a.state,'daily',now),
-    seasonTaskClaim:()=>claimSeason(a.state,'task',p,now,()=>a.grantSeasonSpecial()),
-    seasonClaim:()=>claimSeason(a.state,'level',p,now,()=>a.grantSeasonSpecial()),
-    seasonClaimAll:()=>claimSeason(a.state,'all',p,now,()=>a.grantSeasonSpecial()),
-    seasonInfinityClaim:()=>claimSeason(a.state,'infinity',p,now,()=>a.grantSeasonSpecial()),
+    seasonTaskClaim:()=>claimSeason(a.state,'task',p,now,()=>a.grantSeasonSpecial(),()=>a.grantSeasonCustomer()),
+    seasonClaim:()=>claimSeason(a.state,'level',p,now,()=>a.grantSeasonSpecial(),()=>a.grantSeasonCustomer()),
+    seasonClaimAll:()=>claimSeason(a.state,'all',p,now,()=>a.grantSeasonSpecial(),()=>a.grantSeasonCustomer()),
+    seasonInfinityClaim:()=>claimSeason(a.state,'infinity',p,now,()=>a.grantSeasonSpecial(),()=>a.grantSeasonCustomer()),
     skinBuy:()=>purchaseSkin(a.state,id(p.id)),skinEquip:()=>equipSkin(a.state,id(p.id)),
     garageAdd:()=>a.addCardToGarage(id(p.id)),garageRemove:()=>a.removeCardFromGarage(id(p.id)),
     garageReplace:()=>a.replaceGarageCard(id(p.id),id(p.replacement)),

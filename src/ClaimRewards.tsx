@@ -7,7 +7,7 @@ import {itemName,rarityColor} from './items';
 import {C,Txt,n} from './ui';
 
 type Summary={
- count?:number;hermes?:number;seasonPoints?:number;specialOrders?:number;expeditionRefills?:number;overtimeRefills?:number;xp?:number;shards?:Record<string,number>;source?:string;pickupHints?:number;hubVehicleParts?:number;coins:number;gears:Record<string,number>;
+ count?:number;hermes?:number;seasonPoints?:number;specialOrders?:number;customerOrders?:number;expeditionRefills?:number;overtimeRefills?:number;xp?:number;shards?:Record<string,number>;source?:string;pickupHints?:number;hubVehicleParts?:number;coins:number;gears:Record<string,number>;
  capacityModules:number;companyItems:number;supplierContacts:number;
 };
 type Reward={id:string;label:string;amount:number;icon:IconName;color:string};
@@ -16,6 +16,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
  if((summary.hermes||0)>0)rewards.push({id:'hermes',label:'Hermes-Siegel',amount:summary.hermes!,icon:'hermes',color:C.gold});
  if((summary.seasonPoints||0)>0)rewards.push({id:'seasonPoints',label:'Saisonpunkte',amount:summary.seasonPoints!,icon:'xp',color:C.accent});
  if((summary.specialOrders||0)>0)rewards.push({id:'project:special',label:'Sonderaufträge',amount:summary.specialOrders!,icon:'projects',color:C.gold});
+ if((summary.customerOrders||0)>0)rewards.push({id:'order:customer',label:'Kundenaufträge',amount:summary.customerOrders!,icon:'customers',color:C.accent});
  if(summary.coins>0)rewards.push({id:'coins',label:'Imperium-Taler',amount:summary.coins,icon:'coin',color:C.gold});
  if((summary.xp||0)>0)rewards.push({id:'xp',label:'XP',amount:summary.xp!,icon:'xp',color:C.accent});
  for(const rarity of rarities){

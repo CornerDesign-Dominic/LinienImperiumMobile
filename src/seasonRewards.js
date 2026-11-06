@@ -1,4 +1,4 @@
-// Preview catalogue only. Progression and live claims are not enabled.
+// Offline display fallback; live claims use the authoritative server catalogue.
 const reward=(id,amount)=>Object.freeze({id,amount});
 const rows=[
  [reward('gear:common',10),reward('gear:common',25)],
@@ -34,7 +34,7 @@ const rows=[
 ];
 export const seasonRewards=Object.freeze(rows.map(([free,premium],index)=>Object.freeze({level:index+1,free,premium})));
 export const seasonPreview=Object.freeze({level:0,premium:false,freeClaimed:Object.freeze([]),premiumClaimed:Object.freeze([])});
-// Pure view state for a future authoritative model; never grants a reward.
+// Pure display state; never grants a reward.
 export function seasonRewardStatus(level,track,progress=seasonPreview){
  const reached=Number.isFinite(progress.level)?Math.max(0,Math.min(30,Math.floor(progress.level))):0;
  if(track==='premium'&&!progress.premium)return 'premiumLocked';
