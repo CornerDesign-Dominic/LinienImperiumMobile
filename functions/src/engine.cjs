@@ -423,6 +423,7 @@ const bridge = `
         const durationSeconds=project?null:orderDuration({...o,delivered:0},durationTruck);
         const possibleRewards = project ? [] : o.kind==='private' ? ['1–2 Lieferantenkontakte'] : ['Common-Zahnräder','Uncommon-Zahnräder',...(o.customer?['Rare-Zahnräder']:[]),...(o.kind==='normal'&&TRANSPORT_BASE[o.category]?['Fortschritt für Firmenausbau-Items']:[]),...(o.customer&&o.kind==='normal'?[round2(customerTripChance(o,'award')*100)+' % Chance auf Sonderauftrag']:[])];
         return { ...o, isProject: project,
+          rarity:o.kind==='normal'?(o.customer?'uncommon':'common'):o.kind==='special'?'rare':o.kind==='referral'?'epic':o.rarity,
           projectName:o.kind==='special'?mobileSpecialProjectName(o):o.projectName,
           project:o.project?{...o.project,vehicles:o.project.vehicles.filter(v=>v.cardId).map(v=>({...v,
             pendingCardId:(fleetTemplate(o.project.template)||[])[v.slot]||null,
@@ -487,7 +488,7 @@ const bridge = `
           places:Array.from({length:7},(_,place)=>({index:place,discoveryCost:expeditionDiscoveryCost(index,place),invested:place<region.discovered?expeditionDiscoveryCost(index,place):(region.discoveryPoints?.[place]||0),durationMs:expeditionDuration(index,'delivery',place)})),
           finds:{cost:endlessCost(index),
             cards:regionVehiclePool(index).map(card=>({id:card.id,name:card.name,rarity:card.rarity,chance:round2(card.chance*100)})),
-            orders:[{kind:'customer',name:'Kundenauftrag',chance:20},{kind:'special',name:'Sonderauftrag '+mobileProjectNames.special[index].slice('Großauftrag '.length),chance:round2(expeditionProjectChances().special*100),rarity:'rare'},{kind:'referral',name:'Empfehlungsauftrag '+mobileProjectNames.referral[0].slice('Großprojekt '.length),chance:round2(expeditionProjectChances().referral*100),rarity:'epic'}],
+            orders:[{kind:'customer',name:'Kundenauftrag',chance:20,rarity:'uncommon'},{kind:'special',name:'Sonderauftrag '+mobileProjectNames.special[index].slice('Großauftrag '.length),chance:round2(expeditionProjectChances().special*100),rarity:'rare'},{kind:'referral',name:'Empfehlungsauftrag '+mobileProjectNames.referral[0].slice('Großprojekt '.length),chance:round2(expeditionProjectChances().referral*100),rarity:'epic'}],
             gears:endlessGearView(index)
           },
           finalDurationMs:expeditionDuration(index,'final')
@@ -673,6 +674,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
   for(const key of Object.keys(view.help)){const help=view.help[key];help[1]=help[1].map(([title,body])=>[normalizeNames(title),normalizeNames(body)]);}
   view.help.orders[1]=view.help.orders[1].map(([title,body])=>[title,body.replace('freigeschalteten Stammkunden des Segments','beliebigen freigeschalteten Stammkunden').replace('Fahrart: 90 % Single Way','Kundenaufträge würfeln ihre Verkehrsart unabhängig mit 50 % Nahverkehr und 50 % Fernverkehr. Fahrart: 90 % Single Way')]);
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>[title,body.replace('Eine Endlosexpedition kostet 5 Punkte.','Endlosexpeditionen kosten je Region 5, 6, 7, 8 oder 10 Punkte.').replace('1 Punkt regeneriert je 10 Minuten, .','1 Punkt regeneriert je 10 Minuten bis zum persönlichen Maximum.')]);
+  view.help.orders[1].push(['Auftragsseltenheit','Freie normale Einzelaufträge sind Common, normale Kundenaufträge Uncommon, Sonderaufträge Rare und Empfehlungsaufträge Epic. Normale Kundenaufträge verwenden unabhängig von Börse, Expedition oder Season dieselben Transportregeln; die Herkunft gibt keinen zusätzlichen Bonus.']);
   view.help.orders[1].push(['Belohnungen einsammeln','Einzelaufträge speichern sämtliche Frachtvergütung, XP, Abschlussprämien, Gegenstände, Kundenvertrauen und gefundene Folgeaufträge bis zum Einsammeln. Betriebskosten fallen weiterhin bei der Lieferung an. Der Transportabschluss zählt sofort für Season-Aufgaben; verdiente Taler und Levelaufstiege erst beim Einsammeln. Bereits früher ausgezahlte Touren alter Spielstände werden nicht erneut vergütet.']);
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>title==='Fundchancen je Auslosung'?[title,'<p>Direkte Kartenfunde: 15 % Common, 10 % Uncommon, 5 % Rare. 20 % bringen einen regionalen Kundenauftrag. Sonder- und Empfehlungsaufträge erreichen zusammen höchstens 2,5 % mit maximalem Expeditionsbonus. Die übrigen Funde geben ausschließlich Zahnräder. Handelstruhen geben garantiert eine regionale Karte; testweise hat jede der fünf Karten 20 % Chance. Duplikate geben 1 Shard ihrer Seltenheit.</p>']:[title,body]);
   view.help.expeditions[1]=view.help.expeditions[1].map(([title,body])=>[title,title==='Missionen'?'Jeder der sieben Orte hat eine einmalige Bonuslieferung. Ihr Abschluss gibt automatisch 1 Ausbaupunkt. Die erste Endlosort-Lieferung schaltet den regionalen Stammkunden frei und gibt 1 Kapazitätsmodul, sofern noch nicht erhalten. Fahrzeuge kommen aus der Garage.':body]);
@@ -722,7 +724,7 @@ function execute(state, action='sync', p={}, now=Date.now(), random=Math.random,
     const order=view.state.orders.find(o=>!oldOrders.has(o.id));
     const job=view.state.expedition.jobs.find(j=>!oldJobs.has(j.id));
     const card=typeof ok==='string'&&ok.startsWith('card:')?view.catalog.cards.find(c=>c.id===ok.slice(5)):null;
-    view.expeditionFind=order?{type:'order',id:order.id,title:order.projectName||order.cargo,detail:order.volume+' t · '+order.distance+' km',itemId:order.isProject?'project:'+order.kind:'order:'+(order.kind==='private'?'private':'customer'),rarity:order.isProject?(order.kind==='referral'?'epic':'rare'):undefined}
+    view.expeditionFind=order?{type:'order',id:order.id,title:order.projectName||order.cargo,detail:order.volume+' t · '+order.distance+' km',itemId:order.isProject?'project:'+order.kind:'order:'+(order.kind==='private'?'private':'customer'),rarity:order.rarity}
       :job?{type:'job',id:job.id,region:job.region,title:itemNames[job.kind==='character'?'character':'material'][0],detail:'Stufe '+job.tier,itemId:'job:'+job.kind+':'+job.tier}
       :{type:'reward',itemId:card&&state?.expedition.characters[card.id]?'shard:'+card.rarity:undefined,cardId:card?.id,title:card?.name||view.message||'Fund erhalten',detail:card?(state?.expedition.characters[card.id]?'1 '+card.rarity[0].toUpperCase()+card.rarity.slice(1)+'-Shard':'Transportkarte'):''};
   }

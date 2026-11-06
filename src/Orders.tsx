@@ -34,9 +34,10 @@ export function OrderTraits({order:o,alignLeft=false}:any){
 }
 export function OrderTile({order:o,data,clock,onOpen,onPin,busy=false}:any){
  const active=o.status==='active',done=o.status==='completed',truck=data.state.trucks.find((t:any)=>t.id===o.truckId);
+ const normal=o.kind==='normal'||!o.kind,orderColor=normal?(o.customer?C.uncommon:C.common):o.customer?C.gold:C.rare;
  const canPin=o.status==='available'&&!!onPin,held=data.state.orders.filter((order:any)=>order.status==='available'&&order.pinned).length;
  const holdFull=!o.pinned&&held>=(data.pinLimit??1),pinDisabled=busy||holdFull;
- if(!active&&!done)return <Card style={[styles.offer,styles.compactOffer,{borderLeftColor:o.customer?C.gold:C.rare}]}>
+ if(!active&&!done)return <Card style={[styles.offer,styles.compactOffer,{borderLeftColor:orderColor}]}>
   <Pressable testID={`order-open-${o.id}`} accessibilityRole="button" accessibilityLabel={`${translate(o.cargo)}, ${o.id}, ${translate(o.category==='international'?'Fernverkehr':'Nahverkehr')}, ${translate(o.durationBand||durationBand(o.durationSeconds??o.forecast?.seconds??0))}, ${translate(o.routeType==='dual'?'Dual Way, beladene Hin- und Rückfahrt':'Single Way, beladene Hinfahrt und leere Rückfahrt')}, ${n(o.volume,1)} t, ${n(o.distance)} km`} onPress={()=>onOpen(o.id)} style={StyleSheet.absoluteFill}/>
   <View pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
    <View style={styles.offerMain}>
@@ -45,14 +46,14 @@ export function OrderTile({order:o,data,clock,onOpen,onPin,busy=false}:any){
     <View style={styles.offerCopy}><Txt style={[styles.title,canPin&&styles.offerTitle]}>{o.cargo}</Txt>
      <View testID={`order-facts-${o.id}`} style={styles.offerFacts}><View style={styles.offerFact}><Icon name="orders" size={13} color={C.muted}/><Txt style={styles.factValue}>{n(o.volume,1)} t</Txt></View><View style={styles.offerFact}><Icon name="location" size={13} color={C.muted}/><Txt style={styles.factValue}>{n(o.distance)} km</Txt></View></View>
      <OrderTraits order={o} alignLeft/>
-     {(o.customer||!o.choices.length)&&<View style={{marginTop:5}}>{o.customer&&<View style={styles.customerLine}><Txt gold style={[styles.traitLabel,styles.customerName]}>{o.customerName}</Txt><Txt muted style={styles.customerBadge}>Stammkunde</Txt></View>}{!o.choices.length&&<Txt muted style={styles.traitLabel}>{unavailable(o)}</Txt>}</View>}
+     {(o.customer||!o.choices.length)&&<View style={{marginTop:5}}>{o.customer&&<View style={styles.customerLine}><Txt style={[styles.traitLabel,styles.customerName,{color:normal?orderColor:C.gold}]}>{o.customerName}</Txt><Txt muted style={styles.customerBadge}>Stammkunde</Txt></View>}{!o.choices.length&&<Txt muted style={styles.traitLabel}>{unavailable(o)}</Txt>}</View>}
     </View>
    </View>
   </View>
   {canPin&&<Pressable testID={`order-pin-${o.id}`} accessibilityRole="button" accessibilityLabel={translate(o.pinned?'Angebot freigeben':'Angebot halten')} accessibilityHint={holdFull?translate('Alle Halteplätze sind belegt.'):undefined} accessibilityState={{disabled:pinDisabled,selected:!!o.pinned}} aria-pressed={!!o.pinned} disabled={pinDisabled} onPress={event=>{event?.stopPropagation();if(!pinDisabled)onPin(o.id);}} material={false} style={[styles.pinButton,pinDisabled&&{opacity:.5}]}><OfferPinArtwork held={!!o.pinned}/></Pressable>}
  </Card>;
  return <Pressable accessibilityRole="button" accessibilityLabel={translate(`${o.cargo}, ${o.id}`)} onPress={()=>onOpen(o.id)}>
-  <Card style={[styles.offer,styles.runningCard,{borderLeftColor:active?C.accent:o.customer?C.gold:C.rare}]}>
+  <Card style={[styles.offer,styles.runningCard,{borderLeftColor:normal?orderColor:active?C.accent:orderColor}]}>
    <View style={styles.runningMain}>
     <View pointerEvents="none"><OrderTransportArt card={assignedCard(data,truck)} style={styles.transportArt}/></View>
     <View style={styles.runningCopy}>

@@ -16,6 +16,8 @@ Arbeitsstand für Spieltests. Keine Echtgeldabrechnung aktiviert.
 
 Karten gleicher Seltenheit werden gleichmäßig unter den Karten der aktuellen Region ausgewählt. Epic und Legendary werden nicht direkt gefunden. Doppelte Karten geben einen Shard derselben Seltenheit. Neue Material- und Transportkartenaufträge entfallen; bestehende bleiben spielbar.
 
+Freie normale Einzelaufträge werden als Common, normale Kundenaufträge aus allen Quellen als Uncommon, Sonderaufträge als Rare und Empfehlungsaufträge als Epic dargestellt. Diese Seltenheit ist eine einheitliche Darstellung und verleiht keinen Herkunftsbonus. Börsen-, Expeditions- und Season-Kundenaufträge verwenden dieselbe normale Auftragserzeugung und dieselben Transportregeln.
+
 Ein Kundenfund wird als normaler Einzelauftrag des regionalen Stammkunden gespeichert. Jeder neu erzeugte normale Kundenauftrag würfelt unabhängig 50 % Nahverkehr und 50 % Fernverkehr. Das gilt auch für die unveränderte 5-%-Kundenchance bei neuen Einzelauftragsangeboten; alle freigeschalteten Kunden sind unabhängig von ihrer bisherigen Verkehrsart auswählbar. Route und Wirtschaftswerte folgen der tatsächlich gewürfelten Verkehrsart. Gespeicherte und laufende Aufträge bleiben erhalten. Folgeaufträge erben die tatsächliche Verkehrsart des Quellauftrags. Die Sonderauftragschance nach normalen Kundenaufträgen bleibt 20 % im Nahverkehr bzw. 40 % im Fernverkehr zuzüglich Kundenbonus.
 
 | Region | Punktkosten | Common-Zahnräder | Uncommon-Zahnräder | Rare-Zahnräder |

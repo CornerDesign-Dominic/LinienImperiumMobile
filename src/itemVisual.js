@@ -19,6 +19,6 @@ export function itemVisual(id,options={}){
  let kind=options.kind||(['job','order'].includes(parts[0])?parts[1]:parts[0]==='project'?parts[1]:id);
  if(!orderKinds.includes(kind))return null;
  const large=options.large??(parts[0]==='project'||['referral','special'].includes(kind));
- const rarity=explicit||(['referral','special'].includes(kind)?(kind==='referral'?'epic':'rare'):'common');
+ const rarity=explicit||(['referral','special'].includes(kind)?(kind==='referral'?'epic':'rare'):kind==='customer'?'uncommon':'common');
  return {asset:`scroll-${large?'large':'small'}-${rarity}`,rarity,tier:options.tier??(parts[0]==='job'?Number(parts[2])||undefined:undefined),kind,large};
 }

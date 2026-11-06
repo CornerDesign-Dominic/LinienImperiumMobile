@@ -29,6 +29,10 @@
     [
       "Collect rewards",
       "Single contracts retain all freight payments, XP, completion bonuses, items, customer relationship and found follow-up contracts until explicit collection. Operating costs still arise at delivery. Contract completion counts immediately for Season tasks; earned coins and level-ups count only on collection. Tours already paid in older saves are never paid twice."
+    ],
+    [
+      "Order rarity",
+      "Free normal contracts are Common, normal customer contracts Uncommon, special contracts Rare and referrals Epic. Normal customer contracts use the same transport rules whether offered on the market or obtained from expeditions or Season rewards; their source grants no extra bonus."
     ]
   ],
   "special": [
