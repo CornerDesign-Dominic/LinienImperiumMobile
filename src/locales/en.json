@@ -1509,5 +1509,6 @@
   "Nicht genügend Mittel für den Expeditionsbonus.": "Insufficient resources for the expedition bonus.",
   "Expeditionsbonus auf Stufe {0} verbessert.": "Expedition bonus upgraded to level {0}.",
   "Zu viele Handelstruhen.": "Too many trade chests.",
-  "Beziehungspunkte": "Relationship points"
+  "Beziehungspunkte": "Relationship points",
+  "Verlorene Zustellung": "Lost delivery"
 }

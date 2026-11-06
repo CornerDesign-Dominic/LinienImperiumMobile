@@ -94,7 +94,7 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
     </>}
    </View></View>
   </Modal>
-  <ExpeditionPlaceModal visible={rewardOpen&&!modalBlocked} title="Dein Gewinn" region={gift?regionName(gift.region,gift.name):undefined} onClose={()=>{setRewardOpen(false);presenting.current=false;}}>
+  <ExpeditionPlaceModal visible={rewardOpen&&!modalBlocked} title="Belohnung" subtitle={gift?`Handelstruhe · ${regionName(gift.region,gift.name)}`:'Handelstruhe'} onClose={()=>{setRewardOpen(false);presenting.current=false;}}>
    {card&&<View style={styles.result}>
     <VehicleArt card={card} style={{width:160}}/>
     <Txt style={styles.resultName}>{card.name}</Txt>

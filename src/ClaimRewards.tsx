@@ -30,10 +30,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
  }
  const amountText=(reward:Reward)=>`+${n(reward.id==='coins'?Math.round(reward.amount):reward.amount,reward.id==='xp'?2:0)}`;
  return <View style={styles.content}>
-  <View style={styles.source}>
-   <Txt muted style={styles.sourceText}>{summary.source||'Einzelaufträge'}</Txt>
-   {summary.count!==undefined&&<View style={styles.count}><Txt style={styles.sourceText}>{n(summary.count)} {summary.count===1?'Abschluss':'Abschlüsse'}</Txt></View>}
-  </View>
+  <Txt testID="reward-source" muted style={styles.sourceText}>{summary.source||'Einzelaufträge'}</Txt>
   <ScrollView testID="claim-reward-list" style={styles.scroll} contentContainerStyle={styles.loot} showsVerticalScrollIndicator>
    {rewards.map((reward,index)=><View key={reward.id} testID={`claim-reward-${reward.id}`} style={[styles.row,index>0&&styles.separator]}>
     <View style={styles.art}>{(['coins','xp','hermes','seasonPoints','customerTrust'].includes(reward.id))?<Icon name={reward.icon} size={52}/>:<ItemArt id={reward.id} size={52}/>}</View>
@@ -47,9 +44,7 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
 }
 const styles=StyleSheet.create({
  content:{flexShrink:1},
- source:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginBottom:16},
- sourceText:{fontSize:12},
- count:{backgroundColor:C.greenWash,paddingHorizontal:8,paddingVertical:5,borderRadius:8},
+ sourceText:{fontSize:12,lineHeight:18,marginBottom:16},
  scroll:{flexShrink:1,flexGrow:0},
  loot:{paddingBottom:4},
  row:{flexDirection:'row',alignItems:'flex-start',gap:8,paddingVertical:10,minHeight:72},

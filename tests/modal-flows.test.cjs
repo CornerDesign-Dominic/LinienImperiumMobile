@@ -4,7 +4,7 @@ const button=(tree,label)=>{const found=nodes(tree,'Btn').find(node=>text(node)=
 function giftSetup(overrides={}){
  const h=componentHarness('Gifts.tsx',overrides),cards=Array.from({length:5},(_,i)=>({id:'card-'+i,name:'Vehicle '+i,rarity:'common',chance:20}));
  const calls=[],props={data:{catalog:{cards,rarities:[{id:'common',label:'Common'}],gifts:[{region:0,name:'Old region label',cost:10,cards}],regionNames:['Old region label']},state:{coins:100,inventory:{tradeChests:3}},tradeChest:{count:3,price:200},premiumShop:{balance:1000}},busy:false,onCommand:async(action,payload)=>{calls.push({action,payload});return {giftFind:{cardId:'card-2',duplicate:calls.length>1,shards:1}};}};
- const render=()=>h.render('Gifts',props),crate=tree=>nodes(tree,'Modal')[0],reward=tree=>nodes(tree,'RewardModal').find(node=>node.props.title==='Dein Gewinn');
+ const render=()=>h.render('Gifts',props),crate=tree=>nodes(tree,'Modal')[0],reward=tree=>nodes(tree,'RewardModal').find(node=>node.props.title==='Belohnung');
  const entry=nodes(render(),'Pressable').find(node=>node.props.accessibilityLabel==='Handelstruhe, Canonical region');assert.ok(entry,'canonical region identity is used');entry.props.onPress();
  return {h,props,calls,render,crate,reward};
 }
@@ -13,7 +13,7 @@ test('Gift result waits after the wheel stops, returns to the open crate and rep
  await Promise.all([open(),open()]);assert.equal(calls.length,1,'rapid taps open only once');assert.equal(button(crate(render()),'Schließen').props.disabled,true);crate(render()).props.onRequestClose();assert.equal(crate(render()).props.visible,true,'closing during the reveal cannot discard a paid result');
  let tree=render();for(let steps=0;!text(crate(tree)).includes('Handelstruhe geöffnet');steps++){assert.ok(steps<30);h.next();tree=render();}
  assert.equal(reward(tree).props.visible,false);assert.equal(button(crate(tree),'Weitere Handelstruhe öffnen').props.disabled,true);
- h.advance(349);assert.equal(reward(render()).props.visible,false);h.advance(1);tree=render();assert.equal(reward(tree).props.visible,true);assert.equal(crate(tree).props.visible,false);assert.ok(text(reward(tree)).includes('Neue Transportkarte'));assert.ok(!text(crate(tree)).includes('1 Transportkarte'));
+ h.advance(349);assert.equal(reward(render()).props.visible,false);h.advance(1);tree=render();assert.equal(reward(tree).props.visible,true);assert.equal(reward(tree).props.subtitle,'Handelstruhe · Canonical region');assert.equal(crate(tree).props.visible,false);assert.ok(text(reward(tree)).includes('Neue Transportkarte'));assert.ok(!text(crate(tree)).includes('1 Transportkarte'));
  reward(tree).props.onClose();tree=render();assert.equal(crate(tree).props.visible,true);assert.equal(button(crate(tree),'Weitere Handelstruhe öffnen').props.disabled,false);
  await button(crate(tree),'Weitere Handelstruhe öffnen').props.onPress();h.advance(10000);tree=render();assert.equal(calls.length,2);assert.ok(text(reward(tree)).includes('+1 Common-Shard'));assert.ok(!text(crate(tree)).includes('+1 Common-Shard'));
  assert.equal(nodes(reward(tree),'Btn').length,0,'reward closes through its header X only');reward(tree).props.onClose();assert.equal(crate(render()).props.visible,true);h.unmount();assert.equal(h.pendingTimers(),0);

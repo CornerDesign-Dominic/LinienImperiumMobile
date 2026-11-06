@@ -43,7 +43,7 @@ test('Botenstation vehicle detail gates upgrades, rejects duplicate taps and ret
 test('Botenstation crates respect cooldown, show received parts separately and return after closing',async()=>{
  const x=setup('HubParts');let finish;x.props.onCommand=()=>new Promise(resolve=>finish=resolve);
  const open=nodes(x.render(),'HubCrateCard')[0].props.onOpen,first=open();await open();assert.equal(nodes(x.render(),'HubCrateCard')[0].props.busy,true);
- finish({hubCrateParts:17});await first;let tree=x.render();let reward=nodes(tree,'RewardModal').find(m=>m.props.title==='Fundkiste geöffnet');assert.equal(reward.props.visible,true);assert.ok(text(reward).includes('+17'));reward.props.onClose();assert.equal(nodes(x.render(),'RewardModal').find(m=>m.props.title==='Fundkiste geöffnet').props.visible,false);
+ finish({hubCrateParts:17});await first;let tree=x.render();let reward=nodes(tree,'RewardModal').find(m=>m.props.title==='Belohnung');assert.equal(reward.props.visible,true);assert.equal(reward.props.subtitle,'Verlorene Zustellung');assert.ok(text(reward).includes('+17'));reward.props.onClose();assert.equal(nodes(x.render(),'RewardModal').find(m=>m.props.title==='Belohnung').props.visible,false);
  const h=componentHarness('HubCrateCard.tsx',{'../assets/art/hub/crate-scene.jpg':{uri:'crate-scene'}});let card=h.render('HubCrateCard',{crates:{opened:1,max:3,nextAt:now+1458000,available:false},clock:now});assert.ok(text(card).includes('2 Stück'));assert.ok(text(card).includes('Öffnen in 24:18'));assert.equal(nodes(card,'Pressable')[0].props.disabled,true);
  card=h.render('HubCrateCard',{crates:{opened:3,max:3,nextAt:now+1800000,available:false},clock:now});assert.ok(text(card).includes('0 Stück'));assert.ok(text(card).includes('Morgen wieder verfügbar'));
 });

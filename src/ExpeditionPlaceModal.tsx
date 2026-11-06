@@ -12,11 +12,11 @@ export function PlacePortrait({source}:{source:ImageSourcePropType}){
  const [width,setWidth]=useState(0),height=width?Math.round(width*.60):176;
  return <View testID="place-portrait" style={[s.portrait,{height}]} onLayout={({nativeEvent:{layout:{width:next}}})=>setWidth(old=>old===next?old:next)}>{width>0&&<Image testID="place-portrait-image" source={source} accessible={false} importantForAccessibility="no" resizeMode="cover" style={{position:'absolute',left:0,top:0,width,height}}/>}</View>;
 }
-type Props={visible:boolean;title:string;region?:string;image?:ImageSourcePropType;onClose:()=>void;children:React.ReactNode};
-export function ExpeditionPlaceModal({visible,title,region,image,onClose,children}:Props){
+type Props={visible:boolean;title:string;subtitle?:string;region?:string;image?:ImageSourcePropType;onClose:()=>void;children:React.ReactNode};
+export function ExpeditionPlaceModal({visible,title,subtitle,region,image,onClose,children}:Props){
  if(!visible)return null;
  return <Modal visible transparent animationType="none" onRequestClose={onClose}><View style={s.overlay}><View testID="place-modal" style={s.modal}>
-  <View testID="place-modal-heading" style={s.heading}>{region&&<Text style={s.region}>{region}</Text>}<Text testID="place-modal-title" style={s.title}>{title}</Text></View>
+  <View testID="place-modal-heading" style={s.heading}>{region&&<Text style={s.region}>{region}</Text>}<Text testID="place-modal-title" style={s.title}>{title}</Text>{subtitle&&<Text testID="place-modal-subtitle" style={s.subtitle}>{subtitle}</Text>}</View>
   <ScrollView testID="place-modal-scroll" style={{flexShrink:1}} keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:6}}>
    {image&&<PlacePortrait source={image}/>}
    <View style={s.content}>{children}</View>
@@ -36,7 +36,7 @@ export function PlaceExtraDetails({children}:{children:React.ReactNode}){
 const s=StyleSheet.create({
  overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:16},modal:{width:'100%',maxWidth:460,maxHeight:'90%',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:12,overflow:'hidden'},
  portrait:{width:'100%',backgroundColor:C.raised,overflow:'hidden'},content:{paddingHorizontal:16,paddingTop:12,paddingBottom:8},heading:{paddingLeft:16,paddingRight:64,paddingTop:12,paddingBottom:12,borderBottomWidth:1,borderBottomColor:C.line,minHeight:60},region:{fontSize:10,lineHeight:15,letterSpacing:.8,color:C.muted,marginBottom:3},title:{fontFamily:displayFont,fontSize:23,lineHeight:29,fontWeight:'600',color:C.text},
- close:{position:'absolute',top:8,right:8},status:{flexDirection:'row',alignItems:'center',gap:6,marginBottom:9},statusText:{fontSize:12,lineHeight:18,color:C.accent,fontWeight:'600'},
+ subtitle:{fontSize:12,lineHeight:18,color:C.muted,marginTop:5},close:{position:'absolute',top:8,right:8},status:{flexDirection:'row',alignItems:'center',gap:6,marginBottom:9},statusText:{fontSize:12,lineHeight:18,color:C.accent,fontWeight:'600'},
  rewards:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:10,paddingVertical:8,marginBottom:4},rewardLabel:{fontSize:11,lineHeight:17,color:C.muted,flexShrink:1},rewardIcons:{flexDirection:'row',gap:9,flexWrap:'wrap',justifyContent:'flex-end'},reward:{flexDirection:'row',alignItems:'center',gap:4,paddingHorizontal:7,paddingVertical:5,borderWidth:1,borderColor:C.line,borderRadius:5,backgroundColor:C.raised},rewardAmount:{fontSize:12,lineHeight:18,fontWeight:'700',color:C.gold},
  details:{borderTopWidth:1,borderTopColor:C.line,marginTop:12},detailsToggle:{minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8},detailsLabel:{fontSize:11,lineHeight:17,color:C.muted},detailsContent:{paddingBottom:6,gap:8}
 });

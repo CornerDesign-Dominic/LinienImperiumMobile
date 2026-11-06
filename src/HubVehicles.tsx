@@ -52,7 +52,7 @@ export function HubParts({data,busy,clock,onCommand,modalBlocked=false}:any){
  };
  return <>
   <HubCrateCard crates={c} busy={busy||opening} opening={opening} clock={clock} onOpen={open}/>
-  <ExpeditionPlaceModal visible={found!==null&&!modalBlocked} title={t('Fundkiste geöffnet')} onClose={()=>setFound(null)}><View style={{alignItems:'center',padding:12}}><ItemArt id="hubVehicleParts" size={120}/><Txt style={{fontSize:24,fontWeight:'700',marginTop:8}}>+{found}</Txt><Txt>{itemName('hubVehicleParts',2)}</Txt></View></ExpeditionPlaceModal>
+  <ExpeditionPlaceModal visible={found!==null&&!modalBlocked} title={t('Belohnung')} subtitle={t('Verlorene Zustellung')} onClose={()=>setFound(null)}><View style={{alignItems:'center',padding:12}}><ItemArt id="hubVehicleParts" size={120}/><Txt style={{fontSize:24,fontWeight:'700',marginTop:8}}>+{found}</Txt><Txt>{itemName('hubVehicleParts',2)}</Txt></View></ExpeditionPlaceModal>
  </>;
 }
 export function HubVehicles({data,busy,onCommand,onSell,modalBlocked=false,error=false}:any){

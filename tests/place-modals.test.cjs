@@ -58,5 +58,6 @@ test('Modal images override Android intrinsic image sizes and the X remains outs
  for(const width of [286,326,356,396,458]){const {PlacePortrait}=modal(width),tree=PlacePortrait({source:{uri:'test',width:1536,height:1024}}),image=nodes(tree,'Image')[0];const frame={width:1536,height:1024,...image.props.style};assert.equal(frame.width,width);assert.ok(frame.height>=140&&frame.height<280);}
  const {ExpeditionPlaceModal,PlacePortrait}=modal(0);assert.equal(nodes(PlacePortrait({source:{uri:'test'}}),'Image').length,0);assert.equal(ExpeditionPlaceModal({visible:false,title:'Hidden',onClose:()=>{},children:null}),null);
  const tree=ExpeditionPlaceModal({visible:true,title:'Place',onClose:()=>{},children:null});assert.equal(nodes(tree,'ModalCloseButton').length,1);assert.equal(nodes(nodes(tree,'ScrollView')[0],'ModalCloseButton').length,0,'X does not scroll away');assert.equal(nodes(nodes(tree,'ScrollView')[0],'Text').length,0,'Location title stays above the scrolling portrait and actions');assert.ok(nodes(tree,'Text').some(node=>text(node)==='Place'));
+ const reward=ExpeditionPlaceModal({visible:true,title:'Belohnung',subtitle:'Verlorene Zustellung',onClose:()=>{},children:null}),heading=nodes(reward,'View').find(node=>node.props.testID==='place-modal-heading');assert.deepEqual(nodes(heading,'Text').map(text),['Belohnung','Verlorene Zustellung']);
 });
 
