@@ -1,3 +1,4 @@
+import {courierMeasure} from './courierDisplay';
 import {MaterialPressable as Pressable,MaterialView as View} from './Material';
 import {pointInfoStyle} from './PointAllocation';
 import React,{useState} from 'react';
@@ -30,7 +31,7 @@ export function HubSales({hub,info,inventory,busy,error,clock,onOpen,onCommand,m
    <Image source={scene} accessible={false} resizeMode="cover" fadeDuration={0} style={s.image}/>
    <View style={s.cardHeading}><Txt style={s.cardTitle}>Vertrieb</Txt><Txt style={s.cardStage}>Stufe {hub.salesLevel} / {max}</Txt></View>
    <View style={s.scenery}/>
-   <View style={s.cardInfo}><Txt style={s.workTime}>{workTime(current)} Min.</Txt><Txt style={s.cardCaption}>Verteilung je Stunde</Txt><Txt style={s.cardBonus}>{!atMax&&delta>0?`+${n(extra,1)} ${t('t pro Stunde nach Ausbau')}`:`${n(info.hourlyCapacity*current/60,1)} ${t('t Verteilung pro Stunde')}`}</Txt>{building&&<Txt style={s.cardCaption}>Ausbau fertig in {remaining(hub.construction.finishAt,clock)}</Txt>}{atMax&&<Txt style={s.cardCaption}>Maximum erreicht</Txt>}</View>
+   <View style={s.cardInfo}><Txt style={s.workTime}>{workTime(current)} Min.</Txt><Txt style={s.cardCaption}>Verteilung je Stunde</Txt><Txt style={s.cardBonus}>{!atMax&&delta>0?`+${courierMeasure(extra,'capacity',1)} ${t('pro Stunde nach Ausbau')}`:`${courierMeasure(info.hourlyCapacity*current/60,'capacity',1)} ${t('Verteilung pro Stunde')}`}</Txt>{building&&<Txt style={s.cardCaption}>Ausbau fertig in {remaining(hub.construction.finishAt,clock)}</Txt>}{atMax&&<Txt style={s.cardCaption}>Maximum erreicht</Txt>}</View>
    <View style={s.action}><Txt style={s.actionText}>{action}</Txt></View>
   </Pressable>
   <AppModal visible={open&&!modalBlocked} transparent animationType="none" onRequestClose={close}><View style={s.overlay}><SalesMaterialView testID="hub-sales-modal" style={s.modal}>
@@ -40,7 +41,7 @@ export function HubSales({hub,info,inventory,busy,error,clock,onOpen,onCommand,m
     <View style={s.content}>
      <Txt style={s.stage}>{atMax?`${t('Stufe')} ${hub.salesLevel} / ${max}`:`${t('Stufe')} ${hub.salesLevel} → ${hub.salesLevel+1}`}</Txt>
      <View style={s.comparison}><View style={s.valueBox}><Txt muted style={s.caption}>Aktuell</Txt><Txt style={s.value}>{workTime(current)} Min.</Txt></View>{!atMax&&<><Icon name="arrow" size={18} color={C.gold}/><View style={[s.valueBox,s.after]}><Txt muted style={s.caption}>Nach Ausbau</Txt><Txt style={[s.value,{color:C.accent}]}>{workTime(next)} Min.</Txt></View></>}</View>
-     {!atMax&&delta>0&&<><Txt style={s.benefit}>+{n(delta*60)} Sek. Verteilung pro Stunde</Txt><Txt muted style={s.bonus}>+{n(extra,1)} t pro Stunde nach Ausbau</Txt></>}
+     {!atMax&&delta>0&&<><Txt style={s.benefit}>+{n(delta*60)} Sek. Verteilung pro Stunde</Txt><Txt muted style={s.bonus}>+{courierMeasure(extra,'capacity',1)} {t('pro Stunde nach Ausbau')}</Txt></>}
      <Txt muted style={s.explanation}>Wirkt ab dem nächsten Einkauf nach Ausbauabschluss.</Txt>
      {building?<View style={s.section}><Txt style={s.sectionTitle}>Ausbau läuft</Txt><Txt style={s.countdown}>Ausbau fertig in {remaining(hub.construction.finishAt,clock)}</Txt></View>:atMax?<View style={s.section}><Txt style={s.sectionTitle}>Maximum erreicht</Txt></View>:<View style={s.section}>
       <Txt style={s.sectionTitle}>Ausbaukosten</Txt>

@@ -62,13 +62,13 @@
   "dealer": [
     [
       "Couriers",
-      "Recruit and upgrade Lastwombat couriers in the Courier Station: 25,000 Imperium thalers, starting carrying capacity 2 t."
+      "Recruit and upgrade Lastwombat couriers in the Courier Station: 25,000 Imperium thalers, starting carrying capacity 20 kg."
     ]
   ],
   "hub": [
     [
       "Courier Station and couriers",
-      "Courier Station unlocks at level 5, with one slot per five levels up to 20 at level 100. A Lastwombat courier costs 25,000 Imperium thalers and starts with 2 t. Upgrade cargo and drive in ten stages each with vehicle parts. Open three found crates daily, at least 30 minutes apart, resetting at 00:00 UTC. Each hourly purchase has one 50% chance for one vehicle part; no finds while the cashbox is full. Collect purchase parts with earnings."
+      "Courier Station unlocks at level 5, with one slot per five levels up to 20 at level 100. A Lastwombat courier costs 25,000 Imperium thalers and starts with 20 kg. Upgrade cargo and drive in ten stages each with vehicle parts. Open three found crates daily, at least 30 minutes apart, resetting at 00:00 UTC. Each hourly purchase has one 50% chance for one vehicle part; no finds while the cashbox is full. Collect purchase parts with earnings."
     ],
     [
       "Hourly cycle",
@@ -76,7 +76,7 @@
     ],
     [
       "Cashbox",
-      "Each tonne earns 10 sales − 3 purchase. Each working hour yields 8–12 pickup clues. The cashbox fills after 6 uncollected cycles, then work pauses. Collecting a full cashbox starts a fresh purchase at minute zero; partial collection keeps the current cycle. Collect Imperium thalers, pickup clues and toolboxes together."
+      "Every 10 kg earns 10 sales − 3 purchase. Each working hour yields 8–12 pickup clues. The cashbox fills after 6 uncollected cycles, then work pauses. Collecting a full cashbox starts a fresh purchase at minute zero; partial collection keeps the current cycle. Collect Imperium thalers, pickup clues and toolboxes together."
     ],
     [
       "Upgrades",
