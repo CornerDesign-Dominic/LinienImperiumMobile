@@ -2,13 +2,7 @@ node_modules/
 .git/
 .expo/
 dist/
-functions/*
-!functions/src/
-functions/src/*
-!functions/src/customer-identities.json
-!functions/src/item-names.json
-!functions/src/hub-courier.js
-!functions/src/hub-courier.d.ts
+functions/node_modules/
 tests/
 scripts/
 .github/

@@ -24,6 +24,14 @@ jobs:
           java-version: '17'
       - run: npm ci
       - run: npm run typecheck
+      - name: Verify shared app files in the actual EAS archive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          npx --yes eas-cli@latest build:inspect --platform android --stage archive --profile preview --output "$RUNNER_TEMP/mobile-apk-archive"
+          for file in customer-identities.json item-names.json hub-courier.js; do
+            test -f "$RUNNER_TEMP/mobile-apk-archive/functions/src/$file" || { echo "Missing shared app file: $file"; exit 1; }
+          done
       - uses: google-github-actions/auth@v3
         with:
           project_id: linienimperium
