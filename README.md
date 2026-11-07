@@ -61,6 +61,7 @@ Die installierte APK benötigt keinen laufenden PC oder Expo Go. Aktuelle Build-
 | **Mobile preview** manuell mit `build_apk` | Validierung und Backend-Deployment, anschließend neue installierbare APK statt OTA. Erforderlich bei nativen Änderungen oder neuer Runtime. |
 | Zusätzlich `publish_ota` beim manuellen APK-Build | Veröffentlicht parallel ein OTA für bereits installierte Apps. Nur wählen, wenn der JavaScript-Stand weiterhin mit deren nativer Runtime kompatibel ist (beispielsweise bei einer reinen Android-Theme-Anpassung). |
 | **Update installed preview** manuell | Typprüfung und Tests, dann ausschließlich kompatibles Android-OTA; kein Backend-Deployment. Nur verwenden, wenn der veröffentlichte Server bereits passt. |
+| **Build Android APK** manuell | Typprüfung und signierte APK ohne erneute Spieltests, Backend-Deployment oder OTA. Für native Anpassungen auf einem bereits geprüften Spielstand; wird auch von Mobile preview für APK-Builds verwendet. |
 
 Die APK lädt kompatible OTA-Updates beim Start; sie werden nach einem Neustart verwendet. Maßgeblich für eine Veröffentlichung ist der erfolgreiche Workflow mit passendem Commit, nicht ein historischer Vermerk in einer Moduldatei. Die Workflow-Definitionen unter `.github/workflows/` sind die technische Referenz.
 
