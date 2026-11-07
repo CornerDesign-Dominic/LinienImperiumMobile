@@ -48,3 +48,6 @@ test('Upgrade point labels and messages use the new name in both languages',()=>
  setLanguage('en');assert.equal(t('Ausbaupunkte'),'Upgrade points');assert.equal(t('Ausbaupunkte verteilen · 3'),'Allocate upgrade points · 3');assert.equal(t('+2 Ausbaupunkte'),'+2 upgrade points');assert.equal(t('1 Ausbaupunkt erhalten'),'1 upgrade point received');
  setLanguage('de');
 });
+test('Courier display labels and help use kilograms while regular transport retains tonnes',()=>{
+ setLanguage('en');assert.equal(t('Lastwombat · 20 kg Startkapazität'),'Pack wombat · 20 kg starting capacity');assert.equal(t('+128,7 kg pro Stunde nach Ausbau'),'+128,7 kg per hour after upgrade');assert.equal(t('Verteilung pro Stunde'),'distributed per hour');assert.ok(localizedHelp('hub',[]).some(row=>row[1].includes('starts with 20 kg')));assert.ok(!localizedHelp('hub',[]).some(row=>row[1].includes('Each tonne')));assert.equal(t('4.5 t'),'4.5 t');setLanguage('de');
+});

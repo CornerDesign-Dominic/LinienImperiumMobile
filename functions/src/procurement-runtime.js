@@ -135,10 +135,13 @@ function stopProcurement(id,immediate) {
 function claimProcurement() {
   const p=procurementState();
   if(!Object.values(p.pending).some(n=>n>0))return false;
-  for(const rarity of ['common','uncommon','rare'])game.inventory.gears[rarity]+=p.pending[rarity];
-  game.inventory.companyItems+=p.pending.companyItems;
+  // Snapshot exactly the paid inventory entries before clearing the shared stock.
+  const summary={source:'Materialbeschaffung',coins:0,gears:{common:p.pending.common,uncommon:p.pending.uncommon,rare:p.pending.rare},
+    companyItems:p.pending.companyItems,capacityModules:0,supplierContacts:0};
+  for(const rarity of ['common','uncommon','rare'])game.inventory.gears[rarity]+=summary.gears[rarity];
+  game.inventory.companyItems+=summary.companyItems;
   p.pending={common:0,uncommon:0,rare:0,companyItems:0};
-  mobileToast='Beschaffungsbelohnungen abgeholt.';return true;
+  mobileToast='Beschaffungsbelohnungen abgeholt.';return summary;
 }
 function finishProcurementTour(run,at) {
   const p=procurementState();

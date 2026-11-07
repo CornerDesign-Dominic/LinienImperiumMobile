@@ -15,11 +15,11 @@ export function ClaimRewards({summary,rarities}:{summary:Summary;rarities:{id:st
  const rewards:Reward[]=[];
  if((summary.hermes||0)>0)rewards.push({id:'hermes',label:'Hermes-Siegel',amount:summary.hermes!,icon:'hermes',color:C.gold});
  if((summary.seasonPoints||0)>0)rewards.push({id:'seasonPoints',label:'Saisonpunkte',amount:summary.seasonPoints!,icon:'xp',color:C.accent});
- if((summary.specialOrders||0)>0)rewards.push({id:'project:special',label:'Sonderaufträge',amount:summary.specialOrders!,icon:'projects',color:C.gold});
- if((summary.customerOrders||0)>0)rewards.push({id:'order:customer',label:'Kundenaufträge',amount:summary.customerOrders!,icon:'customers',color:C.accent});
+ if((summary.specialOrders||0)>0)rewards.push({id:'project:special',label:'Sonderaufträge',amount:summary.specialOrders!,icon:'projects',color:rarityColor('rare')});
+ if((summary.customerOrders||0)>0)rewards.push({id:'order:customer',label:'Kundenaufträge',amount:summary.customerOrders!,icon:'customers',color:rarityColor('uncommon')});
  if(summary.coins>0)rewards.push({id:'coins',label:'Imperium-Taler',amount:summary.coins,icon:'coin',color:C.gold});
  if((summary.xp||0)>0)rewards.push({id:'xp',label:'XP',amount:summary.xp!,icon:'xp',color:C.accent});
- if((summary.customerTrust||0)>0)rewards.push({id:'customerTrust',label:'Beziehungspunkte',amount:summary.customerTrust!,icon:'customers',color:C.accent});
+ if((summary.customerTrust||0)>0)rewards.push({id:'customerTrust',label:'Beziehungspunkte',amount:summary.customerTrust!,icon:'customerTrust',color:C.accent});
  for(const rarity of rarities){
   const amount=summary.gears?.[rarity.id]||0;
   if(amount>0)rewards.push({id:`gear:${rarity.id}`,label:`${rarity.label}-${amount===1?'Zahnrad':'Zahnräder'}`,amount,icon:'gear',color:rarityColor(rarity.id)});

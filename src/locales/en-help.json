@@ -29,12 +29,16 @@
     [
       "Collect rewards",
       "Single contracts retain all freight payments, XP, completion bonuses, items, customer relationship and found follow-up contracts until explicit collection. Operating costs still arise at delivery. Contract completion counts immediately for Season tasks; earned coins and level-ups count only on collection. Tours already paid in older saves are never paid twice."
+    ],
+    [
+      "Order rarity",
+      "Free normal contracts are Common, normal customer contracts Uncommon, special contracts Rare and referrals Epic. Normal customer contracts use the same transport rules whether offered on the market or obtained from expeditions or Season rewards; their source grants no extra bonus."
     ]
   ],
   "special": [
     [
       "Discovery",
-      "Normal customer contracts can yield special contracts: base 20% regional or 40% long-distance according to the actual contract, plus customer skill. Endless expeditions start at 0.9% special and 0.1% referral, reaching 2.25% and 0.25% with the maximum company upgrade. Special volume: 400 + region index × 120 t; distance: 120 + region index × 25 km. The shared referral contract has 1,100 t and 240 km."
+      "Normal customer contracts can yield special contracts: base 20% regional or 40% long-distance according to the actual contract, plus customer skill. Endless expeditions start at 0.9% special and 0.1% referral, reaching 2.25% and 0.25% with the respective regional customer’s special/referral skill at level 25. Special volume: 400 + region index × 120 t; distance: 120 + region index × 25 km. The shared referral contract has 1,100 t and 240 km."
     ],
     [
       "Fleet and deadline",
@@ -62,13 +66,13 @@
   "dealer": [
     [
       "Couriers",
-      "Recruit and upgrade Lastwombat couriers in the Courier Station: 25,000 Imperium thalers, starting carrying capacity 2 t."
+      "Recruit and upgrade Lastwombat couriers in the Courier Station: 25,000 Imperium thalers, starting carrying capacity 20 kg."
     ]
   ],
   "hub": [
     [
       "Courier Station and couriers",
-      "Courier Station unlocks at level 5, with one slot per five levels up to 20 at level 100. A Lastwombat courier costs 25,000 Imperium thalers and starts with 2 t. Upgrade cargo and drive in ten stages each with vehicle parts. Open three found crates daily, at least 30 minutes apart, resetting at 00:00 UTC. Each hourly purchase has one 50% chance for one vehicle part; no finds while the cashbox is full. Collect purchase parts with earnings."
+      "Courier Station unlocks at level 5, with one slot per five levels up to 20 at level 100. A Lastwombat courier costs 25,000 Imperium thalers and starts with 20 kg. Upgrade cargo and drive in ten stages each with vehicle parts. Open three found crates daily, at least 30 minutes apart, resetting at 00:00 UTC. Each hourly purchase has one 50% chance for one vehicle part; no finds while the cashbox is full. Collect purchase parts with earnings."
     ],
     [
       "Hourly cycle",
@@ -76,7 +80,7 @@
     ],
     [
       "Cashbox",
-      "Each tonne earns 10 sales − 3 purchase. Each working hour yields 8–12 pickup clues. The cashbox fills after 6 uncollected cycles, then work pauses. Collecting a full cashbox starts a fresh purchase at minute zero; partial collection keeps the current cycle. Collect Imperium thalers, pickup clues and toolboxes together."
+      "Every 10 kg earns 10 sales − 3 purchase. Each working hour yields 8–12 pickup clues. The cashbox fills after 6 uncollected cycles, then work pauses. Collecting a full cashbox starts a fresh purchase at minute zero; partial collection keeps the current cycle. Collect Imperium thalers, pickup clues and toolboxes together."
     ],
     [
       "Upgrades",
@@ -94,7 +98,7 @@
     ],
     [
       "Sources",
-      "Normal local and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Direct expedition gear finds have an additional 6% chance for company upgrade items and a 0.3% chance for a capacity module. Courier Station cycles yield 8–12 pickup clues. Existing material contracts remain usable."
+      "Normal local and long-distance contracts yield one company upgrade item per 750,000 actual loaded tkm; remainder is retained. Procurement and existing material contracts retain their own company-item rewards. Direct endless-expedition gear finds give gears only, without shards, company upgrade items or capacity modules. Courier Station cycles yield 8–12 pickup clues."
     ],
     [
       "Gear loot",
@@ -127,10 +131,6 @@
     [
       "Transport upgrades",
       "Completion bonus: 1,000 levels, +1 percentage point each. New level N costs 1,000 × N Imperium thalers and 1 + floor((N−1)/25) company upgrade items. Local and long-distance transport are separate. Quantity and range each have 100 levels, preserving their previous final effects and full upgrade budgets. The bonus affects only the completion reward of that category, not freight revenue or loot."
-    ],
-    [
-      "Expedition finds",
-      "15 upgrade levels increase the combined special/referral discovery chance from 1% to 2.5%, by 0.1 percentage points per level. New level N costs 10,000 × N Imperium thalers and 1 + floor((N−1)/5) company upgrade items. The extra chance replaces gear finds; normal customer and regular card chances stay unchanged."
     ]
   ],
   "personnel": [
@@ -154,7 +154,7 @@
     ],
     [
       "Discovery chances",
-      "Endless draws cost 5/6/7/8/10 points in regions 1–5. Direct cards: 15% Common, 10% Uncommon, 5% Rare, shared equally within each rarity in the region. No direct Epic or Legendary cards. Normal regional customer contract: 20%, stored until started, independently 50% regional or long-distance. Specials/referrals together: 1% initially, up to 2.5% with the company upgrade, split 90%/10%. The remainder gives gears and 1/1/2/2/3 card shards by region. Additional bonus finds apply only to gear finds. The endless-location question mark shows exact amounts and chances."
+      "Endless draws cost 5/6/7/8/10 points in regions 1–5. Direct cards: 15% Common, 10% Uncommon, 5% Rare, shared equally within each rarity in the region. No direct Epic or Legendary cards. Normal regional customer contract: 20%, stored until started, independently 50% regional or long-distance. The regional customer’s existing special skill increases special finds from 0.9% to 2.25% over 25 points; the referral skill separately increases referral finds from 0.1% to 0.25% over 25 points. At both maxima the total is 2.5%. The remainder gives gears only, without shards, company upgrade items or capacity modules. Duplicate transport cards still give one shard of the same rarity. The endless-location question mark shows exact amounts and chances."
     ],
     [
       "Locations and bonuses",
@@ -186,7 +186,7 @@
     ],
     [
       "Abilities",
-      "Payment: +0.1% freight payment per point, up to 100. Special chance: +0.1 percentage points per point, up to 25, on a base of 20% regional / 40% long-distance. Referral chance: +0.1 percentage points per point, up to 25, on a base of 4% / 6%. Preview with +/− and save together. Saved allocations are permanent."
+      "Payment: +0.1% freight payment per point, up to 100. Special chance: +0.1 percentage points per point, up to 25, on a base of 20% regional / 40% long-distance. Referral chance: +0.1 percentage points per point, up to 25, on a base of 4% / 6%. Preview with +/− and save together. Saved allocations are permanent. The same existing special/referral improvements also affect that customer’s regional endless-expedition finds, independently reaching 2.25% special and 0.25% referral at 25 points each. No separate company upgrade is required."
     ]
   ],
   "procurement": [

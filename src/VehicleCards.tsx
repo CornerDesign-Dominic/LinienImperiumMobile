@@ -1,3 +1,4 @@
+import {CardSeparator} from './CardSeparator';
 import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {ItemArt,ItemAmount} from './ItemArt';
 import {Text,useLanguage} from './Language';
@@ -91,7 +92,7 @@ export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,s
    <CardLevelShield level={owned?.level}/>
    <VehicleArt card={card}/>
    <View style={styles.nameBand}><VehicleName name={card.name} numberOfLines={3} style={styles.collectibleName}/></View>
-   <CardDivider color={rarityColor(card.rarity)}/>
+   <CardSeparator color={rarityColor(card.rarity)}/>
    <View testID="speed-rank-row" accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" pointerEvents="none" style={styles.speedRankRow}>
     {speedRanks.length?speedRanks.map(segment=><Text key={segment.rarity} testID={`speed-rank-${segment.rarity}`} accessible={false} allowFontScaling={false} style={[styles.speedRankNumeral,{color:rarityColor(segment.rarity)}]}>{segment.numeral}</Text>):<Text accessible={false} allowFontScaling={false} style={[styles.speedRankNumeral,{color:C.muted}]}>—</Text>}
    </View>
@@ -102,14 +103,6 @@ export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,s
   </>}
   {status&&<View style={[styles.assignment,status?.label&&!unavailable&&styles.assigned]}>{status?.label&&<Icon name={unavailable?"lock":"check"} size={11} color={unavailable?C.muted:C.accent}/>}<Text numberOfLines={2} style={[styles.assignmentText,unavailable&&{color:C.muted}]}>{status?.label||'Verfügbar'}</Text></View>}
  </Pressable>;
-}
-function CardDivider({color}:{color:string}){
- const [width,setWidth]=useState(0),line=Math.max(0,(width-14)/2);
- return <View accessible={false} onLayout={event=>setWidth(event.nativeEvent.layout.width)} style={styles.divider}>
-  <View style={{width:0,height:0,borderRightWidth:line,borderRightColor:color,borderTopWidth:.75,borderBottomWidth:.75,borderTopColor:'transparent',borderBottomColor:'transparent'}}/>
-  <View style={[styles.diamond,{backgroundColor:color}]}/>
-  <View style={{width:0,height:0,borderLeftWidth:line,borderLeftColor:color,borderTopWidth:.75,borderBottomWidth:.75,borderTopColor:'transparent',borderBottomColor:'transparent'}}/>
- </View>;
 }
 export function VehicleCardGrid({data,cards,onOpen,statusForCard,disabled=false,showDetails=false,ornate=false}:any){
  const c=data.catalog;
@@ -125,7 +118,6 @@ const styles=StyleSheet.create({
  collectibleBody:{position:'absolute',top:12,bottom:0,left:0,right:0,borderWidth:1,borderColor:'#151515',borderRadius:5,backgroundColor:C.panel,backgroundImage:'linear-gradient(110deg, #FFF6E1, #EEE0C2)'},
  nameBand:{marginTop:3,minHeight:46,justifyContent:'center',paddingHorizontal:3,backgroundColor:'rgba(223,205,169,.20)'},
  collectibleName:{fontFamily:displayFont,fontSize:11,lineHeight:14,textAlign:'center',color:C.text},
- divider:{height:5,marginHorizontal:7,marginTop:5,marginBottom:0,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:5},diamond:{width:4,height:4,transform:[{rotate:'45deg'}]},
  collectibleFacts:{paddingHorizontal:7,paddingBottom:8},
  speedRankRow:{height:24,marginTop:2,paddingHorizontal:2,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:6},
  speedRankNumeral:{fontFamily:displayFont,fontSize:12,lineHeight:18,fontWeight:'600'},

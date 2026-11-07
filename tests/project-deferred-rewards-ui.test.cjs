@@ -13,14 +13,14 @@ test('Project reward output includes the confirmed total coin payout and fractio
 });
 
 
-test('Single-order claim combines confirmed XP, customer trust and found special orders without invented item art',()=>{
+test('Single-order claim combines XP, the relationship book and confirmed special orders',()=>{
  const h=componentHarness('ClaimRewards.tsx',{'./Language':{Text:'Text'}});
  const summary={source:'Einzelaufträge',count:2,coins:250,xp:12.75,customerTrust:3,specialOrders:1,gears:{},capacityModules:0,companyItems:0,supplierContacts:0};
  const tree=h.render('ClaimRewards',{summary,rarities:[]});
  const row=id=>nodes(tree,'View').find(node=>node.props.testID===`claim-reward-${id}`);
  assert.ok(text(row('xp')).includes('+12.75'));
  assert.ok(text(row('customerTrust')).includes('Beziehungspunkte+3'));
- assert.equal(nodes(row('customerTrust'),'Icon')[0].props.name,'customers');
+ assert.equal(nodes(row('customerTrust'),'Icon')[0].props.name,'customerTrust');
  assert.equal(nodes(row('customerTrust'),'ItemArt').length,0);
  assert.ok(text(row('project:special')).includes('Sonderaufträge+1'));
  assert.equal(nodes(row('project:special'),'ItemArt')[0].props.id,'project:special');

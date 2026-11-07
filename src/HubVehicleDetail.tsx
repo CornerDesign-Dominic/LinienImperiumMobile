@@ -1,3 +1,4 @@
+import {courierMeasure} from './courierDisplay';
 import {MaterialPressable as Pressable,MaterialView as View} from './Material';
 import {HubCourierArt} from './HubCourierArt';
 import {courierModel} from '../functions/src/hub-courier';
@@ -13,7 +14,7 @@ type Kind='capacity'|'speed';
 export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onClose,onSell,skin}:any){
  const [kind,setKind]=useState<Kind|null>(null),[pending,setPending]=useState(false),[failed,setFailed]=useState(false);
  const inFlight=useRef(false),locked=busy||pending;
- const q=kind?truck.hubUpgrades[kind]:null,label=kind==='capacity'?'Laderaum':'Antrieb',unit=kind==='capacity'?'t':'km/s';
+ const q=kind?truck.hubUpgrades[kind]:null,label=kind==='capacity'?'Laderaum':'Antrieb';
  const command=async(action:string,payload:any)=>{
   if(locked||inFlight.current)return;
   inFlight.current=true;setPending(true);setFailed(false);
@@ -27,7 +28,7 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
   <ScrollView style={{flexShrink:1}} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
    {kind?<>
     <Txt muted style={s.stage}>Stufe {q.level} / {q.max}</Txt>
-    <View style={s.comparison}><View style={s.valueBox}><Txt muted style={s.caption}>Aktuell</Txt><Txt style={s.value}>{n(q.current,2)} {unit}</Txt></View><Icon name="arrow" size={18} color={C.gold}/><View style={[s.valueBox,s.afterBox]}><View pointerEvents="none" style={s.afterTint}/><Txt muted style={s.caption}>Nach Ausbau</Txt><Txt style={[s.value,{color:C.accent}]}>{n(q.next,2)} {unit}</Txt></View></View>
+    <View style={s.comparison}><View style={s.valueBox}><Txt muted style={s.caption}>Aktuell</Txt><Txt style={s.value}>{courierMeasure(q.current,kind)}</Txt></View><Icon name="arrow" size={18} color={C.gold}/><View style={[s.valueBox,s.afterBox]}><View pointerEvents="none" style={s.afterTint}/><Txt muted style={s.caption}>Nach Ausbau</Txt><Txt style={[s.value,{color:C.accent}]}>{courierMeasure(q.next,kind)}</Txt></View></View>
     <Txt style={s.sectionTitle}>Kosten</Txt>
     <View accessible accessibilityLabel={`${t('Werkzeugkästen')}: ${n(q.parts)} ${t('benötigt')}, ${n(inventory.hubVehicleParts)} ${t('vorhanden')}`} style={s.cost}><ItemArt id="hubVehicleParts" size={36}/><View style={{flex:1}}><Txt style={s.label}>Werkzeugkästen</Txt><Txt style={[s.costValue,{color:inventory.hubVehicleParts>=q.parts?C.accent:C.red}]}>{n(q.parts)} / {n(inventory.hubVehicleParts)}</Txt></View></View>
     <View accessible accessibilityLabel={`${t('Imperium-Taler')}: ${n(q.coins,2)} ${t('benötigt')}, ${n(coins,2)} ${t('vorhanden')}`} style={s.cost}><Icon name="coin" size={36}/><View style={{flex:1}}><Txt style={s.label}>Imperium-Taler</Txt><Txt style={[s.costValue,{color:coins>=q.coins?C.accent:C.red}]}>{n(q.coins,2)} / {n(coins,2)}</Txt></View></View>
@@ -38,9 +39,9 @@ export function HubVehicleDetail({truck,inventory,coins,busy,error,onCommand,onC
     <View style={s.identity}><HubCourierArt size={100} skin={skin}/><View style={{flex:1}}><Txt style={[s.status,{color:truck.hubAssigned?C.accent:C.muted}]}>{truck.hubAssigned?'In der Botenstation eingesetzt':'Nicht eingesetzt'}</Txt></View></View>
     <Txt style={s.sectionTitle}>Verbesserungen</Txt>
     <View style={s.upgrades}>{(['capacity','speed'] as const).map(option=>{
-     const upgrade=truck.hubUpgrades[option],name=option==='capacity'?'Laderaum':'Antrieb',suffix=option==='capacity'?'t':'km/s',max=upgrade.level>=upgrade.max,available=!max&&coins>=upgrade.coins&&inventory.hubVehicleParts>=upgrade.parts;
-     return <Pressable key={option} accessibilityRole="button" accessibilityLabel={`${t(name)}, ${t('Stufe')} ${upgrade.level} / ${upgrade.max}, ${n(upgrade.current,2)} ${suffix}${max?`, ${t('Maximum erreicht')}`:''}`} accessibilityState={{disabled:locked||max}} disabled={locked||max} onPress={()=>{setFailed(false);setKind(option);}} style={({pressed})=>[s.upgrade,option==='speed'&&s.divider,pressed&&{backgroundColor:C.raised}]}>
-      <Icon name={option==='capacity'?'module':'gear'} size={24} color={C.gold}/><View style={{flex:1,minWidth:0}}><Txt style={s.upgradeTitle}>{name}</Txt><Txt muted style={s.caption}>{max?'Maximum erreicht':`${t('Stufe')} ${upgrade.level} / ${upgrade.max}`}</Txt></View><Txt style={s.current}>{n(upgrade.current,2)} {suffix}</Txt>{available&&<View style={s.dot}/>}<Icon name="chevron" size={16} color={max?C.muted:C.text}/>
+     const upgrade=truck.hubUpgrades[option],name=option==='capacity'?'Laderaum':'Antrieb',max=upgrade.level>=upgrade.max,available=!max&&coins>=upgrade.coins&&inventory.hubVehicleParts>=upgrade.parts;
+     return <Pressable key={option} accessibilityRole="button" accessibilityLabel={`${t(name)}, ${t('Stufe')} ${upgrade.level} / ${upgrade.max}, ${courierMeasure(upgrade.current,option)}${max?`, ${t('Maximum erreicht')}`:''}`} accessibilityState={{disabled:locked||max}} disabled={locked||max} onPress={()=>{setFailed(false);setKind(option);}} style={({pressed})=>[s.upgrade,option==='speed'&&s.divider,pressed&&{backgroundColor:C.raised}]}>
+      <Icon name={option==='capacity'?'module':'gear'} size={24} color={C.gold}/><View style={{flex:1,minWidth:0}}><Txt style={s.upgradeTitle}>{name}</Txt><Txt muted style={s.caption}>{max?'Maximum erreicht':`${t('Stufe')} ${upgrade.level} / ${upgrade.max}`}</Txt></View><Txt style={s.current}>{courierMeasure(upgrade.current,option)}</Txt>{available&&<View style={s.dot}/>}<Icon name="chevron" size={16} color={max?C.muted:C.text}/>
      </Pressable>;
     })}</View>
     {(failed||error)&&<Txt style={s.error}>Aktion fehlgeschlagen. Bitte erneut versuchen.</Txt>}

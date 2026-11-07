@@ -9,7 +9,7 @@ import {VehicleCardTile,RarityFilter} from './VehicleCards';
 import {sortOrderVehicles,OrderSort} from './orderSelection';
 import {t} from './i18n';
 
-export function OrderVehiclePicker({data,choices,summary,busy,clock,onStart,onClose,modalBlocked=false}:any){
+export function OrderVehiclePicker({data,choices,summary,busy,clock,onStart,onClose,modalBlocked=false,headerStatus,startDisabled=false,errorMessage}:any){
  const [selectedId,setSelectedId]=useState<string|null>(null),[sort,setSort]=useState<OrderSort>('profit'),[rarity,setRarity]=useState('all'),[starting,setStarting]=useState(false),[failed,setFailed]=useState(false);
  const pending=useRef(false);
  const selected=choices.find((q:any)=>q.id===selectedId&&q.free),locked=busy||starting;
@@ -18,14 +18,16 @@ export function OrderVehiclePicker({data,choices,summary,busy,clock,onStart,onCl
  const rows=Array.from({length:Math.ceil(ordered.length/3)},(_,i)=>ordered.slice(i*3,i*3+3));
  const metric=(label:string,icon:IconName,value:string,profit=false)=><View accessible accessibilityLabel={`${t(label)}: ${value}`} style={s.metric}><Icon name={icon} size={14} color={C.muted}/><Txt style={[s.value,profit&&{color:C.accent}]}>{value}</Txt></View>;
  const start=async()=>{
-  if(!selected||locked||pending.current)return;
+  if(!selected||locked||startDisabled||pending.current)return;
   pending.current=true;setStarting(true);setFailed(false);
   try{if(await onStart(selected.id))onClose();else setFailed(true);}catch{setFailed(true);}finally{pending.current=false;setStarting(false);}
  };
  return <Modal visible={!modalBlocked} transparent animationType="none" onRequestClose={()=>{if(!starting)onClose();}}>
   <SafeAreaView edges={['top','bottom']} style={s.overlay}><View style={s.sheet}>
    <Row style={{flexWrap:'nowrap'}}><Txt style={s.title}>Fahrzeug wählen</Txt><Btn icon="close" iconOnly secondary disabled={starting} onPress={onClose}>Schließen</Btn></Row>
+   {headerStatus&&<Txt testID="order-picker-hold" style={s.hold}>{headerStatus}</Txt>}
    <Txt muted style={s.summary}>{summary}</Txt>
+   {!!errorMessage&&<Txt testID="order-picker-error" style={{color:C.red,marginBottom:8}}>{errorMessage}</Txt>}
    <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingBottom:selected?104:6}}>
     <View style={s.sortBox}>
      <Txt muted style={s.sortCaption}>Sortiert nach</Txt>
@@ -34,7 +36,7 @@ export function OrderVehiclePicker({data,choices,summary,busy,clock,onStart,onCl
      </View>
     </View>
     <RarityFilter data={data} rarity={rarity} onChange={(value:string)=>{setRarity(value);setSelectedId(null);setFailed(false);}}/>
-    {failed&&<Txt style={{color:C.red,marginBottom:8}}>Auftrag konnte nicht gestartet werden. Bitte Auswahl prüfen und erneut versuchen.</Txt>}
+    {failed&&!errorMessage&&<Txt style={{color:C.red,marginBottom:8}}>Auftrag konnte nicht gestartet werden. Bitte Auswahl prüfen und erneut versuchen.</Txt>}
     {rows.map((row,i)=><View key={i} style={s.row}>{row.map((q:any)=>{
      const card=cardFor(q),chosen=selected?.id===q.id;
      const status=q.free?(chosen?'Ausgewählt':'Verfügbar'):q.availableAt&&q.availableAt>clock?`${t('Frei in')} ${remaining(q.availableAt,clock)}`:q.availableAt?'Wird aktualisiert …':q.unavailableReason||'Im Einsatz';
@@ -42,8 +44,8 @@ export function OrderVehiclePicker({data,choices,summary,busy,clock,onStart,onCl
     })}{row.length<3&&Array.from({length:3-row.length},(_,j)=><View key={`empty-${j}`} style={{flex:1}}/>)}</View>)}
     {!rows.length&&<Empty>{choices.length?'Keine Transportkarten dieser Seltenheit.':'Kein geeignetes Fahrzeug in der Garage.'}</Empty>}
    </ScrollView>
-   {selected&&<View style={s.floating}><Txt style={s.chosen}>{selected.model} · {minutes(selected.seconds)} · {n(selected.totalProfit)}</Txt><Btn disabled={locked} onPress={start} style={{marginTop:4}}>{starting?'Auftrag startet …':'Auftrag starten'}</Btn></View>}
+   {selected&&<View style={s.floating}><Txt style={s.chosen}>{selected.model} · {minutes(selected.seconds)} · {n(selected.totalProfit)}</Txt><Btn disabled={locked||startDisabled} onPress={start} style={{marginTop:4}}>{starting?'Auftrag startet …':'Auftrag starten'}</Btn></View>}
   </View></SafeAreaView>
  </Modal>;
 }
-const s=StyleSheet.create({overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',paddingHorizontal:10},sheet:{width:'100%',maxWidth:520,maxHeight:'92%',alignSelf:'center',backgroundColor:C.panel,borderColor:C.line,borderWidth:1,borderRadius:14,padding:10,overflow:'hidden'},title:{fontSize:17,fontWeight:'700',flex:1},summary:{fontSize:12,lineHeight:18,marginBottom:10},sortBox:{marginBottom:8},sortCaption:{fontSize:11,lineHeight:16,marginBottom:5},sortButtons:{flexDirection:'row',gap:6},sortButton:{flex:1,minWidth:0,minHeight:44,justifyContent:'center',alignItems:'center',paddingHorizontal:6,paddingVertical:9,borderWidth:1,borderBottomWidth:3,borderColor:C.line,borderRadius:5,backgroundColor:C.raised},sortActive:{backgroundColor:C.accent,borderColor:C.ink},sortLabel:{fontSize:12,lineHeight:18,fontWeight:'700',textAlign:'center'},row:{flexDirection:'row',gap:4.5,marginBottom:5},facts:{marginTop:6,gap:4},metric:{minHeight:20,flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:3},value:{fontSize:10,lineHeight:15,fontWeight:'700',textAlign:'right',flexShrink:1},floating:{position:'absolute',bottom:10,left:10,right:10,backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:8,padding:8,boxShadow:'0px 2px 8px rgba(0,0,0,.2)'},chosen:{fontSize:11,lineHeight:16,textAlign:'center'}});
+const s=StyleSheet.create({hold:{fontSize:12,lineHeight:18,fontWeight:'700',color:C.gold,marginBottom:6,fontVariant:['tabular-nums']},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',paddingHorizontal:10},sheet:{width:'100%',maxWidth:520,maxHeight:'92%',alignSelf:'center',backgroundColor:C.panel,borderColor:C.line,borderWidth:1,borderRadius:14,padding:10,overflow:'hidden'},title:{fontSize:17,fontWeight:'700',flex:1},summary:{fontSize:12,lineHeight:18,marginBottom:10},sortBox:{marginBottom:8},sortCaption:{fontSize:11,lineHeight:16,marginBottom:5},sortButtons:{flexDirection:'row',gap:6},sortButton:{flex:1,minWidth:0,minHeight:44,justifyContent:'center',alignItems:'center',paddingHorizontal:6,paddingVertical:9,borderWidth:1,borderBottomWidth:3,borderColor:C.line,borderRadius:5,backgroundColor:C.raised},sortActive:{backgroundColor:C.accent,borderColor:C.ink},sortLabel:{fontSize:12,lineHeight:18,fontWeight:'700',textAlign:'center'},row:{flexDirection:'row',gap:4.5,marginBottom:5},facts:{marginTop:6,gap:4},metric:{minHeight:20,flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:3},value:{fontSize:10,lineHeight:15,fontWeight:'700',textAlign:'right',flexShrink:1},floating:{position:'absolute',bottom:10,left:10,right:10,backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:8,padding:8,boxShadow:'0px 2px 8px rgba(0,0,0,.2)'},chosen:{fontSize:11,lineHeight:16,textAlign:'center'}});

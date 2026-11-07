@@ -23,6 +23,7 @@ function componentHarness(file,imports={}){
   if(id==='./ProjectStory')return {ProjectStory:'ProjectStory'};
   if(id==='./ProjectOvertimeModal')return {ProjectOvertimeModal:'ProjectOvertimeModal'};
   if(id==='./ui')return {C:require('../../src/palette.json'),Txt:'Txt',Card:'Card',Row:'Row',Btn:'Btn',Pill:'Pill',n:String};
+  if(id==='./courierDisplay')return componentHarness('courierDisplay.ts',{'./ui':required('./ui')}).exports;
   if(id==='./PointAllocation')return {PointInfo:'PointInfo',PointsBalance:'PointsBalance',PointAllocationRow:'PointAllocationRow',pointInfoStyle:{}};
   if(id==='./AppModal')return {AppModal:'Modal'};
   if(id==='./ModalCloseButton')return {ModalCloseButton:'ModalCloseButton'};
