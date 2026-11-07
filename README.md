@@ -59,6 +59,7 @@ Die installierte APK benötigt keinen laufenden PC oder Expo Go. Aktuelle Build-
 | Normaler Push auf `main` | Startet gemäß Workflow-Pfadfilter die Validierung; veröffentlicht allein weder Server noch OTA. |
 | **Mobile preview** manuell oder `main`-Commit mit `[publish-preview]` | Validierung → Firebase-Backend und Regeln → Live-API-Smoke-Test → kompatibles Android-OTA im Kanal `preview`. |
 | **Mobile preview** manuell mit `build_apk` | Validierung und Backend-Deployment, anschließend neue installierbare APK statt OTA. Erforderlich bei nativen Änderungen oder neuer Runtime. |
+| Zusätzlich `publish_ota` beim manuellen APK-Build | Veröffentlicht parallel ein OTA für bereits installierte Apps. Nur wählen, wenn der JavaScript-Stand weiterhin mit deren nativer Runtime kompatibel ist (beispielsweise bei einer reinen Android-Theme-Anpassung). |
 | **Update installed preview** manuell | Typprüfung und Tests, dann ausschließlich kompatibles Android-OTA; kein Backend-Deployment. Nur verwenden, wenn der veröffentlichte Server bereits passt. |
 
 Die APK lädt kompatible OTA-Updates beim Start; sie werden nach einem Neustart verwendet. Maßgeblich für eine Veröffentlichung ist der erfolgreiche Workflow mit passendem Commit, nicht ein historischer Vermerk in einer Moduldatei. Die Workflow-Definitionen unter `.github/workflows/` sind die technische Referenz.

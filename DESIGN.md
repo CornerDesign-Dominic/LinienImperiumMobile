@@ -26,6 +26,8 @@ Reiseatlas mit Sammelkarten: dunkles Tintenpetrol, helle Pergamentflächen und z
 
 ## Navigation und Dialoge
 
+- Der äußere Spielrahmen verwendet durchgehend das ruhige Tintenpetrol `#243D40`: Statusbereich, Spielheader, untere Navigation und Safe Areas ohne Materialtextur. Goldene Haarlinien trennen die Inhaltsfläche; der aktive Tab hat einen dezenten Goldakzent. Der Spielheader nutzt 16 Punkte Seitenabstand und gleichmäßige 8-Punkte-Abstände, der XP-Balken ist 4 Punkte hoch.
+- Der gemeinsame Seitenkopf ist eine ruhige Pergamentfläche mit 18-Punkte-Titel und weiterhin 44-Punkte-Aktionsflächen. Einteilige Goldlinien verblassen nach außen über einen kontinuierlichen Farbverlauf. Androids zusätzliche Abdunklung der Drei-Tasten-Navigation wird im APK-Theme deaktiviert; diese Änderung benötigt eine neue APK, während die übrige Gestaltung OTA-kompatibel bleibt.
 - Kompakte Startzeilen mit farbigen Miniaturen; die Firmenkarte öffnet Handelsimperium. Kein großes Hafenbild auf der aktuellen Startseite.
 - Fünf feste untere Ziele: Home, Flotte, Garage, Einzelaufträge, Großaufträge. Die Leiste zeigt Bildmotive; zugängliche Beschriftungen und Auswahlstatus bleiben erhalten.
 - Gemeinsamer Seitenkopf mit symmetrischen Aktionsflächen; Zurück, Hilfe und Schließen bleiben erkennbare Bedienelemente.

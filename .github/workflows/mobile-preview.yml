@@ -9,6 +9,10 @@ on:
         description: 'Neue APK erstellen (bei nativen Änderungen)'
         type: boolean
         default: false
+      publish_ota:
+        description: 'Zusätzlich kompatibles OTA veröffentlichen (nur bei unveränderter nativer Runtime)'
+        type: boolean
+        default: false
 permissions:
   contents: read
   id-token: write
@@ -50,7 +54,7 @@ jobs:
         run: node scripts/smoke-backend.cjs
   update:
     needs: deploy
-    if: ${{ !inputs.build_apk }}
+    if: ${{ !inputs.build_apk || inputs.publish_ota }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

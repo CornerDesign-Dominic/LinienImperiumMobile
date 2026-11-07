@@ -12,7 +12,7 @@ test('Parchment header retains working controls and balanced 44px slots; home ha
  const placeholder=byId(tree,'page-header-back-placeholder');assert.equal(placeholder.props.onPress,undefined);assert.equal(placeholder.props.style.width,44);
  assert.equal(text(byId(tree,'page-header-title')),'Start');
  const row=byId(tree,'page-header').props.style;assert.equal(row.backgroundColor,C.panel);assert.equal(row.borderBottomColor,C.brass);assert.equal(row.margin,undefined);assert.equal(row.borderRadius,undefined);
- assert.equal(nodes(tree,'MaterialLayer').length,1);assert.equal(nodes(tree,'MaterialLayer')[0].props.kind,'paper');assert.equal(nodes(tree,'Icon').length,0);
+ assert.equal(nodes(tree,'MaterialLayer').length,0);assert.equal(nodes(tree,'Icon').length,0);
 });
 test('Title is directly on parchment, centered, naturally wrapping and never forced into uppercase or shrinking',()=>{
  const h=setup(),props={title:'Materialbeschaffung',onBack:()=>{},onHelp:()=>{}},tree=h.render('PageHeader',props),title=byId(tree,'page-header-title');
