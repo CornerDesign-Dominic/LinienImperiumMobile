@@ -1,8 +1,12 @@
 # Offene Arbeiten und Veröffentlichungsstand
 
-Stand: 07.11.2026. Letzte Spielveröffentlichung: `81da5d17a178394ee4e15e233a406607275da6b5`.
+Stand: 07.11.2026. Letzte UI-Veröffentlichung (OTA): `8eec5cfdfe3c0484c5e8ab126e6ac388abf7b6ef`; neue APK: `ab10d0185f3bc296247a5953f261336952ef1193`.
 
 ## Letzte Veröffentlichung
+
+Der vereinheitlichte Spielrahmen ist als Android-OTA veröffentlicht: ruhiges Petrol für Header und Navigation, gleichmäßige Header-Abstände, schlanker XP-Balken, kompakter Seitenkopf und kontinuierlich verblassende Goldlinien. [OTA und Release-Prüfungen](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42418929844) erfolgreich. Der dortige erste APK-Versuch ist durch den [erfolgreichen separaten APK-Build](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42420006604) ersetzt. Für die passende Farbe der Android-Drei-Tasten-Leiste ist die neue signierte APK (VersionCode 2) erforderlich; die bestehende Signierung bleibt erhalten. Kein physischer Gerätetest. Details: [Prüfstand](TEST_REPORT.md).
+
+## Vorherige Veröffentlichung
 
 Das Sammelpaket aus PRs #22–#27 ist über [Mobile-preview-Lauf 42368749943](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42368749943) erfolgreich veröffentlicht: TypeScript, 417 Tests, Android-Export, Firebase-Deployment mit Live-API-Prüfung und Android-OTA im Kanal preview. Keine neue APK, kein neuer physischer Gerätetest.
 

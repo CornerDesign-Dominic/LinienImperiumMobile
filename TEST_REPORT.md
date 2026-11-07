@@ -1,6 +1,17 @@
 # Prüfstand und Nachweise
 
-## Letzter belegter App-Prüfstand – Boten, Kundenfunde und UI
+## Letzter belegter App-Prüfstand – Einheitlicher Spielrahmen und Systemleisten
+
+Android-OTA: `8eec5cfdfe3c0484c5e8ab126e6ac388abf7b6ef`, 07.11.2026, [Release-Lauf 42418929844](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42418929844). Validierung, Deployment, API-Prüfung und OTA sind erfolgreich; dessen erster APK-Versuch ist fehlgeschlagen und durch den folgenden separaten Build ersetzt.
+
+Signierte APK: `ab10d0185f3bc296247a5953f261336952ef1193`, Version 0.1.0 / Android-VersionCode 2, [erfolgreicher APK-Lauf 42420006604](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42420006604), [EAS-Build](https://expo.dev/accounts/cornerdesign/projects/linien-imperium-online/builds/2ee98a37-80a1-45a1-b7fa-449e9119a59d).
+
+- Lokal: TypeScript, drei bestehende Header-Tests und Expo-Introspektion des Android-Themes erfolgreich. Mobile Browseransicht bei 360 × 780 geprüft; kein physischer Android-Gerätetest.
+- Die bestehende Release-Pipeline hat die vollständigen 417 Tests einmal ausgeführt (alle bestanden), den Android-Export erstellt und Backend/API/OTA erfolgreich abgeschlossen. Die anschließenden reinen APK-Builds wiederholen keine Spieltest-Suite.
+- Rahmen ohne Textur in einheitlichem Petrol, ausgeglichene Header-Abstände, schlanker XP-Balken, kompakter flacher Seitenkopf, kontinuierlich verblassende Goldlinien und ruhiger aktiver Navigationstab. Android-Theme ohne Kontrastabdunklung der Drei-Tasten-Navigation; diese Theme-Änderung wird erst mit der neuen APK wirksam.
+- Zwei APK-Versuche deckten einen bestehenden Ausschluss gemeinsam verwendeter Quelldaten im EAS-Archiv auf. Der korrigierte Build prüft das tatsächlich erzeugte EAS-Archiv vor dem Upload und enthält die benötigten gemeinsamen Dateien. Native Kompilierung und Signierung erfolgreich; APK-Download mit HTTP 206 und ZIP/APK-Dateisignatur geprüft.
+
+## Vorheriger belegter App-Prüfstand – Boten, Kundenfunde und UI
 
 Veröffentlichter Spielcode: `81da5d17a178394ee4e15e233a406607275da6b5`, 07.11.2026.
 Nachweis: [Mobile preview – Lauf 42368749943](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42368749943).
