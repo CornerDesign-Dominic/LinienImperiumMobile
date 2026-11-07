@@ -1,8 +1,20 @@
 # Offene Arbeiten und Veröffentlichungsstand
 
-Stand: 06.11.2026. Letzte Spielveröffentlichung: `7d12699d15bc52eda6128d2732ebb4ab97a1b227`.
+Stand: 07.11.2026. Letzte Spielveröffentlichung: `81da5d17a178394ee4e15e233a406607275da6b5`.
 
 ## Letzte Veröffentlichung
+
+Das Sammelpaket aus PRs #22–#27 ist über [Mobile-preview-Lauf 42368749943](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42368749943) erfolgreich veröffentlicht: TypeScript, 417 Tests, Android-Export, Firebase-Deployment mit Live-API-Prüfung und Android-OTA im Kanal preview. Keine neue APK, kein neuer physischer Gerätetest.
+
+- Direkte Endlosfunde enthalten nur Zahnräder, ohne zusätzliche Splitter, Kapazitätsmodule oder Firmenausbau-Items. Doppelkarten geben weiterhin Splitter.
+- Einheitliche Auftragsseltenheiten: frei Common, Kunde Uncommon, Sonder Rare, Empfehlung Epic. Kundenaufträge bleiben unabhängig von ihrer Herkunft wirtschaftlich gleich.
+- Der falsch eingeführte Imperiumausbau entfällt samt einmaliger Rückerstattung gültiger Altinvestitionen. Vorhandene Kundenverbesserungen steuern regionale Sonder-/Empfehlungsfunde; normale Kundenaufträge bleiben nach ausdrücklicher Klärung bei 5 % Börse und 20 % Expedition.
+- 30 Sekunden serverseitige Reservierung mit Countdown während der Fahrzeugauswahl, Schutz über den Refresh und Freigabe beim Schließen.
+- Materialbeschaffungsbeute erst bei Abholung im Modal; Materialien suchen, neu platzierter Einsammeln-Button und illustriertes Abholbuch mit Statistik.
+- Boten zeigen m/s und m bei gleichem Zahlenwert sowie kg bei zehnfachem Tonnenwert; Wirtschaft und Laufzeiten bleiben gleich. Einsatzlämpchen entfernt, Skin-Auswahl erhalten.
+- Randfüllende Pergament-Titelleiste ohne Plakette; zentriertes Hauptsitzbild mit mehr Abstand; verfügbare Kartenverbesserungen ohne Fehlmengen-/Erfolgsbanner; glatte Kartentrenner und neues Beziehungsbuch.
+
+## Vorherige Veröffentlichung – Wombat-Paket
 
 Das Paket **Wombat-Boten** ist über [Mobile-preview-Lauf 42288523886](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42288523886) erfolgreich veröffentlicht: TypeScript, 377 Tests, Android-Export, Firebase-Deployment, Live-API-Prüfung und Android-OTA im Kanal preview. Es enthält Waldwombat, Steinwombat, Postwombat, Kronenbote und Küstenwombat beim Großhändler unter Skins für **insgesamt 250 Hermes-Siegel**. Der Standard bleibt kostenlos; Auswahl gilt für alle Boten. Live geprüft: unzureichendes Guthaben, autoritativer Gesamtpreis, alle fünf Freischaltungen, doppelte Anfrage/erneuter Kauf ohne Doppelabbuchung, Auswahl aller Skins und Erhalt nach erneutem Laden/Reset. Browserdarstellung bei 320/360/390/430px geprüft. Keine neue APK und kein physischer Gerätetest.
 

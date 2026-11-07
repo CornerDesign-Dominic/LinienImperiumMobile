@@ -1,6 +1,17 @@
 # Prüfstand und Nachweise
 
-## Letzter belegter App-Prüfstand – Season, Expeditionen und Auszahlung
+## Letzter belegter App-Prüfstand – Boten, Kundenfunde und UI
+
+Veröffentlichter Spielcode: `81da5d17a178394ee4e15e233a406607275da6b5`, 07.11.2026.
+Nachweis: [Mobile preview – Lauf 42368749943](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42368749943).
+
+- TypeScript und alle 417 Tests bestanden, keine Fehler oder übersprungenen Tests. Android-Export erfolgreich.
+- Firebase-Functions und Firestore-Regeln veröffentlicht, Live-API-Smokeprüfung erfolgreich. Android-OTA im Kanal preview veröffentlicht; keine neue APK und kein neuer physischer Gerätetest.
+- Integriert sind PRs #22–#27 mit Gear-only-Funden, Kundenseltenheiten und -chancen samt einmaliger Erstattung, 30-Sekunden-Reservierung, Beschaffungsabholung, Boten-Anzeigeskalierung und allen beauftragten UI-/Buchgrafikänderungen. Das bereits veröffentlichte Wombat-Paket ist erhalten.
+- Bei der Integration wurden Skin-Auswahl und reine Anzeigeskalierung zusammengeführt sowie ein alter Test von Personenicon auf das neue Beziehungsbuch aktualisiert. Nach außen auslaufende Linien sind durchgehend geformt. Die vollständige Suite wurde danach erneut erfolgreich ausgeführt.
+- Die bestätigte Zuordnung verändert nur Sonder-/Empfehlungschancen; normale Kundenerscheinung bleibt bei 5 % bzw. 20 %. Keine neue Erscheinungsfähigkeit eingeführt.
+
+## Vorheriger belegter App-Prüfstand – Season, Expeditionen und Auszahlung
 
 Veröffentlichter Spielcode: `0c92e343874107085fbff6a64bd5732c5b21f497`, 06.11.2026.
 Nachweis: [Mobile preview – Lauf 42235427062](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42235427062).
