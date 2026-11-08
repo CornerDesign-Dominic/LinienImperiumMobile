@@ -1,5 +1,13 @@
 # Prüfstand und Nachweise
 
+## Transportkarten-Identitäten – lokale Prüfung, 08.11.2026
+
+- 25 freigegebene Motive als 1024 × 1024 RGB-JPEGs eingebunden; Eigenname und Titel getrennt, Packesel heißt Pepe. Korrekturversionen von Lian, Eira und Niva verwendet.
+- TypeScript und vollständige Suite mit 418 Tests erfolgreich. Nach Ergänzung der Titel in Fundansicht/Screenreader und der Namensnormalisierung in Flottenvorschauen zusätzlich TypeScript und zehn betroffene Modal-/Flottentests erfolgreich.
+- Android-Export erfolgreich; alle 25 neuen Bilddateien enthalten. Keine native Runtime-Änderung.
+- Reale React-Native-Web-Komponenten mit synthetischen Spielständen: alle fünf Regionen bei 320/390/430 px (15 Ansichten), vier Kartendetails bei 320 px und englische Kronenlande-Ansicht geprüft. Kein horizontaler Überlauf, keine fehlgeschlagenen Assetanfragen oder JavaScript-Laufzeitfehler. Screenshotprüfung der Karten einschließlich Namen/Titeln. Kein physischer Android-Gerätetest.
+- Veröffentlichung folgt über Mobile preview; erst ein erfolgreicher Workflow belegt Server-/OTA-Veröffentlichung.
+
 ## Letzter belegter App-Prüfstand – Einheitlicher Spielrahmen und Systemleisten
 
 Android-OTA: `8eec5cfdfe3c0484c5e8ab126e6ac388abf7b6ef`, 07.11.2026, [Release-Lauf 42418929844](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42418929844). Validierung, Deployment, API-Prüfung und OTA sind erfolgreich; dessen erster APK-Versuch ist fehlgeschlagen und durch den folgenden separaten Build ersetzt.

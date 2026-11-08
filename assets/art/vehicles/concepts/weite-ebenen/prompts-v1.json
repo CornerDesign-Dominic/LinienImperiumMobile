@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-07",
+  "tool": "built-in image_gen",
+  "status": "Generated artwork prepared for app use; not integrated or published",
+  "format": "App variants: 1024x1024 RGB JPEG quality 92; original PNGs retained. No embedded typography or frames.",
+  "cards": [
+    {
+      "id": "r2_common",
+      "name": "Milo",
+      "title": "das Lastlama",
+      "rarity": "common",
+      "artwork": "milo-v1.jpg",
+      "original": "milo-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: production-ready mobile transport game card ARTWORK for Linien Imperium, Weite Ebenen region. Generate ONE SQUARE 1:1 image, 1024 x 1024. Edge-to-edge illustration ONLY, absolutely NO frame, borders, nameplate, typography, letters, numbers, symbols, logo, watermark or signature. Adult painterly realism matching historical European-inspired parallel-world trade illustrations: natural anatomy, tactile fur/leather/wood/linen, softly visible brushwork, sophisticated restrained earth colors, atmospheric natural lighting. Main subject instantly recognizable at 90px thumbnail size, dominates central composition, entire figure fully visible with 8% safe margin around ears/horns/feet/tail, quiet subordinate background. No cartoon faces, no modern technology, no magical glow. Subject: MILO the pack llama, Common rarity. A single sand-colored llama with a cream muzzle, very long upright neck, distinctive slender curved upright ears, fluffy wool and natural calm alert expression. Simple brown leather pack saddle with two modest linen travel bundles. Standing three-quarter view in a humble settler camp at the edge of vast golden grasslands. Low stack of rolled blankets and tied household bundles nearby, small plain canvas tent and distant mesas softly in background. No wagon or other animals, no people. Humble everyday pack animal; simple equipment, no jewelry. Warm soft morning light, clear uncluttered silhouette against muted open sky and distant prairie."
+    },
+    {
+      "id": "r2_common_2",
+      "name": "Otto",
+      "title": "der Lastochse",
+      "rarity": "common",
+      "artwork": "otto-v1.jpg",
+      "original": "otto-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: production-ready mobile transport game card ARTWORK for Linien Imperium, Weite Ebenen region. Generate ONE SQUARE 1:1 image, 1024 x 1024. Edge-to-edge illustration ONLY, absolutely NO frame, borders, nameplate, typography, letters, numbers, symbols, logo, watermark or signature. Adult painterly realism matching historical European-inspired parallel-world trade illustrations: natural anatomy, tactile fur/leather/wood/linen, softly visible brushwork, sophisticated restrained earth colors, atmospheric natural lighting. Main subject instantly recognizable at 90px thumbnail size, dominates central composition, entire figure fully visible with 8% safe margin around ears/horns/feet/tail, quiet subordinate background. No cartoon faces, no modern technology, no magical glow. Subject: OTTO the freight ox, Common rarity. ONE powerful stocky REDDISH BROWN ox with short symmetrical ivory horns pointing outward and slightly upward, broad pale muzzle, plain heavy wooden yoke resting naturally across his neck. Full body three-quarter view standing beside neatly stacked beige grain sacks at the entrance of a simple open timber barn, prairie homestead. Massive barrel-shaped body, sturdy legs, unmistakably domestic cattle, not a bison, no mane or huge shoulder hump. Quiet warm grassland visible beyond barn, low fence. No people, no other animals, no cart required. Humble everyday working animal and plain unadorned equipment. Gentle afternoon light, ox dominates against dark barn entrance to clearly distinguish red-brown coat. Generous safe margin around all horns and hooves."
+    },
+    {
+      "id": "disponent",
+      "name": "Tara",
+      "title": "die Fassziege",
+      "rarity": "uncommon",
+      "artwork": "tara-v1.jpg",
+      "original": "tara-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: production-ready mobile transport game card ARTWORK for Linien Imperium, Weite Ebenen region. Generate ONE SQUARE 1:1 image, 1024 x 1024. Edge-to-edge illustration ONLY, absolutely NO frame, borders, nameplate, typography, letters, numbers, symbols, logo, watermark or signature. Adult painterly realism matching historical European-inspired parallel-world trade illustrations: natural anatomy, tactile fur/leather/wood/linen, softly visible brushwork, sophisticated restrained earth colors, atmospheric natural lighting. Main subject instantly recognizable at 90px thumbnail size, dominates central composition, entire figure fully visible with 8% safe margin around ears/horns/feet/tail, quiet subordinate background. No cartoon faces, no modern technology, no magical glow. Subject: TARA the barrel goat, Uncommon rarity. ONE sturdy large female working goat with shaggy ivory-gray coat, dark gray face, alert natural eyes and two backward-curving ridged horns, short natural beard. Entire body three-quarter view prominently in foreground, head turned slightly toward viewer, curious dignified posture, not anthropomorphic. Simple practical brown leather breast harness. Beside and slightly behind her a LOW rustic two-wheel wooden cart carrying THREE substantial round wooden barrels secured with rope; cart is secondary, goat is clear main character. Packed-earth loading yard at a modest prairie trading post, open golden grasslands and low timber warehouse in quiet background. Simple functional materials with no luxury or magic, no people or other animals. Gentle clear daylight. Main visual anchors: shaggy pale goat, distinct curved horns, round barrel shapes. Keep horns, feet and ears fully within safe margins."
+    },
+    {
+      "id": "r2_rare",
+      "name": "Arvid",
+      "title": "der Wegfinder",
+      "rarity": "rare",
+      "artwork": "arvid-v1.jpg",
+      "original": "arvid-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: production-ready mobile transport game card ARTWORK for Linien Imperium, Weite Ebenen region. Generate ONE SQUARE 1:1 image, 1024 x 1024. Edge-to-edge illustration ONLY, absolutely NO frame, borders, nameplate, typography, letters, numbers, symbols, logo, watermark or signature. Adult painterly realism matching historical European-inspired parallel-world trade illustrations: natural anatomy, tactile fur/leather/wood/linen, softly visible brushwork, sophisticated restrained earth colors, atmospheric natural lighting. Main subject instantly recognizable at 90px thumbnail size, dominates central composition, entire figure fully visible with 8% safe margin around ears/horns/feet/tail, quiet subordinate background. No cartoon faces, no modern technology, no magical glow. Subject: ARVID the pathfinder, Rare rarity. ONE experienced human male frontier scout, about 45, weathered face, short dark hair with gray temples, short beard, practical olive-gray long coat and sturdy brown boots. His identifying feature is a broad RUST-RED shoulder scarf clearly visible across shoulders and chest, gently moving in breeze, distinct from a postal satchel. Standing full-length three-quarter view on a low rocky prairie lookout, confidently studying the route ahead while holding a rolled parchment map with NO visible writing. Small brass compass at belt, practical supplies, no weapons. In lower middle-distance a compact sturdy expedition wagon with muted green canvas and tied travel trunks waits on a winding trade trail across immense golden plains and distant mesas. Human figure dominates, wagon small and secondary; scarf and silhouette instantly readable. Rare distinctive professional explorer, no royal luxury or magic. Late afternoon side light and wide open blue sky, composition calm rather than action pose. Full head and both boots contained with safe margins."
+    },
+    {
+      "id": "r2_epic",
+      "name": "Boran",
+      "title": "der Donnerbison",
+      "rarity": "epic",
+      "artwork": "boran-v1.jpg",
+      "original": "boran-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: production-ready mobile transport game card ARTWORK for Linien Imperium, Weite Ebenen region. Generate ONE SQUARE 1:1 image, 1024 x 1024. Edge-to-edge illustration ONLY, absolutely NO frame, borders, nameplate, typography, letters, numbers, symbols, logo, watermark or signature. Adult painterly realism matching historical European-inspired parallel-world trade illustrations: natural anatomy, tactile fur/leather/wood/linen, softly visible brushwork, sophisticated restrained earth colors, atmospheric natural lighting. Main subject instantly recognizable at 90px thumbnail size, dominates central composition, entire figure fully visible with 8% safe margin around ears/horns/feet/tail, quiet subordinate background. No cartoon faces, no modern technology, no magical glow. Subject: BORAN the thunder bison, Epic rarity. ONE extraordinary enormous dark brown nearly black American-bison-like freight beast, with a MASSIVE high shoulder hump, dense shaggy forequarters and beard, broad curved ivory-black horns, immensely powerful front legs. Natural believable bison anatomy, majestic calm force, not an ox, not a buffalo with long lateral horns, no anthropomorphism. Full body low three-quarter view, all horns, hooves and tail visible within margins, Boran dominates square. Fine reinforced dark leather freight harness with restrained weathered bronze fittings, skilled craftsmanship rather than excessive jewelry. Slightly behind him a heavy timber trading wagon with iron-bound wheels and securely stacked crates, secondary but visible. Vast golden prairie under approaching slate-gray thunderclouds, dramatic break of low warm sunlight outlines dark shaggy shoulder hump and head with natural rim light. Slight windblown grass and dust at hooves, no lightning from animal, no glowing eyes, no magical effects. The epic overall idea is monumental bison, heavy trade equipment, storm-lit landscape and unforgettable silhouette. No people or other animals. Make animal silhouette clearly separate from wagon."
+    }
+  ]
+}

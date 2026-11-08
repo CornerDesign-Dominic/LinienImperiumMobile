@@ -12,8 +12,8 @@ Jede Karte besitzt genau einen Bonus. Eigenboni gelten für das Fahrzeug, Flotte
 
 ## Punkte und Timer
 
-* Königliche Postkutsche: Überstundenmaximum, Oasenkarawane: Expeditionsmaximum. Level 1–10: +5/10/15/20/25/30/40/50/60/70 Punkte, getrennt voneinander.
-* Jade-Kundschaftergespann: Expeditionsintervall −10/20/30/40/50/60/75/90/105/120 Sekunden. Basis zehn Minuten, auf Level 10 acht Minuten. Überstundenintervall bleibt zehn Minuten.
+* Rufus – der Postbote: Überstundenmaximum, Nuri – der Wasserträger: Expeditionsmaximum. Level 1–10: +5/10/15/20/25/30/40/50/60/70 Punkte, getrennt voneinander.
+* Lian – der Jadewächter: Expeditionsintervall −10/20/30/40/50/60/75/90/105/120 Sekunden. Basis zehn Minuten, auf Level 10 acht Minuten. Überstundenintervall bleibt zehn Minuten.
 * Diese drei Boni wirken nur, wenn die Karte in `game.trucks` zur Garage gehört, auch während Einzelaufträgen oder Beschaffung. Besitz, Sammlung und alleinige Flottenvorlage aktivieren sie nicht. Ausbauten geparkter Karten belegen keinen aktiven Garagenplatz.
 * Ausrüstung erhöht nur das Maximum, niemals den Punktestand. Grundmaximum und Ausrüstungsbonus werden getrennt gehalten, damit Neuladen den Bonus nicht aufaddiert.
 * Entfernen erhält alle vorhandenen Punkte, auch über dem Maximum. Bei Gleichstand und Übermaximum ist die Regeneration pausiert. Beim Unterschreiten oder erneutem Erhöhen des Maximums wird der gespeicherte anteilige Timer fortgesetzt. Wiederholtes Wechseln erzeugt keine Punkte.
@@ -23,37 +23,37 @@ Jede Karte besitzt genau einen Bonus. Eigenboni gelten für das Fahrzeug, Flotte
 
 | Region | ID | Name | Seltenheit | Grundkapazität t | Tempo | Bereich | Bonus | Level 1 → 10 |
 |---|---|---|---|---:|---:|---|---|---|
-| Kronenlande | `navigator` | Eselkarren | common | 2 | 75 | self | cost | 3 → 5.7 |
-| Kronenlande | `r1_common_2` | Marktgespann | common | 5 | 90 | self | pay | 3 → 5.7 |
-| Kronenlande | `r1_uncommon` | Königliche Postkutsche | uncommon | 3 | 125 | garage | overtimeCapacity | 5 → 70 |
-| Kronenlande | `r1_rare` | Silberhirsch-Gespann | rare | 7 | 110 | garage | speed | 4 → 8.5 |
-| Kronenlande | `r1_uncommon_2` | Königliches Löwengespann | epic | 2 | 155 | fleet | speed | 8 → 17 |
-| Weite Ebenen | `r2_common` | Siedlerwagen | common | 6 | 85 | self | cost | 3 → 5.7 |
-| Weite Ebenen | `r2_common_2` | Ochsenfuhrwerk | common | 12 | 60 | self | pay | 3 → 5.7 |
-| Weite Ebenen | `disponent` | Prärie-Lastenzug | uncommon | 16 | 70 | self | cost | 6 → 10.5 |
-| Weite Ebenen | `r2_rare` | Leitwagen der Pioniere | rare | 10 | 95 | fleet | cost | 4 → 8.5 |
-| Weite Ebenen | `r2_epic` | Donnerbison-Gespann | epic | 24 | 75 | fleet | pay | 8 → 17 |
-| Safranstraße | `r3_common` | Lasteselzug | common | 3 | 80 | self | cost | 3 → 5.7 |
-| Safranstraße | `r3_common_2` | Wüstenkamel | common | 4 | 95 | self | pay | 3 → 5.7 |
-| Safranstraße | `r3_uncommon` | Oasenkarawane | uncommon | 9 | 90 | garage | expeditionCapacity | 5 → 70 |
-| Safranstraße | `forscherin` | Silberkarawane | rare | 13 | 100 | fleet | pay | 4 → 8.5 |
-| Safranstraße | `r3_epic` | Dünenläufer-Karawane | epic | 8 | 140 | garage | cost | 8 → 17 |
-| Jadetal | `r4_common` | Bambuskarren | common | 1.5 | 85 | self | cost | 3 → 5.7 |
-| Jadetal | `r4_common_2` | Tee-Maultiergespann | common | 4 | 100 | self | pay | 3 → 5.7 |
-| Jadetal | `r4_uncommon` | Terrassen-Ochsenwagen | uncommon | 11 | 65 | self | cost | 6 → 10.5 |
-| Jadetal | `logistiker` | Jade-Kundschaftergespann | rare | 8 | 100 | garage | expeditionRegen | 10 → 120 |
-| Jadetal | `r4_epic` | Kaiserliches Pandagespann | epic | 12 | 50 | fleet | cost | 10 → 19 |
-| Nordmark | `r5_common` | Fischer-Hundeschlitten | common | 2 | 115 | self | pay | 3 → 5.7 |
-| Nordmark | `r5_common_2` | Rentier-Lastschlitten | common | 5 | 95 | self | cost | 3 → 5.7 |
-| Nordmark | `r5_uncommon` | Nordland-Lastengespann | uncommon | 9 | 80 | garage | cost | 2 → 4.25 |
-| Nordmark | `pionierin` | Weißhirsch-Schlitten | rare | 6 | 120 | fleet | speed | 4 → 8.5 |
-| Nordmark | `r5_epic` | Schneeleoparden-Express | epic | 3 | 150 | garage | speed | 8 → 17 |
+| Kronenlande | `navigator` | Pepe – der Packesel | common | 2 | 75 | self | cost | 3 → 5.7 |
+| Kronenlande | `r1_common_2` | Bruno – das Marktpferd | common | 5 | 90 | self | pay | 3 → 5.7 |
+| Kronenlande | `r1_uncommon` | Rufus – der Postbote | uncommon | 3 | 125 | garage | overtimeCapacity | 5 → 70 |
+| Kronenlande | `r1_rare` | Silvan – das Silbergeweih | rare | 7 | 110 | garage | speed | 4 → 8.5 |
+| Kronenlande | `r1_uncommon_2` | Aurel – der Kronenlöwe | epic | 2 | 155 | fleet | speed | 8 → 17 |
+| Weite Ebenen | `r2_common` | Milo – das Lastlama | common | 6 | 85 | self | cost | 3 → 5.7 |
+| Weite Ebenen | `r2_common_2` | Otto – der Lastochse | common | 12 | 60 | self | pay | 3 → 5.7 |
+| Weite Ebenen | `disponent` | Tara – die Fassziege | uncommon | 16 | 70 | self | cost | 6 → 10.5 |
+| Weite Ebenen | `r2_rare` | Arvid – der Wegfinder | rare | 10 | 95 | fleet | cost | 4 → 8.5 |
+| Weite Ebenen | `r2_epic` | Boran – der Donnerbison | epic | 24 | 75 | fleet | pay | 8 → 17 |
+| Safranstraße | `r3_common` | Paco – der Wüstenkeiler | common | 3 | 80 | self | cost | 3 → 5.7 |
+| Safranstraße | `r3_common_2` | Samir – der Sandträger | common | 4 | 95 | self | pay | 3 → 5.7 |
+| Safranstraße | `r3_uncommon` | Nuri – der Wasserträger | uncommon | 9 | 90 | garage | expeditionCapacity | 5 → 70 |
+| Safranstraße | `forscherin` | Zafir – der Seidenfuchs | rare | 13 | 100 | fleet | pay | 4 → 8.5 |
+| Safranstraße | `r3_epic` | Siro – der Dünenläufer | epic | 8 | 140 | garage | cost | 8 → 17 |
+| Jadetal | `r4_common` | Tiko – der Bambusträger | common | 1.5 | 85 | self | cost | 3 → 5.7 |
+| Jadetal | `r4_common_2` | Mei – die Teeträgerin | common | 4 | 100 | self | pay | 3 → 5.7 |
+| Jadetal | `r4_uncommon` | Daro – der Reisbüffel | uncommon | 11 | 65 | self | cost | 6 → 10.5 |
+| Jadetal | `logistiker` | Lian – der Jadewächter | rare | 8 | 100 | garage | expeditionRegen | 10 → 120 |
+| Jadetal | `r4_epic` | Bao – der Schatzträger | epic | 12 | 50 | fleet | cost | 10 → 19 |
+| Nordmark | `r5_common` | Husk – der Schlittenzieher | common | 2 | 115 | self | pay | 3 → 5.7 |
+| Nordmark | `r5_common_2` | Runi – der Winterträger | common | 5 | 95 | self | cost | 3 → 5.7 |
+| Nordmark | `r5_uncommon` | Grumm – der Moschusochse | uncommon | 9 | 80 | garage | cost | 2 → 4.25 |
+| Nordmark | `pionierin` | Eira – die Frostläuferin | rare | 6 | 120 | fleet | speed | 4 → 8.5 |
+| Nordmark | `r5_epic` | Niva – die Schneekönigin | epic | 3 | 150 | garage | speed | 8 → 17 |
 
 ## Bilder
 
-Alle 25 Karten haben ein eigenes quadratisches Bild. Die drei ursprünglichen Muster bleiben erhalten; die weiteren 22 Motive folgen derselben malerisch-realistischen Bildsprache mit regionalen Landschaften, natürlichen Materialien und deutlich prestigeträchtigerer Ausstattung für Epic-Karten. Keine Flug- oder Wasserfahrzeuge und keine Elefanten.
+Alle 25 Karten haben ein eigenes quadratisches Bild. Seit der Identitätsüberarbeitung liegen die aktuellen Appbilder unter assets/art/vehicles/identities/: 1024 × 1024 Pixel, RGB-JPEG, ohne eingebrannte Namen oder Rahmen. Eigenname und Titel sind getrennte Katalogfelder; bestehende Karten-IDs und Werte bleiben erhalten. Die freigegebenen Korrekturen für Lian (ohne Horn), Eira (kleinere Pfoten) und Niva (schlankerer Schweif) sind enthalten. Alle 25 freigegebenen Identitätsmotive folgen derselben malerisch-realistischen Bildsprache mit regionalen Landschaften, natürlichen Materialien und deutlich prestigeträchtigerer Ausstattung für Epic-Karten. Keine Flug- oder Wasserfahrzeuge und keine Elefanten.
 
-Erstellung: eingebautes ImageGen-Werkzeug, je Motiv ein eigener Aufruf. Bei Siedlerwagen und Oasenkarawane wurden kleine generierte Signaturen per gezielter Bildbearbeitung entfernt. Vollständige Prompts: `assets/art/vehicles/prompts.json` und `assets/art/vehicles/regional-prompts.json`. Alle optimierten Appbilder liegen unter `assets/art/vehicles/`, 1024 × 1024 Pixel, RGB-JPEG. Die Übersicht und alle einzelnen Dateilinks stehen in `assets/art/vehicles/README.md`.
+Erstellung und Bearbeitung: eingebautes ImageGen-Werkzeug, je Motiv ein eigener Aufruf. Aktuelle Prompts und Versionskorrekturen liegen unter `assets/art/vehicles/concepts/`; Originale bleiben lokal erhalten. `prompts.json` und `regional-prompts.json` dokumentieren die ursprüngliche Bildserie vor der Identitätsüberarbeitung. Alle aktuellen Appbilder und die Zuordnung stehen in `assets/art/vehicles/README.md`.
 
 Die gemeinsame `VehicleArt`-Komponente zeigt alle Motive in Sammlung, Kartendetail, Garage, Flotte und Geschenkpool. Namen, Werte und Seltenheitsrahmen bleiben außerhalb der Bilddateien. Die Bilder verändern keine Kapazitäten, Geschwindigkeiten, Bonuswerte oder Besitzkennungen.
 

@@ -1,33 +1,33 @@
-# Bilder der regionalen Transporterkarten
+# Bilder der Transportkarten
 
-Alle 25 Kartenbilder als quadratische JPEGs. Erzeugt mit dem eingebauten ImageGen-Werkzeug. Die drei ursprünglichen Muster stehen in `prompts.json`, die weiteren 22 Motive in `regional-prompts.json`. Bei Siedlerwagen und Oasenkarawane wurden anschließend ausschließlich kleine generierte Signaturen entfernt.
+Aktuelle Appmotive: 25 quadratische RGB-JPEGs mit 1024 × 1024 Pixeln unter identities/, ohne eingebrannten Text oder Rahmen. Namen und Titel kommen aus dem Serverkatalog. Erstellung/Bearbeitung: eingebautes ImageGen-Werkzeug.
 
-![Alle 25 Transporterkarten](../../../docs/ui/previews/transport-cards-overview.jpg)
+Die freigegebenen Figuren und Motive sind in den Prompts unter concepts/ dokumentiert. Dort liegen lokal auch Originale und frühere Entwürfe; sie werden nicht mit der App ausgeliefert. prompts.json und regional-prompts.json beschreiben die ursprünglichen Motive vor der Überarbeitung. Alte Bilddateien bleiben als historische Referenz erhalten und sind nicht mehr in VehicleArt eingebunden.
 
-| Region | Karte | Seltenheit | Bilddatei |
-|---|---|---|---|
-| Kronenlande | Eselkarren | common | [donkey-cart.jpg](donkey-cart.jpg) |
-| Kronenlande | Marktgespann | common | [market-team.jpg](market-team.jpg) |
-| Kronenlande | Königliche Postkutsche | uncommon | [royal-mail-coach.jpg](royal-mail-coach.jpg) |
-| Kronenlande | Silberhirsch-Gespann | rare | [silver-stag-team.jpg](silver-stag-team.jpg) |
-| Kronenlande | Königliches Löwengespann | epic | [royal-lion-team.jpg](royal-lion-team.jpg) |
-| Weite Ebenen | Siedlerwagen | common | [settler-wagon.jpg](settler-wagon.jpg) |
-| Weite Ebenen | Ochsenfuhrwerk | common | [ox-freight-wagon.jpg](ox-freight-wagon.jpg) |
-| Weite Ebenen | Prärie-Lastenzug | uncommon | [prairie-freight-train.jpg](prairie-freight-train.jpg) |
-| Weite Ebenen | Leitwagen der Pioniere | rare | [pioneer-lead-wagon.jpg](pioneer-lead-wagon.jpg) |
-| Weite Ebenen | Donnerbison-Gespann | epic | [thunder-bison-team.jpg](thunder-bison-team.jpg) |
-| Safranstraße | Lasteselzug | common | [pack-donkey-train.jpg](pack-donkey-train.jpg) |
-| Safranstraße | Wüstenkamel | common | [desert-camel.jpg](desert-camel.jpg) |
-| Safranstraße | Oasenkarawane | uncommon | [oasis-caravan.jpg](oasis-caravan.jpg) |
-| Safranstraße | Silberkarawane | rare | [silver-caravan.jpg](silver-caravan.jpg) |
-| Safranstraße | Dünenläufer-Karawane | epic | [dune-runner-caravan.jpg](dune-runner-caravan.jpg) |
-| Jadetal | Bambuskarren | common | [bamboo-handcart.jpg](bamboo-handcart.jpg) |
-| Jadetal | Tee-Maultiergespann | common | [tea-mule-team.jpg](tea-mule-team.jpg) |
-| Jadetal | Terrassen-Ochsenwagen | uncommon | [terrace-ox-wagon.jpg](terrace-ox-wagon.jpg) |
-| Jadetal | Jade-Kundschaftergespann | rare | [jade-scout-team.jpg](jade-scout-team.jpg) |
-| Jadetal | Kaiserliches Pandagespann | epic | [imperial-panda-team.jpg](imperial-panda-team.jpg) |
-| Nordmark | Fischer-Hundeschlitten | common | [fisher-dog-sled.jpg](fisher-dog-sled.jpg) |
-| Nordmark | Rentier-Lastschlitten | common | [reindeer-freight-sled.jpg](reindeer-freight-sled.jpg) |
-| Nordmark | Nordland-Lastengespann | uncommon | [northern-freight-team.jpg](northern-freight-team.jpg) |
-| Nordmark | Weißhirsch-Schlitten | rare | [white-stag-sled.jpg](white-stag-sled.jpg) |
-| Nordmark | Schneeleoparden-Express | epic | [snow-leopard-express.jpg](snow-leopard-express.jpg) |
+| Region | Karte | Seltenheit | Appbild |
+| --- | --- | --- | --- |
+| Kronenlande | Pepe – der Packesel | common | [pepe.jpg](identities/pepe.jpg) |
+| Kronenlande | Bruno – das Marktpferd | common | [bruno.jpg](identities/bruno.jpg) |
+| Kronenlande | Rufus – der Postbote | uncommon | [rufus.jpg](identities/rufus.jpg) |
+| Kronenlande | Silvan – das Silbergeweih | rare | [silvan.jpg](identities/silvan.jpg) |
+| Kronenlande | Aurel – der Kronenlöwe | epic | [aurel.jpg](identities/aurel.jpg) |
+| Weite Ebenen | Milo – das Lastlama | common | [milo.jpg](identities/milo.jpg) |
+| Weite Ebenen | Otto – der Lastochse | common | [otto.jpg](identities/otto.jpg) |
+| Weite Ebenen | Tara – die Fassziege | uncommon | [tara.jpg](identities/tara.jpg) |
+| Weite Ebenen | Arvid – der Wegfinder | rare | [arvid.jpg](identities/arvid.jpg) |
+| Weite Ebenen | Boran – der Donnerbison | epic | [boran.jpg](identities/boran.jpg) |
+| Safranstraße | Paco – der Wüstenkeiler | common | [paco.jpg](identities/paco.jpg) |
+| Safranstraße | Samir – der Sandträger | common | [samir.jpg](identities/samir.jpg) |
+| Safranstraße | Nuri – der Wasserträger | uncommon | [nuri.jpg](identities/nuri.jpg) |
+| Safranstraße | Zafir – der Seidenfuchs | rare | [zafir.jpg](identities/zafir.jpg) |
+| Safranstraße | Siro – der Dünenläufer | epic | [siro.jpg](identities/siro.jpg) |
+| Jadetal | Tiko – der Bambusträger | common | [tiko.jpg](identities/tiko.jpg) |
+| Jadetal | Mei – die Teeträgerin | common | [mei.jpg](identities/mei.jpg) |
+| Jadetal | Daro – der Reisbüffel | uncommon | [daro.jpg](identities/daro.jpg) |
+| Jadetal | Lian – der Jadewächter | rare | [lian.jpg](identities/lian.jpg) |
+| Jadetal | Bao – der Schatzträger | epic | [bao.jpg](identities/bao.jpg) |
+| Nordmark | Husk – der Schlittenzieher | common | [husk.jpg](identities/husk.jpg) |
+| Nordmark | Runi – der Winterträger | common | [runi.jpg](identities/runi.jpg) |
+| Nordmark | Grumm – der Moschusochse | uncommon | [grumm.jpg](identities/grumm.jpg) |
+| Nordmark | Eira – die Frostläuferin | rare | [eira.jpg](identities/eira.jpg) |
+| Nordmark | Niva – die Schneekönigin | epic | [niva.jpg](identities/niva.jpg) |

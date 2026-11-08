@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-07",
+  "tool": "built-in image_gen",
+  "status": "Generated artwork prepared for app use; not integrated or published",
+  "format": "App variants: 1024x1024 RGB JPEG quality 92; original PNGs retained. No embedded typography or frames.",
+  "cards": [
+    {
+      "id": "r3_common",
+      "name": "Paco",
+      "title": "der Wüstenkeiler",
+      "rarity": "common",
+      "artwork": "paco-v1.jpg",
+      "original": "paco-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: production-ready mobile transport game card ARTWORK for Linien Imperium, Safranstrasse region. Generate ONE SQUARE 1:1 image, 1024 x 1024. Edge-to-edge illustration ONLY, absolutely NO frame, borders, nameplate, typography, letters, numbers, logo, watermark or signature. Adult painterly realism matching historical parallel-world trading illustrations: natural anatomy, tactile fur/leather/wood/linen/stone, softly visible brushwork, sophisticated restrained colors, atmospheric natural lighting. Main subject instantly recognizable at 90px thumbnail size, dominates central composition, entire creature fully visible with comfortable safe margin around ears/horns/feet/tail, quiet subordinate background. Warm desert trade region, sand, terracotta, shaded caravanserais, historical architecture, no modern technology. No cartoon faces, no glowing magical effects, no people. Subject: PACO the desert boar, Common rarity. One compact robust dusty brown wild-boar-like pack animal with coarse bristly coat, short mane along back, broad snout, small modest ivory tusks and sturdy short legs. Calm natural alert expression, NOT threatening. Simple functional pack blanket and modest weathered brown leather harness, small woven panniers. Standing three-quarter view beside a few woven spice baskets and tied beige spice sacks at a humble adobe trading station. Muted terracotta wall and quiet sandy road, far dunes. Animal central and prominent, gear simple and inexpensive. Soft morning side light. Strong low rounded silhouette distinct from taller transport animals. Four natural legs, cloven hooves fully visible."
+    },
+    {
+      "id": "r3_common_2",
+      "name": "Samir",
+      "title": "der Sandträger",
+      "rarity": "common",
+      "artwork": "samir-v1.jpg",
+      "original": "samir-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: production-ready mobile transport game card ARTWORK for Linien Imperium, Safranstrasse region. Generate ONE SQUARE 1:1 image, 1024 x 1024. Edge-to-edge illustration ONLY, absolutely NO frame, borders, nameplate, typography, letters, numbers, logo, watermark or signature. Adult painterly realism matching historical parallel-world trading illustrations: natural anatomy, tactile fur/leather/wood/linen/stone, softly visible brushwork, sophisticated restrained colors, atmospheric natural lighting. Main subject instantly recognizable at 90px thumbnail size, dominates central composition, entire creature fully visible with comfortable safe margin around ears/horns/feet/tail, quiet subordinate background. Warm desert trade region, sand, terracotta, shaded caravanserais, historical architecture, no modern technology. No cartoon faces, no glowing magical effects, no people. Subject: SAMIR the sand carrier, Common rarity. ONE ordinary pale beige DROMEDARY with exactly ONE hump, natural long curved neck, long slim legs, understated calm expression. Resting in its natural folded-leg kneeling pose in the cool shade of a plain sandy-stone trading courtyard; entire animal visible including folded limbs and all of neck and head. Simple unadorned faded beige load blanket and practical brown straps over hump, no luxury or gold. Nearby a modest group of rope-tied linen trade bales and a clay storage jar, secondary to dromedary. Background quiet sandstone arch with a sliver of sunlit dunes, warm reflected light in shaded court, restrained simple common creature. No other camels, no caravan, no cart. High unmistakable camel-neck silhouette, body and hump clearly readable."
+    },
+    {
+      "id": "r3_uncommon",
+      "name": "Nuri",
+      "title": "der Wasserträger",
+      "rarity": "uncommon",
+      "artwork": "nuri-v1.jpg",
+      "original": "nuri-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: production-ready mobile transport game card ARTWORK for Linien Imperium, Safranstrasse region. Generate ONE SQUARE 1:1 image, 1024 x 1024. Edge-to-edge illustration ONLY, absolutely NO frame, borders, nameplate, typography, letters, numbers, logo, watermark or signature. Adult painterly realism matching historical parallel-world trading illustrations: natural anatomy, tactile fur/leather/wood/linen/stone, softly visible brushwork, sophisticated restrained colors, atmospheric natural lighting. Main subject instantly recognizable at 90px thumbnail size, dominates central composition, entire creature fully visible with comfortable safe margin around ears/horns/feet/tail, quiet subordinate background. Warm desert trade region, sand, terracotta, shaded caravanserais, historical architecture, no modern technology. No cartoon faces, no glowing magical effects, no people. Subject: NURI the water carrier, Uncommon rarity. ONE robust DARK BROWN TAPIR with a short flexible proboscis clearly visible in three-quarter view, rounded ears with pale rims, compact stocky body and natural proportions. A subtly lighter gray-brown muzzle emphasizes characteristic short trunk; not an elephant, no tusks, not a pig, no horns. Standing full body in a shady oasis garden on firm earth beside shallow water and a modest stone well. Plain leather pack harness supports two simple woven side panniers containing closed squat earthenware WATER jars securely tied in place. No lush jungle: date palms and reed shade, sandy-colored garden wall, distant dry hills beyond the oasis. Practical humble professional carrier, no luxury or magic. Soft dappled light, cool oasis greens with warm ochre architecture, tapir the clear prominent focal point, all feet and nose visible within safe margins. Water baskets reinforce role without hiding the round body."
+    },
+    {
+      "id": "forscherin",
+      "name": "Zafir",
+      "title": "der Seidenfuchs",
+      "rarity": "rare",
+      "artwork": "zafir-v1.jpg",
+      "original": "zafir-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: production-ready mobile transport game card ARTWORK for Linien Imperium, Safranstrasse region. Generate ONE SQUARE 1:1 image, 1024 x 1024. Edge-to-edge illustration ONLY, absolutely NO frame, borders, nameplate, typography, letters, numbers, logo, watermark or signature. Adult painterly realism matching historical parallel-world trading illustrations: natural anatomy, tactile fur/leather/wood/linen/stone, softly visible brushwork, sophisticated restrained colors, atmospheric natural lighting. Main subject instantly recognizable at 90px thumbnail size, dominates central composition, entire creature fully visible with comfortable safe margin around ears/horns/feet/tail, quiet subordinate background. Warm desert trade region, sand, terracotta, shaded caravanserais, historical architecture, no modern technology. No cartoon faces, no glowing magical effects, no people. Subject: ZAFIR the silk fox, Rare rarity. ONE elegant fox-like desert mythical creature with large fennec ears, slender natural quadruped anatomy, luxurious BLUE-GRAY fur and EXACTLY TWO separate long bushy tails with pale silver tips. Both tails clearly visible, diverging in a graceful open V with distinct separate outlines, not merged, no additional tails. Four legs only. Standing on a broad low sandstone loading platform beside a few neatly rolled silk bolts in muted plum, cream and blue, outside a shaded caravanserai textile depot. Distinctive upright ears and two sweeping tails main visual anchors; every ear tip, tail tip and paw fully inside safe margins. Finely made dark leather harness with subtle silver fittings, no elaborate crown, no human clothing. Calm intelligent natural fox expression, not cartoon or plush. Quiet arches and soft amber desert haze, cool blue-gray fur contrasts warm sandstone. Rare subtle mythical elegance, not extravagant magical spectacle. Fox dominant, silk secondary, no other animals."
+    },
+    {
+      "id": "r3_epic",
+      "name": "Siro",
+      "title": "der Dünenläufer",
+      "rarity": "epic",
+      "artwork": "siro-v1.jpg",
+      "original": "siro-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: production-ready mobile transport game card ARTWORK for Linien Imperium, Safranstrasse region. Generate ONE SQUARE 1:1 image, 1024 x 1024. Edge-to-edge illustration ONLY, absolutely NO frame, borders, nameplate, typography, letters, numbers, logo, watermark or signature. Adult painterly realism matching historical parallel-world trading illustrations: natural anatomy, tactile fur/leather/wood/linen/stone, softly visible brushwork, sophisticated restrained colors, atmospheric natural lighting. Main subject instantly recognizable at 90px thumbnail size, dominates central composition, entire creature fully visible with comfortable safe margin around ears/horns/feet/tail, quiet subordinate background. Warm desert trade region, sand, terracotta, shaded caravanserais, historical architecture, no modern technology. No cartoon faces, no glowing magical effects, no people. Input image role: creature-design and regional-style REFERENCE ONLY. Create a NEW composition depicting ONE lead creature rather than a caravan. Subject: SIRO the dune runner, Epic rarity. Preserve the characteristic species from reference: elegant tall long-necked REPTILIAN biped with small intelligent lizard head, finely scaled sandy gold skin with subdued blue-gray mottling, powerful hind running legs with broad clawed feet, tiny discreet forelimbs, and long tapering balancing tail. Not a feathered bird, not a camel, not a dragon with wings. Single animal full body three-quarter view standing proudly on sandy ground outside the monumental sandstone arches of a caravanserai. Entire tail, head and both feet inside safe margin; pose turns tail slightly behind to fit square naturally. Rich turquoise cloth breast drape, expertly crafted dark leather pack saddle, restrained antique gold fittings and a few carefully secured precious trade bundles; equipment detailed but must not obscure head, neck or tail silhouette. No group, no extra animals. Golden sunset rimlight, turquoise fabric strongly recognizable against warm sand, magnificent ancient trade arches secondary and quiet in background. Epic overall identity: extraordinary dune-running creature, elegant turquoise trade equipment, noble posture and monumental desert trade setting. Retain painterly realism and tactile scales from reference, no cartoon features, no extra limbs, no text or frame.",
+      "reference": "../../dune-runner-caravan.jpg",
+      "referenceRole": "existing creature design and style"
+    }
+  ]
+}

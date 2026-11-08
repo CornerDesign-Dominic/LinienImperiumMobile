@@ -10,6 +10,7 @@ Diese Dokumentation beschreibt **Linien Imperium Online / Projekt 117**, die nat
 | [Spielregeln](../SPIELREGELN.md) | Aktuell implementierte mobile Regeln und ausdrücklich markierte Testwerte |
 | [Tourregeln](../TOUR_RULES.md) | Zeitpunkt von Lieferung, Abrechnung, Snapshots und Fahrzeugwechseln |
 | [Gestaltung](../DESIGN.md) | Gemeinsame Bildsprache, Farben, Karten und Bedienelemente |
+| [Identität der Transportkarten](design/transport-card-identity.md) | Arbeitsgrundlage für Eigennamen, Titel und unterscheidbare Kartenmotive |
 | [Item-Audit](../ITEM_AUDIT.md) | Itemarten, Verwendung und Bezugswege |
 | [Lokalisierung](../LOCALIZATION.md) | Deutsche/englische Darstellung und Übersetzungsgrenzen |
 | [Offene Arbeiten](../PENDING_UPDATE.md) | Belegte Restpunkte und noch auszurollende Pakete |

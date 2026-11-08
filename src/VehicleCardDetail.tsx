@@ -28,6 +28,7 @@ export function VehicleCardDetail({data,id,busy,onUpgrade,onVehicleUpgrade,compa
    <Text accessibilityLabel={translate(own?`Stufe ${level}`:'Nicht entdeckt')} style={styles.cardLevel}>{own?rankNumeral(level):'—'}</Text>
    <VehicleArt card={card} style={{maxWidth:compact?200:360,alignSelf:'center'}}/>
    <Txt style={styles.name}>{card.name}</Txt>
+   {!!card.title&&<Txt muted style={{fontSize:14,lineHeight:20,textAlign:'center',marginTop:3}}>{card.title}</Txt>}
   </DetailSection>
   <DetailSection compact={compact} style={styles.bonus}>
    <Row style={{flexWrap:'nowrap',alignItems:'flex-start',marginBottom:0}}><Txt style={{flex:1,fontWeight:'600',paddingTop:5}}>{bonusSentence(card,data.cardBonuses[id])}</Txt><Btn iconOnly icon="help" secondary onPress={()=>setBonusOpen(true)}>Bonus je Kartenstufe</Btn></Row>

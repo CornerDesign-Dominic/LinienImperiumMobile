@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-08",
+  "tool": "built-in image_gen",
+  "id": "logistiker",
+  "name": "Lian",
+  "title": "der Jadewächter",
+  "artwork": "lian-v2.jpg",
+  "original": "lian-v2.png",
+  "supersedes": "lian-v1.jpg",
+  "change": "Removed forehead horn and base ring at user request. Other character identity and scene retained.",
+  "status": "Prepared for app use, not integrated or published",
+  "prompt": "Use case: precise-object-edit. Edit this existing square game card artwork of Lian. Change ONLY this: completely remove the single green horn from the forehead, including its small metallic base ring. Reconstruct a natural smooth scaled forehead and the small background area formerly covered by the horn. Lian should have NO horns and NO antlers. Preserve absolutely everything else: same deerlike face, ears, dark flowing mane, jade-gray scaled body, anatomy, pose, tail, leather pack harness with pale jade fittings, bags, supply rolls, stone bridge, crates, landscape, lighting, painterly realism, composition, square format. No typography, no frame, no watermark. This is a small local correction, not a redesign."
+}

@@ -5,31 +5,31 @@ import {C} from './ui';
 import {rarityColor} from './items';
 import {t} from './i18n';
 const artwork:Record<string,any>={
- 'donkey-cart':require('../assets/art/vehicles/donkey-cart.jpg'),
- 'royal-lion-team':require('../assets/art/vehicles/royal-lion-team.jpg'),
- 'imperial-panda-team':require('../assets/art/vehicles/imperial-panda-team.jpg'),
- 'market-team':require('../assets/art/vehicles/market-team.jpg'),
- 'royal-mail-coach':require('../assets/art/vehicles/royal-mail-coach.jpg'),
- 'silver-stag-team':require('../assets/art/vehicles/silver-stag-team.jpg'),
- 'settler-wagon':require('../assets/art/vehicles/settler-wagon.jpg'),
- 'ox-freight-wagon':require('../assets/art/vehicles/ox-freight-wagon.jpg'),
- 'prairie-freight-train':require('../assets/art/vehicles/prairie-freight-train.jpg'),
- 'pioneer-lead-wagon':require('../assets/art/vehicles/pioneer-lead-wagon.jpg'),
- 'thunder-bison-team':require('../assets/art/vehicles/thunder-bison-team.jpg'),
- 'pack-donkey-train':require('../assets/art/vehicles/pack-donkey-train.jpg'),
- 'desert-camel':require('../assets/art/vehicles/desert-camel.jpg'),
- 'oasis-caravan':require('../assets/art/vehicles/oasis-caravan.jpg'),
- 'silver-caravan':require('../assets/art/vehicles/silver-caravan.jpg'),
- 'dune-runner-caravan':require('../assets/art/vehicles/dune-runner-caravan.jpg'),
- 'bamboo-handcart':require('../assets/art/vehicles/bamboo-handcart.jpg'),
- 'tea-mule-team':require('../assets/art/vehicles/tea-mule-team.jpg'),
- 'terrace-ox-wagon':require('../assets/art/vehicles/terrace-ox-wagon.jpg'),
- 'jade-scout-team':require('../assets/art/vehicles/jade-scout-team.jpg'),
- 'fisher-dog-sled':require('../assets/art/vehicles/fisher-dog-sled.jpg'),
- 'reindeer-freight-sled':require('../assets/art/vehicles/reindeer-freight-sled.jpg'),
- 'northern-freight-team':require('../assets/art/vehicles/northern-freight-team.jpg'),
- 'white-stag-sled':require('../assets/art/vehicles/white-stag-sled.jpg'),
- 'snow-leopard-express':require('../assets/art/vehicles/snow-leopard-express.jpg'),
+ 'donkey-cart':require('../assets/art/vehicles/identities/pepe.jpg'),
+ 'royal-lion-team':require('../assets/art/vehicles/identities/aurel.jpg'),
+ 'imperial-panda-team':require('../assets/art/vehicles/identities/bao.jpg'),
+ 'market-team':require('../assets/art/vehicles/identities/bruno.jpg'),
+ 'royal-mail-coach':require('../assets/art/vehicles/identities/rufus.jpg'),
+ 'silver-stag-team':require('../assets/art/vehicles/identities/silvan.jpg'),
+ 'settler-wagon':require('../assets/art/vehicles/identities/milo.jpg'),
+ 'ox-freight-wagon':require('../assets/art/vehicles/identities/otto.jpg'),
+ 'prairie-freight-train':require('../assets/art/vehicles/identities/tara.jpg'),
+ 'pioneer-lead-wagon':require('../assets/art/vehicles/identities/arvid.jpg'),
+ 'thunder-bison-team':require('../assets/art/vehicles/identities/boran.jpg'),
+ 'pack-donkey-train':require('../assets/art/vehicles/identities/paco.jpg'),
+ 'desert-camel':require('../assets/art/vehicles/identities/samir.jpg'),
+ 'oasis-caravan':require('../assets/art/vehicles/identities/nuri.jpg'),
+ 'silver-caravan':require('../assets/art/vehicles/identities/zafir.jpg'),
+ 'dune-runner-caravan':require('../assets/art/vehicles/identities/siro.jpg'),
+ 'bamboo-handcart':require('../assets/art/vehicles/identities/tiko.jpg'),
+ 'tea-mule-team':require('../assets/art/vehicles/identities/mei.jpg'),
+ 'terrace-ox-wagon':require('../assets/art/vehicles/identities/daro.jpg'),
+ 'jade-scout-team':require('../assets/art/vehicles/identities/lian.jpg'),
+ 'fisher-dog-sled':require('../assets/art/vehicles/identities/husk.jpg'),
+ 'reindeer-freight-sled':require('../assets/art/vehicles/identities/runi.jpg'),
+ 'northern-freight-team':require('../assets/art/vehicles/identities/grumm.jpg'),
+ 'white-stag-sled':require('../assets/art/vehicles/identities/eira.jpg'),
+ 'snow-leopard-express':require('../assets/art/vehicles/identities/niva.jpg'),
 
 };
 // Shared native faceted setting: no frame images, rarity icons or footer bars.
@@ -40,7 +40,7 @@ const frames:Record<string,{light:string;metal:string;shade:string;label:string}
  epic:{light:'#E3CCED',metal:'#9068A6',shade:'#654273',label:'Epic'},
  legendary:{light:'#F4DEA0',metal:'#B88D3D',shade:'#82601F',label:'Legendary'},
 };
-type Props={card?:{artKey?:string;name?:string;rarity?:string};level?:number;style?:StyleProp<ViewStyle>};
+type Props={card?:{artKey?:string;name?:string;title?:string;rarity?:string};level?:number;style?:StyleProp<ViewStyle>};
 // Intersect a square with a larger rotated square to clip an octagon on native
 // and web alike. Counter-rotate the contents so the artwork stays upright.
 function FacetCrop({size,inset=0,children}: {size:number;inset?:number;children:React.ReactNode}){
@@ -61,7 +61,7 @@ export function VehicleArt({card,level,style}:Props){
  // No heavy dark outline: the metal itself forms the fine, coloured edge.
  const rim=Math.max(2,Math.min(6,width*.035))+(precious&&!compact?1:0);
  const inner=Math.max(1,width-2*rim);
- return <View accessible accessibilityRole="image" accessibilityLabel={`${t(card?.name||'Fahrzeug')} · ${t(frame.label)}${level?` · ${t('Stufe')} ${level}`:''}`} onLayout={event=>setWidth(event.nativeEvent.layout.width)} style={[styles.art,style]}>
+ return <View accessible accessibilityRole="image" accessibilityLabel={`${t(card?.name||'Fahrzeug')}${card?.title?' · '+t(card.title):''} · ${t(frame.label)}${level?` · ${t('Stufe')} ${level}`:''}`} onLayout={event=>setWidth(event.nativeEvent.layout.width)} style={[styles.art,style]}>
   {width>0&&<FacetCrop size={width}>
    <View style={[StyleSheet.absoluteFill,{backgroundColor:frame.metal,backgroundImage:`linear-gradient(135deg, ${frame.light} 0%, ${frame.metal} 27%, ${frame.shade} 55%, ${frame.metal} 85%, ${frame.light} 100%)`}]}/>
    <FacetCrop size={inner} inset={rim}>

@@ -11,3 +11,5 @@ firebase-debug.log
 functions/node_modules/
 credentials.json
 .credentials/
+assets/art/vehicles/concepts/**/*.png
+assets/art/vehicles/concepts/**/*.jpg

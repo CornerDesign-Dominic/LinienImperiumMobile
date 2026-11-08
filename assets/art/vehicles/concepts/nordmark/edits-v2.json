@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-08",
+  "tool": "built-in image_gen",
+  "status": "Prepared for app use, not integrated or published",
+  "format": "1024x1024 RGB JPEG quality 92; original PNGs retained",
+  "edits": [
+    {
+      "id": "pionierin",
+      "name": "Eira",
+      "artwork": "eira-v2.jpg",
+      "original": "eira-v2.png",
+      "supersedes": "eira-v1.jpg",
+      "change": "Reduced all four paws to compact natural proportions at user request.",
+      "prompt": "Use case: precise-object-edit. Edit this existing square game artwork of Eira, the blue-gray lynx-like pack creature. Change ONLY the oversized paws: reduce the size/width/bulk of ALL FOUR paws by approximately 40 percent to natural elegant adult lynx proportions relative to the legs. Each paw should be only modestly wider than its lower leg, with compact natural toes, not huge fluffy snowshoes. Preserve foot contact with ground and coherent ankle transitions; reconstruct tiny exposed patches of snow where needed. Keep exact same leg length and standing pose. Preserve everything else: face, long black ear tufts, short bobtail, blue-gray spotted coat, body proportions, harness and bags, crates, mountains, village, snow, lighting, square composition, painterly realism. No redesign, no new objects, no text or frame."
+    },
+    {
+      "id": "r5_epic",
+      "name": "Niva",
+      "artwork": "niva-v2.jpg",
+      "original": "niva-v2.png",
+      "supersedes": "niva-v1.jpg",
+      "change": "Substantially narrowed tail while retaining length and ring markings at user request.",
+      "prompt": "Use case: precise-object-edit. Edit this existing square game artwork of Niva the snow leopard. Change ONLY the excessively thick tail: reduce tail DIAMETER by approximately 55 percent throughout its visible length, creating a naturally proportioned moderately furry snow-leopard tail, with gentle taper toward a small rounded tip. Keep its length and general sweeping curved path along platform, maintain anatomical attachment at rump and black/gray ring markings. It should read as a long slim feline tail, not a huge fluffy bolster; its thickest part substantially thinner than a hind thigh, and tip only a little thicker than a wrist. Reconstruct exposed platform wood, snow and tiny background patches revealed by narrowing tail. Preserve EVERYTHING else: same face, round ears, head, body and leg proportions, coat rosettes, four paws and stance, midnight-blue harness and silver fittings, saddle, trading hall, lanterns, crates, aurora, lighting, painterly realism, square composition. No redesign, no text, no frame."
+    }
+  ]
+}

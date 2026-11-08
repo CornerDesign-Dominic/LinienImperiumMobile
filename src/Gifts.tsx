@@ -98,6 +98,7 @@ export function Gifts({data,busy,onCommand,modalBlocked=false}:any){
    {card&&<View style={styles.result}>
     <VehicleArt card={card} style={{width:160}}/>
     <Txt style={styles.resultName}>{card.name}</Txt>
+    {!!card.title&&<Txt muted style={{fontSize:13,textAlign:'center'}}>{card.title}</Txt>}
     <Pill>{data.catalog.rarities.find((r:any)=>r.id===card.rarity)?.label}</Pill>
     <View style={styles.reward} accessibilityLiveRegion="polite">{found.duplicate?<ItemArt id={`shard:${card.rarity}`} size={44}/>:<Icon name="cards" size={24} color={rarityColor(card.rarity)}/>}<Txt style={{flexShrink:1}}>{found.duplicate?`+${n(found.shards||1)} ${data.catalog.rarities.find((r:any)=>r.id===card.rarity)?.label}-Shard`:'Neue Transportkarte'}</Txt></View>
    </View>}

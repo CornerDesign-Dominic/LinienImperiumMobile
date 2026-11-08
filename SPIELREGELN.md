@@ -7,7 +7,7 @@ Maßgeblich ist die vom Server ausgeführte Kombination aus [Engine](functions/s
 ## 1. Start, Spielstand und Ablauf
 
 - Firmengründung mit Firmen- und Fantasiestadtnamen. Die Namen sind Anzeigenamen; sie verändern weder Streckenprofil noch Vergütung.
-- Start: Spielerlevel 1, 1.000 Imperium-Taler, Eselkarren auf Kartenstufe I mit 2 t in der Garage, fünf Angebote, 50 Expeditions- und 100 Überstundenpunkte. Die Botenstation ist ab Level 5 verfügbar.
+- Start: Spielerlevel 1, 1.000 Imperium-Taler, Pepe – der Packesel auf Kartenstufe I mit 2 t in der Garage, fünf Angebote, 50 Expeditions- und 100 Überstundenpunkte. Die Botenstation ist ab Level 5 verfügbar.
 - Die App verwendet Firebase-Konten: zunächst anonym, optional mit E-Mail/Passwort gesichert. Der serverseitige Spielstand und die Serverzeit bestimmen Fortschritt, Besitz und Auszahlungen. Der lokale Browser-Spielstand ist keine Beschreibung der mobilen Speicherung.
 - Fällige Transporte werden bei Synchronisierung und vor Änderungen nachberechnet. Offline-Zeit ist keine zusätzliche Aktion und erzeugt keine wiederholten Abholungen.
 

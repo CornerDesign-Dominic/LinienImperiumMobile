@@ -1,7 +1,7 @@
 [
   {
     "id": "navigator",
-    "name": "Eselkarren",
+    "name": "Pepe",
     "rarity": "common",
     "region": 0,
     "vehicleTier": 2,
@@ -23,11 +23,12 @@
       5.4,
       5.7
     ],
-    "artKey": "donkey-cart"
+    "artKey": "donkey-cart",
+    "title": "der Packesel"
   },
   {
     "id": "r1_common_2",
-    "name": "Marktgespann",
+    "name": "Bruno",
     "rarity": "common",
     "region": 0,
     "vehicleTier": 2,
@@ -49,11 +50,12 @@
       5.4,
       5.7
     ],
-    "artKey": "market-team"
+    "artKey": "market-team",
+    "title": "das Marktpferd"
   },
   {
     "id": "r1_uncommon",
-    "name": "Königliche Postkutsche",
+    "name": "Rufus",
     "rarity": "uncommon",
     "region": 0,
     "vehicleTier": 3,
@@ -75,11 +77,12 @@
       60,
       70
     ],
-    "artKey": "royal-mail-coach"
+    "artKey": "royal-mail-coach",
+    "title": "der Postbote"
   },
   {
     "id": "r1_rare",
-    "name": "Silberhirsch-Gespann",
+    "name": "Silvan",
     "rarity": "rare",
     "region": 0,
     "vehicleTier": 5,
@@ -101,11 +104,12 @@
       8,
       8.5
     ],
-    "artKey": "silver-stag-team"
+    "artKey": "silver-stag-team",
+    "title": "das Silbergeweih"
   },
   {
     "id": "r1_uncommon_2",
-    "name": "Königliches Löwengespann",
+    "name": "Aurel",
     "rarity": "epic",
     "region": 0,
     "vehicleTier": 3,
@@ -127,11 +131,12 @@
       16,
       17
     ],
-    "artKey": "royal-lion-team"
+    "artKey": "royal-lion-team",
+    "title": "der Kronenlöwe"
   },
   {
     "id": "r2_common",
-    "name": "Siedlerwagen",
+    "name": "Milo",
     "rarity": "common",
     "region": 1,
     "vehicleTier": 2,
@@ -153,11 +158,12 @@
       5.4,
       5.7
     ],
-    "artKey": "settler-wagon"
+    "artKey": "settler-wagon",
+    "title": "das Lastlama"
   },
   {
     "id": "r2_common_2",
-    "name": "Ochsenfuhrwerk",
+    "name": "Otto",
     "rarity": "common",
     "region": 1,
     "vehicleTier": 3,
@@ -179,11 +185,12 @@
       5.4,
       5.7
     ],
-    "artKey": "ox-freight-wagon"
+    "artKey": "ox-freight-wagon",
+    "title": "der Lastochse"
   },
   {
     "id": "disponent",
-    "name": "Prärie-Lastenzug",
+    "name": "Tara",
     "rarity": "uncommon",
     "region": 1,
     "vehicleTier": 5,
@@ -205,11 +212,12 @@
       10,
       10.5
     ],
-    "artKey": "prairie-freight-train"
+    "artKey": "prairie-freight-train",
+    "title": "die Fassziege"
   },
   {
     "id": "r2_rare",
-    "name": "Leitwagen der Pioniere",
+    "name": "Arvid",
     "rarity": "rare",
     "region": 1,
     "vehicleTier": 4,
@@ -231,11 +239,12 @@
       8,
       8.5
     ],
-    "artKey": "pioneer-lead-wagon"
+    "artKey": "pioneer-lead-wagon",
+    "title": "der Wegfinder"
   },
   {
     "id": "r2_epic",
-    "name": "Donnerbison-Gespann",
+    "name": "Boran",
     "rarity": "epic",
     "region": 1,
     "vehicleTier": 5,
@@ -257,11 +266,12 @@
       16,
       17
     ],
-    "artKey": "thunder-bison-team"
+    "artKey": "thunder-bison-team",
+    "title": "der Donnerbison"
   },
   {
     "id": "r3_common",
-    "name": "Lasteselzug",
+    "name": "Paco",
     "rarity": "common",
     "region": 2,
     "vehicleTier": 3,
@@ -283,11 +293,12 @@
       5.4,
       5.7
     ],
-    "artKey": "pack-donkey-train"
+    "artKey": "pack-donkey-train",
+    "title": "der Wüstenkeiler"
   },
   {
     "id": "r3_common_2",
-    "name": "Wüstenkamel",
+    "name": "Samir",
     "rarity": "common",
     "region": 2,
     "vehicleTier": 3,
@@ -309,11 +320,12 @@
       5.4,
       5.7
     ],
-    "artKey": "desert-camel"
+    "artKey": "desert-camel",
+    "title": "der Sandträger"
   },
   {
     "id": "r3_uncommon",
-    "name": "Oasenkarawane",
+    "name": "Nuri",
     "rarity": "uncommon",
     "region": 2,
     "vehicleTier": 5,
@@ -335,16 +347,17 @@
       60,
       70
     ],
-    "artKey": "oasis-caravan"
+    "artKey": "oasis-caravan",
+    "title": "der Wasserträger"
   },
   {
     "id": "forscherin",
-    "name": "Silberkarawane",
+    "name": "Zafir",
     "rarity": "rare",
     "region": 2,
     "vehicleTier": 4,
     "baseCapacity": 13,
-    "baseSpeed": 1.0,
+    "baseSpeed": 1,
     "maxCapacityLevel": 10,
     "capacityStepPercent": 5,
     "scope": "fleet",
@@ -361,11 +374,12 @@
       8,
       8.5
     ],
-    "artKey": "silver-caravan"
+    "artKey": "silver-caravan",
+    "title": "der Seidenfuchs"
   },
   {
     "id": "r3_epic",
-    "name": "Dünenläufer-Karawane",
+    "name": "Siro",
     "rarity": "epic",
     "region": 2,
     "vehicleTier": 6,
@@ -387,11 +401,12 @@
       16,
       17
     ],
-    "artKey": "dune-runner-caravan"
+    "artKey": "dune-runner-caravan",
+    "title": "der Dünenläufer"
   },
   {
     "id": "r4_common",
-    "name": "Bambuskarren",
+    "name": "Tiko",
     "rarity": "common",
     "region": 3,
     "vehicleTier": 3,
@@ -413,16 +428,17 @@
       5.4,
       5.7
     ],
-    "artKey": "bamboo-handcart"
+    "artKey": "bamboo-handcart",
+    "title": "der Bambusträger"
   },
   {
     "id": "r4_common_2",
-    "name": "Tee-Maultiergespann",
+    "name": "Mei",
     "rarity": "common",
     "region": 3,
     "vehicleTier": 3,
     "baseCapacity": 4,
-    "baseSpeed": 1.0,
+    "baseSpeed": 1,
     "maxCapacityLevel": 10,
     "capacityStepPercent": 5,
     "scope": "self",
@@ -439,11 +455,12 @@
       5.4,
       5.7
     ],
-    "artKey": "tea-mule-team"
+    "artKey": "tea-mule-team",
+    "title": "die Teeträgerin"
   },
   {
     "id": "r4_uncommon",
-    "name": "Terrassen-Ochsenwagen",
+    "name": "Daro",
     "rarity": "uncommon",
     "region": 3,
     "vehicleTier": 4,
@@ -465,16 +482,17 @@
       10,
       10.5
     ],
-    "artKey": "terrace-ox-wagon"
+    "artKey": "terrace-ox-wagon",
+    "title": "der Reisbüffel"
   },
   {
     "id": "logistiker",
-    "name": "Jade-Kundschaftergespann",
+    "name": "Lian",
     "rarity": "rare",
     "region": 3,
     "vehicleTier": 6,
     "baseCapacity": 8,
-    "baseSpeed": 1.0,
+    "baseSpeed": 1,
     "maxCapacityLevel": 10,
     "capacityStepPercent": 5,
     "scope": "garage",
@@ -491,11 +509,12 @@
       105,
       120
     ],
-    "artKey": "jade-scout-team"
+    "artKey": "jade-scout-team",
+    "title": "der Jadewächter"
   },
   {
     "id": "r4_epic",
-    "name": "Kaiserliches Pandagespann",
+    "name": "Bao",
     "rarity": "epic",
     "region": 3,
     "vehicleTier": 6,
@@ -517,11 +536,12 @@
       18,
       19
     ],
-    "artKey": "imperial-panda-team"
+    "artKey": "imperial-panda-team",
+    "title": "der Schatzträger"
   },
   {
     "id": "r5_common",
-    "name": "Fischer-Hundeschlitten",
+    "name": "Husk",
     "rarity": "common",
     "region": 4,
     "vehicleTier": 5,
@@ -543,11 +563,12 @@
       5.4,
       5.7
     ],
-    "artKey": "fisher-dog-sled"
+    "artKey": "fisher-dog-sled",
+    "title": "der Schlittenzieher"
   },
   {
     "id": "r5_common_2",
-    "name": "Rentier-Lastschlitten",
+    "name": "Runi",
     "rarity": "common",
     "region": 4,
     "vehicleTier": 4,
@@ -569,11 +590,12 @@
       5.4,
       5.7
     ],
-    "artKey": "reindeer-freight-sled"
+    "artKey": "reindeer-freight-sled",
+    "title": "der Winterträger"
   },
   {
     "id": "r5_uncommon",
-    "name": "Nordland-Lastengespann",
+    "name": "Grumm",
     "rarity": "uncommon",
     "region": 4,
     "vehicleTier": 4,
@@ -595,11 +617,12 @@
       4,
       4.25
     ],
-    "artKey": "northern-freight-team"
+    "artKey": "northern-freight-team",
+    "title": "der Moschusochse"
   },
   {
     "id": "pionierin",
-    "name": "Weißhirsch-Schlitten",
+    "name": "Eira",
     "rarity": "rare",
     "region": 4,
     "vehicleTier": 6,
@@ -621,11 +644,12 @@
       8,
       8.5
     ],
-    "artKey": "white-stag-sled"
+    "artKey": "white-stag-sled",
+    "title": "die Frostläuferin"
   },
   {
     "id": "r5_epic",
-    "name": "Schneeleoparden-Express",
+    "name": "Niva",
     "rarity": "epic",
     "region": 4,
     "vehicleTier": 6,
@@ -647,6 +671,7 @@
       16,
       17
     ],
-    "artKey": "snow-leopard-express"
+    "artKey": "snow-leopard-express",
+    "title": "die Schneekönigin"
   }
 ]

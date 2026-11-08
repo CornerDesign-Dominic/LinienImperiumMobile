@@ -6,6 +6,7 @@ functions/node_modules/
 tests/
 scripts/
 .github/
+assets/art/vehicles/concepts/
 
 .credentials/
 credentials.json

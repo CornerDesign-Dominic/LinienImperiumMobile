@@ -12,7 +12,10 @@ function migrateTransportCards() {
   const trucks = [...game.trucks,...Object.values(game.expedition.characters).map(c=>c.parkedTruck).filter(Boolean)];
   for (const truck of trucks) {
     const card = vehicleCardById(truck.cardId);
-    if (!card || truck.transportVersion === 1) continue;
+    if (!card) continue;
+    // Refresh presentation names for existing and parked cards without touching upgrades.
+    truck.model=card.name;
+    if (truck.transportVersion === 1) continue;
     // Keep purchased ranks, module levels, ownership, card XP and in-flight snapshots.
     truck.model=card.name; truck.capacity=cardCapacity(card,truck.moduleCapacityLevel||0);
     truck.transportVersion=1;

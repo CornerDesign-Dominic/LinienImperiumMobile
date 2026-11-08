@@ -144,9 +144,33 @@ test('Every card has a unique square artwork file and a static native asset regi
  const source=fs.readFileSync(path.join(__dirname,'../src/VehicleArt.tsx'),'utf8');
  assert.equal(new Set(cards.map(c=>c.artKey)).size,25);
  for(const card of cards){
-  assert.ok(fs.existsSync(path.join(__dirname,'../assets/art/vehicles',card.artKey+'.jpg')),card.id);
-  assert.ok(source.includes("'"+card.artKey+"':require("),card.id);
+  const registration=source.match(new RegExp("'"+card.artKey+"':require\\('([^']+)'\\)"));
+  assert.ok(registration,card.id);
+  const image=fs.readFileSync(path.resolve(__dirname,'../src',registration[1]));
+  assert.equal(image.readUInt16BE(0),0xffd8,card.id+' is a JPEG');
+  assert.ok(registration[1].includes('/identities/'),card.id+' uses approved identity artwork');
  }
+});
+
+test('Existing and parked vehicles adopt the new identities while preserving upgrades and running orders',()=>{
+ let r=equip(setup(),'r1_common_2',3);
+ r=cmd(r.state,'garageRemove',{id:'r1_common_2'});
+ const active=r.state.trucks.find(t=>t.cardId==='navigator');
+ const parked=r.state.expedition.characters.r1_common_2.parkedTruck;
+ active.model='Eselkarren';parked.model='Marktgespann';
+ active.kmDriven=321;active.moduleCapacityLevel=2;active.capacity=2.2;active.rarityLevel=4;
+ parked.kmDriven=456;parked.moduleCapacityLevel=3;parked.capacity=5.75;parked.rarityLevel=7;
+ const before=structuredClone(r.state);
+ r=cmd(r.state);
+ const expected=structuredClone(before.trucks.find(t=>t.cardId==='navigator'));expected.model='Pepe';
+ assert.deepEqual(r.state.trucks.find(t=>t.cardId==='navigator'),expected);
+ const expectedParked=structuredClone(parked);expectedParked.model='Bruno';
+ assert.deepEqual(r.state.expedition.characters.r1_common_2.parkedTruck,expectedParked);
+ assert.deepEqual(r.state.orders,before.orders);
+ assert.equal(r.view.catalog.cards.find(c=>c.id==='navigator').name,'Pepe');
+ assert.equal(r.view.catalog.cards.find(c=>c.id==='navigator').title,'der Packesel');
+ assert.equal(new Set(cards.map(c=>c.name)).size,25);
+ assert.ok(cards.every(c=>c.title));
 });
 
 test('Collection upgrade previews match actual capacity and rank upgrades without changing resources',()=>{

@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-08",
+  "tool": "built-in image_gen",
+  "status": "Square game artwork prepared for app use; not integrated or published",
+  "format": "1024x1024 RGB JPEG quality 92; original square PNGs retained. No embedded typography or frames.",
+  "cards": [
+    {
+      "id": "navigator",
+      "name": "Pepe",
+      "title": "der Packesel",
+      "rarity": "common",
+      "artwork": "pep-app-v1.jpg",
+      "original": "pep-app-v1.png",
+      "reference": "pep-v1.png",
+      "referenceRole": "Approved character and scene; removed concept frame and nameplate and adapted to square",
+      "prompt": "Use case: precise-object-edit. Transform this approved portrait card concept into production-ready SQUARE 1:1 game ARTWORK, 1024 x 1024. Remove ALL card frame, beveled edges, parchment name panel and typography. Deliver ONLY edge-to-edge painted scene, NO text, UI, borders, signature or watermark. Adapt composition to square by extending natural scene and slightly pulling back as necessary, NOT by squeezing proportions or cutting off subject. Preserve main character identity, facial features, equipment, pose, materials, setting, colors, natural lighting and adult painterly realism from reference. Main subject clearly dominates and readable at thumbnail size, complete body and extremities inside comfortable 7% safety margin. Do not redesign or add new characters. Subject: Pep the gray pack donkey, very long upright ears, pale muzzle, dark mane, simple brown leather pack saddle and panniers, next to flour sacks in rustic stone and timber farm trading courtyard. Keep simple Common equipment and natural donkey proportions. Both ear tips, tail and all hooves fully visible. Background remains secondary."
+    },
+    {
+      "id": "r1_common_2",
+      "name": "Bruno",
+      "title": "das Marktpferd",
+      "rarity": "common",
+      "artwork": "bruno-app-v1.jpg",
+      "original": "bruno-app-v1.png",
+      "reference": "bruno-v1.png",
+      "referenceRole": "Approved character and scene; removed concept frame and nameplate and adapted to square",
+      "prompt": "Use case: precise-object-edit. Transform this approved portrait card concept into production-ready SQUARE 1:1 game ARTWORK, 1024 x 1024. Remove ALL card frame, beveled edges, parchment name panel and typography. Deliver ONLY edge-to-edge painted scene, NO text, UI, borders, signature or watermark. Adapt composition to square by extending natural scene and slightly pulling back as necessary, NOT by squeezing proportions or cutting off subject. Preserve main character identity, facial features, equipment, pose, materials, setting, colors, natural lighting and adult painterly realism from reference. Main subject clearly dominates and readable at thumbnail size, complete body and extremities inside comfortable 7% safety margin. Do not redesign or add new characters. Subject: Bruno, powerful chestnut draft horse with unmistakable broad WHITE FACIAL BLAZE, dark mane and cream feathering above hooves, practical brown leather tack. Preserve reference character and full-body three-quarter stance beside open wooden vegetable market cart in a half-timbered village market. Common humble everyday equipment, no luxury or extra animals. Keep natural horse anatomy and realistically sized hooves, all ears and feet and tail fully visible, horse dominates, cart and baskets secondary. Recompose into square without stretching."
+    },
+    {
+      "id": "r1_uncommon",
+      "name": "Rufus",
+      "title": "der Postbote",
+      "rarity": "uncommon",
+      "artwork": "rufus-app-v1.jpg",
+      "original": "rufus-app-v1.png",
+      "reference": "rufus-v1.png",
+      "referenceRole": "Approved character and scene; removed concept frame and nameplate and adapted to square",
+      "prompt": "Use case: precise-object-edit. Transform this approved portrait card concept into production-ready SQUARE 1:1 game ARTWORK, 1024 x 1024. Remove ALL card frame, beveled edges, parchment name panel and typography. Deliver ONLY edge-to-edge painted scene, NO text, UI, borders, signature or watermark. Adapt composition to square by extending natural scene and slightly pulling back as necessary, NOT by squeezing proportions or cutting off subject. Preserve main character identity, facial features, equipment, pose, materials, setting, colors, natural lighting and adult painterly realism from reference. Main subject clearly dominates and readable at thumbnail size, complete body and extremities inside comfortable 7% safety margin. Do not redesign or add new characters. Subject: Rufus the human postman, preserve EXACT SAME approachable auburn-haired short-bearded man, plain dark blue wool coat, brown trousers and boots, signature large weathered brick-red leather postal shoulder satchel, one hand resting on bag and other holding small string-tied packet. Full-body pose, natural hands and face, head and boots inside safe margin. Rustic parcel depot courtyard with stacks of paper-wrapped parcels and plain closed wooden mail coach as secondary background. Humble professional Uncommon, no royal decoration. Person and red bag dominate; widen natural courtyard background to square without shortening legs or enlarging hands."
+    },
+    {
+      "id": "r1_rare",
+      "name": "Silvan",
+      "title": "das Silbergeweih",
+      "rarity": "rare",
+      "artwork": "silvan-app-v1.jpg",
+      "original": "silvan-app-v1.png",
+      "reference": "silvan-v1.png",
+      "referenceRole": "Approved character and scene; removed concept frame and nameplate and adapted to square",
+      "prompt": "Use case: precise-object-edit. Transform this approved portrait card concept into production-ready SQUARE 1:1 game ARTWORK, 1024 x 1024. Remove ALL card frame, beveled edges, parchment name panel and typography. Deliver ONLY edge-to-edge painted scene, NO text, UI, borders, signature or watermark. Adapt composition to square by extending natural scene and slightly pulling back as necessary, NOT by squeezing proportions or cutting off subject. Preserve main character identity, facial features, equipment, pose, materials, setting, colors, natural lighting and adult painterly realism from reference. Main subject clearly dominates and readable at thumbnail size, complete body and extremities inside comfortable 7% safety margin. Do not redesign or add new characters. Subject: Silvan, preserve dark brown majestic stag with broad branching metallic SILVER ANTLERS, natural dark eyes, green leather pack harness and restrained brass fittings, supply roll and panniers. Same calm proud full-body three-quarter stance at woodland trading lodge beside linen trade bales and wooden crates. Antler shape and silver material are main identity, preserve natural anatomy. Recompose square with more quiet forest to sides and adjust scale to keep EVERY antler tip, ears, tail and all hooves comfortably inside image with safe margin. Rare dignified craftsmanship, no magic glow, no new ornaments. Sunlit muted green woodland remains secondary."
+    },
+    {
+      "id": "r1_uncommon_2",
+      "name": "Aurel",
+      "title": "der Kronenlöwe",
+      "rarity": "epic",
+      "artwork": "aurel-app-v1.jpg",
+      "original": "aurel-app-v1.png",
+      "reference": "aurel-v1.png",
+      "referenceRole": "Approved character and scene; removed concept frame and nameplate and adapted to square",
+      "prompt": "Use case: precise-object-edit. Transform this approved portrait card concept into production-ready SQUARE 1:1 game ARTWORK, 1024 x 1024. Remove ALL card frame, beveled edges, parchment name panel and typography. Deliver ONLY edge-to-edge painted scene, NO text, UI, borders, signature or watermark. Adapt composition to square by extending natural scene and slightly pulling back as necessary, NOT by squeezing proportions or cutting off subject. Preserve main character identity, facial features, equipment, pose, materials, setting, colors, natural lighting and adult painterly realism from reference. Main subject clearly dominates and readable at thumbnail size, complete body and extremities inside comfortable 7% safety margin. Do not redesign or add new characters. Subject: Aurel the crown lion, preserve same magnificent powerful male lion, thick golden mane, natural noble face and four-legged calm stance, oxblood leather transport harness with brass fittings and small crown-shaped chest emblem. Keep natural feline anatomy and proportionate paws, NO exaggerated huge paws or thick tail. Entire slender lion tail with small dark tuft and all paws visible. Same royal castle trading courtyard with rich burgundy-and-brass closed royal carriage and sealed timber trade crates as secondary scene. Epic craftsmanship and warm golden afternoon light. Lion dominates, carriage background, no crown on head or magical effects. Recompose square to retain full mane and tail with comfortable margins, preserve approved identity and style."
+    }
+  ]
+}

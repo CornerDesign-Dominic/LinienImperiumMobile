@@ -38,6 +38,8 @@ Komponenten: [MenuArt](src/MenuArt.tsx), [PageHeader](src/PageHeader.tsx), [Moda
 
 ## Fahrzeugkarten
 
+Die [Arbeitsgrundlage zur Kartenidentität](docs/design/transport-card-identity.md) hält die vereinbarte Richtung für kurze Eigennamen mit Titeln und die offenen Fragen zur Motivüberarbeitung fest. Sie beschreibt noch nicht die implementierte Namensdarstellung.
+
 [VehicleArt](src/VehicleArt.tsx) ist die gemeinsame Bilddarstellung: quadratisches Fahrzeugmotiv mit abgeschnittenen Facettenecken und deutlich sichtbarer technischer Fassung in Seltenheitsfarbe. Rahmen und Maskierung entstehen aus nativen Ansichten und Farben, nicht aus Rahmenbildern. Kein zusätzliches Seltenheitsicon. Die Fassung skaliert mit der Bildbreite; kleine Bilder erhalten keinen schweren schwarzen Außenstrich.
 
 Kartenstufe, Seltenheit und Geschwindigkeitsrang sind unabhängige Merkmale:

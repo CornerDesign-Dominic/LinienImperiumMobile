@@ -80,7 +80,7 @@ export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,s
  const average=averageCardSpeed(stats.loadedSpeed,stats.speed);
  const speedRanks=ornate&&owned?speedRankSegments(stats.rank?.total):[];
  const label=accessibilityLabel||[
-  translate(card.name),translate(owned?`Stufe ${owned.level}`:'Nicht entdeckt'),`${n(stats.capacity,1)} t`,
+  translate(card.name),card.title?translate(card.title):'',translate(owned?`Stufe ${owned.level}`:'Nicht entdeckt'),`${n(stats.capacity,1)} t`,
   ornate&&owned?`${translate('Geschwindigkeitsrang')}: ${stats.rank.total}`:'',
   showDetails?`${translate('Durchschnittsgeschwindigkeit')}: ${average===undefined?'—':n(average,2)+' km/s'}, ${translate('Betriebskosten')}: ${stats.costPerKm===undefined?'—':n(stats.costPerKm,2)+'/km'}`:`${translate('Geschwindigkeitsrang')}: ${stats.rank.total}`,
   status?.label?translate(status.label):''
@@ -91,7 +91,7 @@ export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,s
    <View pointerEvents="none" style={[styles.collectibleBody,!owned&&{backgroundColor:C.raised}]}/>
    <CardLevelShield level={owned?.level}/>
    <VehicleArt card={card}/>
-   <View style={styles.nameBand}><VehicleName name={card.name} numberOfLines={3} style={styles.collectibleName}/></View>
+   <View style={styles.nameBand}><VehicleName name={card.name} numberOfLines={2} style={styles.collectibleName}/>{!!card.title&&<Text style={styles.cardTitle}>{card.title}</Text>}</View>
    <CardSeparator color={rarityColor(card.rarity)}/>
    <View testID="speed-rank-row" accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" pointerEvents="none" style={styles.speedRankRow}>
     {speedRanks.length?speedRanks.map(segment=><Text key={segment.rarity} testID={`speed-rank-${segment.rarity}`} accessible={false} allowFontScaling={false} style={[styles.speedRankNumeral,{color:rarityColor(segment.rarity)}]}>{segment.numeral}</Text>):<Text accessible={false} allowFontScaling={false} style={[styles.speedRankNumeral,{color:C.muted}]}>—</Text>}
@@ -99,6 +99,7 @@ export function VehicleCardTile({data,card,stats,onPress,status,disabled=false,s
    <View style={styles.collectibleFacts}>{values}</View>
   </>:<>
    <Text accessibilityLabel={translate(owned?`Stufe ${owned.level}`:'Nicht entdeckt')} style={styles.level}>{owned?ROMAN_LEVELS[owned.level]||String(owned.level):'—'}</Text><View style={unavailable?styles.usedArtwork:undefined}><VehicleArt card={card}/></View><VehicleName name={card.name} numberOfLines={3} style={styles.name}/>
+   {!!card.title&&<Text style={styles.cardTitle}>{card.title}</Text>}
    {values}
   </>}
   {status&&<View style={[styles.assignment,status?.label&&!unavailable&&styles.assigned]}>{status?.label&&<Icon name={unavailable?"lock":"check"} size={11} color={unavailable?C.muted:C.accent}/>}<Text numberOfLines={2} style={[styles.assignmentText,unavailable&&{color:C.muted}]}>{status?.label||'Verfügbar'}</Text></View>}
@@ -117,7 +118,8 @@ const styles=StyleSheet.create({
  collectibleRow:{marginTop:14,marginBottom:10},collectible:{borderWidth:0,borderTopWidth:0,padding:0,backgroundColor:'transparent',borderRadius:0},
  collectibleBody:{position:'absolute',top:12,bottom:0,left:0,right:0,borderWidth:1,borderColor:'#151515',borderRadius:5,backgroundColor:C.panel,backgroundImage:'linear-gradient(110deg, #FFF6E1, #EEE0C2)'},
  nameBand:{marginTop:3,minHeight:46,justifyContent:'center',paddingHorizontal:3,backgroundColor:'rgba(223,205,169,.20)'},
- collectibleName:{fontFamily:displayFont,fontSize:11,lineHeight:14,textAlign:'center',color:C.text},
+ collectibleName:{fontFamily:displayFont,fontSize:14,lineHeight:18,fontWeight:'700',textAlign:'center',color:C.text},
+ cardTitle:{fontSize:10,lineHeight:13,textAlign:'center',color:C.muted,paddingHorizontal:2,paddingBottom:3},
  collectibleFacts:{paddingHorizontal:7,paddingBottom:8},
  speedRankRow:{height:24,marginTop:2,paddingHorizontal:2,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:6},
  speedRankNumeral:{fontFamily:displayFont,fontSize:12,lineHeight:18,fontWeight:'600'},
@@ -128,5 +130,5 @@ const styles=StyleSheet.create({
  row:{flexDirection:'row',gap:9,marginBottom:10},collectionRow:{gap:4.5,marginBottom:5},card:{flex:1,minWidth:0,borderWidth:1,borderRadius:6,borderTopWidth:3,backgroundColor:C.panel,padding:7},
  level:{fontFamily:displayFont,fontSize:18,fontWeight:'700',color:C.gold,textAlign:'center',lineHeight:24,marginBottom:5},
  artwork:{width:'100%',aspectRatio:1,minHeight:0,backgroundColor:C.raised,borderColor:C.line,borderWidth:1,borderRadius:7,alignItems:'center',justifyContent:'center',padding:4},
- name:{width:'100%',flexShrink:1,fontFamily:displayFont,fontSize:11,lineHeight:14,minHeight:42,textAlign:'center',color:C.text,marginTop:6},rank:{fontSize:11,lineHeight:18,textAlign:'center',marginTop:7,color:C.muted},capacity:{fontSize:13,lineHeight:20,fontWeight:'700',textAlign:'center'},
+ name:{width:'100%',flexShrink:1,fontFamily:displayFont,fontSize:14,lineHeight:18,minHeight:22,fontWeight:'700',textAlign:'center',color:C.text,marginTop:6},rank:{fontSize:11,lineHeight:18,textAlign:'center',marginTop:7,color:C.muted},capacity:{fontSize:13,lineHeight:20,fontWeight:'700',textAlign:'center'},
 });
