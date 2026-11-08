@@ -1,8 +1,12 @@
 # Offene Arbeiten und Veröffentlichungsstand
 
-Stand: 07.11.2026. Letzte UI-Veröffentlichung (OTA): `8eec5cfdfe3c0484c5e8ab126e6ac388abf7b6ef`; neue APK: `ab10d0185f3bc296247a5953f261336952ef1193`.
+Stand: 08.11.2026. Letzte Server-/App-Veröffentlichung (OTA): `feb3834edf0bbc55935e440a78697d382d8ad93d`; letzte neue APK: `ab10d0185f3bc296247a5953f261336952ef1193`.
 
 ## Letzte Veröffentlichung
+
+Alle 25 Transportkarten haben ihre freigegebenen Eigennamen, Titel und neuen Bilder. Packesel **Pepe**, Lian ohne Horn, Eira mit kleineren Pfoten und Niva mit schlankerem Schweif sind enthalten. Karten-IDs, Besitz, Ausbauten und Spielwerte bleiben erhalten; bestehende und geparkte Fahrzeuge erhalten die neuen Namen. [Mobile-preview-Lauf 42524779921](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42524779921): TypeScript, 418 Tests, Android-Export, Server-Deployment, Live-API-Prüfung und Android-OTA erfolgreich. Alle 25 Identitäten zusätzlich live geprüft. Die installierte APK wird per OTA aktualisiert; keine neue APK und kein physischer Gerätetest.
+
+## Vorherige Veröffentlichung – Spielrahmen
 
 Der vereinheitlichte Spielrahmen ist als Android-OTA veröffentlicht: ruhiges Petrol für Header und Navigation, gleichmäßige Header-Abstände, schlanker XP-Balken, kompakter Seitenkopf und kontinuierlich verblassende Goldlinien. [OTA und Release-Prüfungen](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42418929844) erfolgreich. Der dortige erste APK-Versuch ist durch den [erfolgreichen separaten APK-Build](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42420006604) ersetzt. Für die passende Farbe der Android-Drei-Tasten-Leiste ist die neue signierte APK (VersionCode 2) erforderlich; die bestehende Signierung bleibt erhalten. Kein physischer Gerätetest. Details: [Prüfstand](TEST_REPORT.md).
 
