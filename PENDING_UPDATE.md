@@ -49,6 +49,8 @@ Sammelbranch: `batch/november-ui-refinements`. Veröffentlichung gemeinsam nach 
 
 - Expeditionsorte: Erkundung → Abschlusslieferung → Ort erschlossen. Goldene Lieferungsmarkierung vor Start, Stoppuhr während der Erschließung, grüner Haken nach Abschluss. Modale zeigen Lieferdauer und beschriftete Belohnungsitems; deutsche/englische Texte und Hilfe angepasst. Automatische Auszahlung und Freischaltregeln bleiben erhalten. Vier Kartenstatus-Regressionstests bestanden; vollständige Typ-/UI-/Engineprüfung und Gerätetest noch offen.
 
+- Globale Titelleiste: Mindesthöhe von 44 auf 32 dp (rund 27 % flacher), Zierlinien über die volle Titelzeilenhöhe vertikal zentriert. Linker Platzhalter und symmetrische 44-dp-Seitenbreiten erhalten die mittige Titelposition. Erweiterte Berührungsflächen für Zurück/Hilfe. Quelltext geprüft; Gerätedarstellung noch offen.
+
 ## Noch offene Punkte
 
 | Bereich | Tatsächlicher Stand / nächster Schritt |
