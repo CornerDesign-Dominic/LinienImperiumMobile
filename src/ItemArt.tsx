@@ -9,7 +9,7 @@ import {itemAssets,sealAssets} from './itemAssets';
 
 type Props=ItemOptions&{id:string;size?:number;style?:StyleProp<ViewStyle>;framed?:boolean;label?:string};
 /** A shared illustration, technical rarity wash/frame and optional rank overlay. */
-export function ItemArt({id,size=44,style,framed=true,label,...options}:Props){
+export function ItemArt({id,size=44,style,framed=id!=='expeditionRefills'&&id!=='overtimeRefills',label,...options}:Props){
  const visual=itemVisual(id,options),source=visual&&itemAssets[visual.asset];
  const color=visual?.rarity?itemColors[visual.rarity]:'#8B8378',numeral=romanTier(visual?.tier);
  const illustratedType=visual?.kind==='material'||visual?.kind==='character';
