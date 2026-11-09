@@ -18,7 +18,7 @@ export function PageHeader({title,home=false,onBack,onHelp}:Props){
    </View>}
    <Text testID="page-header-title" literal accessibilityRole="header" onTextLayout={({nativeEvent:{lines}})=>{const width=Math.max(0,...lines.map(line=>line.width));setTextSize(previous=>previous.title===title&&previous.width===width&&previous.lines===lines.length?previous:{title,width,lines:lines.length});}} style={s.title}>{title}</Text>
   </View>
-  {onHelp?<Pressable testID="page-header-help" accessibilityRole="button" accessibilityLabel={t('Spielhilfe')} onPress={onHelp} style={({pressed})=>[s.slot,pressed&&s.pressed]}><Text literal style={s.helpMark}>?</Text></Pressable>:<View testID="page-header-help-placeholder" style={s.slot}/>}
+  {onHelp?<Pressable testID="page-header-help" accessibilityRole="button" accessibilityLabel={t('Spielhilfe')} onPress={onHelp} hitSlop={{top:6,bottom:6}} style={({pressed})=>[s.slot,pressed&&s.pressed]}><Text literal style={s.helpMark}>?</Text></Pressable>:<View testID="page-header-help-placeholder" style={s.slot}/>}
  </View>;
 }
 function BrassLine({width,reverse=false}:{width:number;reverse?:boolean}){

@@ -68,9 +68,9 @@ test('Place signs wrap whole translated words and show only actionable bonus mar
  const tree=render(1,4,[],[],320,390,{deliveries:completed},[{kind:'delivery',place:1,status:'active'}]);
  const places=elements(tree,'Pressable').filter(n=>/^journey-place-/.test(n.props.testID));
  const icons=place=>elements(place,'Icon').map(n=>n.props.name);
- assert.deepEqual(icons(places[0]),[]);assert.deepEqual(icons(places[1]),['timer']);
- assert.deepEqual(icons(places[2]),['plus']);assert.deepEqual(icons(places[3]),['plus']);assert.deepEqual(icons(places[4]),[]);
- assert.ok(places[3].props.accessibilityLabel.includes('Bonuslieferung verfügbar'));
+ assert.deepEqual(icons(places[0]),['check']);assert.deepEqual(icons(places[1]),['timer']);
+ assert.deepEqual(icons(places[2]),['truck']);assert.deepEqual(icons(places[3]),['truck']);assert.deepEqual(icons(places[4]),[]);
+ assert.ok(places[3].props.accessibilityLabel.includes('Erkundet · Abschlusslieferung offen'));
  const name=elements(places[3],'View').find(n=>n.props.testID==='journey-name-3');
  assert.deepEqual(elements(name,'Text').map(n=>n.props.children),['Die','Wagenrast']);
  assert.ok(elements(name,'Text').every(n=>n.props.numberOfLines===1));
