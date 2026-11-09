@@ -1,8 +1,17 @@
 # Offene Arbeiten und Veröffentlichungsstand
 
-Stand: 08.11.2026. Letzte Server-/App-Veröffentlichung (OTA): `feb3834edf0bbc55935e440a78697d382d8ad93d`; letzte neue APK: `ab10d0185f3bc296247a5953f261336952ef1193`.
+Stand: 10.11.2026. Letzte Server-/App-Veröffentlichung (OTA): `60ef661a5eb826930f958fb0e889b7a08a7b94b2`; letzte neue APK: `ab10d0185f3bc296247a5953f261336952ef1193`.
 
 ## Letzte Veröffentlichung
+
+Das Sammelpaket aus PR #28 ist über [Mobile-preview-Lauf 42721205734](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42721205734) erfolgreich veröffentlicht: TypeScript, alle 418 Tests, Android-Export, Firebase-Backend und Regeln, Live-API-Prüfung und Android-OTA im Kanal preview. Veröffentlichter Spielcode: `60ef661a5eb826930f958fb0e889b7a08a7b94b2`. Keine neue APK und kein physischer Gerätetest.
+
+- Transportmittelauswahl: Dauer und Ertrag mit Stoppuhr/Taler, ohne wiederholten Fahrzeugnamen über dem Startbutton.
+- Expeditionsorte: Erkundung → Abschlusslieferung → Ort erschlossen; passende Symbole, Texte, Lieferdauer und beschriftete Belohnungsitems. Automatische Auszahlung und Freischaltungen bleiben erhalten.
+- Globale Titelleiste rund 27 % flacher, Zierlinien vertikal mittig und symmetrische Seitenabstände erhalten.
+- Auffüller und Zahnräder aller Seltenheiten ohne Hintergrundkachel und Rahmen; transparente Bilddateien bestätigt.
+
+## Vorherige Veröffentlichung – Transportkarten
 
 Alle 25 Transportkarten haben ihre freigegebenen Eigennamen, Titel und neuen Bilder. Packesel **Pepe**, Lian ohne Horn, Eira mit kleineren Pfoten und Niva mit schlankerem Schweif sind enthalten. Karten-IDs, Besitz, Ausbauten und Spielwerte bleiben erhalten; bestehende und geparkte Fahrzeuge erhalten die neuen Namen. [Mobile-preview-Lauf 42524779921](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42524779921): TypeScript, 418 Tests, Android-Export, Server-Deployment, Live-API-Prüfung und Android-OTA erfolgreich. Alle 25 Identitäten zusätzlich live geprüft. Die installierte APK wird per OTA aktualisiert; keine neue APK und kein physischer Gerätetest.
 
@@ -43,15 +52,7 @@ Nachweise: [Prüfstand](TEST_REPORT.md), [Expeditions-/Truhenbalance](docs/gamep
 
 ## Gesammelt, noch nicht veröffentlicht
 
-Sammelbranch: `batch/november-ui-refinements`. Veröffentlichung gemeinsam nach ausdrücklicher Freigabe.
-
-- Einzelaufträge, Transportmittelauswahl: Fahrzeugname direkt über „Auftrag starten“ entfernt. Dauer mit Stoppuhr und Ertrag mit Taler als getrennte, größere Angaben mit Abstand dargestellt; bei wenig Platz können die Angaben umbrechen. Die Fahrzeugnamen auf den Karten bleiben bestehen. Quelltext geprüft; noch kein neuer Lauf von TypeScript/Tests und kein Gerätetest.
-
-- Expeditionsorte: Erkundung → Abschlusslieferung → Ort erschlossen. Goldene Lieferungsmarkierung vor Start, Stoppuhr während der Erschließung, grüner Haken nach Abschluss. Modale zeigen Lieferdauer und beschriftete Belohnungsitems; deutsche/englische Texte und Hilfe angepasst. Automatische Auszahlung und Freischaltregeln bleiben erhalten. Vier Kartenstatus-Regressionstests bestanden; vollständige Typ-/UI-/Engineprüfung und Gerätetest noch offen.
-
-- Globale Titelleiste: Mindesthöhe von 44 auf 32 dp (rund 27 % flacher), Zierlinien über die volle Titelzeilenhöhe vertikal zentriert. Linker Platzhalter und symmetrische 44-dp-Seitenbreiten erhalten die mittige Titelposition. Erweiterte Berührungsflächen für Zurück/Hilfe. Quelltext geprüft; Gerätedarstellung noch offen.
-
-- Itemdarstellung: Expeditions-/Überstundenauffüller und Zahnräder aller Seltenheiten standardmäßig ohne Hintergrundkachel, Farbfläche und Rahmen. Gemeinsame ItemArt-Darstellung gilt auch für Levelaufstieg und weitere Belohnungen. Illustrationen und Seltenheitsangaben bleiben erhalten. Gerätedarstellung noch ungeprüft.
+Keine weiteren Änderungen aus diesem Sammelpaket offen.
 
 ## Noch offene Punkte
 

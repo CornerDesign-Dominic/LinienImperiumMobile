@@ -1,5 +1,16 @@
 # Prüfstand und Nachweise
 
+## Sammelpaket: Transportauswahl, Expeditionsorte und Darstellung – 10.11.2026
+
+Das Sammelpaket aus PR #28 ist über [Mobile-preview-Lauf 42721205734](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42721205734) erfolgreich veröffentlicht: TypeScript, alle 418 Tests, Android-Export, Firebase-Backend und Regeln, Live-API-Prüfung und Android-OTA im Kanal preview. Veröffentlichter Spielcode: `60ef661a5eb826930f958fb0e889b7a08a7b94b2`. Keine neue APK und kein physischer Gerätetest.
+
+- Transportmittelauswahl: Dauer und Ertrag mit Stoppuhr/Taler, ohne wiederholten Fahrzeugnamen über dem Startbutton.
+- Expeditionsorte: Erkundung → Abschlusslieferung → Ort erschlossen; passende Symbole, Texte, Lieferdauer und beschriftete Belohnungsitems. Automatische Auszahlung und Freischaltungen bleiben erhalten.
+- Globale Titelleiste rund 27 % flacher, Zierlinien vertikal mittig und symmetrische Seitenabstände erhalten.
+- Auffüller und Zahnräder aller Seltenheiten ohne Hintergrundkachel und Rahmen; transparente Bilddateien bestätigt.
+
+Lokale Validierung vor Veröffentlichung: TypeScript erfolgreich, 418/418 Tests bestanden, Android-Export erfolgreich, git diff --check fehlerfrei. Veraltete Header-/Kartensymbolerwartungen und die Symboltypdefinition angepasst; beide Headeraktionen haben erweiterte Berührungsflächen. Kein neuer Browser- oder physischer Gerätetest.
+
 ## Letzter belegter App-Prüfstand – Transportkarten-Identitäten, 08.11.2026
 
 Veröffentlichter Spielcode: `feb3834edf0bbc55935e440a78697d382d8ad93d`. [Mobile-preview-Lauf 42524779921](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42524779921) ist vollständig erfolgreich: Validierung mit 418 Tests, Android-Export, Firebase-Deployment, Live-API-Smokeprüfung und Android-OTA im Kanal preview. Die bestehende APK erhält das kompatible Update; keine neue APK gebaut.
