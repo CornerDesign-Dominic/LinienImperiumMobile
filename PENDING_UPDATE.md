@@ -51,6 +51,8 @@ Sammelbranch: `batch/november-ui-refinements`. Veröffentlichung gemeinsam nach 
 
 - Globale Titelleiste: Mindesthöhe von 44 auf 32 dp (rund 27 % flacher), Zierlinien über die volle Titelzeilenhöhe vertikal zentriert. Linker Platzhalter und symmetrische 44-dp-Seitenbreiten erhalten die mittige Titelposition. Erweiterte Berührungsflächen für Zurück/Hilfe. Quelltext geprüft; Gerätedarstellung noch offen.
 
+- Itemdarstellung: Expeditions-/Überstundenauffüller und Zahnräder aller Seltenheiten standardmäßig ohne Hintergrundkachel, Farbfläche und Rahmen. Gemeinsame ItemArt-Darstellung gilt auch für Levelaufstieg und weitere Belohnungen. Illustrationen und Seltenheitsangaben bleiben erhalten. Gerätedarstellung noch ungeprüft.
+
 ## Noch offene Punkte
 
 | Bereich | Tatsächlicher Stand / nächster Schritt |
