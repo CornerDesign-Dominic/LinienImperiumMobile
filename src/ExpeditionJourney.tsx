@@ -55,7 +55,7 @@ export function ExpeditionJourney({map,maps,state,missions,accountId,onRegion,on
       <View testID={`journey-sign-${index}`} style={[s.sign,index===state.discovered&&status==='Erkunden'&&s.signNext]}>
        <Text style={s.number}>{String(index+1).padStart(2,'0')}</Text>
        <View testID={`journey-name-${index}`} accessible={false} importantForAccessibility="no-hide-descendants" style={s.name}>{words.map((word,wordIndex)=><Text key={wordIndex} literal numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.8} style={[s.word,compact&&{fontSize:11,lineHeight:14}]}>{word}</Text>)}</View>
-       {icon&&<View testID={`journey-status-${index}`} style={s.status}><Icon name={icon} size={12} color={C.brassLight}/></View>}
+       {icon&&<View testID={`journey-status-${index}`} style={s.status}><Icon name={icon} size={12} color={icon==='check'?C.accent:C.brassLight}/></View>}
       </View>
      </Pressable>;
     })}

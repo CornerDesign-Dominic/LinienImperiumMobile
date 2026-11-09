@@ -150,7 +150,7 @@
   "expeditions": [
     [
       "Exploration",
-      "Start with 50 expedition points. Both point types regenerate 1 point every 10 minutes. Spending below the maximum preserves the countdown; full reserves pause it. Leaving full reserves starts a fresh cycle. Spend exploration points one at a time in a location’s modal. Complete exploration reaches 100%; delivery is an additional bonus."
+      "Start with 50 expedition points. Both point types regenerate 1 point every 10 minutes. Spending below the maximum preserves the countdown; full reserves pause it. Leaving full reserves starts a fresh cycle. Spend exploration points one at a time in a location’s modal. Complete exploration reaches 100%. The location is explored; its one-time completion delivery establishes it and credits its reward automatically."
     ],
     [
       "Discovery chances",

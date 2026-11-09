@@ -1602,5 +1602,17 @@
   "die Frostläuferin": "the Frost Runner",
   "Eira": "Eira",
   "die Schneekönigin": "the Snow Queen",
-  "Niva": "Niva"
+  "Niva": "Niva",
+  "Abschlusslieferung bereit": "Completion delivery ready",
+  "Deine Erkundung ist abgeschlossen. Starte die Abschlusslieferung, um diesen Ort zu erschließen.": "Exploration is complete. Start the completion delivery to establish this location.",
+  "Abschlusslieferung starten": "Start completion delivery",
+  "Abschlusslieferung": "Completion delivery",
+  "Dauer der Abschlusslieferung": "Completion delivery duration",
+  "Mit der ersten Abschlusslieferung schaltest du den Stammkunden frei.": "The first completion delivery unlocks the regular customer.",
+  "Die Belohnung wird nach der Abschlusslieferung automatisch gutgeschrieben.": "The reward is credited automatically after the completion delivery.",
+  "Ort erschlossen": "Location established",
+  "Handelsplatz erschlossen": "Trading post established",
+  "Erschließung läuft": "Establishment in progress",
+  "Erschließung wird abgeschlossen": "Completing establishment",
+  "Erkundet · Abschlusslieferung offen": "Explored · completion delivery pending"
 }

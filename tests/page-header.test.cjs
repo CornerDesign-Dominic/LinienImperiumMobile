@@ -7,7 +7,8 @@ test('Parchment header retains working controls and balanced 44px slots; home ha
  const h=setup();let back=0,help=0;const props={title:'Botenstation',onBack:()=>back++,onHelp:()=>help++};
  let tree=h.render('PageHeader',props),buttons=nodes(tree,'Pressable');assert.equal(buttons.length,2);
  buttons.find(b=>b.props.accessibilityLabel==='Zurück').props.onPress();buttons.find(b=>b.props.accessibilityLabel==='Spielhilfe').props.onPress();assert.deepEqual([back,help],[1,1]);
- assert.deepEqual(buttons.map(b=>b.props.style({pressed:false})[0]).map(s=>[s.width,s.height]),[[44,44],[44,44]]);
+ assert.deepEqual(buttons.map(b=>b.props.style({pressed:false})[0]).map(s=>[s.width,s.height]),[[44,32],[44,32]]);
+ assert.ok(buttons.every(b=>b.props.hitSlop.top===6&&b.props.hitSlop.bottom===6));
  tree=h.render('PageHeader',{...props,title:'Start',home:true});buttons=nodes(tree,'Pressable');assert.equal(buttons.length,1);assert.equal(buttons[0].props.accessibilityLabel,'Spielhilfe');
  const placeholder=byId(tree,'page-header-back-placeholder');assert.equal(placeholder.props.onPress,undefined);assert.equal(placeholder.props.style.width,44);
  assert.equal(text(byId(tree,'page-header-title')),'Start');
@@ -26,6 +27,7 @@ test('Brass ornaments use measured free space and disappear for narrow or multil
  byId(tree,'page-header-center').props.onLayout({nativeEvent:{layout:{width:240}}});byId(tree,'page-header-title').props.onTextLayout({nativeEvent:{lines:[{width:45}]}});
  tree=h.render('PageHeader',props);const ornaments=byId(tree,'page-header-ornaments');assert.ok(ornaments);assert.equal(ornaments.props.pointerEvents,'none');assert.equal(ornaments.props.importantForAccessibility,'no-hide-descendants');
  assert.equal(ornaments.props.children[0].props.width,72);assert.equal(ornaments.props.children[1].props.reverse,true);
+ assert.equal(ornaments.props.style.top,0);assert.equal(ornaments.props.style.bottom,0);assert.equal(ornaments.props.style.alignItems,'center');
  byId(tree,'page-header-center').props.onLayout({nativeEvent:{layout:{width:90}}});tree=h.render('PageHeader',props);assert.equal(byId(tree,'page-header-ornaments'),undefined);
  byId(tree,'page-header-center').props.onLayout({nativeEvent:{layout:{width:240}}});byId(tree,'page-header-title').props.onTextLayout({nativeEvent:{lines:[{width:180},{width:100}]}});tree=h.render('PageHeader',props);assert.equal(byId(tree,'page-header-ornaments'),undefined);
 });

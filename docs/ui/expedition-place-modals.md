@@ -11,11 +11,11 @@ Alle 40 Orte haben eine eigene Nahansicht: sieben Haltepunkte und ein Endlos-/Ha
 | Zustand | Darstellung und Aktion |
 | --- | --- |
 | Erkundbar | Erkundung, genaue investierte/benötigte Punkte und Prozentbalken, Erkunden |
-| Erkundet | Gebiet erkundet, kurze Einladung zur Bonuslieferung und Ausbaupunkt als Belohnung |
-| Bonuslieferung unterwegs | Restzeit, Fortschritt und tatsächliche Belohnung |
-| Automatisch abgeschlossen | Bild, Identität und kleines Entdeckt; keine redundanten 100-%- oder Belohnungsblöcke |
+| Erkundet | Goldene Abschlusslieferung, Einladung zur Erschließung, Lieferdauer und beschrifteter Ausbaupunkt als Belohnung |
+| Abschlusslieferung unterwegs | Restzeit, Fortschritt und tatsächliche Belohnung |
+| Automatisch abgeschlossen | Bild, Identität und grüner Haken mit Ort erschlossen; keine erneute Auszahlung oder Abholung |
 
-Normale Orte besitzen keinen Details-Expander mehr. Fahrzeugwahl und vorhandene Frei-/Busy-Prüfungen bleiben erhalten. Die Bonuslieferung vergibt ihren Ausbaupunkt automatisch; der stille Abschluss und die manuelle Verteilung sind unter [Expeditionsabschlüsse](expedition-completions.md) beschrieben. Kein erneutes manuelles Abholen am Ort.
+Normale Orte besitzen keinen Details-Expander mehr. Fahrzeugwahl und vorhandene Frei-/Busy-Prüfungen bleiben erhalten. Die Abschlusslieferung vergibt ihren Ausbaupunkt automatisch; der stille Abschluss und die manuelle Verteilung sind unter [Expeditionsabschlüsse](expedition-completions.md) beschrieben. Kein erneutes manuelles Abholen am Ort.
 
 ## Endlos-/Handelsort
 
@@ -32,3 +32,5 @@ Hier bleiben Kundenfreischaltung, wiederholbare Expedition, Fundchancen und Deta
 Die erste Nahansichten-Fassung wurde mit TypeScript, damals 143 Tests, Android-Export und React-Native-Web für alle 40 Orte bei 320/360/390/430 px geprüft. Die damals getesteten zusätzlichen Details-/Belohnungsblöcke sind teilweise durch die oben beschriebene kompakte Zustandsdarstellung ersetzt.
 
 Für die kompakte Revision wurden bestehende Real-Engine-Ortsmodaltests, Titel-/Schließposition, Typprüfung und Android-Export protokolliert. Für diese Revision lag kein nativer Geräte- oder visueller Browsertest vor. Diese Dokumentationspflege führt keinen neuen solchen Test aus. Aktuelle Prüfung: [TEST_REPORT.md](../../TEST_REPORT.md).
+
+Die Karten auf dem Panorama zeigen ein goldenes Lieferungssymbol vor der Abschlusslieferung, eine Stoppuhr unterwegs und erst nach Abschluss einen grünen Haken. Erkundung und Lieferabschluss bleiben getrennt; Freischaltbedingungen ändern sich nicht.
