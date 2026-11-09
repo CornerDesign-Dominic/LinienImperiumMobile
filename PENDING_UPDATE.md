@@ -47,6 +47,8 @@ Sammelbranch: `batch/november-ui-refinements`. Veröffentlichung gemeinsam nach 
 
 - Einzelaufträge, Transportmittelauswahl: Fahrzeugname direkt über „Auftrag starten“ entfernt. Dauer mit Stoppuhr und Ertrag mit Taler als getrennte, größere Angaben mit Abstand dargestellt; bei wenig Platz können die Angaben umbrechen. Die Fahrzeugnamen auf den Karten bleiben bestehen. Quelltext geprüft; noch kein neuer Lauf von TypeScript/Tests und kein Gerätetest.
 
+- Expeditionsorte: Erkundung → Abschlusslieferung → Ort erschlossen. Goldene Lieferungsmarkierung vor Start, Stoppuhr während der Erschließung, grüner Haken nach Abschluss. Modale zeigen Lieferdauer und beschriftete Belohnungsitems; deutsche/englische Texte und Hilfe angepasst. Automatische Auszahlung und Freischaltregeln bleiben erhalten. Vier Kartenstatus-Regressionstests bestanden; vollständige Typ-/UI-/Engineprüfung und Gerätetest noch offen.
+
 ## Noch offene Punkte
 
 | Bereich | Tatsächlicher Stand / nächster Schritt |

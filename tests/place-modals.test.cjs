@@ -7,7 +7,7 @@ const ui={C:require('../src/palette.json'),Txt:'Text',Row:'Row',Btn:'Btn',Bar:'B
 const {ExpeditionPlaceDetails}=compile('ExpeditionPlaceDetails.tsx',id=>{
  if(id==='react')return React;if(id==='./Material')return {MaterialView:'View',MaterialPressable:'Pressable',MaterialLayer:'MaterialLayer'};if(id==='react-native')return {View:'View',StyleSheet:{create:x=>x}};
  if(id==='./ui')return ui;if(id==='./ExpeditionPlaceModal')return {PlaceStatus:'PlaceStatus',PlaceRewards:'PlaceRewards',PlaceExtraDetails:'PlaceExtraDetails'};
- if(id==='./regionIdentities')return {regionIdentities:Array.from({length:5},()=>({customer:'Customer'}))};throw Error(id);
+ if(id==='./Icon')return {Icon:'Icon'};if(id==='./regionIdentities')return {regionIdentities:Array.from({length:5},()=>({customer:'Customer'}))};throw Error(id);
 });
 function nodes(node,type){if(!node||typeof node!=='object')return [];return [...(node.type===type?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>nodes(child,type))];}
 function render(data,selected,options={}){const commands=[],missions=[],chances=[];const tree=ExpeditionPlaceDetails({data,region:0,selected,busy:false,clock:now,onCommand:(...p)=>commands.push(p),onMission:(...p)=>missions.push(p),onChances:()=>chances.push(true),...options});return {tree,commands,missions,chances,buttons:nodes(tree,'Btn')};}
@@ -22,7 +22,7 @@ test('Reachable exploration spends a single point, blocks inaccessible places an
  r=render(explored(6).view,6);assert.equal(nodes(r.tree,'PlaceRewards').length,0,'Mobile grants the module on final collection, not discovery');
 });
 test('Bonus delivery starts normally and reports automatic expansion rewards after completion',()=>{
- let game=explored();let r=render(game.view,0);assert.ok(text(r.tree).includes('Gebiet erkundet'));assert.equal(nodes(r.tree,'PlaceExtraDetails').length,0);click(r,'Bonuslieferung starten');assert.deepEqual(r.missions,[[0,'delivery',0]]);
+ let game=explored();let r=render(game.view,0);assert.ok(text(r.tree).includes('Abschlusslieferung bereit'));assert.equal(nodes(r.tree,'PlaceExtraDetails').length,0);click(r,'Abschlusslieferung starten');assert.deepEqual(r.missions,[[0,'delivery',0]]);
  assert.equal(nodes(r.tree,'PlaceRewards')[0].props.items[0].label,'Ausbaupunkt');assert.equal(nodes(r.tree,'PlaceRewards')[0].props.items[0].icon,'expansion');
  game=execute(game.state,'mission',{region:0,kind:'delivery',place:0,truck:game.view.state.trucks[0].id},now,random);
  r=render(game.view,0,{clock:now+7500});assert.equal(r.buttons.length,0);assert.equal(nodes(r.tree,'Bar')[0].props.value,50);

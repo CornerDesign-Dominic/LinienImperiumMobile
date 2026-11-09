@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import {C,Txt,Row,Btn,Bar,n,remaining} from './ui';
 import {PlaceExtraDetails,PlaceRewards,PlaceStatus} from './ExpeditionPlaceModal';
+import {Icon} from './Icon';
 import {regionIdentities} from './regionIdentities';
 const progress=(mission:any,done:boolean,clock:number)=>done||mission?.status==='completed'?100:mission?.status==='active'?Math.max(0,Math.min(100,(clock-mission.startedAt)/Math.max(1,mission.endsAt-mission.startedAt)*100)):0;
 export function ExpeditionPlaceDetails({data,region,selected,busy,clock,onCommand,onMission,onChances}:any){
@@ -23,23 +24,25 @@ export function ExpeditionPlaceDetails({data,region,selected,busy,clock,onComman
    <Bar value={place.invested/place.discoveryCost*100}/>
    {button('Erkunden','discover',{region},g.expedition.points<1)}
    {g.expedition.points<1&&<Txt muted style={s.note}>Keine Expeditionspunkte verfügbar.</Txt>}
-  </>:done?<Txt muted style={s.discovered}>Entdeckt</Txt>:<>
+  </>:done?<PlaceStatus icon="check">Ort erschlossen</PlaceStatus>:<>
    {active?<>
-    <Row style={{marginBottom:0}}><PlaceStatus icon="timer">Bonuslieferung unterwegs</PlaceStatus><Txt gold style={s.time}>{remaining(mission.endsAt,clock)}</Txt></Row>
+    <Row style={{marginBottom:0}}><PlaceStatus icon="timer">Erschließung läuft</PlaceStatus><Txt gold style={s.time}>{remaining(mission.endsAt,clock)}</Txt></Row>
     <Bar value={progress(mission,false,clock)} gold/>
    </>:<>
-    <PlaceStatus icon="check">Gebiet erkundet</PlaceStatus>
-    <Txt style={s.invitation}>Gut gemacht! Sichere dir mit einer Bonuslieferung den Ausbaupunkt dieses Ortes.</Txt>
+    <PlaceStatus icon="truck" color={C.gold}>Abschlusslieferung bereit</PlaceStatus>
+    <Txt style={s.invitation}>Deine Erkundung ist abgeschlossen. Starte die Abschlusslieferung, um diesen Ort zu erschließen.</Txt>
    </>}
+   {!active&&<Row style={{marginBottom:8}}><Icon name="timer" size={18} color={C.muted}/><Txt style={[s.small,{flex:1}]}>Dauer der Abschlusslieferung</Txt><Txt style={s.time}>{remaining(duration,0)}</Txt></Row>}
    <PlaceRewards items={rewardItems}/>
-   {!mission&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'delivery',selected)}>Bonuslieferung starten</Btn>}
+   <Txt muted style={s.note}>Die Belohnung wird nach der Abschlusslieferung automatisch gutgeschrieben.</Txt>
+   {!mission&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'delivery',selected)}>Abschlusslieferung starten</Btn>}
    {!mission&&noTruck&&<Txt muted style={s.note}>Kein freies Fahrzeug verfügbar.</Txt>}
   </>}
  </>;
  return <>
-  <Row style={{marginBottom:0}}><PlaceStatus icon={done?'check':active?'timer':'customers'}>{done?'Kunde freigeschaltet':active?'Bonuslieferung unterwegs':'Handelsplatz erreicht'}</PlaceStatus>{active&&<Txt gold style={s.time}>{remaining(mission.endsAt,clock)}</Txt>}</Row>
+  <Row style={{marginBottom:0}}><PlaceStatus icon={done?'check':active?'timer':'customers'}>{done?'Kunde freigeschaltet':active?'Abschlusslieferung unterwegs':'Handelsplatz erreicht'}</PlaceStatus>{active&&<Txt gold style={s.time}>{remaining(mission.endsAt,clock)}</Txt>}</Row>
   <PlaceRewards items={rewardItems} received={!!done}/>
-  {active&&<><Row style={{marginBottom:0}}><Txt muted style={s.small}>Bonuslieferung</Txt><Txt style={s.small}>{n(progress(mission,done,clock))} %</Txt></Row><Bar value={progress(mission,done,clock)} gold/></>}
+  {active&&<><Row style={{marginBottom:0}}><Txt muted style={s.small}>Abschlusslieferung</Txt><Txt style={s.small}>{n(progress(mission,done,clock))} %</Txt></Row><Bar value={progress(mission,done,clock)} gold/></>}
   <Txt style={s.customer}>{regionIdentities[region].customer}</Txt>
   {!done&&!mission&&<Btn disabled={busy||noTruck} onPress={()=>onMission(region,'final',0)}>Kunde freischalten</Btn>}
   {button(`Expedition · ${map.finds.cost} Punkte`,'draw',{region},g.expedition.points<map.finds.cost,!done)}
@@ -47,8 +50,8 @@ export function ExpeditionPlaceDetails({data,region,selected,busy,clock,onComman
   <Btn secondary icon="help" onPress={onChances}>Fundchancen</Btn>
   {!done&&!mission&&noTruck&&<Txt muted style={s.note}>Kein freies Fahrzeug verfügbar.</Txt>}
   <PlaceExtraDetails>
-   <Row style={{marginBottom:0}}><Txt muted style={s.small}>Dauer der Bonuslieferung</Txt><Txt style={s.small}>{remaining(duration,0)}</Txt></Row>
-   <Txt muted style={s.small}>Mit der ersten Bonuslieferung schaltest du den Stammkunden frei.</Txt>
+   <Row style={{marginBottom:0}}><Txt muted style={s.small}>Dauer der Abschlusslieferung</Txt><Txt style={s.small}>{remaining(duration,0)}</Txt></Row>
+   <Txt muted style={s.small}>Mit der ersten Abschlusslieferung schaltest du den Stammkunden frei.</Txt>
    <Txt muted style={s.small}>Regionsabschluss: 1 Handelstruhe, Stammkunde und 1 Kapazitätsmodul. Bereits erhaltene Abschlussbelohnungen werden nicht erneut vergeben.</Txt>
    <Txt muted style={s.small}>Expeditionen bringen neue Funde aus dieser Region.</Txt>
   </PlaceExtraDetails>
