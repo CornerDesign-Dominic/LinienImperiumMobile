@@ -43,7 +43,9 @@ Nachweise: [Prüfstand](TEST_REPORT.md), [Expeditions-/Truhenbalance](docs/gamep
 
 ## Gesammelt, noch nicht veröffentlicht
 
-Keine weiteren Änderungen aus diesem Arbeitsauftrag offen.
+Sammelbranch: `batch/november-ui-refinements`. Veröffentlichung gemeinsam nach ausdrücklicher Freigabe.
+
+- Einzelaufträge, Transportmittelauswahl: Fahrzeugname direkt über „Auftrag starten“ entfernt. Dauer mit Stoppuhr und Ertrag mit Taler als getrennte, größere Angaben mit Abstand dargestellt; bei wenig Platz können die Angaben umbrechen. Die Fahrzeugnamen auf den Karten bleiben bestehen. Quelltext geprüft; noch kein neuer Lauf von TypeScript/Tests und kein Gerätetest.
 
 ## Noch offene Punkte
 
