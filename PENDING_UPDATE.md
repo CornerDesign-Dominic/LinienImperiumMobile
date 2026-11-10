@@ -58,6 +58,8 @@ Sammelbranch: `batch/november-followup-ui`. Noch nicht veröffentlicht.
 
 - Imperiumsausbau: gemalte, freigestellte Illustrationen statt Linienicons. Abschlussprämie = offene Münztruhe, Auftragsmenge = Warenkiste, Reichweite = Karte mit Kompass. Je 48 px in Ausbauübersicht und Detailmodal; vorhandene Spielassets ohne neue Downloads. Typprüfung, 14 gezielte Transport-/UI-/Modaltests und diff --check erfolgreich; kein Gerätetest.
 
+- Startseite: Botenstation zeigt bei voller Kasse einen grünen Aktionspunkt direkt hinter Voll, bei Teilfüllung keinen Punkt. Stammkunden zeigen bei verfügbaren Verbesserungspunkten denselben grünen Punkt statt des bisherigen Aufwärtspfeils; bestehende Verfügbarkeitsbedingung unverändert. Größe/Farbe entsprechen Materialbeschaffung. Drei gezielte Home-Tests, TypeScript und diff --check erfolgreich; kein Gerätetest.
+
 ## Noch offene Punkte
 
 | Bereich | Tatsächlicher Stand / nächster Schritt |
