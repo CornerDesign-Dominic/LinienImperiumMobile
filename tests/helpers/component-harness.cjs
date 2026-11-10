@@ -28,6 +28,7 @@ function componentHarness(file,imports={}){
   if(id==='./AppModal')return {AppModal:'Modal'};
   if(id==='./ModalCloseButton')return {ModalCloseButton:'ModalCloseButton'};
   if(id==='../assets/art/company/headquarters.jpg')return 'headquarters-art';
+  if(['../assets/art/currency/packs/chest.png','../assets/art/hub/crates.png','../assets/art/menu/expeditions.png'].includes(id))return id;
   if(id==='./ItemArt')return {ItemArt:'ItemArt',ItemAmount:'ItemAmount'};
   if(id==='./Icon')return {Icon:'Icon'};
   if(id==='./HubCourierArt')return {HubCourierArt:'HubCourierArt'};

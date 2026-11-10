@@ -1,14 +1,15 @@
 import {MaterialView as View,MaterialPressable as Pressable} from './Material';
 import {ItemArt} from './ItemArt';
 import {t as translate} from './i18n';
-import {Icon,IconName} from './Icon';
+import {Icon} from './Icon';
 import React,{useEffect,useRef,useState} from 'react';
-import {ScrollView,StyleSheet} from 'react-native';
+import {Image,ScrollView,StyleSheet} from 'react-native';
 import {AppModal as Modal} from './AppModal';
 import {C,Txt,Card,Row,Btn,n} from './ui';
 import {pointInfoStyle} from './PointAllocation';
 const LABELS:Record<string,string>={premium:'Abschlussprämie',volume:'Auftragsmenge',range:'Reichweite'};
-const ICONS:Record<string,IconName>={premium:'reward',volume:'truck',range:'expedition'};
+const UPGRADE_ART:Record<string,any>={premium:require('../assets/art/currency/packs/chest.png'),volume:require('../assets/art/hub/crates.png'),range:require('../assets/art/menu/expeditions.png')};
+function UpgradeArt({kind}:{kind:string}){return <Image testID={`company-upgrade-art-${kind}`} source={UPGRADE_ART[kind]} resizeMode="contain" accessible={false} importantForAccessibility="no" fadeDuration={0} style={styles.upgradeArt}/>;}
 const categoryName=(category:string)=>category==='national'?'Nahverkehr':'Fernverkehr';
 export type UpgradeDraft=Record<string,number>;
 export const upgradeKey=(o:any)=>`${o.category}:${o.kind}`;
@@ -65,7 +66,7 @@ export function TransportEditor({data,busy,onSave}:any){
   <Card style={{padding:0,overflow:'hidden'}}>{options.filter((o:any)=>o.category===category).map((o:any,index:number)=>{
    const cost=o.costs[0],max=o.level>=o.limit||!cost,canImprove=canImproveTransport(data,o);
    return <Pressable key={upgradeKey(o)} accessibilityRole="button" accessibilityLabel={`${translate(LABELS[o.kind])}, ${translate(effect(o,o.level))}, ${translate(`Stufe ${o.level} / ${o.limit}`)}, ${translate(max?'Maximum':canImprove?'Verbesserung verfügbar':'Details')}`} onPress={()=>{setSelection({key:upgradeKey(o),level:o.level,count:1});setSaveError(false);}} style={({pressed})=>[styles.upgradeRow,index>0&&styles.divider,pressed&&{backgroundColor:C.raised}]}>
-    <View style={styles.upgradeIcon}><Icon name={ICONS[o.kind]} size={25}/></View>
+    <UpgradeArt kind={o.kind}/>
     <View style={{flex:1,minWidth:0}}><Txt style={{fontWeight:'700'}}>{LABELS[o.kind]}</Txt><Txt style={{fontSize:13,marginTop:2}}>{effect(o,o.level)}</Txt><Txt muted style={{fontSize:11}}>Stufe {o.level} / {o.limit}{max?' · Maximum':''}</Txt></View>
     {canImprove&&<AvailableDot/>}
     <Icon name="chevron" size={17} color={C.muted}/>
@@ -73,7 +74,7 @@ export function TransportEditor({data,busy,onSave}:any){
   })}</Card>
   <Modal visible={!!active} transparent animationType="fade" onRequestClose={close}>
    <View style={styles.overlay}><View accessibilityViewIsModal style={styles.modal}>
-    <View style={styles.modalHeader}><View style={{flex:1}}><Txt muted style={{fontSize:11}}>{categoryName(active?.category)}</Txt><Txt style={[styles.title,{fontSize:20}]}>{active?LABELS[active.kind]:''}</Txt></View><Btn iconOnly icon="close" secondary disabled={busy} onPress={close}>Schließen</Btn></View>
+    <View style={styles.modalHeader}>{active&&<UpgradeArt kind={active.kind}/>}<View style={{flex:1}}><Txt muted style={{fontSize:11}}>{categoryName(active?.category)}</Txt><Txt style={[styles.title,{fontSize:20}]}>{active?LABELS[active.kind]:''}</Txt></View><Btn iconOnly icon="close" secondary disabled={busy} onPress={close}>Schließen</Btn></View>
     {active&&<><ScrollView style={{flexShrink:1}} contentContainerStyle={{padding:18,paddingTop:0}}>
      <Txt muted style={{fontSize:12,marginBottom:12}}>Stufe {active.level} / {active.limit}</Txt>
      <View style={styles.comparison}><View style={styles.effectColumn}><Txt muted style={styles.caption}>Aktuell</Txt><Txt style={styles.effect}>{effect(active,active.level)}</Txt></View>{!maximum&&<><Icon name="arrow" size={19} color={C.gold}/><View style={[styles.effectColumn,styles.after]}><Txt muted style={styles.caption}>Nach Ausbau</Txt><Txt style={[styles.effect,{color:C.accent}]}>{effect(active,active.level+count)}</Txt></View></>}</View>
@@ -95,7 +96,7 @@ export function TransportEditor({data,busy,onSave}:any){
 const styles=StyleSheet.create({
  summary:{backgroundColor:C.panel,borderColor:C.line},title:{fontSize:16,fontWeight:'700'},group:{paddingVertical:9,borderBottomWidth:1,borderColor:C.line,marginBottom:4},
  tabs:{flexDirection:'row',gap:6,marginBottom:6},tab:{flex:1,flexDirection:'row',gap:6,minHeight:44,padding:8,borderWidth:1,borderColor:C.line,borderRadius:6,justifyContent:'center',alignItems:'center',backgroundColor:C.raised},tabActive:{backgroundColor:C.accent,borderColor:C.ink},tabText:{fontSize:13,fontWeight:'700',textAlign:'center'},
- upgradeRow:{flexDirection:'row',alignItems:'center',gap:10,padding:11,minHeight:100},divider:{borderTopWidth:1,borderColor:C.line},upgradeIcon:{width:38,height:42,alignItems:'center',justifyContent:'center',backgroundColor:C.raised,borderRadius:6},availableDot:{width:7,height:7,borderRadius:4,backgroundColor:C.gold,flexShrink:0},
+ upgradeRow:{flexDirection:'row',alignItems:'center',gap:10,padding:11,minHeight:100},divider:{borderTopWidth:1,borderColor:C.line},upgradeArt:{width:48,height:48,flexShrink:0},availableDot:{width:7,height:7,borderRadius:4,backgroundColor:C.gold,flexShrink:0},
  overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:16},modal:{width:'100%',maxWidth:460,maxHeight:'90%',backgroundColor:C.panel,borderWidth:1,borderColor:C.line,borderRadius:12,overflow:'hidden'},modalHeader:{flexDirection:'row',alignItems:'center',gap:8,padding:18},modalFooter:{padding:18,paddingTop:4,borderTopWidth:1,borderColor:C.line},
  comparison:{flexDirection:'row',alignItems:'center',gap:8},effectColumn:{flex:1,minWidth:0,padding:10,borderRadius:6,backgroundColor:C.raised},after:pointInfoStyle,caption:{fontSize:11,marginBottom:4},effect:{fontSize:15,fontWeight:'700'},quantity:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,marginVertical:18},stepper:{flexDirection:'row',alignItems:'center',gap:8},costs:{flexDirection:'row',gap:12,flexWrap:'wrap',marginVertical:5},cost:{flexDirection:'row',alignItems:'center',gap:6,paddingVertical:6},error:{fontSize:12,color:C.red,marginTop:10}
 });

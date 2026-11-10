@@ -56,6 +56,8 @@ Sammelbranch: `batch/november-followup-ui`. Noch nicht veröffentlicht.
 
 - Handelsimperium: Hauptsitzbild in einem 16:9-Rahmen mit gemessener Breite und expliziten Bildmaßen dargestellt. Das gesamte Motiv bleibt durch `contain` sichtbar; Android-Quellmaße können es nicht mehr über den Kartenrahmen hinaus vergrößern. 14 gezielte Tests, TypeScript und diff --check erfolgreich. Regression prüft Kartenbreiten 274/344/384/700 gegen die Quellmaße 1200×675. Visueller Browsertest durch Chromium-Prozessfehler (`socket() failed: Operation not permitted`) blockiert; kein Gerätetest.
 
+- Imperiumsausbau: gemalte, freigestellte Illustrationen statt Linienicons. Abschlussprämie = offene Münztruhe, Auftragsmenge = Warenkiste, Reichweite = Karte mit Kompass. Je 48 px in Ausbauübersicht und Detailmodal; vorhandene Spielassets ohne neue Downloads. Typprüfung, 14 gezielte Transport-/UI-/Modaltests und diff --check erfolgreich; kein Gerätetest.
+
 ## Noch offene Punkte
 
 | Bereich | Tatsächlicher Stand / nächster Schritt |
