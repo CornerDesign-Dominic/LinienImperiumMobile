@@ -12,11 +12,13 @@ import {C,Txt,Card,Row,Btn,n} from './ui';
 import {PointsBalance,PointAllocationRow} from './PointAllocation';
 type Allocation={expedition:number;overtime:number};
 export function DevelopmentCard({data,busy,onCommand,modalBlocked=false}:any){
- const [open,setOpen]=useState(false),development=data.development;
+ const [open,setOpen]=useState(false),[artWidth,setArtWidth]=useState(0),development=data.development;
  if(!development)return null;
  return <>
   <Card style={[s.headquartersCard,{borderColor:development.points?C.accent:C.line}]}>
-   <Image testID="empire-headquarters-art" source={require('../assets/art/company/headquarters.jpg')} resizeMode="cover" accessible={false} fadeDuration={0} style={s.headquartersArt}/>
+   <View testID="empire-headquarters-frame" style={s.headquartersFrame} onLayout={({nativeEvent:{layout:{width}}})=>setArtWidth(previous=>previous===width?previous:width)}>
+    <Image testID="empire-headquarters-art" source={require('../assets/art/company/headquarters.jpg')} resizeMode="contain" accessible={false} fadeDuration={0} style={{width:artWidth,height:artWidth*9/16}}/>
+   </View>
    <View style={s.developmentBody}>
    {(['overtime','expedition'] as const).map(kind=><Row key={kind} style={{marginBottom:3,flexWrap:'nowrap'}}><Txt style={{fontSize:12,flex:1}}>{kind==='overtime'?'Überstunden':'Expeditionspunkte'}</Txt><Txt style={{fontSize:17,fontWeight:'700'}}>{n(development[kind].base)}</Txt></Row>)}
    {development.points>0&&<Btn secondary icon="expansion" disabled={busy} onPress={()=>setOpen(true)}>Ausbaupunkte verteilen · {n(development.points)}</Btn>}
@@ -53,6 +55,6 @@ export function LevelUpNotice({levels,onClose}:{levels:number[];onClose:()=>void
   {courierSlots>0&&<Row style={{flexWrap:'nowrap',justifyContent:'flex-start',gap:8,marginBottom:8}}><Image testID="level-up-courier-slot-art" source={require('../assets/art/hub/unlocked-slot.png')} accessible={false} resizeMode="contain" fadeDuration={0} style={{width:44,height:44,flexShrink:0}}/><Txt style={{flex:1,minWidth:0,fontSize:12}}>{courierSlots===1?'Botenplatz':'Botenplätze'}</Txt><Txt literal style={{fontSize:13,fontWeight:'700'}}>+{n(courierSlots)}</Txt></Row>}
  </SafeAreaView></View></Modal>;
 }
-const s=StyleSheet.create({headquartersCard:{paddingHorizontal:11,paddingVertical:11,overflow:'hidden'},headquartersArt:{alignSelf:'stretch',aspectRatio:16/9},developmentBody:{padding:11,paddingTop:17},title:{fontSize:16,fontWeight:'700'},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},modal:{width:'100%',maxWidth:440,borderRadius:20,padding:20,backgroundColor:C.panel,borderWidth:1,borderColor:C.accent},congrats:{fontSize:19,fontWeight:'700',textAlign:'center'},level:{fontSize:26,fontWeight:'700',textAlign:'center',color:C.accent,marginTop:8,marginBottom:18,lineHeight:32},reward:{fontSize:13,lineHeight:21,marginBottom:8}});
+const s=StyleSheet.create({headquartersCard:{paddingHorizontal:11,paddingVertical:11,overflow:'hidden'},headquartersFrame:{alignSelf:'stretch',aspectRatio:16/9,overflow:'hidden'},developmentBody:{padding:11,paddingTop:17},title:{fontSize:16,fontWeight:'700'},overlay:{flex:1,backgroundColor:C.overlay,justifyContent:'center',alignItems:'center',padding:20},modal:{width:'100%',maxWidth:440,borderRadius:20,padding:20,backgroundColor:C.panel,borderWidth:1,borderColor:C.accent},congrats:{fontSize:19,fontWeight:'700',textAlign:'center'},level:{fontSize:26,fontWeight:'700',textAlign:'center',color:C.accent,marginTop:8,marginBottom:18,lineHeight:32},reward:{fontSize:13,lineHeight:21,marginBottom:8}});
 
 

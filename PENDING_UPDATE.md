@@ -52,7 +52,9 @@ Nachweise: [Prüfstand](TEST_REPORT.md), [Expeditions-/Truhenbalance](docs/gamep
 
 ## Gesammelt, noch nicht veröffentlicht
 
-Keine weiteren Änderungen aus diesem Sammelpaket offen.
+Sammelbranch: `batch/november-followup-ui`. Noch nicht veröffentlicht.
+
+- Handelsimperium: Hauptsitzbild in einem 16:9-Rahmen mit gemessener Breite und expliziten Bildmaßen dargestellt. Das gesamte Motiv bleibt durch `contain` sichtbar; Android-Quellmaße können es nicht mehr über den Kartenrahmen hinaus vergrößern. 14 gezielte Tests, TypeScript und diff --check erfolgreich. Regression prüft Kartenbreiten 274/344/384/700 gegen die Quellmaße 1200×675. Visueller Browsertest durch Chromium-Prozessfehler (`socket() failed: Operation not permitted`) blockiert; kein Gerätetest.
 
 ## Noch offene Punkte
 
