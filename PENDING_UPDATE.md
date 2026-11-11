@@ -62,6 +62,8 @@ Sammelbranch: `batch/november-followup-ui`. Noch nicht veröffentlicht.
 
 - Großauftrag-Überstunden: feste Auswahl 1/5/10/20. Bei ungenügendem Guthaben zeigt Frist sichern verfügbare/benötigte Punkte (z. B. 28/230) und ist für den verfügbaren Teilbetrag auswählbar. Warnhinweis zur unvollständigen Fristsicherung bleibt bestehen; Bestätigung zeigt tatsächliche Sofortlieferung. Teilbetrag wird numerisch an den unveränderten autoritativen Server gesendet; ausreichende Fristsicherung behält max. Dreißigsieben Quote-/UI-/Engine-Tests, TypeScript und diff --check erfolgreich; kein Gerätetest.
 
+- Expeditionskarte: erledigte Orte zeigen einen gut sichtbaren Haken auf hellgrünem Kreis, offene Abschlusslieferungen ein Paket und der aktuell erkundbare Ort eine Lupe. Laufende Lieferungen behalten die Stoppuhr. Kontrastfehler des vorher dunklen Hakens auf dunklem Schild behoben. Neun Kartenstatus-/Darstellungstests und TypeScript erfolgreich. Gesamtes Sammelpaket am 11.11.2026 zur Testveröffentlichung freigegeben.
+
 ## Noch offene Punkte
 
 | Bereich | Tatsächlicher Stand / nächster Schritt |

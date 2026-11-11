@@ -55,7 +55,7 @@ export function ExpeditionJourney({map,maps,state,missions,accountId,onRegion,on
       <View testID={`journey-sign-${index}`} style={[s.sign,index===state.discovered&&status==='Erkunden'&&s.signNext]}>
        <Text style={s.number}>{String(index+1).padStart(2,'0')}</Text>
        <View testID={`journey-name-${index}`} accessible={false} importantForAccessibility="no-hide-descendants" style={s.name}>{words.map((word,wordIndex)=><Text key={wordIndex} literal numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.8} style={[s.word,compact&&{fontSize:11,lineHeight:14}]}>{word}</Text>)}</View>
-       {icon&&<View testID={`journey-status-${index}`} style={s.status}><Icon name={icon} size={12} color={icon==='check'?C.accent:C.brassLight}/></View>}
+       {icon&&<View testID={`journey-status-${index}`} style={[s.status,icon==='check'&&s.statusComplete]}><Icon name={icon} size={14} color={icon==='check'?C.accent:C.brassLight}/></View>}
       </View>
      </Pressable>;
     })}
@@ -76,6 +76,7 @@ const s=StyleSheet.create({
  name:{flex:1,minWidth:0,flexDirection:'row',flexWrap:'wrap',columnGap:3,rowGap:0},
  word:{maxWidth:'100%',fontFamily:displayFont,fontSize:12,lineHeight:16,fontWeight:'600',textAlign:'left',color:C.onInk},
  status:{width:20,height:20,borderWidth:1,borderColor:'rgba(225,201,143,.55)',backgroundColor:'rgba(225,201,143,.12)',borderRadius:10,alignItems:'center',justifyContent:'center'},
+ statusComplete:{backgroundColor:C.greenWash,borderColor:C.greenWash},
  navigation:{position:'absolute',left:12,right:12,bottom:10,flexDirection:'row',justifyContent:'space-between'},
  arrow:{width:48,height:48,alignItems:'center',justifyContent:'center'},arrowSpacer:{width:48,height:48},
  arrowDisc:{width:34,height:34,borderRadius:17,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(245,236,214,.54)',boxShadow:'0px 1px 7px rgba(35,32,24,.10)'},

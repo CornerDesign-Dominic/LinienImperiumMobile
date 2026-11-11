@@ -13,7 +13,7 @@ function render(region,discovered,opened=[],regions=[],width=390,height=620,stat
   if(id==='@react-native-async-storage/async-storage')return {getItem:async()=>null,setItem:async()=>{}};
   if(id==='./Language')return {Text:'Text'};
   if(id==='./i18n')return {t:x=>x};if(id==='./Icon')return {Icon:'Icon'};
-  if(id==='./theme')return {C:{},displayFont:'serif'};
+  if(id==='./theme')return {C:require('../src/palette.json'),displayFont:'serif'};
   if(id==='./regionIdentities')return {regionIdentities:Array.from({length:5},()=>({title:'Region'}))};
   if(id.endsWith('.png'))return {uri:id,width:887,height:1774};
   if(id==='./regionRoutes')return {regionRoutes};if(id==='./journeyLayout')return layout;throw Error(id);
@@ -69,8 +69,10 @@ test('Place signs wrap whole translated words and show only actionable bonus mar
  const places=elements(tree,'Pressable').filter(n=>/^journey-place-/.test(n.props.testID));
  const icons=place=>elements(place,'Icon').map(n=>n.props.name);
  assert.deepEqual(icons(places[0]),['check']);assert.deepEqual(icons(places[1]),['timer']);
- assert.deepEqual(icons(places[2]),['truck']);assert.deepEqual(icons(places[3]),['truck']);assert.deepEqual(icons(places[4]),[]);
+ assert.deepEqual(icons(places[2]),['package']);assert.deepEqual(icons(places[3]),['package']);assert.deepEqual(icons(places[4]),['search']);
  assert.ok(places[3].props.accessibilityLabel.includes('Erkundet · Abschlusslieferung offen'));
+ const completeBadge=elements(places[0],'View').find(n=>n.props.testID==='journey-status-0');
+ const badgeStyle=flatten(completeBadge.props.style);assert.equal(badgeStyle.backgroundColor,require('../src/palette.json').greenWash);
  const name=elements(places[3],'View').find(n=>n.props.testID==='journey-name-3');
  assert.deepEqual(elements(name,'Text').map(n=>n.props.children),['Die','Wagenrast']);
  assert.ok(elements(name,'Text').every(n=>n.props.numberOfLines===1));

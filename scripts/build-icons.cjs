@@ -15,6 +15,7 @@ const icons={
  orders:'<path d="m5 9 11-5 11 5v15l-11 5-11-5zM5 9l11 5 11-5M16 14v15M11 6l11 5v6"/>',
  projects:'<g stroke-width="1.7"><path d="m10 6 6-3 6 3v8l-6 3-6-3zM10 6l6 3 6-3M16 9v8M13 4.5l6 3v3"/><path d="m2 18 6-3 6 3v8l-6 3-6-3zM2 18l6 3 6-3M8 21v8M5 16.5l6 3v3"/><path d="m18 18 6-3 6 3v8l-6 3-6-3zM18 18l6 3 6-3M24 21v8M21 16.5l6 3v3"/></g>',
  expedition:'<circle cx="16" cy="16" r="12"/><path d="m21 11-3 7-7 3 3-7zM16 2v4m0 20v4M2 16h4m20 0h4"/>',
+ search:'<circle cx="13" cy="13" r="9"/><path d="m20 20 9 9"/>',
  cards:'<path d="M11 6 4 9l6 18 5-2M21 6l7 3-6 18-5-2"/><rect x="10" y="3" width="13" height="25" rx="2"/><path d="m16.5 9 3 5-3 5-3-5zM14 24h5"/>',
  company:'<path d="m3 10 13-7 13 7zM5 29h22M6 12v13m7-13v13m6-13v13m7-13v13M4 25h24v4H4"/>',
  hub:'<path d="m3 13 12-8 12 8M5 12v15h11M9 27V16h8M20 19h7l3 4v5H18V18h4M22 19v5h8"/><circle cx="21" cy="28" r="2"/><circle cx="28" cy="28" r="2"/>',
