@@ -1337,6 +1337,7 @@
   "Frist bereits gesichert · 0 Punkte": "Deadline already secured · 0 points",
   "Fristbedarf nicht verfügbar": "Deadline requirement unavailable",
   "Frist sichern · {0} Punkte": "Secure deadline · {0} points",
+  "Frist sichern · {0}/{1} Punkte": "Secure deadline · {0}/{1} points",
   "Nicht genügend Überstundenpunkte für die Fristsicherung.": "Not enough overtime points to secure the deadline.",
   "Dein Einsatz": "Your contribution",
   "Sofort geliefert": "Delivered instantly",

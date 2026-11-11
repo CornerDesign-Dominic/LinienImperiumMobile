@@ -39,7 +39,7 @@ function journeyPlaceState(index,state,missions=[]){
  if(complete)return {status:final?'Handelsplatz erschlossen':'Ort erschlossen',icon:'check'};
  if(mission?.status==='active')return {status:'Erschließung läuft',icon:'timer'};
  if(mission?.status==='completed')return {status:'Erschließung wird abgeschlossen',icon:'timer'};
- return discovered?{status:'Erkundet · Abschlusslieferung offen',icon:'truck'}:{status:'Erkunden',icon:null};
+ return discovered?{status:'Erkundet · Abschlusslieferung offen',icon:'package'}:{status:'Erkunden',icon:!final&&index===state.discovered?'search':null};
 }
 module.exports={visibleJourneyPlaces,journeyGeometry,journeyOffset,journeyFocus,adjacentJourneyRegion,journeyPlaceState};
 

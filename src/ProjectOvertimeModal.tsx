@@ -11,13 +11,14 @@ export function ProjectOvertimeModal({order,points,busy,clock,visible,onClose,on
  const confirm=async()=>{
   if(locked||pending.current||!q.canConfirm)return;
   pending.current=true;setSaving(true);setFailed(false);
-  try{const result=await onCommand('overtime',{id:order.id,amount});if(result?.overtimeApplied===true)onClose();else setFailed(true);}catch{setFailed(true);}finally{pending.current=false;setSaving(false);}
+  const requested=amount==='max'&&q.required!==null&&points<q.required?q.points:amount;
+  try{const result=await onCommand('overtime',{id:order.id,amount:requested});if(result?.overtimeApplied===true)onClose();else setFailed(true);}catch{setFailed(true);}finally{pending.current=false;setSaving(false);}
  };
  return <ExpeditionPlaceModal visible={visible} title="Überstunden einsetzen" onClose={close}>
   <Row><Txt muted>Verfügbar</Txt><PointInfo>{n(points)} Punkte</PointInfo></Row>
   {order.distance>0&&<Txt muted style={{fontSize:12,marginBottom:12}}>1 Punkt liefert hier {n(1000/order.distance,2)} t sofort.</Txt>}
-  <View style={{flexDirection:'row',gap:6}}>{[1,5,10].map(value=><Btn key={value} secondary={amount!==value} disabled={locked} style={{flex:1,minWidth:0}} onPress={()=>{setAmount(value);setFailed(false);}}>{String(value)}</Btn>)}</View>
-  <Btn secondary disabled={locked||!q.deadlineEnabled} onPress={()=>{setAmount('max');setFailed(false);}}>{q.required===0?'Frist bereits gesichert · 0 Punkte':q.required===null?'Fristbedarf nicht verfügbar':`Frist sichern · ${n(q.required)} Punkte`}</Btn>
+  <View style={{flexDirection:'row',gap:6}}>{[1,5,10,20].map(value=><Btn key={value} secondary={amount!==value} disabled={locked} style={{flex:1,minWidth:0}} onPress={()=>{setAmount(value);setFailed(false);}}>{String(value)}</Btn>)}</View>
+  <Btn secondary={amount!=='max'} disabled={locked||!q.deadlineEnabled} onPress={()=>{setAmount('max');setFailed(false);}}>{q.required===0?'Frist bereits gesichert · 0 Punkte':q.required===null?'Fristbedarf nicht verfügbar':points<q.required?`Frist sichern · ${n(points)}/${n(q.required)} Punkte`:`Frist sichern · ${n(q.required)} Punkte`}</Btn>
   {q.required!==null&&q.required>points&&<Txt style={{color:C.red,fontSize:12}}>Nicht genügend Überstundenpunkte für die Fristsicherung.</Txt>}
   <View style={{marginVertical:12,padding:10,borderWidth:1,borderColor:C.line,borderRadius:6}}><Row><Txt muted>Sofort geliefert</Txt><Txt>+{n(q.tons,2)} t</Txt></Row></View>
   {failed&&<Txt style={{color:C.red,fontSize:12}}>Einsatz nicht bestätigt. Bitte erneut versuchen.</Txt>}

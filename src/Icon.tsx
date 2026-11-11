@@ -13,6 +13,8 @@ const icons={
  back:require('../assets/icons/back.png'),
  cards:require('../assets/icons/cards.png'),
  check:require('../assets/icons/check.png'),
+ package:require('../assets/icons/orders.png'),
+ search:require('../assets/icons/search.png'),
  chevron:require('../assets/icons/chevron.png'),
  close:require('../assets/icons/close.png'),
  coin:require('../assets/art/currency/imperium-taler.png'),

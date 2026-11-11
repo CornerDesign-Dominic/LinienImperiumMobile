@@ -52,7 +52,17 @@ Nachweise: [Prüfstand](TEST_REPORT.md), [Expeditions-/Truhenbalance](docs/gamep
 
 ## Gesammelt, noch nicht veröffentlicht
 
-Keine weiteren Änderungen aus diesem Sammelpaket offen.
+Sammelbranch: `batch/november-followup-ui`. Noch nicht veröffentlicht.
+
+- Handelsimperium: Hauptsitzbild in einem 16:9-Rahmen mit gemessener Breite und expliziten Bildmaßen dargestellt. Das gesamte Motiv bleibt durch `contain` sichtbar; Android-Quellmaße können es nicht mehr über den Kartenrahmen hinaus vergrößern. 14 gezielte Tests, TypeScript und diff --check erfolgreich. Regression prüft Kartenbreiten 274/344/384/700 gegen die Quellmaße 1200×675. Visueller Browsertest durch Chromium-Prozessfehler (`socket() failed: Operation not permitted`) blockiert; kein Gerätetest.
+
+- Imperiumsausbau: gemalte, freigestellte Illustrationen statt Linienicons. Abschlussprämie = offene Münztruhe, Auftragsmenge = Warenkiste, Reichweite = Karte mit Kompass. Je 48 px in Ausbauübersicht und Detailmodal; vorhandene Spielassets ohne neue Downloads. Typprüfung, 14 gezielte Transport-/UI-/Modaltests und diff --check erfolgreich; kein Gerätetest.
+
+- Startseite: Botenstation zeigt bei voller Kasse einen grünen Aktionspunkt direkt hinter Voll, bei Teilfüllung keinen Punkt. Stammkunden zeigen bei verfügbaren Verbesserungspunkten denselben grünen Punkt statt des bisherigen Aufwärtspfeils; bestehende Verfügbarkeitsbedingung unverändert. Größe/Farbe entsprechen Materialbeschaffung. Drei gezielte Home-Tests, TypeScript und diff --check erfolgreich; kein Gerätetest.
+
+- Großauftrag-Überstunden: feste Auswahl 1/5/10/20. Bei ungenügendem Guthaben zeigt Frist sichern verfügbare/benötigte Punkte (z. B. 28/230) und ist für den verfügbaren Teilbetrag auswählbar. Warnhinweis zur unvollständigen Fristsicherung bleibt bestehen; Bestätigung zeigt tatsächliche Sofortlieferung. Teilbetrag wird numerisch an den unveränderten autoritativen Server gesendet; ausreichende Fristsicherung behält max. Dreißigsieben Quote-/UI-/Engine-Tests, TypeScript und diff --check erfolgreich; kein Gerätetest.
+
+- Expeditionskarte: erledigte Orte zeigen einen gut sichtbaren Haken auf hellgrünem Kreis, offene Abschlusslieferungen ein Paket und der aktuell erkundbare Ort eine Lupe. Laufende Lieferungen behalten die Stoppuhr. Kontrastfehler des vorher dunklen Hakens auf dunklem Schild behoben. Neun Kartenstatus-/Darstellungstests und TypeScript erfolgreich. Gesamtes Sammelpaket am 11.11.2026 zur Testveröffentlichung freigegeben.
 
 ## Noch offene Punkte
 

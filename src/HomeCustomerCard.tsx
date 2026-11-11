@@ -11,7 +11,7 @@ export function HomeCustomerCard({customers,onPress,styles}:{customers:{points:n
  return <Pressable accessibilityRole="button" accessibilityLabel={`${translate('Stammkunden')}${available?`, ${translate('Verbesserungspunkte verfügbar')}`:''}`} onPress={onPress} style={({pressed})=>[styles.menuRow,pressed&&{opacity:.75}]}>
   <MenuArt id="customers"/>
   <View style={styles.menuCopy}><Text numberOfLines={1} style={styles.menuTitle}>Stammkunden</Text><Text numberOfLines={1} ellipsizeMode="tail" style={styles.menuDetail}>Beziehungen und Verbesserungen</Text></View>
-  {available&&<View testID="home-customer-points" accessible={false} importantForAccessibility="no-hide-descendants" style={{minWidth:42,alignItems:'flex-end',flexShrink:0}}><Icon name="arrow" size={24} color={C.gold} style={{transform:[{rotate:'-45deg'}]}}/></View>}
+  {available&&<View testID="home-customer-points" accessible={false} importantForAccessibility="no-hide-descendants" style={{minWidth:42,alignItems:'flex-end',flexShrink:0}}><View style={{width:10,height:10,borderRadius:5,backgroundColor:C.uncommon}}/></View>}
   <Icon name="chevron" size={16} color={C.gold}/>
  </Pressable>;
 }

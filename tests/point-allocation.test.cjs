@@ -42,3 +42,18 @@ test('Headquarters card retains base maxima without a separate empty point balan
  assert.ok(!values.includes('130'));assert.ok(!values.includes('100'),'card bonuses stay out of the base preview');
  h.unmount();
 });
+
+test('Headquarters image overrides intrinsic source dimensions at narrow and wide card sizes',()=>{
+ const h=componentHarness('LevelUp.tsx'),props={data:data(),busy:false,onCommand(){}};
+ for(const width of [274,344,384,700]){
+  let tree=h.render('DevelopmentCard',props);
+  const frame=nodes(tree,'View').find(node=>node.props.testID==='empire-headquarters-frame');
+  frame.props.onLayout({nativeEvent:{layout:{width}}});
+  tree=h.render('DevelopmentCard',props);
+  const image=nodes(tree,'Image').find(node=>node.props.testID==='empire-headquarters-art');
+  const rendered={width:1200,height:675,...image.props.style};
+  assert.equal(rendered.width,width);assert.equal(rendered.height,width*9/16);
+  assert.equal(image.props.resizeMode,'contain');
+ }
+ h.unmount();
+});
