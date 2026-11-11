@@ -430,6 +430,12 @@ test('Max overtime uses the minimum whole points that make the saved fleet meet 
   assert.equal(result.state.overtimePoints,current.state.overtimePoints-needed);assert.ok(after.eta<=after.project.deadlineAt);assert.equal(after.status,'active');assert.equal(after.overtimeForDeadline,0);assert.equal(JSON.stringify(current.state),json);
   const again=execute(result.state,'overtime',{id:project.id,amount:'max'},now+123456,fixed);assert.equal(again.state.overtimePoints,result.state.overtimePoints);
   const poor=structuredClone(current.state);poor.overtimePoints=2;const limited=execute(poor,'overtime',{id:project.id,amount:'max'},now+123456,fixed);assert.equal(limited.state.overtimePoints,0);assert.ok(limited.view.state.orders.find(o=>o.id===project.id).overtimeForDeadline>0);
+  const partial=execute(poor,'overtime',{id:project.id,amount:2},now+123456,fixed),partialOrder=partial.view.state.orders.find(o=>o.id===project.id);
+  assert.equal(partial.view.overtimeApplied,true);assert.equal(partial.state.overtimePoints,0);assert.ok(partialOrder.overtimeForDeadline>0);assert.ok(partialOrder.eta>partialOrder.project.deadlineAt);
+  assert.ok(Math.abs(partialOrder.delivered-order.delivered-2*1000/order.distance)<1e-6,'Partial stock delivers only its actual tonne-kilometres');
+  const empty=execute(partial.state,'overtime',{id:project.id,amount:2},now+123456,fixed);assert.equal(empty.view.overtimeApplied,false);assert.equal(empty.state.overtimePoints,0);assert.equal(empty.state.orders.find(o=>o.id===project.id).delivered,partialOrder.delivered);
+  const twenty=execute(current.state,'overtime',{id:project.id,amount:20},now+123456,fixed);assert.equal(twenty.view.overtimeApplied,true);assert.equal(twenty.state.overtimePoints,current.state.overtimePoints-20);
+
  }
 });
 

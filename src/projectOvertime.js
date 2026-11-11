@@ -7,6 +7,6 @@ function overtimeQuote(order, stock, amount, now) {
  const required=forecast?need:null;
  const requested=amount==='max'?(required||0):amount;
  const points=valid?Math.min(available,Math.ceil(remaining*order.distance/1000),requested):0;
- return {points,tons:valid?Math.min(remaining,points*1000/order.distance):0,after:available-points,required,deadlineEnabled:forecast&&need>0&&need<=available,canConfirm:points>0&&(amount!=='max'||(forecast&&need>0&&need<=available))};
+ return {points,tons:valid?Math.min(remaining,points*1000/order.distance):0,after:available-points,required,deadlineEnabled:forecast&&need>0&&available>0,canConfirm:points>0&&(amount!=='max'||(forecast&&need>0))};
 }
 module.exports={overtimeQuote};

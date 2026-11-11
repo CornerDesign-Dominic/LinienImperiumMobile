@@ -60,6 +60,8 @@ Sammelbranch: `batch/november-followup-ui`. Noch nicht veröffentlicht.
 
 - Startseite: Botenstation zeigt bei voller Kasse einen grünen Aktionspunkt direkt hinter Voll, bei Teilfüllung keinen Punkt. Stammkunden zeigen bei verfügbaren Verbesserungspunkten denselben grünen Punkt statt des bisherigen Aufwärtspfeils; bestehende Verfügbarkeitsbedingung unverändert. Größe/Farbe entsprechen Materialbeschaffung. Drei gezielte Home-Tests, TypeScript und diff --check erfolgreich; kein Gerätetest.
 
+- Großauftrag-Überstunden: feste Auswahl 1/5/10/20. Bei ungenügendem Guthaben zeigt Frist sichern verfügbare/benötigte Punkte (z. B. 28/230) und ist für den verfügbaren Teilbetrag auswählbar. Warnhinweis zur unvollständigen Fristsicherung bleibt bestehen; Bestätigung zeigt tatsächliche Sofortlieferung. Teilbetrag wird numerisch an den unveränderten autoritativen Server gesendet; ausreichende Fristsicherung behält max. Dreißigsieben Quote-/UI-/Engine-Tests, TypeScript und diff --check erfolgreich; kein Gerätetest.
+
 ## Noch offene Punkte
 
 | Bereich | Tatsächlicher Stand / nächster Schritt |
