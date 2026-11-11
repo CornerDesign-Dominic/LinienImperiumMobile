@@ -1,5 +1,16 @@
 # Prüfstand und Nachweise
 
+## Sammelpaket: Handelsimperium, Überstunden und Expeditionssymbole – 11.11.2026
+
+Sammelpaket PR #29 erfolgreich veröffentlicht: [Mobile-preview-Lauf 43109508779](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/43109508779), Spielcode `f8594517cfb3a0169620c8c53dfb5d3f3eb8b8f8`. TypeScript, 422/422 Tests, Android-Export, Backend und Firestore-Regeln, Live-API-Prüfung und Android-OTA im Kanal preview erfolgreich. Keine neue APK und kein physischer Gerätetest.
+
+- Handelsimperium: Hauptsitzbild vollständig eingepasst; gemalte Münztruhe, Warenkiste und Karte/Kompass im Imperiumsausbau.
+- Startseite: grüne Aktionspunkte für volle Botenstation und verfügbare Stammkundenverbesserungen.
+- Großauftrag: Überstundenwerte 1/5/10/20 und direkt auswählbarer Teilbetrag mit verfügbar/benötigt bei ungenügenden Punkten; Warnhinweis bleibt erhalten.
+- Expeditionsorte: sichtbarer Haken im hellgrünen Kreis, Paket für offene Abschlusslieferungen, Lupe beim aktuellen Erkundungsort und Stoppuhr für laufende Lieferungen.
+
+Auch lokal auf integriertem Stand: TypeScript, 422 Tests, Android-Export und diff --check erfolgreich. Gezielte Regressionen prüfen Bildmaße, Ausbauabläufe, Home-Aktionspunkte, partielle Überstunden und Kartenstatus. Kein physischer Gerätetest. Der versuchte visuelle Hauptsitz-Browserlauf war durch Chromium-Prozessfehler blockiert.
+
 ## Sammelpaket: Transportauswahl, Expeditionsorte und Darstellung – 10.11.2026
 
 Das Sammelpaket aus PR #28 ist über [Mobile-preview-Lauf 42721205734](https://github.com/CornerDesign-Dominic/LinienImperiumMobile/actions/runs/42721205734) erfolgreich veröffentlicht: TypeScript, alle 418 Tests, Android-Export, Firebase-Backend und Regeln, Live-API-Prüfung und Android-OTA im Kanal preview. Veröffentlichter Spielcode: `60ef661a5eb826930f958fb0e889b7a08a7b94b2`. Keine neue APK und kein physischer Gerätetest.
