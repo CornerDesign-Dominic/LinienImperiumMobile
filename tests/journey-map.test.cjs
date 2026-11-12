@@ -72,7 +72,12 @@ test('Place signs wrap whole translated words and show only actionable bonus mar
  assert.deepEqual(icons(places[2]),['package']);assert.deepEqual(icons(places[3]),['package']);assert.deepEqual(icons(places[4]),['search']);
  assert.ok(places[3].props.accessibilityLabel.includes('Erkundet · Abschlusslieferung offen'));
  const completeBadge=elements(places[0],'View').find(n=>n.props.testID==='journey-status-0');
- const badgeStyle=flatten(completeBadge.props.style);assert.equal(badgeStyle.backgroundColor,require('../src/palette.json').greenWash);
+ const badgeStyle=flatten(completeBadge.props.style);
+ for(const index of [2,4]){
+  const badge=elements(places[index],'View').find(n=>n.props.testID===`journey-status-${index}`);
+  assert.deepEqual(badgeStyle,flatten(badge.props.style));
+  assert.equal(elements(places[0],'Icon')[0].props.color,elements(places[index],'Icon')[0].props.color);
+ }
  const name=elements(places[3],'View').find(n=>n.props.testID==='journey-name-3');
  assert.deepEqual(elements(name,'Text').map(n=>n.props.children),['Die','Wagenrast']);
  assert.ok(elements(name,'Text').every(n=>n.props.numberOfLines===1));
