@@ -61,7 +61,9 @@ Nachweise: [Prüfstand](TEST_REPORT.md), [Expeditions-/Truhenbalance](docs/gamep
 
 ## Gesammelt, noch nicht veröffentlicht
 
-Keine weiteren Änderungen aus diesem Sammelpaket offen.
+Sammelbranch: `batch/november-visual-polish`. Noch nicht veröffentlicht.
+
+- Expeditionskarte: Haken und Kreis verwenden dieselbe goldene Kontur und dezente Hintergrundfläche wie Paket und Lupe; separate grüne Füllung entfernt. Fünf vorhandene Karten-Darstellungstests erfolgreich.
 
 ## Noch offene Punkte
 
